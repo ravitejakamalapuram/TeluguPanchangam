@@ -1,0 +1,74 @@
+{
+  "summary": "Frontend-only validation of the Neo-Telugu new-tab Chrome extension (vanilla HTML/CSS/JS served via Express on /app). Comprehensive Playwright test of every card, interactive control and panchangam data point at desktop (1920x1080) and mobile (600x900). 0 console errors, 0 page errors. Vast majority of the spec works correctly; two real bugs and one minor precision issue identified. Visual design (Neo-Telugu glass-morphism + saffron/gold + kolam + weather-reactive backdrop) renders beautifully and feels premium — major UX uplift from the previous build.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Muhurthams Timeline",
+        "issue": "Only 2 of 6 muhurthams render as colored blocks on the timeline track (yamagandam + abhijit). Rahu Kalam, Durmuhurthams, Varjyam and Amritakalam are missing. Also the widths/positions look wrong (yamagandam at left:0% width:3% even though it runs 10:35 am – 12:13 pm). The 6 pills below the timeline are all correct, so this is purely a visualization layer bug in renderTimelineBlocks (probably bad time→%-of-track math + missing iteration over all 4 inauspicious + 2 auspicious entries).",
+        "selector": "#timeline-blocks",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "Copy Sankalpam button",
+        "issue": "Clicking the button shows no visual feedback ('నకలు చేయబడింది ✓' never appears) even when clipboard API is available (isSecureContext=true, navigator.clipboard.writeText exists, permissions granted). The handler swallows errors with `.catch(() => {})` so any failure is silent. The button label stays as 'సంకల్పము నకలు చేయి' before and after. Recommendation: (a) update UI feedback BEFORE awaiting clipboard, OR (b) add a textarea+execCommand('copy') fallback, OR (c) at minimum surface the error in console so it's debuggable.",
+        "selector": "[data-testid='copy-sankalpam-btn']",
+        "priority": "MEDIUM"
+      },
+      {
+        "component": "Sun-arc marker precision",
+        "issue": "At 17:54 IST (sunrise 05:40, sunset 18:46 = ~93% of the daylight elapsed) the gold marker is parked at cx=206 (the right end of the arc, =sunset). Expected cx≈193. Marker probably clamps to end too early or is using sunrise→now instead of clamped t∈[sunrise, sunset]. Cosmetic but visible.",
+        "selector": "#sun-path-marker",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verified_working": [
+    "Page loads at REACT_APP_BACKEND_URL root (title: 'శ్రీ తెలుగు పంచాంగం · Neo-Telugu Calendar')",
+    "Live clock ticks (17:54:13 → 17:56:50 observed across runs)",
+    "Gregorian date 'Monday, June 1, 2026' + Telugu date 'అధిక జ్యేష్టం · కృష్ణ పక్షం · కృష్ణ పాడ్యమి · జ్యేష్ఠ'",
+    "Panchangam quad: తిథి=కృష్ణ పాడ్యమి, నక్షత్రం=జ్యేష్ఠ, యోగం=సాధ్యం, కరణం=కౌలవ (no '—' placeholders)",
+    "All 6 muhurtham pills show correct AM/PM ranges: Rahu 07:19–08:57 am, Yama 10:35 am–12:13 pm, Durmuh 06:07–06:59 am & 08:44–09:36 am, Varjyam 10:29 pm–12:16 am, Amrita 08:48–10:36 am, Abhijit 11:47 am–12:40 pm",
+    "Sunrise/sunset labels render (↑ 05:40 am  /  06:46 pm ↓) — forward-search fix confirmed working",
+    "Weather strip: '31°C నిర్మలంగా ఉంది' (Open-Meteo call succeeded for Hyderabad default)",
+    "Year Overview: Samvatsara=పరాభవ, Ayanam=ఉత్తరాయణం, Ritu=గ్రీష్మ ఋతువు, Masa=అధిక జ్యేష్టం, Paksham=కృష్ణ పక్షం",
+    "Archana: deity=శ్రీ పరమశివుడు / Lord Shiva, mantra=ఓం నమః శివాయ, meaning rendered, nearest temple=బిర్లా మందిర్, హైదరాబాద్ · 3 km",
+    "Daily horoscope tabs work (ఆరోగ్యం/ఆదాయం/కెరీర్ produce distinct Telugu predictions and update the star rating ★★★★★ → ★☆☆☆☆)",
+    "Rasi selector dropdown DOES change horoscope text per rasi (Aries vs Scorpio vs Leo all produce distinct gochara texts) — initial false positive in shorter comparison was resolved",
+    "Upcoming festivals list: 29 JUN ఏరువాక పౌర్ణమి, 24 JUL తొలి ఏకాదశి, 29 JUL గురు పౌర్ణమి, 21 AUG వరలక్ష్మీ వ్రతం, 27 AUG రాఖీ పౌర్ణమి / జంధ్యాల పౌర్ణమి, 04 SEP శ్రీ కృష్ణాష్టమి",
+    "Monthly calendar: 7-col grid, Telugu weekday headers (ఆది/సోమ/మంగళ/బుధ/గురు/శుక్ర/శని), 35 cells for June 2026, today (June 1) has class 'calendar-day today' with gold shimmer ring visible",
+    "Day cells show day number + lunar tithi (e.g. cell 1='1 కృ.పాడ్యమి') + festival badge (cell 29='29 పూర్ణిమ ఏరువాక పౌర్ణమి')",
+    "Clicking future day toggles 'selected' class with gold ring (verified day index 20)",
+    "Prev/Next month nav swaps title (June 2026 ↔ May 2026)",
+    "Sankalpam scroll renders Sanskrit + Telugu blocks with 'Between Krishna and Godavari Rivers' + 'North of Srisailam' location text and ఓం watermark",
+    "Settings modal opens, name/dob/tob/lat/lng inputs editable, save updates profile name display (TEST_USER applied)",
+    "Reminders: type select toggles lunar (#lunar-rem-inputs) inputs visibility; adding a reminder for today persists and renders in #reminders-list",
+    "Theme toggle flips data-theme between 'night' (deep midnight indigo) and 'day' (warm cream/vermillion); both legible",
+    "Sky backdrop class composition correct: 'sky-backdrop sky-night weather-clear'",
+    "Mobile (600x900) layout stacks gracefully without horizontal scroll",
+    "Zero console errors, zero console warnings, zero uncaught page errors across all interaction flows"
+  ],
+  "test_report_links": [],
+  "action_items": [
+    "Fix timeline visualization: iterate over ALL 4 inauspicious (rahu, yama, all durmuhurtham segments, varjyam) + 2 auspicious (amrita, abhijit) windows and convert times to %-of-24h-window starting at 06:00; current code only emits 2 blocks with clearly wrong widths.",
+    "Fix copy-sankalpam silent failure: don't swallow promise rejection; show 'నకలు చేయబడింది ✓' optimistically before awaiting clipboard, and add a textarea+execCommand('copy') fallback so feedback always shows.",
+    "Tighten sun-arc marker math: at ~93% elapsed daylight the cx should be ~193, not 206 — verify the clamp/scale in placeSunMarker()."
+  ],
+  "critical_code_review_comments": [
+    "newtab.js line 854 — `.catch(() => {})` silently swallows clipboard errors and there is NO fallback feedback path. This violates 'Error State Handling' guideline (every UI action must surface success/error).",
+    "Timeline render appears not to project rahu/dur/varj/amrita time-ranges onto the 06:00–06:00 24h track at all — only 2 blocks emitted into #timeline-blocks while 6 distinct windows exist. Suspect renderTimeline only consumes a subset of panchang fields or returns early.",
+    "newtab.js is 937 lines — close to the 700-line soft limit. Consider splitting controller logic (clock loop, weather fetch, render*, event bindings) into smaller modules for maintainability.",
+    "Good: all interactive elements expose data-testid; Telugu/English bilingual labels everywhere; chrome.storage shim is clean; no MongoDB _id leakage (N/A here).",
+    "Suggestion: when navigator.geolocation is denied/unavailable, profile-location says 'హైదరాబాద్ (డిఫాల్ట్)' which is correct — but consider a subtle 'click to enable location' hint."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend-only test)", "frontend": "92% (24/26 spec checks pass; 2 bugs + 1 minor precision issue)"},
+  "test_credentials": "N/A — no auth in app; chrome.storage shimmed to localStorage in preview",
+  "seed_data_creation": "Created one localStorage reminder 'TEST_REMINDER' for today (June 1, 2026) and overwrote userSettings.name to 'TEST_USER' via the settings modal — these persist in the preview browser's localStorage only.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "App is a vanilla JS Chrome extension served at REACT_APP_BACKEND_URL root via Express (no React, no FastAPI APIs). All cards present with data-testid. Two remaining bugs: (1) #timeline-blocks only renders 2 of 6 muhurtham windows with wrong widths — root cause likely in renderTimeline() time-to-percent calc; (2) copy-sankalpam button never shows 'నకలు చేయబడింది ✓' feedback because of `.catch(()=>{})` swallow + no optimistic update. Both isolated and easy to verify after fix. Sun-arc marker drifts to end of arc too early — also worth a quick retest. After fix, re-run the playwright flow at https://430c05b3-732c-433b-b664-e6e6b3fce2eb.preview.emergentagent.com/ and check #timeline-blocks children count >=5 and copy-button text contains 'నకలు చేయబడింది' after click.",
+  "rca of the issue": "Timeline: only 2 children in #timeline-blocks after render — likely renderTimeline iterates a small subset or width calc evaluates to 0/NaN for the rest. Copy button: navigator.clipboard.writeText() in some chromium playwright contexts rejects silently when the page isn't focused at click moment; combined with `.catch(()=>{})` the UI never updates. Sun-arc: cx pinned at 206 implies math returns Math.max(end) when 'now > sunset' was incorrectly true OR forward-search returns a sunset before 'now' so the marker clamps to end."
+}

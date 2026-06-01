@@ -1,445 +1,550 @@
 <!DOCTYPE html>
 <html lang="te">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>శ్రీ తెలుగు పంచాంగం (Telugu Calendar Dashboard)</title>
-  
-  <!-- Premium Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Noto+Sans+Telugu:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Custom Stylesheet -->
-  <link rel="stylesheet" href="newtab.css">
-</head>
-<body>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>శ్రీ తెలుగు పంచాంగం · Neo-Telugu Calendar</title>
 
-  <!-- Dynamic Animated Ambient Backdrop Layer -->
-  <div id="sky-backdrop" class="sky-backdrop">
-    <canvas id="stars-canvas"></canvas>
-    <div id="clouds-container"></div>
-    <div id="rain-container"></div>
-    <div id="celestial-container">
-      <canvas id="moon-canvas" width="160" height="160" style="display: none;"></canvas>
-      <div id="sun-body" class="sun-body" style="display: none;">
-        <div class="sun-flare"></div>
+  <!-- Google Fonts: Cormorant Garamond (display serif) + Noto Sans Telugu + Outfit (UI mono-ish) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Noto+Sans+Telugu:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="newtab.css" />
+</head>
+<body data-theme="night">
+
+  <!-- =================================================== -->
+  <!--  AMBIENT WEATHER-REACTIVE SKY BACKDROP              -->
+  <!-- =================================================== -->
+  <div id="sky-backdrop" class="sky-backdrop" data-testid="sky-backdrop">
+    <!-- Twinkling stars / shooting stars / rain -->
+    <canvas id="stars-canvas" data-testid="stars-canvas"></canvas>
+
+    <!-- Slow-drifting clouds (DOM nodes injected by JS) -->
+    <div id="clouds-container" class="clouds-container" data-testid="clouds-container"></div>
+
+    <!-- Celestial body: sun (day) OR moon canvas with tithi-accurate phase (night) -->
+    <div id="celestial-container" class="celestial-container">
+      <canvas id="moon-canvas" width="220" height="220" data-testid="moon-canvas" style="display:none;"></canvas>
+      <div id="sun-body" class="sun-body" data-testid="sun-body" style="display:none;">
+        <div class="sun-aura"></div>
+        <div class="sun-rays"></div>
         <div class="sun-core"></div>
       </div>
     </div>
+
+    <!-- Subtle radial glow (changes with time of day) -->
     <div class="sky-glow"></div>
+
+    <!-- Kolam (rangoli) decorative SVG overlay - tasteful, low opacity -->
+    <svg class="kolam-overlay kolam-top-left" viewBox="0 0 240 240" aria-hidden="true">
+      <g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+        <circle cx="120" cy="120" r="90" stroke-dasharray="2 6"/>
+        <circle cx="120" cy="120" r="60"/>
+        <circle cx="120" cy="120" r="30" stroke-dasharray="3 4"/>
+        <path d="M120 30 L138 120 L120 210 L102 120 Z"/>
+        <path d="M30 120 L120 138 L210 120 L120 102 Z"/>
+        <path d="M55 55 L185 185 M55 185 L185 55" stroke-dasharray="2 6"/>
+        <circle cx="120" cy="30" r="4"/>
+        <circle cx="120" cy="210" r="4"/>
+        <circle cx="30" cy="120" r="4"/>
+        <circle cx="210" cy="120" r="4"/>
+      </g>
+    </svg>
+    <svg class="kolam-overlay kolam-bottom-right" viewBox="0 0 240 240" aria-hidden="true">
+      <g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+        <path d="M40 120 Q120 40 200 120 Q120 200 40 120 Z"/>
+        <path d="M120 40 Q200 120 120 200 Q40 120 120 40 Z"/>
+        <circle cx="120" cy="120" r="22"/>
+        <circle cx="120" cy="120" r="8"/>
+      </g>
+    </svg>
   </div>
 
-  <!-- Banners for Warnings and Greetings -->
-  <div id="eclipse-banner" class="eclipse-notification" style="display: none;">
-    <div class="eclipse-info">
-      <h4 id="eclipse-title">గ్రహణ సూచిక (Eclipse Alert)</h4>
-      <p id="eclipse-desc">గ్రహణ పీక్ సమయం నందు నియమాలు పాటించవలెను.</p>
+  <!-- =================================================== -->
+  <!--  ALERT BANNERS (eclipse / birthday)                 -->
+  <!-- =================================================== -->
+  <div class="banner-stack" data-testid="banner-stack">
+    <div id="eclipse-banner" class="eclipse-banner" data-testid="eclipse-banner" style="display:none;">
+      <div class="eclipse-icon">
+        <div class="eclipse-corona"></div>
+        <div class="eclipse-occluder"></div>
+      </div>
+      <div class="eclipse-content">
+        <h4 id="eclipse-title" class="eclipse-title">గ్రహణ హెచ్చరిక</h4>
+        <p id="eclipse-desc" class="eclipse-desc">గ్రహణ నియమ నిబంధనలు పాటించవలెను.</p>
+      </div>
     </div>
-    <div class="eclipse-avatar-icon">🌑</div>
-  </div>
 
-  <div id="birthday-banner" class="birthday-card-overlay" style="display: none;">
-    <h2 id="birthday-greeting">జన్మదిన శుభాకాంక్షలు! 🎉</h2>
-    <p id="birthday-desc">ఈ రోజు మీ జన్మ నక్షత్రయుక్త పుట్టినరోజు. సకల శుభాలు కలుగుగాక!</p>
-  </div>
-
-  <!-- Professional Grid Dashboard -->
-  <div class="dashboard">
-    
-    <!-- Column 1: Control & Birth Profile Dock -->
-    <aside class="sidebar glass-panel" aria-label="Control Panel">
-      <div class="profile-card">
-        <div class="avatar-ring">
-          <div class="profile-avatar">🕉️</div>
+    <div id="birthday-banner" class="birthday-banner" data-testid="birthday-banner" style="display:none;">
+      <div class="birthday-petals" aria-hidden="true"></div>
+      <div class="birthday-content">
+        <span class="birthday-glyph">✿</span>
+        <div>
+          <h4 class="birthday-title" id="birthday-greeting">జన్మదిన శుభాకాంక్షలు!</h4>
+          <p class="birthday-desc" id="birthday-desc">తెలుగు పంచాంగం ప్రకారం ఈరోజు మీ జన్మ తిథి / నక్షత్రం.</p>
         </div>
-        <h2 id="profile-name">యజమాని</h2>
-        <p id="profile-location">స్థానం కనుగొనబడుతోంది...</p>
-        <button id="btn-open-settings" class="cyber-btn small-btn">జన్మ వివరాలు</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================== -->
+  <!--  MAIN DASHBOARD GRID                                -->
+  <!-- =================================================== -->
+  <div class="dashboard" data-testid="dashboard">
+
+    <!-- ============= LEFT SIDEBAR ============= -->
+    <aside class="sidebar sidebar-left" data-testid="sidebar-left">
+
+      <!-- Brand mark -->
+      <div class="brand-block">
+        <span class="brand-glyph" aria-hidden="true">ఓం</span>
+        <div class="brand-text">
+          <h1 class="brand-title">శ్రీ తెలుగు పంచాంగం</h1>
+          <span class="brand-subtitle">Neo-Telugu Calendar · Daily Sankalpam</span>
+        </div>
       </div>
 
-      <div class="rasi-selector-card">
-        <label for="select-rasi">మీ జన్మ రాశి (Birth Rasi):</label>
-        <div class="select-wrapper">
-          <select id="select-rasi">
-            <option value="0">మేషం (Aries)</option>
-            <option value="1">వృషభం (Taurus)</option>
-            <option value="2">మిథునం (Gemini)</option>
-            <option value="3">కర్కాటకం (Cancer)</option>
-            <option value="4">సింహం (Leo)</option>
-            <option value="5">కన్య (Virgo)</option>
-            <option value="6">తులా (Libra)</option>
-            <option value="7">వృశ్చికం (Scorpio)</option>
-            <option value="8">ధనస్సు (Sagittarius)</option>
-            <option value="9">మకరం (Capricorn)</option>
-            <option value="10">కుంభం (Aquarius)</option>
-            <option value="11">మీనం (Pisces)</option>
+      <!-- Profile card -->
+      <section class="card profile-card" data-testid="profile-card">
+        <div class="profile-avatar-wrap">
+          <div class="avatar-ring"></div>
+          <div class="profile-avatar" data-testid="profile-avatar">
+            <span aria-hidden="true">శ్రీ</span>
+          </div>
+        </div>
+        <h2 class="profile-name" id="profile-name" data-testid="profile-name">యజమాని</h2>
+        <p class="profile-location" id="profile-location" data-testid="profile-location">స్థానం గుర్తిస్తోంది…</p>
+        <button id="btn-open-settings" class="btn btn-ghost btn-sm" data-testid="open-settings-btn">
+          <span>జన్మ వివరాలు సవరించు</span>
+        </button>
+      </section>
+
+      <!-- Rasi selector -->
+      <section class="card compact" data-testid="rasi-card">
+        <span class="overline">జన్మ రాశి · Birth Rasi</span>
+        <div class="select-wrap">
+          <select id="select-rasi" class="select-input" data-testid="rasi-selector-dropdown">
+            <option value="0">మేషం · Aries</option>
+            <option value="1">వృషభం · Taurus</option>
+            <option value="2">మిథునం · Gemini</option>
+            <option value="3">కర్కాటకం · Cancer</option>
+            <option value="4">సింహం · Leo</option>
+            <option value="5">కన్య · Virgo</option>
+            <option value="6">తులా · Libra</option>
+            <option value="7">వృశ్చికం · Scorpio</option>
+            <option value="8">ధనస్సు · Sagittarius</option>
+            <option value="9">మకరం · Capricorn</option>
+            <option value="10">కుంభం · Aquarius</option>
+            <option value="11">మీనం · Pisces</option>
           </select>
         </div>
-      </div>
+      </section>
 
-      <div class="theme-switch-row">
-        <span>చంద్ర కాంతి (Night Mode)</span>
-        <label class="switch">
-          <input type="checkbox" id="theme-toggle">
-          <span class="slider"></span>
-        </label>
-      </div>
+      <!-- Year overview -->
+      <section class="card year-overview-card" data-testid="year-overview-card">
+        <span class="overline">వార్షిక సింహావలోకనం · Year Overview</span>
+        <div class="year-samvatsara">
+          <span class="samvatsara-name" id="year-samvatsara-name" data-testid="year-samvatsara-name">—</span>
+          <span class="samvatsara-caption">నామ సంవత్సరం</span>
+        </div>
+        <div class="year-meta-grid">
+          <div class="year-meta-item">
+            <span class="meta-label">అయనం</span>
+            <span class="meta-value" id="year-ayanam" data-testid="year-ayanam">—</span>
+          </div>
+          <div class="year-meta-item">
+            <span class="meta-label">ఋతువు</span>
+            <span class="meta-value" id="year-ritu" data-testid="year-ritu">—</span>
+          </div>
+          <div class="year-meta-item">
+            <span class="meta-label">మాసం</span>
+            <span class="meta-value" id="year-masa" data-testid="year-masa">—</span>
+          </div>
+          <div class="year-meta-item">
+            <span class="meta-label">పక్షం</span>
+            <span class="meta-value" id="year-paksham" data-testid="year-paksham">—</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Theme toggle -->
+      <section class="card theme-card" data-testid="theme-card">
+        <div class="theme-toggle-row">
+          <div class="theme-toggle-info">
+            <span class="overline">తీము · Theme</span>
+            <span class="theme-name" id="theme-name-display" data-testid="theme-name-display">చంద్ర కాంతి</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="theme-toggle" data-testid="theme-toggle" checked />
+            <span class="switch-slider">
+              <span class="switch-glyph switch-glyph-sun">☀</span>
+              <span class="switch-glyph switch-glyph-moon">☾</span>
+            </span>
+          </label>
+        </div>
+      </section>
     </aside>
 
-    <!-- Column 2: Core Dashboard Engine -->
-    <main class="main-content">
-      
-      <!-- Hero Chronometer & Sun Path Arc -->
-      <section class="hero-card glass-panel">
-        <div class="hero-grid">
+    <!-- ============= CENTER MAIN ============= -->
+    <main class="main-content" data-testid="main-content">
+
+      <!-- Hero clock + date + weather + sun-arc -->
+      <section class="card hero-card" data-testid="hero-card">
+        <div class="hero-row">
           <div class="hero-left">
-            <div id="clock" class="clock-display">00:00:00</div>
-            <div id="date-gregorian" class="date-display">లోడ్ అవుతోంది...</div>
+            <div class="clock-display" id="clock" data-testid="hero-clock">00:00:00</div>
+            <div class="hero-date-block">
+              <span class="hero-date-gregorian" id="date-gregorian" data-testid="hero-date-gregorian">లోడ్ అవుతోంది…</span>
+              <span class="hero-date-telugu" id="date-telugu" data-testid="hero-date-telugu">—</span>
+            </div>
           </div>
-          
+
           <div class="hero-right">
-            <!-- Sun Path Arc Graphic -->
-            <div class="sun-arc-container">
-              <span class="arc-label-left">Sunrise</span>
-              <svg id="sun-path-svg" viewBox="0 0 200 80">
-                <!-- Arc path representing Sun's transit -->
-                <path id="sun-path-line" d="M 10 70 A 90 90 0 0 1 190 70" fill="none" stroke="rgba(255,140,0,0.2)" stroke-width="2" stroke-dasharray="4,4" />
-                <!-- Sun marker along the path -->
-                <circle id="sun-path-marker" cx="10" cy="70" r="6" fill="#FFD700" filter="drop-shadow(0 0 6px #FFA500)" />
+            <div class="sun-arc-wrap" data-testid="sun-arc">
+              <span class="arc-label arc-label-left" id="arc-sunrise">— —</span>
+              <svg id="sun-path-svg" viewBox="0 0 220 100" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                  <linearGradient id="arcGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%"  stop-color="var(--accent-gold)" stop-opacity="0.45"/>
+                    <stop offset="50%" stop-color="var(--accent-primary)" stop-opacity="0.85"/>
+                    <stop offset="100%" stop-color="var(--accent-gold)" stop-opacity="0.45"/>
+                  </linearGradient>
+                </defs>
+                <path id="sun-path-line" d="M 14 86 A 100 100 0 0 1 206 86"
+                      fill="none" stroke="url(#arcGrad)" stroke-width="1.5"
+                      stroke-dasharray="3 5" />
+                <circle id="sun-path-marker" cx="14" cy="86" r="7"
+                        fill="var(--accent-gold)"
+                        filter="drop-shadow(0 0 8px var(--accent-primary))" />
               </svg>
-              <span class="arc-label-right">Sunset</span>
+              <span class="arc-label arc-label-right" id="arc-sunset">— —</span>
+            </div>
+
+            <div class="weather-strip" data-testid="weather-strip">
+              <span class="weather-icon" id="weather-anim">☀</span>
+              <span class="weather-temp" id="weather-temp" data-testid="weather-temp">—</span>
+              <span class="weather-text" id="weather-text" data-testid="weather-text">వాతావరణం లోడ్ అవుతోంది…</span>
             </div>
           </div>
         </div>
-        
-        <!-- Live Weather Widget -->
-        <div class="weather-bar">
-          <div class="weather-meta">
-            <span id="weather-anim" class="weather-icon-symbol">☀️</span>
-            <span id="weather-temp" class="weather-deg">--°C</span>
-            <span id="weather-text" class="weather-desc">వాతావరణం లోడ్ అవుతోంది...</span>
-          </div>
+      </section>
+
+      <!-- Panchangam quad (Tithi · Nakshatram · Yogam · Karanam) -->
+      <section class="card panchang-quad" data-testid="panchang-quad">
+        <header class="card-header">
+          <span class="overline">నేటి పంచాంగం · Today's Panchangam</span>
+        </header>
+        <div class="quad-grid">
+          <article class="quad-cell" data-testid="quad-tithi">
+            <span class="quad-glyph">☼</span>
+            <span class="quad-label">తిథి · Tithi</span>
+            <h3 class="quad-value" id="panchang-tithi">—</h3>
+            <p class="quad-detail" id="panchang-tithi-time">—</p>
+          </article>
+          <article class="quad-cell" data-testid="quad-nakshatra">
+            <span class="quad-glyph">✦</span>
+            <span class="quad-label">నక్షత్రం · Nakshatram</span>
+            <h3 class="quad-value" id="panchang-naks">—</h3>
+            <p class="quad-detail" id="panchang-naks-time">—</p>
+          </article>
+          <article class="quad-cell" data-testid="quad-yoga">
+            <span class="quad-glyph">⟁</span>
+            <span class="quad-label">యోగం · Yogam</span>
+            <h3 class="quad-value" id="panchang-yoga">—</h3>
+            <p class="quad-detail" id="panchang-yoga-time">—</p>
+          </article>
+          <article class="quad-cell" data-testid="quad-karana">
+            <span class="quad-glyph">◐</span>
+            <span class="quad-label">కరణం · Karanam</span>
+            <h3 class="quad-value" id="panchang-karana">—</h3>
+            <p class="quad-detail" id="panchang-karana-time">—</p>
+          </article>
         </div>
       </section>
 
-      <!-- Astronomical Quad (Four Pillars of Panchanga) -->
-      <section class="panchang-grid">
-        <div class="quad-card glass-panel">
-          <div class="card-glow-overlay"></div>
-          <div class="quad-header">
-            <span class="quad-glyph">🕉️</span>
-            <span class="quad-title">తిథి (Tithi)</span>
+      <!-- Muhurthams timeline -->
+      <section class="card timeline-card" data-testid="timeline-card">
+        <header class="card-header">
+          <div>
+            <span class="overline">దిన ముహూర్త కాల పట్టిక</span>
+            <h3 class="card-title">Daily Muhurthams Timeline</h3>
           </div>
-          <h3 id="panchang-tithi" class="quad-value">--</h3>
-          <p id="panchang-tithi-time" class="quad-details">--</p>
-        </div>
+          <div class="legend">
+            <span class="legend-dot legend-auspicious"></span><span class="legend-label">శుభ కాలములు</span>
+            <span class="legend-dot legend-inauspicious"></span><span class="legend-label">వర్జ్య కాలములు</span>
+          </div>
+        </header>
 
-        <div class="quad-card glass-panel">
-          <div class="card-glow-overlay"></div>
-          <div class="quad-header">
-            <span class="quad-glyph">✨</span>
-            <span class="quad-title">నక్షత్రం (Nakshatram)</span>
-          </div>
-          <h3 id="panchang-naks" class="quad-value">--</h3>
-          <p id="panchang-naks-time" class="quad-details">--</p>
-        </div>
-
-        <div class="quad-card glass-panel">
-          <div class="card-glow-overlay"></div>
-          <div class="quad-header">
-            <span class="quad-glyph">🔀</span>
-            <span class="quad-title">యోగం (Yogam)</span>
-          </div>
-          <h3 id="panchang-yoga" class="quad-value">--</h3>
-          <p id="panchang-yoga-time" class="quad-details">--</p>
-        </div>
-
-        <div class="quad-card glass-panel">
-          <div class="card-glow-overlay"></div>
-          <div class="quad-header">
-            <span class="quad-glyph">🔄</span>
-            <span class="quad-title">కరణం (Karanam)</span>
-          </div>
-          <h3 id="panchang-karana" class="quad-value">--</h3>
-          <p id="panchang-karana-time" class="quad-details">--</p>
-        </div>
-      </section>
-
-      <!-- 24-Hour Muhurthams Visual Timeline -->
-      <section class="timeline-card glass-panel">
-        <div class="timeline-header">
-          <h3>దిన ముహూర్త కాల పట్టిక (Daily Muhurthams Timeline)</h3>
-          <div class="legend-row">
-            <span class="legend-item auspicious">● శుభ కాలములు</span>
-            <span class="legend-item inauspicious">● వర్జ్య కాలములు</span>
-          </div>
-        </div>
-        
-        <!-- Timeline track representation -->
-        <div class="timeline-container">
+        <div class="timeline-wrap" data-testid="timeline-wrap">
           <div class="timeline-hours">
-            <span>06 AM</span>
-            <span>10 AM</span>
-            <span>02 PM</span>
-            <span>06 PM</span>
-            <span>10 PM</span>
-            <span>02 AM</span>
-            <span>06 AM</span>
+            <span>06 AM</span><span>10 AM</span><span>02 PM</span>
+            <span>06 PM</span><span>10 PM</span><span>02 AM</span><span>06 AM</span>
           </div>
           <div class="timeline-track">
-            <!-- Background ticks -->
-            <div class="timeline-grid-ticks"></div>
-            <!-- Colored dynamic timing blocks will be appended here by JS -->
-            <div id="timeline-blocks"></div>
-            <!-- Time cursor indicator -->
-            <div id="timeline-cursor" class="timeline-cursor" style="left: 0%;"></div>
+            <div class="timeline-ticks"></div>
+            <div id="timeline-blocks" class="timeline-blocks"></div>
+            <div id="timeline-cursor" class="timeline-cursor" style="left:0%;">
+              <span class="cursor-dot"></span>
+              <span class="cursor-label">ఇప్పుడు</span>
+            </div>
           </div>
         </div>
 
-        <!-- Detail Grid of Exact Timings -->
-        <div class="timing-detail-grid">
-          <div class="timing-detail-box inauspicious">
-            <span>రాహుకాలం:</span>
-            <span id="time-rahu">--</span>
+        <div class="muhurtham-grid">
+          <div class="muhurtham-pill inauspicious" data-testid="muh-rahu">
+            <span class="pill-label">రాహుకాలం</span>
+            <span class="pill-value" id="time-rahu">—</span>
           </div>
-          <div class="timing-detail-box inauspicious">
-            <span>యమగండం:</span>
-            <span id="time-yama">--</span>
+          <div class="muhurtham-pill inauspicious" data-testid="muh-yama">
+            <span class="pill-label">యమగండం</span>
+            <span class="pill-value" id="time-yama">—</span>
           </div>
-          <div class="timing-detail-box inauspicious">
-            <span>దుర్ముహూర్తం:</span>
-            <span id="time-dur">--</span>
+          <div class="muhurtham-pill inauspicious" data-testid="muh-dur">
+            <span class="pill-label">దుర్ముహూర్తం</span>
+            <span class="pill-value" id="time-dur">—</span>
           </div>
-          <div class="timing-detail-box inauspicious">
-            <span>వర్జ్యం:</span>
-            <span id="time-varj">--</span>
+          <div class="muhurtham-pill inauspicious" data-testid="muh-varj">
+            <span class="pill-label">వర్జ్యం</span>
+            <span class="pill-value" id="time-varj">—</span>
           </div>
-          <div class="timing-detail-box auspicious">
-            <span>అమృతకాలం:</span>
-            <span id="time-amrita">--</span>
+          <div class="muhurtham-pill auspicious" data-testid="muh-amrita">
+            <span class="pill-label">అమృతకాలం</span>
+            <span class="pill-value" id="time-amrita">—</span>
           </div>
-          <div class="timing-detail-box auspicious">
-            <span>అభిజిత్ ముహూర్తం:</span>
-            <span id="time-abhijit">--</span>
+          <div class="muhurtham-pill auspicious" data-testid="muh-abhijit">
+            <span class="pill-label">అభిజిత్</span>
+            <span class="pill-value" id="time-abhijit">—</span>
           </div>
         </div>
       </section>
 
-      <!-- Sacred Scroll Vedic Sankalpam Section -->
-      <section class="sankalpam-card glass-panel">
-        <div class="sankalpam-scroll-decor">
-          <div class="decor-line"></div>
-          <h3 class="sankalpam-card-title">దిన సంకల్ప పత్రం (Daily Vedic Sankalpam)</h3>
-          <div class="decor-line"></div>
+      <!-- Sankalpam scroll -->
+      <section class="card sankalpam-card" data-testid="sankalpam-card">
+        <div class="scroll-ornaments">
+          <span class="scroll-divider scroll-divider-left"></span>
+          <span class="scroll-glyph">ఓం</span>
+          <span class="scroll-divider scroll-divider-right"></span>
         </div>
-        <div class="scroll-content">
-          <p id="sankalpam-txt" class="sankalpam-body-text">సంకల్పం గణించబడుతోంది...</p>
+        <header class="sankalpam-header">
+          <span class="overline">దిన సంకల్ప పత్రం</span>
+          <h3 class="card-title">Vedic Sankalpam</h3>
+        </header>
+        <div class="sankalpam-body">
+          <p id="sankalpam-txt" class="sankalpam-text" data-testid="sankalpam-text">సంకల్పం గణించబడుతోంది…</p>
         </div>
-        <button id="copy-sankalpam-btn" class="cyber-btn tiny-btn">సంకల్పమును నకలు చేయి (Copy Text)</button>
-      </section>
-
-      <!-- Monthly Calendar Navigation -->
-      <section class="calendar-card glass-panel">
-        <div class="calendar-nav-bar">
-          <button id="btn-prev-month" class="nav-arrow-btn" aria-label="Previous Month">◀</button>
-          <h2 id="calendar-month-title">నెలసరి పట్టిక</h2>
-          <button id="btn-next-month" class="nav-arrow-btn" aria-label="Next Month">▶</button>
-        </div>
-        <div class="calendar-grid-container">
-          <div class="grid-weekday-header">ఆది</div>
-          <div class="grid-weekday-header">సోమ</div>
-          <div class="grid-weekday-header">మంగళ</div>
-          <div class="grid-weekday-header">బుధ</div>
-          <div class="grid-weekday-header">గురు</div>
-          <div class="grid-weekday-header">శుక్ర</div>
-          <div class="grid-weekday-header">శని</div>
-          <div id="calendar-days-container" style="display: contents;"></div>
+        <div class="sankalpam-actions">
+          <button id="copy-sankalpam-btn" class="btn btn-outline btn-sm" data-testid="copy-sankalpam-btn">
+            <span>సంకల్పము నకలు చేయి</span>
+            <span class="btn-icon" aria-hidden="true">⎘</span>
+          </button>
         </div>
       </section>
 
+      <!-- Monthly calendar -->
+      <section class="card calendar-card" data-testid="monthly-calendar-grid">
+        <header class="calendar-header">
+          <button id="btn-prev-month" class="nav-btn" aria-label="Previous Month" data-testid="prev-month-btn">‹</button>
+          <div class="calendar-title-block">
+            <span class="overline">నెలసరి పంచాంగం · Monthly Calendar</span>
+            <h2 class="calendar-month-title" id="calendar-month-title">—</h2>
+          </div>
+          <button id="btn-next-month" class="nav-btn" aria-label="Next Month" data-testid="next-month-btn">›</button>
+        </header>
+
+        <div class="calendar-grid">
+          <div class="weekday-cell">ఆది</div>
+          <div class="weekday-cell">సోమ</div>
+          <div class="weekday-cell">మంగళ</div>
+          <div class="weekday-cell">బుధ</div>
+          <div class="weekday-cell">గురు</div>
+          <div class="weekday-cell">శుక్ర</div>
+          <div class="weekday-cell">శని</div>
+          <div id="calendar-days-container" class="calendar-days" data-testid="calendar-days-container"></div>
+        </div>
+      </section>
     </main>
 
-    <!-- Column 3: Tabbed Horoscope & Reminders Planner -->
-    <aside class="right-sidebar">
-      
-      <!-- Gochara Horoscope with Category Tabs -->
-      <section class="horoscope-card glass-panel">
-        <div class="horo-header-row">
-          <h3>గోచార రాశి ఫలాలు</h3>
-          <div id="horoscope-rating" class="horo-stars">⭐⭐⭐⭐⭐</div>
+    <!-- ============= RIGHT SIDEBAR ============= -->
+    <aside class="sidebar sidebar-right" data-testid="sidebar-right">
+
+      <!-- Archana suggestion -->
+      <section class="card archana-card" data-testid="archana-card">
+        <header class="card-header tight">
+          <div>
+            <span class="overline">నేటి అర్చన · Today's Archana</span>
+          </div>
+        </header>
+        <div class="archana-body">
+          <h3 class="archana-deity" id="archana-deity" data-testid="archana-deity">—</h3>
+          <p class="archana-deity-latin" id="archana-deity-latin">—</p>
+          <p class="archana-mantra" id="archana-mantra" data-testid="archana-mantra">—</p>
+          <p class="archana-meaning" id="archana-meaning">—</p>
         </div>
-        
-        <!-- Interactive Category Tabs -->
-        <div class="horo-tabs">
-          <button id="btn-horo-health" class="horo-tab-btn active">ఆరోగ్యం</button>
-          <button id="btn-horo-wealth" class="horo-tab-btn">ఆదాయం</button>
-          <button id="btn-horo-career" class="horo-tab-btn">కెరీర్</button>
+        <div class="archana-temple" data-testid="archana-temple">
+          <span class="overline">సమీప క్షేత్రం · Nearest Temple</span>
+          <h4 class="temple-name" id="archana-temple-name">—</h4>
+          <p class="temple-detail" id="archana-temple-detail">—</p>
         </div>
-        
-        <p id="horoscope-txt" class="horo-body-text">రాశి ఫలాలు లోడ్ అవుతున్నాయి...</p>
       </section>
 
-      <!-- Tasks and Event Reminders Planner -->
-      <section class="reminders-card glass-panel">
-        <h3>నేటి శుభకార్యములు / ఈవెంట్లు</h3>
-        
-        <div id="reminders-list" class="reminders-scroller">
-          <p class="no-reminders-msg">నేటికి ఎలాంటి ఈవెంట్లు షెడ్యూల్ చేయబడలేదు.</p>
+      <!-- Daily horoscope -->
+      <section class="card horoscope-card" data-testid="horoscope-card">
+        <header class="card-header tight">
+          <div>
+            <span class="overline">గోచార రాశి ఫలాలు · Daily Horoscope</span>
+          </div>
+          <div class="horo-stars" id="horoscope-rating" data-testid="horoscope-rating">★★★★★</div>
+        </header>
+        <div class="horo-tabs" data-testid="horoscope-tabs">
+          <button id="btn-horo-health" class="horo-tab-btn active" data-testid="horo-tab-health">ఆరోగ్యం</button>
+          <button id="btn-horo-wealth" class="horo-tab-btn" data-testid="horo-tab-wealth">ఆదాయం</button>
+          <button id="btn-horo-career" class="horo-tab-btn" data-testid="horo-tab-career">కెరీర్</button>
+        </div>
+        <p id="horoscope-txt" class="horo-text" data-testid="horoscope-text">రాశి ఫలాలు లోడ్ అవుతున్నాయి…</p>
+      </section>
+
+      <!-- Upcoming festivals -->
+      <section class="card upcoming-festivals-card" data-testid="upcoming-festivals-card">
+        <header class="card-header tight">
+          <div>
+            <span class="overline">రాబోయే పండుగలు · Upcoming Festivals</span>
+          </div>
+        </header>
+        <ul class="upcoming-list" id="upcoming-festivals-list" data-testid="upcoming-festivals-list">
+          <li class="upcoming-placeholder">లోడ్ అవుతోంది…</li>
+        </ul>
+      </section>
+
+      <!-- Reminders -->
+      <section class="card reminders-card" data-testid="reminders-card">
+        <header class="card-header tight">
+          <div>
+            <span class="overline">నేటి ఈవెంట్లు · Today's Events</span>
+          </div>
+        </header>
+        <div id="reminders-list" class="reminders-list" data-testid="reminders-list">
+          <p class="no-reminders">నేటికి ఈవెంట్లు లేవు.</p>
         </div>
 
-        <!-- Add Custom Reminders Form -->
-        <form id="reminder-form" class="cyber-form-panel">
-          <input type="text" id="rem-title" placeholder="ఈవెంట్ పేరు (Event Title)" required>
-          <input type="text" id="rem-desc" placeholder="వివరణ (Description)">
-          
-          <div class="form-row">
-            <select id="rem-type">
+        <form id="reminder-form" class="reminder-form" data-testid="reminder-form">
+          <input type="text" id="rem-title" class="input" placeholder="ఈవెంట్ పేరు" data-testid="reminder-title-input" required />
+          <input type="text" id="rem-desc" class="input" placeholder="వివరణ (ఐచ్ఛికం)" data-testid="reminder-desc-input" />
+
+          <div class="form-grid-2">
+            <select id="rem-type" class="select-input" data-testid="reminder-type-select">
               <option value="solar">తేదీ ప్రకారం (Gregorian)</option>
-              <option value="lunar">తిథి ప్రకారం (Telugu Lunar)</option>
+              <option value="lunar">తిథి ప్రకారం (Lunar)</option>
             </select>
+            <input type="date" id="rem-date" class="input" data-testid="reminder-date-input" required />
           </div>
-          
-          <input type="date" id="rem-date" required>
-          
-          <div id="lunar-rem-inputs" style="display: none; flex-direction: column; gap: 8px;">
-            <select id="rem-lunar-month">
-              <option value="0">చైత్రం (Chaitram)</option>
-              <option value="1">వైశాఖం (Vaishakham)</option>
-              <option value="2">జ్యేష్టం (Jyeshtham)</option>
-              <option value="3">ఆషాఢం (Ashadham)</option>
-              <option value="4">శ్రావణం (Shravanam)</option>
-              <option value="5">భాద్రపదం (Bhadrapadam)</option>
-              <option value="6">ఆశ్వయుజం (Ashwayujam)</option>
-              <option value="7">కార్తీకం (Karthikam)</option>
-              <option value="8">మార్గశిరం (Margashiram)</option>
-              <option value="9">పుష్యం (Pushyam)</option>
-              <option value="10">మాఘం (Magham)</option>
-              <option value="11">ఫాల్గుణం (Phalgunam)</option>
+
+          <div id="lunar-rem-inputs" class="form-grid-2" style="display:none;">
+            <select id="rem-lunar-month" class="select-input" data-testid="reminder-lunar-month">
+              <option value="0">చైత్రం</option><option value="1">వైశాఖం</option><option value="2">జ్యేష్ఠం</option>
+              <option value="3">ఆషాఢం</option><option value="4">శ్రావణం</option><option value="5">భాద్రపదం</option>
+              <option value="6">ఆశ్వయుజం</option><option value="7">కార్తీకం</option><option value="8">మార్గశిరం</option>
+              <option value="9">పుష్యం</option><option value="10">మాఘం</option><option value="11">ఫాల్గుణం</option>
             </select>
-            <select id="rem-lunar-tithi">
-              <option value="0">శుక్ల పాడ్యమి (1)</option>
-              <option value="1">శుక్ల విదియ (2)</option>
-              <option value="2">శుక్ల తదియ (3)</option>
-              <option value="3">శుక్ల చవితి (4)</option>
-              <option value="4">శుక్ల పంచమి (5)</option>
-              <option value="5">శుక్ల షష్ఠి (6)</option>
-              <option value="6">శుక్ల సప్తమి (7)</option>
-              <option value="7">శుక్ల అష్టమి (8)</option>
-              <option value="8">శుక్ల నవమి (9)</option>
-              <option value="9">శుక్ల దశమి (10)</option>
-              <option value="10">శుక్ల ఏకాదశి (11)</option>
-              <option value="11">శుక్ల ద్వాదశి (12)</option>
-              <option value="12">శుక్ల త్రయోదశి (13)</option>
-              <option value="13">శుక్ల చతుర్దశి (14)</option>
-              <option value="14">పూర్ణిమ (15)</option>
-              <option value="15">కృష్ణ పాడ్యమి (16)</option>
-              <option value="16">కృష్ణ విదియ (17)</option>
-              <option value="17">కృష్ణ తదియ (18)</option>
-              <option value="18">కృష్ణ చవితి (19)</option>
-              <option value="19">కృష్ణ పంచమి (20)</option>
-              <option value="20">కృష్ణ షష్ఠి (21)</option>
-              <option value="21">కృష్ణ సప్తమి (22)</option>
-              <option value="22">కృష్ణ అష్టమి (23)</option>
-              <option value="23">కృష్ణ నవమి (24)</option>
-              <option value="24">కృష్ణ దశమి (25)</option>
-              <option value="25">కృష్ణ ఏకాదశి (26)</option>
-              <option value="26">కృష్ణ ద్వాదశి (27)</option>
-              <option value="27">కృష్ణ త్రయోదశి (28)</option>
-              <option value="28">కృష్ణ చతుర్దశి (29)</option>
-              <option value="29">అమావాస్య (30)</option>
+            <select id="rem-lunar-tithi" class="select-input" data-testid="reminder-lunar-tithi">
+              <option value="0">శు. పాడ్యమి</option><option value="1">శు. విదియ</option><option value="2">శు. తదియ</option>
+              <option value="3">శు. చవితి</option><option value="4">శు. పంచమి</option><option value="5">శు. షష్ఠి</option>
+              <option value="6">శు. సప్తమి</option><option value="7">శు. అష్టమి</option><option value="8">శు. నవమి</option>
+              <option value="9">శు. దశమి</option><option value="10">శు. ఏకాదశి</option><option value="11">శు. ద్వాదశి</option>
+              <option value="12">శు. త్రయోదశి</option><option value="13">శు. చతుర్దశి</option><option value="14">పూర్ణిమ</option>
+              <option value="15">కృ. పాడ్యమి</option><option value="16">కృ. విదియ</option><option value="17">కృ. తదియ</option>
+              <option value="18">కృ. చవితి</option><option value="19">కృ. పంచమి</option><option value="20">కృ. షష్ఠి</option>
+              <option value="21">కృ. సప్తమి</option><option value="22">కృ. అష్టమి</option><option value="23">కృ. నవమి</option>
+              <option value="24">కృ. దశమి</option><option value="25">కృ. ఏకాదశి</option><option value="26">కృ. ద్వాదశి</option>
+              <option value="27">కృ. త్రయోదశి</option><option value="28">కృ. చతుర్దశి</option><option value="29">అమావాస్య</option>
             </select>
           </div>
 
-          <button type="submit" class="cyber-btn">ఈవెంట్‌ను జోడించు (Add Event)</button>
+          <button type="submit" class="btn btn-primary btn-block" data-testid="add-reminder-btn">
+            ఈవెంట్ జోడించు
+          </button>
         </form>
       </section>
-
     </aside>
-
   </div>
 
-  <!-- Settings Dialog Overlay -->
-  <div id="settings-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="settings-title">
-    <div class="modal-content glass-panel">
-      <div class="modal-header">
-        <h3 id="settings-title" class="modal-title">జన్మ వివరముల సవరణ</h3>
-        <button id="btn-close-settings" class="modal-close-btn">&times;</button>
-      </div>
-      
-      <form id="settings-form" class="modal-form-grid">
-        <div class="input-group">
-          <label for="set-name">యజమాని పేరు (Name)</label>
-          <input type="text" id="set-name" value="యజమాని" required>
+  <!-- =================================================== -->
+  <!--  SETTINGS MODAL                                      -->
+  <!-- =================================================== -->
+  <div id="settings-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="settings-title" data-testid="settings-modal">
+    <div class="modal-content card">
+      <header class="modal-header">
+        <div>
+          <span class="overline">జన్మ వివరములు</span>
+          <h3 class="modal-title" id="settings-title">Birth & Location Details</h3>
         </div>
-
-        <div class="input-group">
-          <label for="set-dob">పుట్టిన తేదీ (Birth Date)</label>
-          <input type="date" id="set-dob" required>
+        <button id="btn-close-settings" class="modal-close" aria-label="Close" data-testid="close-settings-btn">×</button>
+      </header>
+      <form id="settings-form" class="modal-form" data-testid="settings-form">
+        <label class="form-field">
+          <span class="form-label">యజమాని పేరు · Name</span>
+          <input type="text" id="set-name" class="input" value="యజమాని" required data-testid="set-name-input" />
+        </label>
+        <div class="form-grid-2">
+          <label class="form-field">
+            <span class="form-label">పుట్టిన తేదీ · DOB</span>
+            <input type="date" id="set-dob" class="input" required data-testid="set-dob-input" />
+          </label>
+          <label class="form-field">
+            <span class="form-label">పుట్టిన సమయం · Time</span>
+            <input type="time" id="set-tob" class="input" value="12:00" required data-testid="set-tob-input" />
+          </label>
         </div>
-
-        <div class="input-group">
-          <label for="set-tob">పుట్టిన సమయం (Birth Time)</label>
-          <input type="time" id="set-tob" value="12:00" required>
+        <div class="form-grid-2">
+          <label class="form-field">
+            <span class="form-label">అక్షాంశం · Lat</span>
+            <input type="number" id="set-lat" class="input" step="any" value="17.3850" required data-testid="set-lat-input" />
+          </label>
+          <label class="form-field">
+            <span class="form-label">రేఖాంశం · Lng</span>
+            <input type="number" id="set-lng" class="input" step="any" value="78.4867" required data-testid="set-lng-input" />
+          </label>
         </div>
-
-        <div class="input-coord-row">
-          <div class="input-group">
-            <label for="set-lat">అక్షాంశం (Latitude)</label>
-            <input type="number" id="set-lat" step="any" value="17.3850" required>
-          </div>
-          <div class="input-group">
-            <label for="set-lng">రేఖాంశం (Longitude)</label>
-            <input type="number" id="set-lng" step="any" value="78.4867" required>
-          </div>
-        </div>
-
-        <button type="submit" class="cyber-btn" style="margin-top: 10px;">వివరములు భద్రపరుచు (Save Details)</button>
+        <button type="submit" class="btn btn-primary btn-block" data-testid="save-settings-btn">
+          వివరములు భద్రపరుచు
+        </button>
       </form>
     </div>
   </div>
 
-  <!-- Mock Chrome Extension APIs if running in standard browser tab -->
+  <!-- chrome.storage shim when running outside an extension (preview mode) -->
   <script>
     if (typeof chrome === 'undefined' || !chrome.storage || !chrome.storage.local) {
       window.chrome = window.chrome || {};
       window.chrome.storage = window.chrome.storage || {};
       window.chrome.storage.local = {
-        get: function (keys, callback) {
-          const result = {};
-          const keysArray = Array.isArray(keys) ? keys : [keys];
-          keysArray.forEach(key => {
-            try {
-              const val = localStorage.getItem('chrome_storage_' + key);
-              if (val !== null) {
-                result[key] = JSON.parse(val);
-              }
-            } catch (e) {
-              console.error("Error loading key " + key + " from localStorage:", e);
-            }
+        get(keys, cb) {
+          const out = {};
+          (Array.isArray(keys) ? keys : [keys]).forEach((k) => {
+            try { const v = localStorage.getItem('cs_' + k); if (v !== null) out[k] = JSON.parse(v); }
+            catch (e) { /* noop */ }
           });
-          if (callback) setTimeout(() => callback(result), 0);
+          if (cb) setTimeout(() => cb(out), 0);
         },
-        set: function (items, callback) {
-          Object.keys(items).forEach(key => {
-            try {
-              localStorage.setItem('chrome_storage_' + key, JSON.stringify(items[key]));
-            } catch (e) {
-              console.error("Error saving key " + key + " to localStorage:", e);
-            }
+        set(items, cb) {
+          Object.keys(items).forEach((k) => {
+            try { localStorage.setItem('cs_' + k, JSON.stringify(items[k])); }
+            catch (e) { /* noop */ }
           });
-          if (callback) setTimeout(callback, 0);
-        }
+          if (cb) setTimeout(cb, 0);
+        },
       };
     }
   </script>
 
-  <!-- Vendor & Core Scripts -->
   <script src="lib/astronomy.js"></script>
+  <script src="config.js"></script>
   <script src="panchang.js"></script>
   <script src="festivals.js"></script>
   <script src="sankalpam.js"></script>
   <script src="horoscope.js"></script>
+  <script src="archana.js"></script>
   <script src="reminders.js"></script>
   <script src="newtab.js"></script>
 </body>

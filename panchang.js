@@ -214,16 +214,17 @@
     const observer = new Astronomy.Observer(latitude, longitude, 0);
 
     // 1. Sunrise / Sunset / Midday
-    // Search around 12:00 PM local time of that day to prevent crossing boundaries
-    const midDayTime = new Date(localTime.getFullYear(), localTime.getMonth(), localTime.getDate(), 12, 0, 0);
-    const midDayAstro = Astronomy.MakeTime(midDayTime);
-    
+    // Search the full local day forward from start-of-day. Forward search
+    // with limitDays=1 is robust across astronomy-engine versions.
+    const dayStart = new Date(localTime.getFullYear(), localTime.getMonth(), localTime.getDate(), 0, 0, 0);
+    const dayStartAstro = Astronomy.MakeTime(dayStart);
+
     let sunrise = null;
     let sunset = null;
-    
-    const riseResult = Astronomy.SearchRiseSet(Astronomy.Body.Sun, observer, 1, midDayAstro, -1.0); // Search backwards for rise
-    const setResult = Astronomy.SearchRiseSet(Astronomy.Body.Sun, observer, -1, midDayAstro, 1.0);  // Search forwards for set
-    
+
+    const riseResult = Astronomy.SearchRiseSet(Astronomy.Body.Sun, observer, 1, dayStartAstro, 1.0);
+    const setResult  = Astronomy.SearchRiseSet(Astronomy.Body.Sun, observer, -1, dayStartAstro, 1.0);
+
     if (riseResult) sunrise = riseResult.date;
     if (setResult) sunset = setResult.date;
 

@@ -1666,6 +1666,14 @@ body {
   text-transform: uppercase;
   color: var(--t-muted);
 }
+.form-label .opt {
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--t-muted);
+  opacity: 0.7;
+}
 
 /* ═════════════════════════════════════════════════════════════════════ */
 /* ───────── Responsive (compress at smaller widths) ───────── */

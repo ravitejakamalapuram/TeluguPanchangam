@@ -1,0 +1,1032 @@
+/**
+ * newtab.css
+ * High-Fidelity Telugu Cyberpunk / Neo-Vedic Dashboard Styling.
+ * Crafted from scratch with professional typographical scale, visual timelines, and glassmorphic layout grids.
+ */
+
+/* 1. Global Reset & Typography System */
+:root {
+  --font-family: 'Outfit', 'Inter', 'Noto Sans Telugu', sans-serif;
+  
+  /* Saffron-Surya Cyber theme (Default) */
+  --bg-gradient: transparent;
+  --panel-bg: rgba(14, 8, 8, 0.72);
+  --panel-border: rgba(255, 110, 0, 0.16); /* Thin glowing Saffron border */
+  --text-primary: #FFF0EB;
+  --text-secondary: #FFA380;
+  --accent-primary: #FF5E00; /* Neon Orange-Vermillion */
+  --accent-secondary: #FFD700; /* Radiant Cyber Gold */
+  --accent-hover: #FF8533;
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 15px rgba(255, 110, 0, 0.08);
+  
+  --color-auspicious: #10B981; /* Premium Emerald */
+  --color-inauspicious: #EF4444; /* Premium Crimson */
+  --blur: blur(20px) saturate(190%);
+  --border-radius: 16px;
+}
+
+[data-theme="dark"] {
+  /* Chandra-Obsidian Cyber theme */
+  --panel-bg: rgba(6, 10, 14, 0.76);
+  --panel-border: rgba(0, 229, 255, 0.18); /* Neon Cyan */
+  --text-primary: #E0F7FA;
+  --text-secondary: #80DEEA;
+  --accent-primary: #00E5FF; /* Cyan */
+  --accent-secondary: #FF007F; /* Magenta */
+  --accent-hover: #80F2FF;
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 229, 255, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: #040202;
+  color: var(--text-primary);
+  min-height: 100vh;
+  padding: 24px;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.02);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
+}
+
+/* 2. Dynamic Ambient Sky Backdrop Layer */
+.sky-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -10;
+  overflow: hidden;
+  transition: background 3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sky-backdrop.sky-day {
+  background: linear-gradient(180deg, #180802 0%, #080200 100%);
+}
+.sky-backdrop.sky-sunset {
+  background: linear-gradient(180deg, #2A0101 0%, #100018 100%);
+}
+.sky-backdrop.sky-sunrise {
+  background: linear-gradient(180deg, #14001E 0%, #2A0902 100%);
+}
+.sky-backdrop.sky-night {
+  background: linear-gradient(180deg, #030102 0%, #08030B 100%);
+}
+
+#stars-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+}
+.sky-night #stars-canvas, .sky-sunset #stars-canvas, .sky-sunrise #stars-canvas {
+  opacity: 0.85;
+}
+
+/* Clouds and Rain */
+#clouds-container, #rain-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.cloud-particle {
+  position: absolute;
+  background: radial-gradient(circle, rgba(255, 110, 0, 0.1) 0%, rgba(10, 3, 3, 0.5) 80%);
+  border: 1px solid rgba(255, 110, 0, 0.08);
+  backdrop-filter: blur(8px);
+  border-radius: 60px;
+  animation: float-cloud 45s linear infinite;
+}
+[data-theme="dark"] .cloud-particle {
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.08) 0%, rgba(5, 8, 12, 0.55) 80%);
+  border: 1px solid rgba(0, 229, 255, 0.08);
+}
+@keyframes float-cloud {
+  0% { transform: translateX(-200px); }
+  100% { transform: translateX(100vw); }
+}
+
+/* Celestial container */
+#celestial-container {
+  position: absolute;
+  top: 6%;
+  right: 8%;
+  width: 180px;
+  height: 180px;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sun-body {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #FFFFF5 0%, #FFB700 60%, #FF3C00 100%);
+  box-shadow: 0 0 40px #FFA500, 0 0 80px #FF3C00;
+  animation: pulse-sun 4s infinite ease-in-out;
+}
+.sun-flare {
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  right: -12px;
+  bottom: -12px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 165, 0, 0.35);
+  animation: rotate-flare 30s infinite linear;
+}
+@keyframes rotate-flare {
+  to { transform: rotate(360deg); }
+}
+@keyframes pulse-sun {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+#moon-canvas {
+  filter: drop-shadow(0 0 25px rgba(255, 240, 210, 0.45));
+}
+
+.sky-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at top right, rgba(255, 110, 0, 0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+[data-theme="dark"] .sky-glow {
+  background: radial-gradient(circle at top right, rgba(0, 229, 255, 0.04) 0%, transparent 60%);
+}
+
+/* 3. Professional Page Grid Layout */
+.dashboard {
+  display: grid;
+  grid-template-columns: 290px 1fr 340px;
+  gap: 24px;
+  max-width: 1540px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 1200px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 4. Sleek Glassmorphism Panels */
+.glass-panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border-radius: var(--border-radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel:hover {
+  border-color: rgba(255, 110, 0, 0.35);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 110, 0, 0.12);
+  transform: translateY(-2px);
+}
+[data-theme="dark"] .glass-panel:hover {
+  border-color: rgba(0, 229, 255, 0.4);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 229, 255, 0.15);
+}
+
+/* Corner bracket details */
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-top: 2px solid var(--accent-secondary);
+  border-left: 2px solid var(--accent-secondary);
+  pointer-events: none;
+}
+.glass-panel::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 6px;
+  height: 6px;
+  border-bottom: 2px solid var(--accent-secondary);
+  border-right: 2px solid var(--accent-secondary);
+  pointer-events: none;
+}
+
+/* 5. Sidebar Navigation (Left Panel) */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.profile-card {
+  text-align: center;
+}
+.avatar-ring {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  padding: 4px;
+  background: linear-gradient(135deg, var(--accent-secondary) 0%, var(--accent-primary) 100%);
+  margin: 0 auto 16px;
+  box-shadow: 0 0 15px rgba(255, 110, 0, 0.3);
+  animation: breathing-glow 4s infinite ease-in-out;
+}
+@keyframes breathing-glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(255, 110, 0, 0.3); }
+  50% { box-shadow: 0 0 25px rgba(255, 110, 0, 0.5); }
+}
+.profile-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #0d0606;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+}
+#profile-name {
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: 0.5px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+#profile-location {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+/* Custom Controls */
+.cyber-btn {
+  background: linear-gradient(90deg, var(--accent-primary) 0%, #D44200 100%);
+  color: #fff;
+  border: none;
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: 0 4px 15px rgba(255, 94, 0, 0.2);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.cyber-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(255, 94, 0, 0.35), 0 0 10px var(--accent-secondary);
+  border-color: var(--accent-secondary);
+}
+.cyber-btn.small-btn {
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  width: auto;
+  margin: 0 auto;
+}
+.cyber-btn.tiny-btn {
+  padding: 6px 12px;
+  font-size: 0.7rem;
+  width: auto;
+  border-radius: 6px;
+}
+
+.rasi-selector-card label {
+  display: block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.select-wrapper {
+  position: relative;
+}
+.select-wrapper::after {
+  content: '▼';
+  font-size: 0.65rem;
+  color: var(--accent-primary);
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.rasi-selector-card select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--panel-border);
+  background: rgba(0,0,0,0.4);
+  color: var(--text-primary);
+  outline: none;
+  font-weight: 600;
+  appearance: none;
+  cursor: pointer;
+}
+.rasi-selector-card select option {
+  background: #120808;
+  color: #fff;
+}
+
+.theme-switch-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+  padding-top: 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 22px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255,255,255,0.06);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  transition: .4s;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--accent-secondary);
+  border-radius: 50%;
+  transition: .4s;
+}
+input:checked + .slider {
+  background-color: var(--accent-primary);
+}
+input:checked + .slider:before {
+  transform: translateX(26px);
+  background-color: #fff;
+}
+
+/* 6. Center Column Layout */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Hero Clock Card */
+.hero-card {
+  background: linear-gradient(135deg, rgba(255, 94, 0, 0.08) 0%, rgba(0, 0, 0, 0.5) 100%);
+  border: 1px solid var(--panel-border);
+}
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 16px;
+}
+@media (max-width: 600px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.clock-display {
+  font-size: 3.6rem;
+  font-weight: 800;
+  color: var(--accent-secondary);
+  text-shadow: 0 0 15px var(--accent-secondary), 0 0 30px var(--accent-primary);
+  letter-spacing: 1px;
+}
+.date-display {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: -4px;
+}
+
+/* Sun Path SVG Arc */
+.sun-arc-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+#sun-path-svg {
+  width: 100%;
+  max-width: 180px;
+  height: auto;
+  overflow: visible;
+}
+.arc-label-left, .arc-label-right {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+}
+
+/* Weather Bar */
+.weather-bar {
+  margin-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 12px;
+}
+.weather-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.weather-icon-symbol {
+  font-size: 1.4rem;
+}
+.weather-deg {
+  font-size: 1.05rem;
+  color: var(--text-primary);
+}
+
+/* 7. Astronomical Quad Cards */
+.panchang-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+@media (max-width: 600px) {
+  .panchang-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.quad-card {
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(14, 6, 6, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 120px;
+}
+.quad-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.quad-glyph {
+  color: var(--accent-secondary);
+  font-size: 1rem;
+}
+.quad-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+}
+.quad-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.quad-details {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* 8. 24-Hour Visual Timeline */
+.timeline-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 10px;
+}
+.timeline-header h3 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.legend-row {
+  display: flex;
+  gap: 12px;
+}
+.legend-item {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.legend-item.auspicious { color: var(--color-auspicious); }
+.legend-item.inauspicious { color: var(--color-inauspicious); }
+
+.timeline-container {
+  position: relative;
+  padding: 10px 0;
+  margin: 10px 0;
+}
+.timeline-hours {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+.timeline-track {
+  height: 14px;
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 7px;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: visible;
+}
+.timeline-grid-ticks {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 16.666% 100%; /* divide into 6 columns */
+}
+.timeline-block {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  border-radius: 4px;
+  opacity: 0.85;
+}
+.timeline-block.auspicious {
+  background: linear-gradient(180deg, #10B981 0%, #059669 100%);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+.timeline-block.inauspicious {
+  background: linear-gradient(180deg, #EF4444 0%, #DC2626 100%);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+}
+.timeline-cursor {
+  position: absolute;
+  width: 2px;
+  height: 22px;
+  top: -4px;
+  background: var(--accent-secondary);
+  box-shadow: 0 0 8px var(--accent-secondary);
+  z-index: 10;
+}
+.timeline-cursor::before {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  top: -2px;
+  left: -2px;
+  box-shadow: 0 0 6px var(--accent-secondary);
+}
+
+.timing-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+@media (max-width: 600px) {
+  .timing-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.timing-detail-box {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: rgba(0,0,0,0.2);
+}
+.timing-detail-box.auspicious {
+  border-left: 3px solid var(--color-auspicious);
+  color: var(--color-auspicious);
+}
+.timing-detail-box.inauspicious {
+  border-left: 3px solid var(--color-inauspicious);
+  color: var(--color-inauspicious);
+}
+
+/* 9. Sacred Scroll Parchment */
+.sankalpam-card {
+  text-align: center;
+}
+.sankalpam-scroll-decor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.decor-line {
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, transparent, var(--panel-border), transparent);
+}
+.sankalpam-card-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--accent-secondary);
+  text-transform: uppercase;
+}
+.scroll-content {
+  background: rgba(25, 10, 5, 0.35);
+  border: 1px solid rgba(255, 106, 0, 0.08);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 14px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.sankalpam-body-text {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+  font-style: italic;
+  text-align: left;
+}
+
+/* 10. Monthly Calendar */
+.calendar-nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+#calendar-month-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--accent-secondary);
+  text-transform: uppercase;
+}
+.nav-arrow-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.nav-arrow-btn:hover {
+  background: var(--accent-primary);
+  color: #fff;
+  border-color: var(--accent-secondary);
+}
+
+.calendar-grid-container {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+.grid-weekday-header {
+  font-weight: 800;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: center;
+  padding-bottom: 8px;
+}
+.calendar-day {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  aspect-ratio: 1.25;
+  border-radius: 10px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.calendar-day:hover {
+  background: rgba(255, 110, 0, 0.1);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 10px rgba(255, 110, 0, 0.2);
+  transform: scale(1.03);
+}
+[data-theme="dark"] .calendar-day:hover {
+  background: rgba(0, 229, 255, 0.08);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+}
+.calendar-day.today {
+  border: 2px solid var(--accent-primary);
+  box-shadow: 0 0 15px var(--accent-primary);
+  background: rgba(255, 110, 0, 0.05);
+}
+.calendar-day.other-month {
+  opacity: 0.25;
+}
+.day-number {
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+.day-tithi {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.day-festivals {
+  font-size: 0.6rem;
+  background: var(--accent-primary);
+  color: #fff;
+  border-radius: 3px;
+  padding: 1px 3px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 11. Right Column Sidebar */
+.right-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.horo-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+.horo-stars {
+  color: var(--accent-secondary);
+  font-size: 0.85rem;
+}
+
+/* Horoscope Category Tabs */
+.horo-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 3px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.horo-tab-btn {
+  flex: 1;
+  padding: 6px 10px;
+  border: none;
+  background: none;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.horo-tab-btn.active {
+  background: var(--accent-primary);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(255, 94, 0, 0.2);
+}
+
+.horo-body-text {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 2px solid var(--accent-secondary);
+  min-height: 120px;
+}
+
+.reminders-scroller {
+  max-height: 240px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.reminder-item {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 4px solid var(--accent-primary);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.reminder-details h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.reminder-details p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+.reminder-delete {
+  background: none;
+  border: none;
+  color: var(--color-inauspicious);
+  cursor: pointer;
+  font-size: 1rem;
+}
+.no-reminders-msg {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 20px 0;
+}
+
+.cyber-form-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+}
+.cyber-form-panel input, .cyber-form-panel select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--text-primary);
+  outline: none;
+  font-family: var(--font-family);
+  font-weight: 600;
+}
+
+/* 12. Warnings and Overlays */
+.eclipse-notification {
+  grid-column: span 3;
+  background: linear-gradient(90deg, #1b0700 0%, #300000 100%);
+  border: 2px solid var(--accent-secondary);
+  color: #FFA500;
+  padding: 14px 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 0 20px rgba(255, 34, 0, 0.25);
+  animation: pulse-eclipse 2s infinite alternate;
+}
+@keyframes pulse-eclipse {
+  from { border-color: rgba(255, 165, 0, 0.4); }
+  to { border-color: rgba(255, 34, 0, 0.9); }
+}
+.eclipse-avatar-icon { font-size: 1.8rem; }
+
+.birthday-card-overlay {
+  text-align: center;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 94, 0, 0.1) 100%);
+  border: 2px solid var(--accent-secondary);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  margin-bottom: 20px;
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  max-width: 440px;
+  width: 90%;
+  padding: 24px;
+}
+.modal-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--accent-secondary);
+}
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+.modal-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+}
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.input-group label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.modal-form-grid input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(0,0,0,0.45);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  font-weight: 600;
+}
+.input-coord-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}

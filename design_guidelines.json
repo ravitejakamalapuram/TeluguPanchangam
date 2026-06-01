@@ -1,0 +1,161 @@
+{
+  "project_identity": {
+    "name": "Neo-Telugu Calendar Extension",
+    "theme_archetype": "Luxury / Neo-Telugu Cultural Fusion",
+    "core_concept": "A cinematic, weather-reactive chrome new tab dashboard that blends ancient Telugu astrological precision (Panchangam) with high-end, glass-morphic modern UI.",
+    "vibe": "Sacred, precise, atmospheric, premium. No 'AI slop' gradients or generic tech templates.",
+    "target_platform": "Chrome Extension New Tab (1920x1080 desktop primary, static HTML/CSS/Vanilla JS)"
+  },
+  "typography": {
+    "imports": [
+      "@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Noto+Sans+Telugu:wght@300;400;500;600;700&display=swap');"
+    ],
+    "font_families": {
+      "display": "'Cormorant Garamond', serif",
+      "telugu": "'Noto Sans Telugu', sans-serif",
+      "ui": "'Cormorant Garamond', serif"
+    },
+    "scale": {
+      "h1_hero_clock": "clamp(4rem, 8vw, 7rem)",
+      "h2_section": "clamp(1.5rem, 2.5vw, 2.5rem)",
+      "h3_card": "1.25rem",
+      "body_large": "1.125rem",
+      "body_base": "1rem",
+      "caption_small": "0.875rem",
+      "overline_tiny": "0.75rem"
+    },
+    "rules": {
+      "headings": "Left-aligned, tracking-tighter (-0.02em) for large text. Use font-weight 300 (Light) for massive clocks, 600 (SemiBold) for section titles.",
+      "telugu_text": "Always use Noto Sans Telugu. Increase line-height to 1.6 to accommodate complex script rendering. Never italicize Telugu glyphs.",
+      "overlines": "Uppercase, wide tracking (0.2em), small size. Used for Tithi/Yogam labels."
+    }
+  },
+  "color_system": {
+    "mode_day_saffron_surya": {
+      "background_base": "#FDFBF7",
+      "glass_surface": "rgba(255, 255, 255, 0.65)",
+      "glass_border": "rgba(218, 165, 32, 0.3)",
+      "text_primary": "#2A1B0A",
+      "text_secondary": "#5C4033",
+      "accent_primary": "#E65100",
+      "accent_gold": "#DAA520",
+      "accent_auspicious": "#2E7D32",
+      "accent_inauspicious": "#C62828"
+    },
+    "mode_night_chandra_obsidian": {
+      "background_base": "#060515",
+      "glass_surface": "rgba(11, 10, 46, 0.5)",
+      "glass_border": "rgba(255, 255, 255, 0.08)",
+      "text_primary": "#FDFBF7",
+      "text_secondary": "#AFAEB9",
+      "accent_primary": "#FF9E80",
+      "accent_gold": "#FFD54F",
+      "accent_auspicious": "#69F0AE",
+      "accent_inauspicious": "#FF5252",
+      "accent_neon_cyan": "#00E5FF"
+    },
+    "shadows": {
+      "glass_ambient": "0 8px 32px 0 rgba(0, 0, 0, 0.15)",
+      "card_hover": "0 12px 48px 0 rgba(230, 81, 0, 0.2)"
+    }
+  },
+  "ambient_weather_system": {
+    "concept": "The `<body/>` background is a live CSS/Canvas representation of outside weather + time of day. Cards sit on top in glassmorphism.",
+    "states": {
+      "sunny_morning": "Soft saffron/peach radial gradient. CSS sun-flare overlay.",
+      "clear_night": "Deep indigo to obsidian linear gradient. Animated CSS box-shadow starfield. Moon phase matched to actual Tithi.",
+      "cloudy": "Slow-drifting semi-transparent white/grey CSS blobs with blur filters.",
+      "rainy": "Dark moody slate gradient. Slanted CSS line animations falling continuously.",
+      "eclipse_active": "Surreal crimson/black backdrop glow overlaying the standard state."
+    },
+    "transitions": "State changes must use a 3s ease-in-out crossfade to avoid jarring flashes."
+  },
+  "layout_and_spacing": {
+    "container": "display: grid; grid-template-columns: 280px 1fr 340px; gap: 2rem; padding: 2rem; height: 100vh; max-width: 1920px; margin: 0 auto; box-sizing: border-box;",
+    "mobile_stack": "@media (max-width: 1024px) { grid-template-columns: 1fr; height: auto; padding: 1rem; }",
+    "card_padding": "1.5rem",
+    "border_radius": "16px (1rem)",
+    "glass_filter": "backdrop-filter: blur(20px) saturate(120%); -webkit-backdrop-filter: blur(20px) saturate(120%);"
+  },
+  "components": {
+    "hero_dashboard": {
+      "description": "Massive cinematic clock and dynamic date. Sun-path arc tracks current time.",
+      "layout": "Flex column. Asymmetric left-align.",
+      "elements": [
+        "Live clock (HH:MM:SS) in Cormorant Garamond Light",
+        "Telugu Date String (Samvatsara, Masa, Tithi)",
+        "Weather Widget with minimalist SVG icon",
+        "Sun/Moon Path Arc: SVG curved dashed line with a glowing dot positioned via JS based on time."
+      ],
+      "data_testid": "hero-dashboard-card"
+    },
+    "panchangam_quad": {
+      "description": "Bento-style 2x2 grid inside a single card displaying Tithi, Nakshatram, Yogam, Karanam.",
+      "layout": "CSS Grid 2x2. gap: 1rem. 1px solid inner borders separating quadrants.",
+      "typography": "Overline (English label) + Body Large (Telugu Value) + Caption (End time).",
+      "data_testid": "panchangam-quad"
+    },
+    "timeline_auspicious": {
+      "description": "24-hour horizontal bar showing good/bad times.",
+      "layout": "Horizontal flex container, relative positioning for blocks.",
+      "styling": "Rahu Kalam/Yama Gandam = Red blocks. Abhijit Muhurtham = Green blocks. Current time = glowing vertical line absolute positioned.",
+      "data_testid": "timeline-auspicious"
+    },
+    "monthly_calendar": {
+      "description": "7-column lunar+solar dual calendar.",
+      "layout": "Grid 7 cols. Day headers (Sun-Sat in Telugu).",
+      "cell_design": "Relative block. Gregorian date top-left. Tithi bottom-right. Festival dots/chips.",
+      "states": {
+        "today": "Continuous subtle shimmer border animation.",
+        "selected": "Gold ring with slight scale-up (transform: scale(1.05))."
+      },
+      "data_testid": "monthly-calendar-grid"
+    },
+    "sankalpam_scroll": {
+      "description": "Sacred scroll aesthetic for daily archana text.",
+      "styling": "Background tinted warm-sand (day) or muted-gold (night). Inner dotted border mimicking leaf manuscripts. Decorative Telugu Om (ఓం) watermark in background.",
+      "typography": "Noto Sans Telugu, center-aligned, elegant leading.",
+      "data_testid": "sankalpam-scroll"
+    },
+    "horoscope_card": {
+      "description": "Telugu Rasi Phalalu.",
+      "layout": "Header with Rasi selector dropdown. Tabs for Health/Wealth/Career. Star rating system.",
+      "data_testid": "horoscope-card"
+    },
+    "festival_eclipse_banner": {
+      "description": "Appears conditionally. Premium alert banner.",
+      "styling": "Eclipse: Blackout occluding circle animation + glowing red corona. Text: Danger/Auspicious styling.",
+      "data_testid": "event-banner"
+    }
+  },
+  "animations": {
+    "card_stagger": {
+      "concept": "Cards fade in and drift slightly upward on load.",
+      "css": "@keyframes cardEntrance { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }"
+    },
+    "eclipse_pulse": {
+      "concept": "Glowing corona effect for eclipse days.",
+      "css": "@keyframes coronaPulse { 0% { box-shadow: 0 0 0 0 rgba(213, 0, 0, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(213, 0, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(213, 0, 0, 0); } }"
+    },
+    "birthday_celebration": {
+      "concept": "Falling flower petals (CSS particles) and avatar glow.",
+      "css": "@keyframes fall { to { transform: translateY(100vh) rotate(360deg); } }"
+    },
+    "shimmer_border": {
+      "concept": "Used for 'Today' calendar cell.",
+      "css": "Mask-image with linear-gradient animating background-position."
+    }
+  },
+  "assets_and_motifs": {
+    "kolam_rangoli": "Use inline SVG lines with stroke-dasharray animations for borders. Avoid heavy PNGs. Example concept: continuous geometric line art fading at edges.",
+    "decorative_dividers": "Lotus or Mandala SVG vectors with low opacity (0.1) acting as `<hr/>` replacements.",
+    "icons": "Lucide icons (via unpkg/CDN) or feather icons. Keep stroke width thin (1.5px) for elegance."
+  },
+  "testing_standards": {
+    "requirements": [
+      "Every interactive element MUST have a data-testid attribute.",
+      "Values must be kebab-case and role-based.",
+      "Examples: data-testid='theme-toggle-btn', data-testid='rasi-selector-dropdown', data-testid='add-reminder-btn'."
+    ]
+  }
+}

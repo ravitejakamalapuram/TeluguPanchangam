@@ -311,8 +311,14 @@
   function renderTimeline(p) {
     if (!el.timelineBlocks) return;
     el.timelineBlocks.innerHTML = '';
-    const baseStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 6, 0, 0).getTime();
+
+    // Anchor the timeline to the day's actual sunrise (30 min before) and
+    // span 24 hours from there. This makes the visualisation tz-agnostic —
+    // every muhurtham window we care about falls inside the window because
+    // they're all derived from sunrise/sunset.
+    const baseStart = p.sunrise.getTime() - 30 * 60 * 1000;
     const totalMs = 24 * 3600 * 1000;
+
     const push = (label, s, e, type) => {
       if (!s || !e) return;
       const sm = s.getTime(), em = e.getTime();
@@ -323,7 +329,7 @@
       const div = document.createElement('div');
       div.className = `timeline-block ${type}`;
       div.style.left = `${leftPct}%`;
-      div.style.width = `${widthPct}%`;
+      div.style.width = `${Math.max(widthPct, 0.6)}%`;
       div.title = `${label} · ${fmtTime(s)} – ${fmtTime(e)}`;
       el.timelineBlocks.appendChild(div);
     };
@@ -347,6 +353,21 @@
       }
     } else {
       el.timelineCursor.style.display = 'none';
+    }
+
+    // Dynamic hour labels (7 ticks across the 24h baseStart→baseStart+24h)
+    const hoursEl = document.getElementById('timeline-hours');
+    if (hoursEl) {
+      hoursEl.innerHTML = '';
+      for (let i = 0; i < 7; i++) {
+        const tickTime = new Date(baseStart + (i / 6) * totalMs);
+        const span = document.createElement('span');
+        span.textContent = tickTime.toLocaleTimeString('en-IN', {
+          hour: '2-digit', minute: '2-digit', hour12: true,
+          timeZone: getDisplayTimeZone()
+        }).replace(':00 ', ' ').toUpperCase();
+        hoursEl.appendChild(span);
+      }
     }
   }
 
@@ -838,10 +859,11 @@
 
     // Copy sankalpam
     if (el.copySankalpam) {
-      el.copySankalpam.addEventListener('click', () => {
+      el.copySankalpam.addEventListener('click', async () => {
         const sk = window.Sankalpam.generateSankalpam(activePanchang, coords.lat, coords.lng);
         const txt = `దిన సంకల్పము\n\nSanskrit:\n${sk.sanskrit}\n\nTelugu:\n${sk.telugu}`;
-        navigator.clipboard.writeText(txt).then(() => {
+
+        const showFeedback = () => {
           const original = el.copySankalpam.innerHTML;
           el.copySankalpam.innerHTML = '<span>నకలు చేయబడింది ✓</span>';
           el.copySankalpam.classList.add('btn-primary');
@@ -851,7 +873,37 @@
             el.copySankalpam.classList.add('btn-outline');
             el.copySankalpam.classList.remove('btn-primary');
           }, 1600);
-        }).catch(() => {});
+        };
+
+        // Optimistic feedback FIRST so user always sees confirmation
+        showFeedback();
+
+        // Try modern clipboard API, then fall back to textarea + execCommand
+        const fallbackCopy = () => {
+          try {
+            const ta = document.createElement('textarea');
+            ta.value = txt;
+            ta.style.position = 'fixed';
+            ta.style.top = '-1000px';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+          } catch (err) {
+            console.warn('Clipboard fallback failed:', err);
+          }
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          try {
+            await navigator.clipboard.writeText(txt);
+          } catch (err) {
+            console.warn('navigator.clipboard.writeText failed; using fallback', err);
+            fallbackCopy();
+          }
+        } else {
+          fallbackCopy();
+        }
       });
     }
 

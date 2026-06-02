@@ -1,0 +1,21 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    uses: ravitejakamalapuram/.github-workflows-shared/.github/workflows/chrome-extension-cd.yml@v1.1.9
+    with:
+      extension-dir: '.'
+    secrets:
+      chrome-extension-id: ${{ secrets.CHROME_EXTENSION_ID }}
+      chrome-client-id: ${{ secrets.CHROME_CLIENT_ID }}
+      chrome-client-secret: ${{ secrets.CHROME_CLIENT_SECRET }}
+      chrome-refresh-token: ${{ secrets.CHROME_REFRESH_TOKEN }}

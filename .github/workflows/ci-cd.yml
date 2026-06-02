@@ -14,7 +14,7 @@ concurrency:
 jobs:
   ci:
     name: CI Pipeline
-    uses: ravitejakamalapuram/.github-workflows-shared/.github/workflows/chrome-extension-ci.yml@main
+    uses: ravitejakamalapuram/.github-workflows-shared/.github/workflows/chrome-extension-ci.yml@v1.1.9
     with:
       extension-dir: '.'
       manifest-version: '3'
@@ -26,7 +26,7 @@ jobs:
     name: CD Pipeline
     needs: ci
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    uses: ravitejakamalapuram/.github-workflows-shared/.github/workflows/chrome-extension-cd.yml@main
+    uses: ravitejakamalapuram/.github-workflows-shared/.github/workflows/chrome-extension-cd.yml@v1.1.9
     with:
       extension-dir: '.'
       publish-target: 'default'

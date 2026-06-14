@@ -1,0 +1,26 @@
+{
+  "appName": "Telugu New Tab Calendar (\u0c2a\u0c02\u0c1a\u0c3e\u0c02\u0c17\u0c02)",
+  "appType": "chrome-extension",
+  "repoName": "TeluguPanchangam",
+  "description": "A premium, fully offline-capable Telugu Calendar (Panchangam), Daily Horoscope (\u0c30\u0c3e\u0c36\u0c3f \u0c2b\u0c32\u0c3e\u0c32\u0c41), and Vedic Sankalpam for your New Tab page.",
+  "modules": [
+    {
+      "name": "Chrome Extension",
+      "type": "chrome-extension",
+      "path": ".",
+      "status": "draft",
+      "storeId": "",
+      "storeUrl": "",
+      "developerConsoleUrl": "https://chrome.google.com/webstore/devconsole",
+      "buildScript": "zip -r initial-package.zip .",
+      "artifactPath": "initial-package.zip",
+      "cwsListing": {
+        "shortDescription": "A premium, fully offline-capable Telugu Calendar (Panchangam), Daily Horoscope (\u0c30\u0c3e\u0c36\u0c3f \u0c2b\u0c32\u0c3e\u0c32\u0c41), and Vedic Sankalpam for your New Tab ",
+        "detailedDescription": "A premium, fully offline-capable Telugu Calendar (Panchangam), Daily Horoscope (\u0c30\u0c3e\u0c36\u0c3f \u0c2b\u0c32\u0c3e\u0c32\u0c41), and Vedic Sankalpam for your New Tab page.",
+        "category": "productivity",
+        "singlePurpose": "A premium, fully offline-capable Telugu Calendar (Panchangam), Daily H",
+        "privacyPolicyUrl": "https://ravitejakamalapuram.github.io/TeluguPanchangam/privacy.html"
+      }
+    }
+  ]
+}

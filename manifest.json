@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Telugu New Tab Calendar (పంచాంగం)",
   "version": "1.0.0",
-  "description": "A premium, fully offline-capable Telugu Calendar (Panchangam), Daily Horoscope (రాశి ఫలాలు), and Vedic Sankalpam for your New Tab page.",
+  "description": "Premium offline Telugu Calendar (Panchangam), Daily Horoscope (రాశి ఫలాలు), and Vedic Sankalpam for your New Tab page.",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
   },

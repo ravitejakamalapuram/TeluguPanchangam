@@ -1,17 +1,21 @@
 name: CD
 
+# Store releases are on demand only (Actions -> CD -> Run workflow). Publishing on
+# every push re-uploads while an item is in review and burns a version tag each time.
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
+
+# Never cancel a release mid-flight: half-created tags/releases are bad state.
+concurrency:
+  group: cd-${{ github.ref }}
+  cancel-in-progress: false
 
 permissions:
   contents: write
 
 jobs:
   release:
-    uses: ravitejakamalapuram/.github-workflows-shared/.github/workflows/chrome-extension-cd.yml@v1.1.9
+    uses: ravitejakamalapuram/.github-workflows-shared/.github/workflows/chrome-extension-cd.yml@v1
     with:
       extension-dir: '.'
     secrets:

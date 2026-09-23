@@ -6,3 +6,8 @@ initial-package.zip
 
 # Local scratch/test scripts (never packaged)
 scratch/
+
+# Local store credentials / IDs
+.env
+.env.*
+!.env.example

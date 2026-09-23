@@ -2,6 +2,11 @@
 
 All notable changes to the Telugu New Tab Calendar extension will be documented in this file.
 
+## [Unreleased]
+
+### Fixed
+- Real extension icons (16/48/128) replace 1x1 placeholders, so the toolbar and store icon are no longer blank.
+
 ## [1.0.0] - 2026-06-02
 
 - Initial release of the Telugu New Tab Calendar (Panchangam) Chrome Extension.

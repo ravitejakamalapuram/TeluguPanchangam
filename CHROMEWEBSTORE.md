@@ -1,59 +1,83 @@
-# Chrome Web Store Listing — Telugu New Tab Calendar (పంచాంగం)
+# Chrome Web Store Listing & Publishing Record
 
-> Last Updated: 2026-06-02
+*Last Updated: 2026-09-21*
 
-## Store Listing
+---
 
-**Extension Name**
+## 1. Extension Information
+- **Name**: Telugu New Tab Calendar (పంచాంగం)
+- **Extension ID**: `obgpdlhkahmdiepklldjnnmfmbhmgenn`
+- **Publisher ID**: `9637cb78-fa33-49dd-a4cb-91066ff182e3`
+- **Version**: `1.0.0`
+- **Manifest Version**: `MV3`
+- **Language**: `en`
+- **Category**: `Lifestyle`
+
+---
+
+## 2. Store Listing Copy
+
+### Short Description (max 132 characters)
+> Premium offline Telugu Calendar (Panchangam), Daily Horoscope (రాశి ఫలాలు), and Vedic Sankalpam for your New Tab page.
+
+### Detailed Description
+```markdown
 Telugu New Tab Calendar (పంచాంగం)
 
-**Short Description**
-A premium, fully offline-capable Telugu Calendar (Panchangam), Daily Horoscope (రాశి ఫలాలు), and Vedic Sankalpam for your New Tab page.
+Premium offline Telugu Calendar (Panchangam), Daily Horoscope (రాశి ఫలాలు), and Vedic Sankalpam for your New Tab page.
 
-**Detailed Description**
-A premium, fully offline-capable Telugu Calendar (Panchangam), Daily Horoscope (రాశి ఫలాలు), and Vedic Sankalpam for your New Tab page. The extension computes local Vedic time data completely client-side without relying on external network requests, preserving your privacy and speed.
+Key Features:
+- Daily Telugu Calendar: Tithi, Vaara, Nakshatra, Yoga, and Karana computed client-side.
+- Local-first and private: all astronomical and Vedic calculations run strictly inside your browser.
+- Clean and intuitive interface designed for your New Tab.
 
-**Category**
-Productivity
+How to use:
+1. Open a new tab in Chrome.
+2. View daily panchangam, auspicious timings, and festival details.
+```
 
-**Single Purpose**
-Provides a premium, offline-capable Telugu Calendar (Panchangam) and daily horoscope details directly on the user's New Tab page.
+---
 
-**Primary Language**
-English
+## 3. Permissions Justifications (Required for Review)
 
-## Graphics & Assets
+Google review requires specific plain-English justification for each declared permission:
 
-| Asset | Dimensions | Status | Filename |
-|---|---|---|---|
-| Store Icon | 128×128 PNG | ✅ Ready | icons/icon-128.png |
+| Permission | Used in Code? | Sample Evidence | Required? | Risk | Plain-English Review Justification |
+| :--- | :---: | :--- | :---: | :---: | :--- |
+| `storage` | Yes | newtab.html:404 | Yes | LOW | Required to locally persist user location, calendar preferences, and language settings across sessions. |
+| `geolocation` | Yes | newtab.html | Yes | MEDIUM | Required only to compute accurate sunrise, sunset, and local Vedic astronomical timings for the user's coordinates. |
 
-## Permissions Justification
+---
 
-Every permission in manifest.json needs a justification. The review team reads these.
+## 4. Privacy & Data Use Disclosure
 
-| Permission | Type | Justification |
-|---|---|---|
-| `storage` | permissions | Used to persist user settings and configuration preferences locally, ensuring they are preserved across service worker restarts. |
-| `geolocation` | permissions | Used to determine the user's location to compute accurate sunrise, sunset, and panchangam timings for their specific location. |
+- **Privacy Policy URL**: `https://ravitejakamalapuram.github.io/telugu-panchangam.html`
 
-## Privacy & Data Use
+---
 
-### Data Collection
-**Does the extension collect user data?** No
+## 5. Store Assets Checklist
 
-All extension preferences and inputs are stored locally on the device and never sent off-device.
+- [x] Extension Icon (128×128 PNG): `icons/icon-128.png`
+- [ ] Primary Screenshot (1280×800 PNG): `chrome-store/assets/screenshots/01-main-screen.png`
+- [ ] Promotional Tile (440×280 PNG): Optional but recommended for featured placement
+- [ ] Marquee Promo (1400×560 PNG): Optional
 
-### Data Use Certification
-- [x] Data is NOT sold to third parties
-- [x] Data is NOT used for purposes unrelated to the extension's core functionality
-- [x] Data is NOT used for creditworthiness or lending purposes
+---
 
-## Privacy Policy
-Privacy Policy available in `PRIVACY.md` in the project root. Recommended to host via GitHub Pages.
+## 6. Pre-Publish Checklist
 
-## Version History
+- [x] Manifest V3 compliance verified
+- [x] No `eval()` or remotely hosted code
+- [x] No secrets, private keys, or API tokens in package
+- [x] Distributable archive contains `manifest.json` at root
+- [ ] Extension registered in Chrome Web Store Developer Dashboard
+- [ ] CWS API OAuth credentials configured (`.env`)
+- [ ] Final human confirmation obtained before submission
 
-| Version | Date | Changes | Status |
-|---|---|---|---|
-| 1.0.0 | 2026-06-02 | Initial onboarding draft. | Draft |
+---
+
+## 7. Release History
+
+| Version | Date | Status | Package ZIP | Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| `1.0.0` | 2026-09-21 | Draft / Ready | `chrome-store/builds/telugu-new-tab-calendar-----------v1.0.0.zip` | Automated build & verification passed |

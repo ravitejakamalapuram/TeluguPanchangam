@@ -1,18 +1,20 @@
-name: CI
+name: ci
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
-  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   ci:
-    uses: ravitejakamalapuram/.github-workflows-shared/.github/workflows/chrome-extension-ci.yml@v1
-    with:
-      extension-dir: '.'
-      run-lint: false
-      run-unit-tests: false
+    permissions:
+      contents: read
+      actions: read   # lets app-ci.yml find which release-platform commit it runs at
+    uses: ravitejakamalapuram/release-platform/.github/workflows/app-ci.yml@v2
+    # Deliberately no `secrets:` and no id-token: PR code never sees credentials.

@@ -11,30 +11,19 @@
 - **Version**: `1.0.0`
 - **Manifest Version**: `MV3`
 - **Language**: `en`
-- **Category**: `Lifestyle`
+- **Category**: `Workflow & Planning`
 
 ---
 
 ## 2. Store Listing Copy
 
 ### Short Description (max 132 characters)
-> Premium offline Telugu Calendar (Panchangam), Daily Horoscope (రాశి ఫలాలు), and Vedic Sankalpam for your New Tab page.
+> Telugu Panchangam on your new tab: tithi, nakshatra, Rahu Kalam, sankalpam & festivals — computed for your own city. Offline.
+
+125 / 132 characters. Source of truth is `chrome-store/store.config.json`; this file mirrors it for human review.
 
 ### Detailed Description
-```markdown
-Telugu New Tab Calendar (పంచాంగం)
-
-Premium offline Telugu Calendar (Panchangam), Daily Horoscope (రాశి ఫలాలు), and Vedic Sankalpam for your New Tab page.
-
-Key Features:
-- Daily Telugu Calendar: Tithi, Vaara, Nakshatra, Yoga, and Karana computed client-side.
-- Local-first and private: all astronomical and Vedic calculations run strictly inside your browser.
-- Clean and intuitive interface designed for your New Tab.
-
-How to use:
-1. Open a new tab in Chrome.
-2. View daily panchangam, auspicious timings, and festival details.
-```
+See `chrome-store/store.config.json`'s `description` field for the exact submitted text (English, then a Telugu section — the Chrome listing schema has no separate-locale field for this listing). Summary: daily Panchangam (tithi/nakshatra/yoga/karana), Rahu Kalam/Yamagandam/Gulika Kalam, festival reminders, daily Rasi Phalalu, and an auto-generated Vedic Sankalpam — computed for a user-chosen city (Hyderabad, Vijayawada, and US metros like Dallas, Austin, Houston, Atlanta, Bay Area, Seattle), entirely client-side.
 
 ---
 
@@ -70,10 +59,11 @@ Google review requires specific plain-English justification for each declared pe
 
 ## 5. Store Assets Checklist
 
-- [x] Extension Icon (128×128 PNG): `icons/icon-128.png`
-- [ ] Primary Screenshot (1280×800 PNG): `chrome-store/assets/screenshots/01-main-screen.png`
-- [ ] Promotional Tile (440×280 PNG): Optional but recommended for featured placement
-- [ ] Marquee Promo (1400×560 PNG): Optional
+- [x] Store Icon (128×128 PNG, 24-bit, no alpha): `chrome-store/assets/icon-128.png` — flattened from `icons/icon-128.png` (which keeps its alpha; that copy is the *extension* icon, not the store listing icon). Referenced via `store.config.json`'s `icon` key. **Note:** release-platform's Chrome rules do not read an `icon` key yet (POR-39/POR-34) — this asset is validated locally (`chrome-store/validate-listing.mjs`) and ready for the moment the upstream rule lands.
+- [x] Screenshots (1280×800 PNG, 24-bit, no alpha, 3-5 required): `chrome-store/assets/screenshots/01-hyderabad-full.png`, `02-dallas-full.png`, `03-timeline-rahu-yama-gulika.png`, `04-rasi-phalalu.png`, `05-sankalpam.png`
+- [x] Promotional Tile (440×280 PNG): `chrome-store/assets/promo/small-tile.png`
+- [x] Marquee Promo (1400×560 PNG): `chrome-store/assets/promo/marquee.png`
+- Large tile (920×680) is no longer accepted by the Chrome Web Store (confirmed against release-platform's `CHROME_RULES.promo`, which has no `largeTile` entry) — deliberately not produced, and removed from `store.config.json`.
 
 ---
 

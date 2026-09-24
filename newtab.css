@@ -465,6 +465,10 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  /* Grid items default to min-width: auto (their content's min-content), which
+     can force this fixed-width track wider than 290px and push the row past
+     the viewport at narrow widths (e.g. 1280px). Let it shrink to its track. */
+  min-width: 0;
 }
 .profile-card {
   text-align: center;
@@ -654,6 +658,8 @@ input:checked + .slider:before {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  /* See .sidebar's min-width comment: same grid-shrinking fix for the 1fr track. */
+  min-width: 0;
 }
 
 /* Hero Clock Card */
@@ -1026,6 +1032,8 @@ input:checked + .slider:before {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  /* See .sidebar's min-width comment: same grid-shrinking fix for this fixed-width track. */
+  min-width: 0;
 }
 .horo-header-row {
   display: flex;

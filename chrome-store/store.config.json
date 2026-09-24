@@ -1,8 +1,8 @@
 {
   "name": "Telugu New Tab Calendar (పంచాంగం)",
-  "shortDescription": "Offline Telugu Panchangam, daily Rasi Phalalu, Rahu Kalam and festival calendar on your new tab.",
-  "description": "Telugu New Tab Calendar (పంచాంగం) turns your Chrome new tab into a Telugu Vedic calendar for the Telugu community worldwide.\n\nFeatures:\n- Daily Panchangam: Tithi, Vara, Nakshatra, Yoga and Karana, calculated for your location.\n- Rahu Kalam, Yamagandam and Gulika Kalam timings.\n- Daily Rasi Phalalu (రాశి ఫలాలు) for all 12 rasis.\n- Festivals and vratams (Ugadi, Vinayaka Chavithi, Dasara, Sankranti and more) with reminders.\n- Vedic Sankalpam text generator with the correct Samvatsara, Ayana, Ritu and Masa.\n\nPrivacy: calculations run inside your browser. No tracking or analytics. Your approximate location is used only to compute timings for your location.\n",
-  "category": "Lifestyle",
+  "shortDescription": "Telugu Panchangam on your new tab: tithi, nakshatra, Rahu Kalam, sankalpam & festivals — computed for your own city. Offline.",
+  "description": "Every Telugu new tab starts with today's Panchangam (పంచాంగం): tithi, vara, nakshatra, yoga, and karana, plus the day's Rahu Kalam (రాహు కాలం), Yamagandam, and Gulika Kalam — the timings people check before starting anything important. The next festival or vratam sits right there too, from Ugadi and Sankranti to Vinayaka Chavithi, Dasara, and Deepavali, so you never have to look it up on a separate site.\n\nThis Telugu calendar is built for the Telugu diaspora, not just Hyderabad. Pick your own city — Dallas, Austin, Houston, Atlanta, the Bay Area, Seattle, and more US metros are built in alongside Hyderabad, Vijayawada, and other Indian cities — and every tithi, nakshatra, and Rahu Kalam is computed for that city's real time zone, with daylight saving handled correctly. No more subtracting hours from a Hyderabad-only panchangam.\n\nAlso on the tab:\n• Daily Rasi Phalalu (రాశి ఫలాలు) for all 12 rasis, presented as a daily reading, not a prediction.\n• A Vedic Sankalpam (సంకల్పం) generated automatically with the correct Samvatsara, Ayana, Ritu, and Masa for your pooja.\n\nEverything runs locally in your browser. The extension makes no network requests of its own — no analytics, no ads, no servers, and your chosen city stays on your device. The optional \"Use My Location\" button is the one exception: it hands off to Chrome's built-in location service, and only if you press it.\n\n---\n\nతెలుగులో (In Telugu)\n\nప్రతి తెలుగు కొత్త ట్యాబ్ ఈరోజు పంచాంగంతో మొదలవుతుంది: తిథి, వారం, నక్షత్రం, యోగం, కరణం — వీటితో పాటు రాహు కాలం, యమగండం, గుళిక కాలం వంటి ముఖ్యమైన సమయాలు, ఏదైనా పని మొదలుపెట్టే ముందు చూసుకునేవి. తర్వాత వచ్చే పండుగ లేదా వ్రతం కూడా అదే ట్యాబ్‌లో కనిపిస్తుంది — ఉగాది, సంక్రాంతి, వినాయక చవితి, దసరా, దీపావళి — వేరే వెబ్‌సైట్‌లో వెతుక్కోవాల్సిన అవసరం లేదు.\n\nఈ తెలుగు క్యాలెండర్ కేవలం హైదరాబాద్ కోసం కాదు — ప్రపంచవ్యాప్తంగా ఉన్న తెలుగువారి కోసం రూపొందించబడింది. మీ నగరాన్ని ఎంచుకోండి — డాలస్, ఆస్టిన్, హ్యూస్టన్, అట్లాంటా, బే ఏరియా, సియాటిల్ వంటి అమెరికా నగరాలతో పాటు హైదరాబాద్, విజయవాడ వంటి భారత నగరాలు కూడా ముందే చేర్చబడ్డాయి — తిథి, నక్షత్రం, రాహు కాలం అన్నీ మీ నగరపు సమయ మండలానికే, డేలైట్ సేవింగ్‌తో సహా, సరిగ్గా లెక్కించబడతాయి.\n\nఇంకా ఉన్నవి:\n• 12 రాశులకూ రోజువారీ రాశి ఫలాలు — ఇది ఒక రోజువారీ పఠనం మాత్రమే, భవిష్యవాణి కాదు.\n• సరైన సంవత్సరం, ఆయనం, ఋతువు, మాసంతో స్వయంచాలకంగా తయారయ్యే సంకల్పం.\n\nఇదంతా మీ బ్రౌజర్‌లోనే స్థానికంగా నడుస్తుంది. ఈ ఎక్స్‌టెన్షన్ స్వయంగా ఎలాంటి నెట్‌వర్క్ రిక్వెస్ట్‌లు పంపదు — ట్రాకింగ్ లేదు, ప్రకటనలు లేవు, సర్వర్‌కు ఏమీ పంపబడదు, మీ నగర ఎంపిక మీ పరికరంలోనే ఉంటుంది. ఒకే మినహాయింపు ఐచ్ఛిక \"నా స్థానం వాడు\" బటన్ — దాన్ని మీరు నొక్కితేనే, అది Chrome అంతర్నిర్మిత లొకేషన్ సర్వీస్‌కు అభ్యర్థన పంపుతుంది.\n",
+  "category": "Workflow & Planning",
   "language": "en",
   "supportUrl": "https://github.com/ravitejakamalapuram/TeluguPanchangam/issues",
   "websiteUrl": "https://ravitejakamalapuram.github.io/",
@@ -11,12 +11,16 @@
   "extensionId": "obgpdlhkahmdiepklldjnnmfmbhmgenn",
   "visibility": "PUBLIC",
   "distribution": "",
+  "icon": "assets/icon-128.png",
   "screenshots": [
-    "assets/screenshots/01-main-screen.png"
+    "assets/screenshots/01-hyderabad-full.png",
+    "assets/screenshots/02-dallas-full.png",
+    "assets/screenshots/03-timeline-rahu-yama-gulika.png",
+    "assets/screenshots/04-rasi-phalalu.png",
+    "assets/screenshots/05-sankalpam.png"
   ],
   "promotionalImages": {
     "smallTile": "assets/promo/small-tile.png",
-    "largeTile": "assets/promo/large-tile.png",
     "marquee": "assets/promo/marquee.png"
   }
 }

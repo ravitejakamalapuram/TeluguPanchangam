@@ -8,6 +8,7 @@ targets:
   - type: chrome
     item_id: obgpdlhkahmdiepklldjnnmfmbhmgenn
     path: .
+    listing: chrome-store/store.config.json
     include:
       - manifest.json
       - newtab.html

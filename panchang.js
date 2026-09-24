@@ -263,14 +263,6 @@
     const tithiUdaya = getTithiAt(sunriseAstro);
     const nakshatraUdaya = getNakshatraAt(sunriseAstro);
 
-    // Tithi-based festivals (Ugadi, Sri Rama Navami, Vijayadashami, ...) are traditionally
-    // assigned to the day on which the tithi prevails during Aparahna Kaal (the 3/5-4/5
-    // span of daylight), not at sunrise or plain midday - using midday alone mis-assigned
-    // Vijayadashami by a day when the tithi changed between midday and Aparahna.
-    const aparahnaTime = new Date(sunrise.getTime() + 0.7 * daylightDuration);
-    const aparahnaAstro = Astronomy.MakeTime(aparahnaTime);
-    const tithiAparahna = getTithiAt(aparahnaAstro);
-
     // Find transitions during the day
     const tithiTransitions = findTransitionsForDay(y, mo, da, getTithiAt, timeZone);
     const nakshatraTransitions = findTransitionsForDay(y, mo, da, getNakshatraAt, timeZone);
@@ -355,14 +347,16 @@
     const abhijitEnd = new Date(sunrise.getTime() + (8.0 / 15.0) * daylightDuration);
 
     // 4. Varjyam & Amritakalam (based on Nakshatra duration)
-    // We estimate Nakshatra duration by looking at when current Nakshatra starts and ends
+    // These must key off the Udaya nakshatra (nakshatraUdaya) - the same one shown in the
+    // header - not the midday sample; otherwise the window can be computed for a different
+    // nakshatra than the one the UI displays it under.
     let nStart = midday;
     let nEnd = midday;
-    
+
     if (nakshatraTransitions.length > 0) {
       // If a transition happens today, we can find the start/end easily
       const tToday = nakshatraTransitions[0];
-      if (tToday.toIndex === nakshatra.index) {
+      if (tToday.toIndex === nakshatraUdaya.index) {
         nStart = tToday.time;
         // Search forward for next transition
         const searchTime = Astronomy.MakeTime(new Date(nStart.getTime() + 3600000));
@@ -388,12 +382,12 @@
     const nakshatraDuration = nEnd.getTime() - nStart.getTime();
 
     // Varjyam calculation
-    const varjyamOffsetPercent = PANCHANG_DATA.varjyamOffsets[nakshatra.index] / 60.0;
+    const varjyamOffsetPercent = PANCHANG_DATA.varjyamOffsets[nakshatraUdaya.index] / 60.0;
     const varjyamStart = new Date(nStart.getTime() + varjyamOffsetPercent * nakshatraDuration);
     const varjyamEnd = new Date(varjyamStart.getTime() + (4.0 / 60.0) * nakshatraDuration); // always 4 Ghatis duration
 
     // Amritakalam calculation
-    const amritaOffsetPercent = PANCHANG_DATA.amritaOffsets[nakshatra.index] / 60.0;
+    const amritaOffsetPercent = PANCHANG_DATA.amritaOffsets[nakshatraUdaya.index] / 60.0;
     const amritaStart = new Date(nStart.getTime() + amritaOffsetPercent * nakshatraDuration);
     const amritaEnd = new Date(amritaStart.getTime() + (4.0 / 60.0) * nakshatraDuration); // always 4 Ghatis duration
 
@@ -504,9 +498,6 @@
         transitions: nakshatraTransitions,
         moonLongSidereal: nakshatraUdaya.moonLongSidereal
       },
-      // Aparahna-Kaal tithi index, used by festivals.js to assign tithi-based festivals
-      // (Ugadi, Sri Rama Navami, Vijayadashami, ...) to the correct Gregorian day.
-      festivalTithi: { index: tithiAparahna.index },
       yoga: {
         index: yoga.index,
         name: PANCHANG_DATA.yogas[yoga.index],

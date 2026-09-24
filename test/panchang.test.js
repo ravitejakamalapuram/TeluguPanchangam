@@ -19,12 +19,18 @@ const NAME_ALIASES = {
   dhanishta: 'dhanishtha',
 };
 
-// Extracts the English name from an entry like "శుక్ల చవితి (Chaturthi)" and normalizes
-// paksha prefixes / known transliteration variants so it can be compared to Drik's plain
-// English name (e.g. "Shukla Chaturthi" or just "Chaturthi").
+// Extracts the English name from an entry like "శుక్ల చవితి (Chaturthi)" and normalizes it
+// down to Drik Panchang's plain form for comparison: strips paksha prefixes / known
+// transliteration variants (tithi/nakshatra), and for festival names - which carry extra
+// descriptive text our fixture doesn't, e.g. "Ugadi - Telugu New Year", "Vijayadashami /
+// Dasara", "Kanuma Festival" - keeps only the primary name before a " - "/" / " separator
+// and drops a trailing "Festival" suffix.
 function normalizeName(raw) {
   const parenMatch = raw.match(/\(([^()]+)\)\s*$/);
-  let name = (parenMatch ? parenMatch[1] : raw).trim().toLowerCase();
+  let name = (parenMatch ? parenMatch[1] : raw).trim();
+  name = name.split(' - ')[0].split(' / ')[0].trim();
+  name = name.replace(/\s+festival$/i, '');
+  name = name.toLowerCase();
   name = name.replace(/^(shukla|krishna)\s+/, '');
   return NAME_ALIASES[name] || name;
 }
@@ -76,13 +82,16 @@ for (const row of fixture.rows) {
     assertCloseToClockTime(panchang.rahuKalam.start, row.rahuKalam.start, RAHU_KALAM_TOLERANCE_MIN, 'rahuKalam.start');
     assertCloseToClockTime(panchang.rahuKalam.end, row.rahuKalam.end, RAHU_KALAM_TOLERANCE_MIN, 'rahuKalam.end');
 
+    // Exact-set comparison (not "expected festivals are a subset of computed"): a spurious
+    // or duplicated festival on a date that expects none, or expects only one, must fail the
+    // test too - a subset check can't see either problem, which is exactly how a real
+    // duplicate-festival regression shipped green in round 1.
     const computedFestivals = Festivals.getFestivals(panchang).map((f) => normalizeName(f.name));
-    for (const expectedFestival of row.festivals) {
-      const expected = normalizeName(expectedFestival);
-      assert.ok(
-        computedFestivals.some((f) => f.includes(expected)),
-        `festivals: expected "${expectedFestival}" among ${JSON.stringify(computedFestivals)}`
-      );
-    }
+    const expectedFestivals = row.festivals.map(normalizeName);
+    assert.deepEqual(
+      [...computedFestivals].sort(),
+      [...expectedFestivals].sort(),
+      `festivals mismatch: expected ${JSON.stringify(expectedFestivals)}, got ${JSON.stringify(computedFestivals)}`
+    );
   });
 }

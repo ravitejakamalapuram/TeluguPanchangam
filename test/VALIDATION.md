@@ -71,19 +71,7 @@ offline against the vendored `lib/astronomy.js` - no network calls in the test.
    2026-02-10: midday gave "Navami", Drik's Udaya value is "Ashtami"). Fixed by computing the
    displayed Tithi/Nakshatra at sunrise instead of midday.
 
-2. **Vijayadashami (and other tithi-triggered festivals) need the Aparahna convention, not
-   midday.** Classical festival-day rules (Ugadi, Sri Rama Navami, Vijayadashami, ...) assign
-   the festival to whichever day the governing tithi is prevailing during *Aparahna Kaal*
-   (the 3/5-4/5 span of daylight, i.e. mid-to-late afternoon) - not at sunrise, and not at
-   plain midday either. Using plain midday for `festivals.js` mis-assigned Vijayadashami by a
-   day for Hyderabad 2026-10-20 (the Navami-to-Dashami transition fell between midday and the
-   Aparahna window). Fixed by adding a distinct `festivalTithi` (evaluated at 0.7x daylight
-   duration after sunrise, i.e. the middle of the Aparahna window) that `festivals.js` now
-   uses instead of the display tithi. Ugadi and Sri Rama Navami, whose transitions in this
-   sample fell well before the Aparahna window either way, were already correct under plain
-   midday and remain correct under Aparahna.
-
-3. **`festivals.js`'s solar-festival Observer used dead coordinates.** The Bhogi/Sankranti/
+2. **`festivals.js`'s solar-festival Observer used dead coordinates.** The Bhogi/Sankranti/
    Kanuma/Mukkanuma check built an `Astronomy.Observer` from `panchang.sunrise.latitude`/
    `.longitude` - but `panchang.sunrise` is a plain `Date`, which has no such properties, so
    the fallback constants (16.07, 78.86) were silently used for every city. In practice this
@@ -92,9 +80,86 @@ offline against the vendored `lib/astronomy.js` - no network calls in the test.
    read anywhere - `Astronomy.SunPosition` is geocentric and doesn't take one. Removed the
    dead variable entirely rather than "fixing" a fallback that was never real.
 
-No field was removed from the UI - every field in scope (tithi, nakshatra, Rahu Kalam,
-sunrise, sunset, festivals) now matches Drik Panchang within the stated tolerances for both
-cities across the whole year, including both 2026 DST transitions.
+## Round 2 (reviewer feedback)
+
+Round 1's fix for Vijayadashami (assign tithi-triggered festivals off a single Aparahna-Kaal
+sample instead of a single midday sample) was itself flawed in two ways the 33-date fixture
+didn't exercise, caught by review: it moved *every* tithi-triggered festival onto Aparahna
+even though only a few classically use it, and any single-point sample - Aparahna or
+otherwise - can still make a short tithi vanish entirely between two samples, or a long one
+duplicate across two. Multi-year spot checks (outside the fixture, see below) confirmed both:
+Ugadi/Akshaya Tritiya 2025 never fired, Sri Rama Navami 2024 and Vinayaka Chavithi 2025 fired
+on two consecutive days.
+
+3. **Tithi-triggered festivals now use interval-overlap against the correct governing kaal,
+   not a point sample.** `festivals.js` gained `tithiPrevailsInWindow`, which checks whether a
+   target tithi occupies *any* instant of a kaal window (not just its start/end), so a tithi
+   fully contained inside the window is no longer missed. Three festivals follow their
+   specific shastric kaal this way: **Vijayadashami** (Aparahna, 3/5-4/5 of daylight),
+   **Vinayaka Chavithi** (Madhyahna, 2/5-3/5 of daylight), **Deepavali** (Pradosh, sunset to
+   ~2.4h after). Every other tithi-triggered festival (Ugadi, Sri Rama Navami, Akshaya
+   Tritiya, ...) reverted to the classical default - the tithi occupying the **largest share
+   of daylight** (`majorityTithiOfDaylight`), which reduces to the Udaya tithi on an ordinary
+   day but correctly hands a Kshaya-tithi day (one that only grazes sunrise before the next
+   tithi takes over) to that next tithi, e.g. Hyderabad 2026-03-19: Amavasya prevails at
+   sunrise for 32 minutes before Pratipada takes over for the rest of daylight, and Drik still
+   calls that day Ugadi.
+
+4. **A tithi long enough to span the governing kaal on two consecutive days (Vriddhi
+   tithi) duplicated its festival.** Both `festivalTithiGovernsDay` (for the three kaal-based
+   festivals) and the default-rule guard `wasMajorityTithiYesterday` now additionally check
+   that the same tithi did *not* also govern the equivalent window/majority yesterday, and
+   suppress today's firing if so - the same tithi index can only be the governing one on two
+   back-to-back days if it's genuinely a Vriddhi tithi.
+
+5. **Varjyam/Amritakalam were keyed to the midday nakshatra, contradicting the Udaya
+   nakshatra shown in the header.** `panchang.js`'s Varjyam/Amritakalam block used the same
+   midday `nakshatra` sample fixed in bug #1 for tithi/nakshatra display, instead of the
+   `nakshatraUdaya` value the header actually shows - on a nakshatra-transition day the two
+   windows could be computed for, and offset-tabled against, a different nakshatra than the
+   one displayed. Fixed to use `nakshatraUdaya` throughout.
+
+6. **The test only checked expected festivals were present, not that nothing extra was
+   there.** `test/panchang.test.js` used `.some(f => f.includes(expected))`, which can't fail
+   on a spurious or duplicated festival - the exact bug in #3/#4 above. Rewritten to assert
+   the full computed festival set equals the full expected set for every date, and
+   `normalizeName` extended to reduce festival names with extra descriptive text (e.g.
+   "Ugadi - Telugu New Year", "Vijayadashami / Dasara", "Kanuma Festival") to their primary
+   name so the exact-set comparison isn't broken by that text.
+
+Beyond the 33-date fixture (all of which are 2026, and pass 33/33), the specific years the
+reviewer flagged (Hyderabad 2024/2025/2027, all six tithi-triggered festivals in scope) were
+re-checked directly against the engine's output after this fix: every one now fires on exactly
+one day per year, matching the reviewer's report of 15/18 pre-round-1 correct dates (i.e. no
+new mismatches introduced, and the round-1 regression is gone). A broader script-driven sweep
+of every calendar day 2024-2027 for both cities, checking that *every* festival this app
+tracks (not just the six named ones) fires on exactly one day per year, found and fixed one
+more instance of the same duplicate-firing bug (#2's solar festivals, see below) and is clean
+otherwise. That sweep isn't part of `npm test` since it isn't checked against real Drik
+Panchang values - it verifies internal consistency (no vanish/duplicate), not correctness
+against source-of-truth dates outside the 33-date fixture.
+
+7. **Bhogi/Makara Sankranti/Kanuma/Mukkanuma could double-fire.** Each of the four solar-
+   transit checks in `festivals.js` OR'd the real astronomical crossing check with a
+   hardcoded Gregorian-date fallback ("Jan 14 is always Sankranti" etc.). When the real
+   transit for a given year/city landed on Jan 13 or 15 instead of 14, both the real transit
+   day *and* the hardcoded fallback day fired the same festival - reproduced for Hyderabad
+   2024 and Dallas 2025. Removed the fallback clauses; the astronomical check alone is the
+   correct, single source of truth for the transit day.
+
+## What's in scope vs. not
+
+Every field this issue asked to validate - **tithi, nakshatra, Rahu Kalam, sunrise, sunset,
+festivals** - now matches Drik Panchang within the stated tolerances for both cities across
+the whole year, including both 2026 DST transitions, and no field needed to be dropped from
+the UI to get there.
+
+This suite does **not** validate the other fields `newtab.js` renders: Yogam, Karanam,
+Varjyam, Amritakalam, Abhijit Muhurtham, Durmuhurtham, Yamagandam, or the tithi/nakshatra/yoga
+transition-time text. Bug #5 above fixed an internal-consistency issue in Varjyam/Amritakalam
+(nakshatra mismatch against the header), but that isn't the same as checking their absolute
+values against Drik Panchang, which this issue didn't ask for and this fixture doesn't cover.
+Validating those is follow-up work, not a claim this document makes.
 
 ## Known limitation (not fixed, documented instead)
 

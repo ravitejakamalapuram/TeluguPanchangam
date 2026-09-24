@@ -134,8 +134,15 @@ one day per year, matching the reviewer's report of 15/18 pre-round-1 correct da
 new mismatches introduced, and the round-1 regression is gone). A broader script-driven sweep
 of every calendar day 2024-2027 for both cities, checking that *every* festival this app
 tracks (not just the six named ones) fires on exactly one day per year, found and fixed one
-more instance of the same duplicate-firing bug (#2's solar festivals, see below) and is clean
-otherwise. That sweep isn't part of `npm test` since it isn't checked against real Drik
+more instance of the same duplicate-firing bug (#2's solar festivals, see below). It is *not*
+fully clean: four festivals still never fire in one of the four years, because their tithi is
+never the majority-of-daylight tithi on any day that year (Kshaya tithi) - Hyderabad
+Mahanavami 2024 and Vasanta Panchami 2024, Dallas Raksha Bandhan 2024 and Ratha Saptami 2026.
+All four behave identically on pre-PR `main`, so they are pre-existing and not introduced
+here; the same sweep run against `main` shows 11 anomalous festivals for Hyderabad and 9 for
+Dallas versus 2 and 2 after this PR. Eliminating the remaining four needs interval-based
+assignment of a tithi to its governing day rather than any single per-day scalar, and is
+tracked as follow-up rather than fixed here. That sweep isn't part of `npm test` since it isn't checked against real Drik
 Panchang values - it verifies internal consistency (no vanish/duplicate), not correctness
 against source-of-truth dates outside the 33-date fixture.
 
@@ -163,10 +170,18 @@ Validating those is follow-up work, not a claim this document makes.
 
 ## Known limitation (not fixed, documented instead)
 
-The engine determines the *local calendar day* (and therefore which Gregorian date's sunrise/
-midday/Aparahna instants to use) from the browser's OS timezone via JavaScript `Date` getters,
-not from the `geolocation` permission's coordinates. For the intended use (a New Tab page,
-opened on a device physically in the city whose Panchangam the user wants), OS timezone and
-location agree in the overwhelming majority of cases, so this wasn't changed. This test suite
-works around it by setting `process.env.TZ` per city/date instead of relying on the runner's
-local timezone.
+`calculatePanchang(date, lat, lon, timeZone)` takes an explicit IANA `timeZone` (added by the
+city-picker work in #13), and `newtab.js` always passes the selected city's zone, so the
+city's sunrise/midday/kaal instants no longer depend on the browser's OS timezone. What still
+reads the OS timezone is the *calendar day* itself: the `y`/`mo`/`da` are taken off the passed
+`Date` via system-local `getFullYear()`/`getMonth()`/`getDate()`. `newtab.js` resolves that
+correctly by building `selectedDate` from `cityToday()`, which reads the city's wall-clock
+day first - but any future caller that passes a raw `new Date()` while the OS is in a
+different zone would compute the wrong day near midnight.
+
+This suite calls the **three-argument** form (`timeZone` omitted, falling back to system-local)
+and sets `process.env.TZ` per city/date instead, so it does not itself exercise the
+four-argument path production uses. That path was checked separately during review: all 33
+rows still pass when the explicit city `timeZone` is passed while the process TZ is set to
+`UTC`, `America/Chicago`, `Asia/Kolkata` or `Pacific/Auckland`. Making the suite drive the
+four-argument form directly is follow-up work.

@@ -11,6 +11,9 @@
   const elDateGregorian = document.getElementById('date-gregorian');
   const elProfileName = document.getElementById('profile-name');
   const elProfileLocation = document.getElementById('profile-location');
+  const elSelectCity = document.getElementById('select-city');
+  const elBtnUseLocation = document.getElementById('btn-use-location');
+  const elLocationStatus = document.getElementById('location-status');
   const elSelectRasi = document.getElementById('select-rasi');
   const elThemeToggle = document.getElementById('theme-toggle');
   const elPanchangTithi = document.getElementById('panchang-tithi');
@@ -72,11 +75,10 @@
   const elSetName = document.getElementById('set-name');
   const elSetDob = document.getElementById('set-dob');
   const elSetTob = document.getElementById('set-tob');
-  const elSetLat = document.getElementById('set-lat');
-  const elSetLng = document.getElementById('set-lng');
 
   // Global State
-  let currentCoordinates = { lat: 17.3850, lng: 78.4867 }; // default Hyderabad
+  let currentCity = window.CityPresets.getDefault(); // { id, name, lat, lon, timeZone }
+  let currentCoordinates = { lat: currentCity.lat, lng: currentCity.lon };
   let userSettings = { name: 'యజమాని', dob: '', tob: '12:00', rasi: '0', theme: 'light' };
   let selectedDate = new Date();
   let calendarViewDate = new Date();
@@ -92,11 +94,23 @@
   let activeHoroTab = 'health';
   let nebulaClouds = [];
 
+  // The selected city's current calendar day, as a Date whose system-local
+  // Y/M/D match the city's — so every place that reads selectedDate via
+  // system-local accessors (calculatePanchang, isSameDay, TZ.zonedTimeToUtc
+  // callers) picks up the city's day rather than the browser's.
+  function cityToday() {
+    const p = window.TZ.getZonedParts(new Date(), currentCity.timeZone);
+    return new Date(p.year, p.month, p.day, 12, 0, 0);
+  }
+
   // Initialize Extension
   async function init() {
+    populateCitySelect();
     setupClock();
     await loadSettings();
-    await detectLocation();
+    await loadCityPreference();
+    selectedDate = cityToday();
+    calendarViewDate = new Date(selectedDate);
     setupEventListeners();
     initStarsAndRain();
     await refreshDashboard();
@@ -106,7 +120,7 @@
   function setupClock() {
     function updateClock() {
       const now = new Date();
-      elClock.textContent = now.toLocaleTimeString('en-US', { hour12: false });
+      elClock.textContent = now.toLocaleTimeString('en-US', { hour12: false, timeZone: currentCity.timeZone });
     }
     updateClock();
     setInterval(updateClock, 1000);
@@ -115,12 +129,12 @@
   // Load Saved Settings from Chrome Storage
   async function loadSettings() {
     return new Promise((resolve) => {
-      chrome.storage.local.get(['userSettings', 'coordinates'], (result) => {
+      chrome.storage.local.get(['userSettings'], (result) => {
         if (result.userSettings) {
           userSettings = result.userSettings;
           elProfileName.textContent = userSettings.name;
           elSelectRasi.value = userSettings.rasi;
-          
+
           // Apply theme
           document.body.setAttribute('data-theme', userSettings.theme || 'light');
           elThemeToggle.checked = (userSettings.theme === 'dark');
@@ -130,55 +144,114 @@
           elSetDob.value = userSettings.dob;
           elSetTob.value = userSettings.tob;
         }
-        if (result.coordinates) {
-          currentCoordinates = result.coordinates;
-          elSetLat.value = currentCoordinates.lat;
-          elSetLng.value = currentCoordinates.lng;
+        resolve();
+      });
+    });
+  }
+
+  // Populate the city picker with built-in presets, grouped India / US
+  function populateCitySelect() {
+    const groupLabels = { IN: 'భారతదేశం (India)', US: 'అమెరికా (USA)' };
+    Object.keys(groupLabels).forEach((region) => {
+      const optgroup = document.createElement('optgroup');
+      optgroup.label = groupLabels[region];
+      window.CityPresets.PRESETS.filter((c) => c.region === region).forEach((c) => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.name;
+        optgroup.appendChild(opt);
+      });
+      elSelectCity.appendChild(optgroup);
+    });
+  }
+
+  // Apply a city (built-in preset or a one-off geolocated position) as the
+  // active location for all timings on the page.
+  function applyCity(city, persist) {
+    currentCity = city;
+    currentCoordinates = { lat: city.lat, lng: city.lon };
+
+    if (city.id === 'custom') {
+      let customOption = elSelectCity.querySelector('option[value="custom"]');
+      if (!customOption) {
+        customOption = document.createElement('option');
+        customOption.value = 'custom';
+        elSelectCity.appendChild(customOption);
+      }
+      customOption.textContent = city.name;
+    }
+    elSelectCity.value = city.id;
+
+    elProfileLocation.textContent = city.name;
+
+    if (persist) {
+      chrome.storage.local.set({ selectedCity: city });
+    }
+  }
+
+  // Apply a new city and, if the dashboard was showing today, roll the
+  // viewed date forward/back to the new city's today — a city switch can
+  // cross a day boundary that "today" in the old city didn't.
+  function switchCity(city, persist) {
+    const wasToday = isSameDay(selectedDate, cityToday());
+    applyCity(city, persist);
+    if (wasToday) selectedDate = cityToday();
+  }
+
+  // Load the persisted city choice, defaulting to Hyderabad on first run.
+  // No automatic geolocation prompt here — the picker is authoritative;
+  // "Use My Location" (below) remains available as an opt-in convenience.
+  async function loadCityPreference() {
+    return new Promise((resolve) => {
+      chrome.storage.local.get(['selectedCity'], (result) => {
+        const saved = result.selectedCity;
+        if (saved && typeof saved.lat === 'number' && typeof saved.lon === 'number' && saved.timeZone) {
+          applyCity(saved, false);
+        } else {
+          applyCity(window.CityPresets.getDefault(), false);
         }
         resolve();
       });
     });
   }
 
-  // Geolocation detection
-  async function detectLocation() {
-    return new Promise((resolve) => {
-      elProfileLocation.textContent = "స్థానం కనుగొనబడుతోంది...";
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            currentCoordinates = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            };
-            elSetLat.value = currentCoordinates.lat.toFixed(4);
-            elSetLng.value = currentCoordinates.lng.toFixed(4);
-            
-            // Save coordinates
-            await chrome.storage.local.set({ coordinates: currentCoordinates });
-            
-            // Reverse geocode fallback
-            elProfileLocation.textContent = `Lat: ${currentCoordinates.lat.toFixed(2)}, Lng: ${currentCoordinates.lng.toFixed(2)}`;
-            resolve();
-          },
-          (error) => {
-            console.warn("Geolocation blocked/failed, using defaults:", error.message);
-            elProfileLocation.textContent = "హైదరాబాద్ (డిఫాల్ట్)";
-            resolve();
-          },
-          { timeout: 5000 }
-        );
-      } else {
-        elProfileLocation.textContent = "హైదరాబాద్ (డిఫాల్ట్)";
-        resolve();
-      }
-    });
+  // On-demand geolocation as an optional convenience alongside the picker
+  function useMyLocation() {
+    if (!navigator.geolocation) {
+      elLocationStatus.textContent = "ఈ బ్రౌజర్‌లో స్థాన గుర్తింపు అందుబాటులో లేదు. (Geolocation unavailable.)";
+      elLocationStatus.style.display = 'block';
+      return;
+    }
+
+    elLocationStatus.textContent = "స్థానం కనుగొనబడుతోంది... (Locating...)";
+    elLocationStatus.style.display = 'block';
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || currentCity.timeZone;
+        const customCity = {
+          id: 'custom',
+          name: `నా ప్రస్తుత స్థానం (Lat: ${position.coords.latitude.toFixed(2)}, Lng: ${position.coords.longitude.toFixed(2)})`,
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+          timeZone
+        };
+        switchCity(customCity, true);
+        elLocationStatus.style.display = 'none';
+        await refreshDashboard();
+      },
+      (error) => {
+        console.warn("Geolocation blocked/failed:", error.message);
+        elLocationStatus.textContent = "స్థానం లభించలేదు, దయచేసి నగరాన్ని ఎంచుకోండి. (Location unavailable, please pick a city.)";
+      },
+      { timeout: 5000 }
+    );
   }
 
   // Format times as HH:MM AM/PM
   function formatTime(date) {
     if (!date) return "--:--";
-    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: currentCity.timeZone });
   }
 
   // Trigger Rasi horoscope details
@@ -212,11 +285,10 @@
   // Update Main Dashboard UI Cards
   async function refreshDashboard() {
     // 1. Calculate Panchang for selectedDate
-    activePanchang = window.Panchang.calculatePanchang(selectedDate, currentCoordinates.lat, currentCoordinates.lng);
+    activePanchang = window.Panchang.calculatePanchang(selectedDate, currentCoordinates.lat, currentCoordinates.lng, currentCity.timeZone);
     
-    // Store today's panchang if the viewed date is indeed today
-    const now = new Date();
-    if (isSameDay(selectedDate, now)) {
+    // Store today's panchang if the viewed date is indeed today (in the selected city)
+    if (isSameDay(selectedDate, cityToday())) {
       todayPanchang = activePanchang;
     }
 
@@ -224,6 +296,11 @@
     updateSkyBackdrop(activePanchang);
 
     // 2. Render Hero Clock header
+    // No timeZone here deliberately: selectedDate's system-local Y/M/D already
+    // *is* the selected city's day (see cityToday()), so formatting it in the
+    // browser's own zone reads back the same date. Passing currentCity.timeZone
+    // here would reinterpret that already-city-local day through a second zone
+    // shift and could show the wrong date.
     elDateGregorian.textContent = selectedDate.toLocaleDateString('te-IN', {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
@@ -285,7 +362,7 @@
 
     const birthDate = new Date(userSettings.dob);
     // Find birth Panchang (using birth coordinates or defaults)
-    const birthPanchang = window.Panchang.calculatePanchang(birthDate, currentCoordinates.lat, currentCoordinates.lng);
+    const birthPanchang = window.Panchang.calculatePanchang(birthDate, currentCoordinates.lat, currentCoordinates.lng, currentCity.timeZone);
     
     // Birthday is matching Lunar month index and Nakshatra index
     if (panchang.month.index === birthPanchang.month.index && panchang.nakshatra.index === birthPanchang.nakshatra.index) {
@@ -305,7 +382,7 @@
     if (nextSolar && isSameDay(nextSolar.peak.date, panchang.date)) {
       elEclipseBanner.style.display = 'flex';
       elEclipseTitle.textContent = "సూర్య గ్రహణం హెచ్చరిక (Solar Eclipse Alert!)";
-      elEclipseDesc.textContent = `గ్రహణ పీక్ సమయం: ${nextSolar.peak.date.toLocaleTimeString()}. గ్రహణ నియమ నిబంధనలు పాటించవలెను.`;
+      elEclipseDesc.textContent = `గ్రహణ పీక్ సమయం: ${formatTime(nextSolar.peak.date)}. గ్రహణ నియమ నిబంధనలు పాటించవలెను.`;
       return;
     }
 
@@ -314,7 +391,7 @@
     if (nextLunar && isSameDay(nextLunar.peak.date, panchang.date)) {
       elEclipseBanner.style.display = 'flex';
       elEclipseTitle.textContent = "చంద్ర గ్రహణం హెచ్చరిక (Lunar Eclipse Alert!)";
-      elEclipseDesc.textContent = `గ్రహణ పీక్ సమయం: ${nextLunar.peak.date.toLocaleTimeString()}. గ్రహణ నియమ నిబంధనలు పాటించవలెను.`;
+      elEclipseDesc.textContent = `గ్రహణ పీక్ సమయం: ${formatTime(nextLunar.peak.date)}. గ్రహణ నియమ నిబంధనలు పాటించవలెను.`;
       return;
     }
 
@@ -400,14 +477,13 @@
     const cell = document.createElement('div');
     cell.className = 'calendar-day' + (isOtherMonth ? ' other-month' : '');
 
-    // Highlight today
-    const now = new Date();
-    if (isSameDay(cellDate, now)) {
+    // Highlight today (in the selected city)
+    if (isSameDay(cellDate, cityToday())) {
       cell.classList.add('today');
     }
 
     // Calculate Tithi for the day (fast calculation using defaults)
-    const panchang = window.Panchang.calculatePanchang(cellDate, currentCoordinates.lat, currentCoordinates.lng);
+    const panchang = window.Panchang.calculatePanchang(cellDate, currentCoordinates.lat, currentCoordinates.lng, currentCity.timeZone);
     const festivals = window.Festivals.getFestivals(panchang);
 
     const elNum = document.createElement('span');
@@ -448,6 +524,16 @@
 
   // Setup UI Event Listeners
   function setupEventListeners() {
+    // City picker
+    elSelectCity.addEventListener('change', async () => {
+      const city = window.CityPresets.getById(elSelectCity.value);
+      if (!city) return; // ignore selecting the transient "custom" option itself
+      switchCity(city, true);
+      await refreshDashboard();
+    });
+
+    elBtnUseLocation.addEventListener('click', useMyLocation);
+
     // Horoscope Category Tabs
     const btnHealth = document.getElementById('btn-horo-health');
     const btnWealth = document.getElementById('btn-horo-wealth');
@@ -578,15 +664,7 @@
       userSettings.dob = elSetDob.value;
       userSettings.tob = elSetTob.value;
 
-      currentCoordinates = {
-        lat: parseFloat(elSetLat.value),
-        lng: parseFloat(elSetLng.value)
-      };
-
-      await chrome.storage.local.set({
-        userSettings,
-        coordinates: currentCoordinates
-      });
+      await chrome.storage.local.set({ userSettings });
 
       elProfileName.textContent = userSettings.name;
       elSettingsModal.style.display = 'none';
@@ -726,13 +804,17 @@
     if (!elSkyBackdrop) return;
 
     const now = new Date();
-    // Simulate current hours/minutes/seconds on the selected date
-    const skyTime = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
+    // Simulate the current wall-clock time (in the selected city) on the selected date
+    const nowParts = window.TZ.getZonedParts(now, currentCity.timeZone);
+    const skyTime = window.TZ.zonedTimeToUtc(
+      selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(),
+      nowParts.hour, nowParts.minute, nowParts.second, currentCity.timeZone
+    );
     const timeMs = skyTime.getTime();
 
     // Default to 6:00 AM / 6:30 PM if sunrise/sunset is not loaded
-    const sunriseTime = panchang.sunrise ? panchang.sunrise.getTime() : new Date(skyTime.getFullYear(), skyTime.getMonth(), skyTime.getDate(), 6, 0, 0).getTime();
-    const sunsetTime = panchang.sunset ? panchang.sunset.getTime() : new Date(skyTime.getFullYear(), skyTime.getMonth(), skyTime.getDate(), 18, 30, 0).getTime();
+    const sunriseTime = panchang.sunrise ? panchang.sunrise.getTime() : window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 6, 0, 0, currentCity.timeZone).getTime();
+    const sunsetTime = panchang.sunset ? panchang.sunset.getTime() : window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 18, 30, 0, currentCity.timeZone).getTime();
 
     let skyState = 'day';
     const transitionMs = 30 * 60 * 1000; // 30 minutes golden-hour window
@@ -862,11 +944,15 @@
     if (!marker || !path) return;
 
     const now = new Date();
-    const skyTime = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
+    const nowParts = window.TZ.getZonedParts(now, currentCity.timeZone);
+    const skyTime = window.TZ.zonedTimeToUtc(
+      selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(),
+      nowParts.hour, nowParts.minute, nowParts.second, currentCity.timeZone
+    );
     const timeMs = skyTime.getTime();
 
-    const sunriseTime = panchang.sunrise ? panchang.sunrise.getTime() : new Date(skyTime.getFullYear(), skyTime.getMonth(), skyTime.getDate(), 6, 0, 0).getTime();
-    const sunsetTime = panchang.sunset ? panchang.sunset.getTime() : new Date(skyTime.getFullYear(), skyTime.getMonth(), skyTime.getDate(), 18, 30, 0).getTime();
+    const sunriseTime = panchang.sunrise ? panchang.sunrise.getTime() : window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 6, 0, 0, currentCity.timeZone).getTime();
+    const sunsetTime = panchang.sunset ? panchang.sunset.getTime() : window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 18, 30, 0, currentCity.timeZone).getTime();
 
     let fraction = 0;
     if (timeMs <= sunriseTime) {
@@ -897,7 +983,7 @@
     if (!blocksContainer) return;
     blocksContainer.innerHTML = '';
 
-    const timelineStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 6, 0, 0);
+    const timelineStart = window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 6, 0, 0, currentCity.timeZone);
     const startMs = timelineStart.getTime();
     const totalMs = 24 * 60 * 60 * 1000;
 
@@ -977,7 +1063,7 @@
         blockEl.style.left = `${leftPercent}%`;
         blockEl.style.width = `${widthPercent}%`;
         
-        const timeStr = `${b.start.toLocaleTimeString('te-IN', { hour: '2-digit', minute: '2-digit' })} - ${b.end.toLocaleTimeString('te-IN', { hour: '2-digit', minute: '2-digit' })}`;
+        const timeStr = `${b.start.toLocaleTimeString('te-IN', { hour: '2-digit', minute: '2-digit', timeZone: currentCity.timeZone })} - ${b.end.toLocaleTimeString('te-IN', { hour: '2-digit', minute: '2-digit', timeZone: currentCity.timeZone })}`;
         blockEl.title = `${b.label}: ${timeStr}`;
 
         blocksContainer.appendChild(blockEl);
@@ -987,7 +1073,11 @@
     const elCursor = document.getElementById('timeline-cursor');
     if (elCursor) {
       const now = new Date();
-      const skyTime = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), now.getHours(), now.getMinutes(), now.getSeconds());
+      const nowParts = window.TZ.getZonedParts(now, currentCity.timeZone);
+      const skyTime = window.TZ.zonedTimeToUtc(
+        selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(),
+        nowParts.hour, nowParts.minute, nowParts.second, currentCity.timeZone
+      );
       const skyTimeMs = skyTime.getTime();
 
       if (skyTimeMs >= startMs && skyTimeMs <= startMs + totalMs) {

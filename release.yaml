@@ -13,11 +13,13 @@ targets:
       - newtab.css
       - newtab.js
       - storage-shim.js
+      - cities.js
       - panchang.js
       - festivals.js
       - sankalpam.js
       - horoscope.js
       - reminders.js
       - lib/astronomy.js
+      - lib/tz.js
       - icons
       - fonts

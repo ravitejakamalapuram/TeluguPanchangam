@@ -37,4 +37,4 @@ Telugu New Tab Calendar transforms the default Chrome new tab page into a compre
 Required to save user city selection, festival notification preferences, and saved sankalpam details locally.
 
 ### geolocation
-Detects latitude and longitude, with the user's permission, so sunrise, sunset, Rahu Kalam and other Panchangam timings are computed for their location. The user can instead enter a location manually; coordinates are stored only locally and never leave the browser.
+Detects latitude and longitude, with the user's permission, so sunrise, sunset, Rahu Kalam and other Panchangam timings are computed for their location. The user can instead pick their city from the built-in list; coordinates are stored only locally and never leave the browser.

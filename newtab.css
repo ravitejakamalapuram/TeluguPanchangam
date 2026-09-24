@@ -596,6 +596,12 @@ body {
   border-radius: 6px;
 }
 
+.city-selector-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.city-selector-card label,
 .rasi-selector-card label {
   display: block;
   font-size: 0.8rem;
@@ -618,6 +624,7 @@ body {
   transform: translateY(-50%);
   pointer-events: none;
 }
+.city-selector-card select,
 .rasi-selector-card select {
   width: 100%;
   padding: 12px;
@@ -630,9 +637,18 @@ body {
   appearance: none;
   cursor: pointer;
 }
+.city-selector-card select option,
 .rasi-selector-card select option {
   background: #120808;
   color: #fff;
+}
+.city-selector-card .cyber-btn.tiny-btn {
+  width: 100%;
+}
+.location-status-msg {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: center;
 }
 
 .theme-switch-row {

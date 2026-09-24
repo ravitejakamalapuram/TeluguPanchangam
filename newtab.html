@@ -56,7 +56,7 @@
         <div class="select-wrapper">
           <select id="select-city"></select>
         </div>
-        <button id="btn-use-location" type="button" class="cyber-btn tiny-btn city-locate-btn" data-i18n-bi="📍 నా స్థానం వాడు (📍 Use My Location)">📍 నా స్థానం వాడు (Use My Location)</button>
+        <button id="btn-use-location" type="button" class="cyber-btn tiny-btn city-locate-btn" data-i18n="useMyLocationBtn">📍 నా స్థానం వాడు (Use My Location)</button>
         <p id="location-status" class="location-status-msg" style="display: none;"></p>
       </div>
 
@@ -170,10 +170,10 @@
       <!-- 24-Hour Muhurthams Visual Timeline -->
       <section class="timeline-card glass-panel">
         <div class="timeline-header">
-          <h3 data-i18n-bi="దిన ముహూర్త కాల పట్టిక (Daily Muhurtham Timeline)">దిన ముహూర్త కాల పట్టిక (Daily Muhurthams Timeline)</h3>
+          <h3 data-i18n-bi="దిన ముహూర్త కాల పట్టిక (Daily Muhurthams Timeline)">దిన ముహూర్త కాల పట్టిక (Daily Muhurthams Timeline)</h3>
           <div class="legend-row">
-            <span class="legend-item auspicious" data-i18n-bi="● శుభ కాలములు (Auspicious)">● శుభ కాలములు</span>
-            <span class="legend-item inauspicious" data-i18n-bi="● వర్జ్య కాలములు (Inauspicious)">● వర్జ్య కాలములు</span>
+            <span class="legend-item auspicious" data-i18n-split-bi="● శుభ కాలములు (Auspicious)">● శుభ కాలములు</span>
+            <span class="legend-item inauspicious" data-i18n-split-bi="● వర్జ్య కాలములు (Inauspicious)">● వర్జ్య కాలములు</span>
           </div>
         </div>
         
@@ -201,27 +201,27 @@
         <!-- Detail Grid of Exact Timings -->
         <div class="timing-detail-grid">
           <div class="timing-detail-box inauspicious">
-            <span data-i18n-bi="రాహుకాలం (Rahu Kalam):">రాహుకాలం:</span>
+            <span data-i18n-split-bi="రాహుకాలం (Rahu Kalam):">రాహుకాలం:</span>
             <span id="time-rahu">--</span>
           </div>
           <div class="timing-detail-box inauspicious">
-            <span data-i18n-bi="యమగండం (Yama Gandam):">యమగండం:</span>
+            <span data-i18n-split-bi="యమగండం (Yama Gandam):">యమగండం:</span>
             <span id="time-yama">--</span>
           </div>
           <div class="timing-detail-box inauspicious">
-            <span data-i18n-bi="దుర్ముహూర్తం (Durmuhurtham):">దుర్ముహూర్తం:</span>
+            <span data-i18n-split-bi="దుర్ముహూర్తం (Durmuhurtham):">దుర్ముహూర్తం:</span>
             <span id="time-dur">--</span>
           </div>
           <div class="timing-detail-box inauspicious">
-            <span data-i18n-bi="వర్జ్యం (Varjyam):">వర్జ్యం:</span>
+            <span data-i18n-split-bi="వర్జ్యం (Varjyam):">వర్జ్యం:</span>
             <span id="time-varj">--</span>
           </div>
           <div class="timing-detail-box auspicious">
-            <span data-i18n-bi="అమృతకాలం (Amrita Kalam):">అమృతకాలం:</span>
+            <span data-i18n-split-bi="అమృతకాలం (Amrita Kalam):">అమృతకాలం:</span>
             <span id="time-amrita">--</span>
           </div>
           <div class="timing-detail-box auspicious">
-            <span data-i18n-bi="అభిజిత్ ముహూర్తం (Abhijit Muhurtham):">అభిజిత్ ముహూర్తం:</span>
+            <span data-i18n-split-bi="అభిజిత్ ముహూర్తం (Abhijit Muhurtham):">అభిజిత్ ముహూర్తం:</span>
             <span id="time-abhijit">--</span>
           </div>
         </div>
@@ -319,36 +319,36 @@
               <option value="11" data-i18n-bi="ఫాల్గుణం (Phalgunam)">ఫాల్గుణం (Phalgunam)</option>
             </select>
             <select id="rem-lunar-tithi">
-              <option value="0" data-i18n-bi="శుక్ల పాడ్యమి (Prathama #1)">శుక్ల పాడ్యమి (1)</option>
-              <option value="1" data-i18n-bi="శుక్ల విదియ (Dwitiya #2)">శుక్ల విదియ (2)</option>
-              <option value="2" data-i18n-bi="శుక్ల తదియ (Tritiya #3)">శుక్ల తదియ (3)</option>
-              <option value="3" data-i18n-bi="శుక్ల చవితి (Chaturthi #4)">శుక్ల చవితి (4)</option>
-              <option value="4" data-i18n-bi="శుక్ల పంచమి (Panchami #5)">శుక్ల పంచమి (5)</option>
-              <option value="5" data-i18n-bi="శుక్ల షష్ఠి (Shashti #6)">శుక్ల షష్ఠి (6)</option>
-              <option value="6" data-i18n-bi="శుక్ల సప్తమి (Saptami #7)">శుక్ల సప్తమి (7)</option>
-              <option value="7" data-i18n-bi="శుక్ల అష్టమి (Ashtami #8)">శుక్ల అష్టమి (8)</option>
-              <option value="8" data-i18n-bi="శుక్ల నవమి (Navami #9)">శుక్ల నవమి (9)</option>
-              <option value="9" data-i18n-bi="శుక్ల దశమి (Dashami #10)">శుక్ల దశమి (10)</option>
-              <option value="10" data-i18n-bi="శుక్ల ఏకాదశి (Ekadashi #11)">శుక్ల ఏకాదశి (11)</option>
-              <option value="11" data-i18n-bi="శుక్ల ద్వాదశి (Dwadashi #12)">శుక్ల ద్వాదశి (12)</option>
-              <option value="12" data-i18n-bi="శుక్ల త్రయోదశి (Trayodashi #13)">శుక్ల త్రయోదశి (13)</option>
-              <option value="13" data-i18n-bi="శుక్ల చతుర్దశి (Chaturdashi #14)">శుక్ల చతుర్దశి (14)</option>
-              <option value="14" data-i18n-bi="పూర్ణిమ (Purnima #15)">పూర్ణిమ (15)</option>
-              <option value="15" data-i18n-bi="కృష్ణ పాడ్యమి (Prathama #16)">కృష్ణ పాడ్యమి (16)</option>
-              <option value="16" data-i18n-bi="కృష్ణ విదియ (Dwitiya #17)">కృష్ణ విదియ (17)</option>
-              <option value="17" data-i18n-bi="కృష్ణ తదియ (Tritiya #18)">కృష్ణ తదియ (18)</option>
-              <option value="18" data-i18n-bi="కృష్ణ చవితి (Chaturthi #19)">కృష్ణ చవితి (19)</option>
-              <option value="19" data-i18n-bi="కృష్ణ పంచమి (Panchami #20)">కృష్ణ పంచమి (20)</option>
-              <option value="20" data-i18n-bi="కృష్ణ షష్ఠి (Shashti #21)">కృష్ణ షష్ఠి (21)</option>
-              <option value="21" data-i18n-bi="కృష్ణ సప్తమి (Saptami #22)">కృష్ణ సప్తమి (22)</option>
-              <option value="22" data-i18n-bi="కృష్ణ అష్టమి (Ashtami #23)">కృష్ణ అష్టమి (23)</option>
-              <option value="23" data-i18n-bi="కృష్ణ నవమి (Navami #24)">కృష్ణ నవమి (24)</option>
-              <option value="24" data-i18n-bi="కృష్ణ దశమి (Dashami #25)">కృష్ణ దశమి (25)</option>
-              <option value="25" data-i18n-bi="కృష్ణ ఏకాదశి (Ekadashi #26)">కృష్ణ ఏకాదశి (26)</option>
-              <option value="26" data-i18n-bi="కృష్ణ ద్వాదశి (Dwadashi #27)">కృష్ణ ద్వాదశి (27)</option>
-              <option value="27" data-i18n-bi="కృష్ణ త్రయోదశి (Trayodashi #28)">కృష్ణ త్రయోదశి (28)</option>
-              <option value="28" data-i18n-bi="కృష్ణ చతుర్దశి (Chaturdashi #29)">కృష్ణ చతుర్దశి (29)</option>
-              <option value="29" data-i18n-bi="అమావాస్య (Amavasya #30)">అమావాస్య (30)</option>
+              <option value="0" data-i18n-te="శుక్ల పాడ్యమి (1)" data-i18n-en="Shukla Prathama">శుక్ల పాడ్యమి (1)</option>
+              <option value="1" data-i18n-te="శుక్ల విదియ (2)" data-i18n-en="Shukla Dwitiya">శుక్ల విదియ (2)</option>
+              <option value="2" data-i18n-te="శుక్ల తదియ (3)" data-i18n-en="Shukla Tritiya">శుక్ల తదియ (3)</option>
+              <option value="3" data-i18n-te="శుక్ల చవితి (4)" data-i18n-en="Shukla Chaturthi">శుక్ల చవితి (4)</option>
+              <option value="4" data-i18n-te="శుక్ల పంచమి (5)" data-i18n-en="Shukla Panchami">శుక్ల పంచమి (5)</option>
+              <option value="5" data-i18n-te="శుక్ల షష్ఠి (6)" data-i18n-en="Shukla Shashti">శుక్ల షష్ఠి (6)</option>
+              <option value="6" data-i18n-te="శుక్ల సప్తమి (7)" data-i18n-en="Shukla Saptami">శుక్ల సప్తమి (7)</option>
+              <option value="7" data-i18n-te="శుక్ల అష్టమి (8)" data-i18n-en="Shukla Ashtami">శుక్ల అష్టమి (8)</option>
+              <option value="8" data-i18n-te="శుక్ల నవమి (9)" data-i18n-en="Shukla Navami">శుక్ల నవమి (9)</option>
+              <option value="9" data-i18n-te="శుక్ల దశమి (10)" data-i18n-en="Shukla Dashami">శుక్ల దశమి (10)</option>
+              <option value="10" data-i18n-te="శుక్ల ఏకాదశి (11)" data-i18n-en="Shukla Ekadashi">శుక్ల ఏకాదశి (11)</option>
+              <option value="11" data-i18n-te="శుక్ల ద్వాదశి (12)" data-i18n-en="Shukla Dwadashi">శుక్ల ద్వాదశి (12)</option>
+              <option value="12" data-i18n-te="శుక్ల త్రయోదశి (13)" data-i18n-en="Shukla Trayodashi">శుక్ల త్రయోదశి (13)</option>
+              <option value="13" data-i18n-te="శుక్ల చతుర్దశి (14)" data-i18n-en="Shukla Chaturdashi">శుక్ల చతుర్దశి (14)</option>
+              <option value="14" data-i18n-te="పూర్ణిమ (15)" data-i18n-en="Purnima">పూర్ణిమ (15)</option>
+              <option value="15" data-i18n-te="కృష్ణ పాడ్యమి (16)" data-i18n-en="Krishna Prathama">కృష్ణ పాడ్యమి (16)</option>
+              <option value="16" data-i18n-te="కృష్ణ విదియ (17)" data-i18n-en="Krishna Dwitiya">కృష్ణ విదియ (17)</option>
+              <option value="17" data-i18n-te="కృష్ణ తదియ (18)" data-i18n-en="Krishna Tritiya">కృష్ణ తదియ (18)</option>
+              <option value="18" data-i18n-te="కృష్ణ చవితి (19)" data-i18n-en="Krishna Chaturthi">కృష్ణ చవితి (19)</option>
+              <option value="19" data-i18n-te="కృష్ణ పంచమి (20)" data-i18n-en="Krishna Panchami">కృష్ణ పంచమి (20)</option>
+              <option value="20" data-i18n-te="కృష్ణ షష్ఠి (21)" data-i18n-en="Krishna Shashti">కృష్ణ షష్ఠి (21)</option>
+              <option value="21" data-i18n-te="కృష్ణ సప్తమి (22)" data-i18n-en="Krishna Saptami">కృష్ణ సప్తమి (22)</option>
+              <option value="22" data-i18n-te="కృష్ణ అష్టమి (23)" data-i18n-en="Krishna Ashtami">కృష్ణ అష్టమి (23)</option>
+              <option value="23" data-i18n-te="కృష్ణ నవమి (24)" data-i18n-en="Krishna Navami">కృష్ణ నవమి (24)</option>
+              <option value="24" data-i18n-te="కృష్ణ దశమి (25)" data-i18n-en="Krishna Dashami">కృష్ణ దశమి (25)</option>
+              <option value="25" data-i18n-te="కృష్ణ ఏకాదశి (26)" data-i18n-en="Krishna Ekadashi">కృష్ణ ఏకాదశి (26)</option>
+              <option value="26" data-i18n-te="కృష్ణ ద్వాదశి (27)" data-i18n-en="Krishna Dwadashi">కృష్ణ ద్వాదశి (27)</option>
+              <option value="27" data-i18n-te="కృష్ణ త్రయోదశి (28)" data-i18n-en="Krishna Trayodashi">కృష్ణ త్రయోదశి (28)</option>
+              <option value="28" data-i18n-te="కృష్ణ చతుర్దశి (29)" data-i18n-en="Krishna Chaturdashi">కృష్ణ చతుర్దశి (29)</option>
+              <option value="29" data-i18n-te="అమావాస్య (30)" data-i18n-en="Amavasya">అమావాస్య (30)</option>
             </select>
           </div>
 

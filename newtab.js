@@ -132,6 +132,12 @@
     document.querySelectorAll('[data-i18n-bi]').forEach((el) => {
       el.textContent = window.I18N.bi(el.dataset.i18nBi);
     });
+    document.querySelectorAll('[data-i18n-split-bi]').forEach((el) => {
+      el.textContent = window.I18N.splitBi(el.dataset.i18nSplitBi);
+    });
+    document.querySelectorAll('[data-i18n-te]').forEach((el) => {
+      el.textContent = window.I18N.teEn(el.dataset.i18nTe, el.dataset.i18nEn);
+    });
     document.querySelectorAll('[data-i18n-placeholder-bi]').forEach((el) => {
       el.placeholder = window.I18N.bi(el.dataset.i18nPlaceholderBi);
     });
@@ -321,8 +327,8 @@
       return `${fallbackName} ${window.I18N.t('allDaySuffix')}`;
     }
     const t = transitions[0];
-    const name = window.I18N.bi(elementsList[t.fromIndex]);
-    const nextName = window.I18N.bi(elementsList[t.toIndex]);
+    const name = window.I18N.splitBi(elementsList[t.fromIndex]);
+    const nextName = window.I18N.splitBi(elementsList[t.toIndex]);
     const time = formatTime(t.time);
     return window.I18N.getLang() === 'en'
       ? `${name} until ${time}, then ${nextName}`
@@ -353,17 +359,17 @@
     });
 
     // 3. Render Panchang card values
-    elPanchangTithi.textContent = window.I18N.bi(activePanchang.tithi.name);
-    elPanchangTithiTime.textContent = formatTransitionText(activePanchang.tithi.transitions, window.Panchang.PANCHANG_DATA.tithis, window.I18N.bi(activePanchang.tithi.name));
+    elPanchangTithi.textContent = window.I18N.splitBi(activePanchang.tithi.name);
+    elPanchangTithiTime.textContent = formatTransitionText(activePanchang.tithi.transitions, window.Panchang.PANCHANG_DATA.tithis, window.I18N.splitBi(activePanchang.tithi.name));
 
-    elPanchangNaks.textContent = window.I18N.bi(activePanchang.nakshatra.name);
-    elPanchangNaksTime.textContent = formatTransitionText(activePanchang.nakshatra.transitions, window.Panchang.PANCHANG_DATA.nakshatras, window.I18N.bi(activePanchang.nakshatra.name));
+    elPanchangNaks.textContent = window.I18N.splitBi(activePanchang.nakshatra.name);
+    elPanchangNaksTime.textContent = formatTransitionText(activePanchang.nakshatra.transitions, window.Panchang.PANCHANG_DATA.nakshatras, window.I18N.splitBi(activePanchang.nakshatra.name));
 
-    elPanchangYoga.textContent = window.I18N.bi(activePanchang.yoga.name);
-    elPanchangYogaTime.textContent = formatTransitionText(activePanchang.yoga.transitions, window.Panchang.PANCHANG_DATA.yogas, window.I18N.bi(activePanchang.yoga.name));
+    elPanchangYoga.textContent = window.I18N.splitBi(activePanchang.yoga.name);
+    elPanchangYogaTime.textContent = formatTransitionText(activePanchang.yoga.transitions, window.Panchang.PANCHANG_DATA.yogas, window.I18N.splitBi(activePanchang.yoga.name));
 
-    elPanchangKarana.textContent = window.I18N.bi(activePanchang.karana.name);
-    elPanchangKaranaTime.textContent = `${window.I18N.bi('కరణం (Karana)')}: ${window.I18N.bi(activePanchang.karana.name)}`;
+    elPanchangKarana.textContent = window.I18N.splitBi(activePanchang.karana.name);
+    elPanchangKaranaTime.textContent = `${window.I18N.splitBi('కరణం (Karana)')}: ${window.I18N.splitBi(activePanchang.karana.name)}`;
 
     // 4. Inauspicious / Auspicious Timings
     elTimeRahu.textContent = `${formatTime(activePanchang.rahuKalam.start)} - ${formatTime(activePanchang.rahuKalam.end)}`;
@@ -560,8 +566,10 @@
 
     const elTithi = document.createElement('span');
     elTithi.className = 'day-tithi';
-    const tithiName = window.I18N.bi(panchang.tithi.name);
-    elTithi.textContent = window.I18N.getLang() === 'te' ? tithiName.replace("శుక్ల ", "").replace("కృష్ణ ", "") : tithiName;
+    const tithiName = window.I18N.splitBi(panchang.tithi.name);
+    elTithi.textContent = window.I18N.getLang() === 'en'
+      ? tithiName.replace("Shukla ", "").replace("Krishna ", "")
+      : tithiName.replace("శుక్ల ", "").replace("కృష్ణ ", "");
 
     cell.appendChild(elNum);
     cell.appendChild(elTithi);
@@ -570,7 +578,7 @@
     if (festivals.length > 0) {
       const elFest = document.createElement('span');
       elFest.className = 'day-festivals';
-      elFest.textContent = window.I18N.bi(festivals[0].name);
+      elFest.textContent = window.I18N.splitBi(festivals[0].name);
       elFest.title = festivals.map(f => window.I18N.bi(f.name)).join(", ");
       cell.appendChild(elFest);
     }

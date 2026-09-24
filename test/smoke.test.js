@@ -74,16 +74,66 @@ check('every <script src> in newtab.html is in release.yaml\'s include list', ()
   }
 });
 
-// --- bi() must not collapse the default Telugu UI (finding 4) ---
-check('bi() leaves the default Telugu composite string unchanged', () => {
+// --- te mode must reproduce the pre-toggle Telugu UI byte-for-byte on
+// every data-i18n-bi/-split-bi/-te surface (POR-63: "te output === main
+// output on every surface"). Each of these attributes carries what the
+// helper should compute for te; the element's own static inner text is
+// what pre-toggle `main` rendered (preserved verbatim when the toggle was
+// added), so comparing the two catches a surface put on the wrong helper
+// without needing a live git diff against main. This is what would have
+// caught the timeline-legend/Use-My-Location regressions from review
+// rounds 1-3. ---
+check('data-i18n-bi elements render their composite unchanged in te', () => {
   I18N.setLang('te');
-  assert.strictEqual(I18N.bi('తిథి (Tithi)'), 'తిథి (Tithi)');
+  const html = readFile('newtab.html');
+  const matches = [...html.matchAll(/data-i18n-bi="([^"]*)"[^>]*>([^<]*)</g)];
+  assert.ok(matches.length > 10, 'expected to find data-i18n-bi elements');
+  for (const [, attr, visible] of matches) {
+    assert.strictEqual(I18N.bi(attr), visible, `data-i18n-bi mismatch for "${attr}"`);
+  }
 });
 
-check('bi() strips to the English half only when the language is English', () => {
-  I18N.setLang('en');
-  assert.strictEqual(I18N.bi('తిథి (Tithi)'), 'Tithi');
+check('data-i18n-split-bi elements render Telugu-only in te, matching pre-toggle main', () => {
   I18N.setLang('te');
+  const html = readFile('newtab.html');
+  const matches = [...html.matchAll(/data-i18n-split-bi="([^"]*)"[^>]*>([^<]*)</g)];
+  assert.ok(matches.length > 0, 'expected to find data-i18n-split-bi elements');
+  for (const [, attr, visible] of matches) {
+    assert.strictEqual(I18N.splitBi(attr), visible, `data-i18n-split-bi mismatch for "${attr}"`);
+  }
+});
+
+check('data-i18n-te/-en pairs render the te side in te, matching pre-toggle main', () => {
+  const html = readFile('newtab.html');
+  const matches = [...html.matchAll(/data-i18n-te="([^"]*)" data-i18n-en="([^"]*)"[^>]*>([^<]*)</g)];
+  assert.ok(matches.length > 10, 'expected to find data-i18n-te/-en elements');
+  for (const [, teAttr, , visible] of matches) {
+    assert.strictEqual(teAttr, visible, `data-i18n-te mismatch for "${teAttr}"`);
+  }
+});
+
+// --- en mode must stay coherent on the two surfaces a plain composite
+// split can't express (trap 2 from review round 3) ---
+check('Use My Location shows exactly one pin in both languages, full composite in te', () => {
+  I18N.setLang('te');
+  assert.strictEqual(I18N.t('useMyLocationBtn'), '📍 నా స్థానం వాడు (Use My Location)');
+  I18N.setLang('en');
+  assert.strictEqual(I18N.t('useMyLocationBtn'), '📍 Use My Location');
+  I18N.setLang('te');
+});
+
+check('lunar tithi dropdown keeps its (N) ordinal in te and a unique English name in en', () => {
+  const html = readFile('newtab.html');
+  const matches = [...html.matchAll(/data-i18n-te="([^"]*)" data-i18n-en="([^"]*)"/g)];
+  const tithiOptions = matches.filter(([, teAttr]) => /\(\d+\)$/.test(teAttr));
+  assert.strictEqual(tithiOptions.length, 30, 'expected 30 lunar tithi dropdown options');
+  const enNames = tithiOptions.map(([, , enAttr]) => enAttr);
+  const unique = new Set(enNames);
+  assert.strictEqual(
+    unique.size,
+    enNames.length,
+    `duplicate English tithi dropdown labels: ${enNames.filter((l, i) => enNames.indexOf(l) !== i).join(', ')}`
+  );
 });
 
 // --- English tithi labels must be unique (blocker 2) ---

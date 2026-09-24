@@ -6,12 +6,12 @@ Last updated: 2026-09-24
 We take your privacy seriously. This extension is designed to operate securely and keep your data safe.
 
 ## What Data We Collect
-**Telugu New Tab Calendar (పంచాంగం) does not collect, transmit, or have access to any personal data, telemetry, or browsing history.**
-The extension's own code makes no network requests, and it does not use any analytics platform. Your selected city (and, if you use it, the coordinates from "Use My Location") is saved only on your own device so the extension can remember your preference — we never receive, see, or transmit that data ourselves.
+**Telugu New Tab Calendar (పంచాంగం) does not transmit any personal data anywhere, and does not collect telemetry or browsing history.**
+The settings screen asks you to optionally enter a name, birth date and birth time so the extension can personalize your daily Sankalpam text and horoscope, and lets you save your own reminders and a selected city. All of that information is typed in by you, is used entirely on your own device to render those features, and never leaves it. The extension's own code makes no network requests and uses no analytics platform, so we never receive, see, or transmit any of it ourselves.
 
 ## How Data Is Stored
 All data is stored locally on the device using standard API methods:
-- `chrome.storage.local`: Used to save configuration preferences, including your selected city.
+- `chrome.storage.local`: Used to save configuration preferences (including your selected city), the name/birth date/birth time you enter for Sankalpam and horoscope personalization, and any reminders you create.
 
 This on-device storage never leaves your device: no data is uploaded or synced to any external server by the extension. The only action that ever sends anything off your device is the optional "Use My Location" button described below, which hands the request to Chrome's own built-in geolocation service rather than to us.
 

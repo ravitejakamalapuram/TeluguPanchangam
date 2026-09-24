@@ -75,8 +75,6 @@
   const elSetName = document.getElementById('set-name');
   const elSetDob = document.getElementById('set-dob');
   const elSetTob = document.getElementById('set-tob');
-  const elSetLat = document.getElementById('set-lat');
-  const elSetLng = document.getElementById('set-lng');
 
   // Global State
   let currentCity = window.CityPresets.getDefault(); // { id, name, lat, lon, timeZone }
@@ -96,12 +94,23 @@
   let activeHoroTab = 'health';
   let nebulaClouds = [];
 
+  // The selected city's current calendar day, as a Date whose system-local
+  // Y/M/D match the city's — so every place that reads selectedDate via
+  // system-local accessors (calculatePanchang, isSameDay, TZ.zonedTimeToUtc
+  // callers) picks up the city's day rather than the browser's.
+  function cityToday() {
+    const p = window.TZ.getZonedParts(new Date(), currentCity.timeZone);
+    return new Date(p.year, p.month, p.day, 12, 0, 0);
+  }
+
   // Initialize Extension
   async function init() {
     populateCitySelect();
     setupClock();
     await loadSettings();
     await loadCityPreference();
+    selectedDate = cityToday();
+    calendarViewDate = new Date(selectedDate);
     setupEventListeners();
     initStarsAndRain();
     await refreshDashboard();
@@ -120,12 +129,12 @@
   // Load Saved Settings from Chrome Storage
   async function loadSettings() {
     return new Promise((resolve) => {
-      chrome.storage.local.get(['userSettings', 'coordinates'], (result) => {
+      chrome.storage.local.get(['userSettings'], (result) => {
         if (result.userSettings) {
           userSettings = result.userSettings;
           elProfileName.textContent = userSettings.name;
           elSelectRasi.value = userSettings.rasi;
-          
+
           // Apply theme
           document.body.setAttribute('data-theme', userSettings.theme || 'light');
           elThemeToggle.checked = (userSettings.theme === 'dark');
@@ -134,11 +143,6 @@
           elSetName.value = userSettings.name;
           elSetDob.value = userSettings.dob;
           elSetTob.value = userSettings.tob;
-        }
-        if (result.coordinates) {
-          currentCoordinates = result.coordinates;
-          elSetLat.value = currentCoordinates.lat;
-          elSetLng.value = currentCoordinates.lng;
         }
         resolve();
       });
@@ -166,10 +170,6 @@
   function applyCity(city, persist) {
     currentCity = city;
     currentCoordinates = { lat: city.lat, lng: city.lon };
-    // Keep the birth-details form's coordinate fields in sync so re-saving
-    // that form (without touching lat/lng) doesn't silently revert the city.
-    elSetLat.value = city.lat;
-    elSetLng.value = city.lon;
 
     if (city.id === 'custom') {
       let customOption = elSelectCity.querySelector('option[value="custom"]');
@@ -187,6 +187,15 @@
     if (persist) {
       chrome.storage.local.set({ selectedCity: city });
     }
+  }
+
+  // Apply a new city and, if the dashboard was showing today, roll the
+  // viewed date forward/back to the new city's today — a city switch can
+  // cross a day boundary that "today" in the old city didn't.
+  function switchCity(city, persist) {
+    const wasToday = isSameDay(selectedDate, cityToday());
+    applyCity(city, persist);
+    if (wasToday) selectedDate = cityToday();
   }
 
   // Load the persisted city choice, defaulting to Hyderabad on first run.
@@ -227,7 +236,7 @@
           lon: position.coords.longitude,
           timeZone
         };
-        applyCity(customCity, true);
+        switchCity(customCity, true);
         elLocationStatus.style.display = 'none';
         await refreshDashboard();
       },
@@ -278,9 +287,8 @@
     // 1. Calculate Panchang for selectedDate
     activePanchang = window.Panchang.calculatePanchang(selectedDate, currentCoordinates.lat, currentCoordinates.lng, currentCity.timeZone);
     
-    // Store today's panchang if the viewed date is indeed today
-    const now = new Date();
-    if (isSameDay(selectedDate, now)) {
+    // Store today's panchang if the viewed date is indeed today (in the selected city)
+    if (isSameDay(selectedDate, cityToday())) {
       todayPanchang = activePanchang;
     }
 
@@ -288,6 +296,11 @@
     updateSkyBackdrop(activePanchang);
 
     // 2. Render Hero Clock header
+    // No timeZone here deliberately: selectedDate's system-local Y/M/D already
+    // *is* the selected city's day (see cityToday()), so formatting it in the
+    // browser's own zone reads back the same date. Passing currentCity.timeZone
+    // here would reinterpret that already-city-local day through a second zone
+    // shift and could show the wrong date.
     elDateGregorian.textContent = selectedDate.toLocaleDateString('te-IN', {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
@@ -369,7 +382,7 @@
     if (nextSolar && isSameDay(nextSolar.peak.date, panchang.date)) {
       elEclipseBanner.style.display = 'flex';
       elEclipseTitle.textContent = "సూర్య గ్రహణం హెచ్చరిక (Solar Eclipse Alert!)";
-      elEclipseDesc.textContent = `గ్రహణ పీక్ సమయం: ${nextSolar.peak.date.toLocaleTimeString()}. గ్రహణ నియమ నిబంధనలు పాటించవలెను.`;
+      elEclipseDesc.textContent = `గ్రహణ పీక్ సమయం: ${formatTime(nextSolar.peak.date)}. గ్రహణ నియమ నిబంధనలు పాటించవలెను.`;
       return;
     }
 
@@ -378,7 +391,7 @@
     if (nextLunar && isSameDay(nextLunar.peak.date, panchang.date)) {
       elEclipseBanner.style.display = 'flex';
       elEclipseTitle.textContent = "చంద్ర గ్రహణం హెచ్చరిక (Lunar Eclipse Alert!)";
-      elEclipseDesc.textContent = `గ్రహణ పీక్ సమయం: ${nextLunar.peak.date.toLocaleTimeString()}. గ్రహణ నియమ నిబంధనలు పాటించవలెను.`;
+      elEclipseDesc.textContent = `గ్రహణ పీక్ సమయం: ${formatTime(nextLunar.peak.date)}. గ్రహణ నియమ నిబంధనలు పాటించవలెను.`;
       return;
     }
 
@@ -464,9 +477,8 @@
     const cell = document.createElement('div');
     cell.className = 'calendar-day' + (isOtherMonth ? ' other-month' : '');
 
-    // Highlight today
-    const now = new Date();
-    if (isSameDay(cellDate, now)) {
+    // Highlight today (in the selected city)
+    if (isSameDay(cellDate, cityToday())) {
       cell.classList.add('today');
     }
 
@@ -516,7 +528,7 @@
     elSelectCity.addEventListener('change', async () => {
       const city = window.CityPresets.getById(elSelectCity.value);
       if (!city) return; // ignore selecting the transient "custom" option itself
-      applyCity(city, true);
+      switchCity(city, true);
       await refreshDashboard();
     });
 
@@ -652,15 +664,7 @@
       userSettings.dob = elSetDob.value;
       userSettings.tob = elSetTob.value;
 
-      currentCoordinates = {
-        lat: parseFloat(elSetLat.value),
-        lng: parseFloat(elSetLng.value)
-      };
-
-      await chrome.storage.local.set({
-        userSettings,
-        coordinates: currentCoordinates
-      });
+      await chrome.storage.local.set({ userSettings });
 
       elProfileName.textContent = userSettings.name;
       elSettingsModal.style.display = 'none';

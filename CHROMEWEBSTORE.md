@@ -44,7 +44,7 @@ Google review requires specific plain-English justification for each declared pe
 
 | Permission | Used in Code? | Sample Evidence | Required? | Risk | Plain-English Review Justification |
 | :--- | :---: | :--- | :---: | :---: | :--- |
-| `storage` | Yes | newtab.html:404 | Yes | LOW | Stores the user's settings (language/display preferences), saved location coordinates, the name/birth date/birth time optionally entered for Sankalpam and horoscope personalization, and personal reminders (solar-date and lunar-tithi reminders) locally in chrome.storage.local so they persist across new tabs. |
+| `storage` | Yes | storage-shim.js | Yes | LOW | Stores the user's settings (language/display preferences), saved location coordinates, the name/birth date/birth time optionally entered for Sankalpam and horoscope personalization, and personal reminders (solar-date and lunar-tithi reminders) locally in chrome.storage.local so they persist across new tabs. |
 | `geolocation` | Yes | newtab.html | Yes | MEDIUM | Used, with the user's permission, to get the user's approximate coordinates once so sunrise/sunset, tithi/nakshatra timings, Rahu Kalam and the Sankalpam text are computed for their location. The user can instead pick their city from the built-in list; coordinates are stored only locally and never leave the browser. |
 
 ---
@@ -52,6 +52,9 @@ Google review requires specific plain-English justification for each declared pe
 ## 4. Privacy & Data Use Disclosure
 
 - **Privacy Policy URL**: `https://ravitejakamalapuram.github.io/telugu-panchangam.html`
+- **Bundled fonts**: Noto Sans Telugu and Outfit are vendored locally under the SIL Open Font
+  License 1.1; the license text and copyright notices ship in `fonts/OFL.txt` as required by
+  OFL section 2.
 
 ### Data categories to declare on the CWS submission form
 - **Personally identifiable information**: name, birth date, birth time — optionally typed in by the user for Sankalpam and horoscope personalization; stored only in `chrome.storage.local`, never transmitted.

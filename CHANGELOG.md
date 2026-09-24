@@ -10,9 +10,10 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 
 ### Removed
 - Weather widget (Open-Meteo lookup, sky-backdrop weather states, cloud/rain particles) to keep the new tab page single-purpose: Telugu calendar and panchangam only.
+- Unused Cinzel font (never referenced by any selector) and its two vendored `.woff2` files.
 
 ### Changed
-- Cinzel, Noto Sans Telugu and Outfit are now vendored locally instead of loaded from Google Fonts, so the extension makes zero network requests.
+- Noto Sans Telugu and Outfit are now vendored locally instead of loaded from Google Fonts, so the extension makes zero network requests. The SIL Open Font License text and per-family copyright notices ship alongside them in `fonts/OFL.txt`.
 
 ### Fixed
 - Real extension icons (16/48/128) replace 1x1 placeholders, so the toolbar and store icon are no longer blank.

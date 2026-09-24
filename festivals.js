@@ -15,9 +15,9 @@
 
   function getFestivals(panchang) {
     const festivals = [];
-    const m = panchang.month.index;     // 0 = Chaitram, 1 = Vaishakham, ...
-    const t = panchang.tithi.index;     // 0 = Shukla Padyami, 14 = Purnima, 29 = Amavasya
-    const w = panchang.weekday;         // 0 = Sunday, 1 = Monday, ...
+    const m = panchang.month.index;         // 0 = Chaitram, 1 = Vaishakham, ...
+    const t = panchang.festivalTithi.index; // Aparahna-Kaal tithi: 0 = Shukla Padyami, 14 = Purnima, 29 = Amavasya
+    const w = panchang.weekday;             // 0 = Sunday, 1 = Monday, ...
     const date = panchang.date;
 
     // 1. Lunar Festivals
@@ -131,8 +131,7 @@
     // 2. Solar Festivals (Bhogi, Sankranti, Kanuma)
     // We check if the Sun enters Capricorn (longitude 270°) during the current day
     const Astronomy = panchang.astronomyEngine;
-    const observer = new Astronomy.Observer(panchang.sunrise.latitude || 16.07, panchang.sunrise.longitude || 78.86, 0);
-    
+
     // Evaluate Sun position at previous midnight and next midnight
     const tStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
     const tEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);

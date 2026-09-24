@@ -248,12 +248,28 @@
     const daylightDuration = sunset.getTime() - sunrise.getTime();
     const midday = new Date(sunrise.getTime() + daylightDuration / 2);
 
-    // 2. Main Astrological Elements (computed at local midday, which represents the day's main Tithi/Nakshatra - Udaya Tithi)
+    // 2. Main Astrological Elements (computed at local midday; used for month/ritu/ayana
+    // and as the anchor for Varjyam/Amritakalam window lookups below)
     const middayAstro = Astronomy.MakeTime(midday);
     const tithi = getTithiAt(middayAstro);
     const nakshatra = getNakshatraAt(middayAstro);
     const yoga = getYogaAt(middayAstro);
     const karana = getKaranaAt(middayAstro);
+
+    // The Tithi/Nakshatra shown to the user follow the Udaya (sunrise-prevailing) convention,
+    // which is what printed Panchangams (and Drik Panchang's day header) report as "today's"
+    // Tithi/Nakshatra, even when a transition happens later the same day.
+    const sunriseAstro = Astronomy.MakeTime(sunrise);
+    const tithiUdaya = getTithiAt(sunriseAstro);
+    const nakshatraUdaya = getNakshatraAt(sunriseAstro);
+
+    // Tithi-based festivals (Ugadi, Sri Rama Navami, Vijayadashami, ...) are traditionally
+    // assigned to the day on which the tithi prevails during Aparahna Kaal (the 3/5-4/5
+    // span of daylight), not at sunrise or plain midday - using midday alone mis-assigned
+    // Vijayadashami by a day when the tithi changed between midday and Aparahna.
+    const aparahnaTime = new Date(sunrise.getTime() + 0.7 * daylightDuration);
+    const aparahnaAstro = Astronomy.MakeTime(aparahnaTime);
+    const tithiAparahna = getTithiAt(aparahnaAstro);
 
     // Find transitions during the day
     const tithiTransitions = findTransitionsForDay(y, mo, da, getTithiAt, timeZone);
@@ -423,7 +439,7 @@
     }
 
     const monthName = (isAdhika ? "అధిక " : "") + PANCHANG_DATA.months[monthIndex];
-    const pakshaName = (tithi.index < 15) ? "శుక్ల పక్షం (Shukla Paksham)" : "కృష్ణ పక్షం (Krishna Paksham)";
+    const pakshaName = (tithiUdaya.index < 15) ? "శుక్ల పక్షం (Shukla Paksham)" : "కృష్ణ పక్షం (Krishna Paksham)";
 
     // Samvatsara calculation
     // Year 1 (Prabhava) starts around Ugadi of 1987.
@@ -478,16 +494,19 @@
       sunset,
       midday,
       tithi: {
-        index: tithi.index,
-        name: PANCHANG_DATA.tithis[tithi.index],
+        index: tithiUdaya.index,
+        name: PANCHANG_DATA.tithis[tithiUdaya.index],
         transitions: tithiTransitions
       },
       nakshatra: {
-        index: nakshatra.index,
-        name: PANCHANG_DATA.nakshatras[nakshatra.index],
+        index: nakshatraUdaya.index,
+        name: PANCHANG_DATA.nakshatras[nakshatraUdaya.index],
         transitions: nakshatraTransitions,
-        moonLongSidereal: nakshatra.moonLongSidereal
+        moonLongSidereal: nakshatraUdaya.moonLongSidereal
       },
+      // Aparahna-Kaal tithi index, used by festivals.js to assign tithi-based festivals
+      // (Ugadi, Sri Rama Navami, Vijayadashami, ...) to the correct Gregorian day.
+      festivalTithi: { index: tithiAparahna.index },
       yoga: {
         index: yoga.index,
         name: PANCHANG_DATA.yogas[yoga.index],

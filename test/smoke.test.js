@@ -136,6 +136,37 @@ check('lunar tithi dropdown keeps its (N) ordinal in te and a unique English nam
   );
 });
 
+// --- Profile name placeholder must translate (POR-72 QA finding) ---
+// A fresh profile (no chrome.storage settings yet) shows the untouched
+// DEFAULT_PROFILE_NAME placeholder, which isn't user data and must
+// translate like the rest of the chrome. newtab.js can't be loaded here
+// (it's DOM-heavy), so this checks the two things that produced the bug:
+// the STRINGS table has both halves, and the direct-assignment pattern
+// that bypassed i18n hasn't crept back in.
+check('defaultProfileName is defined in both languages', () => {
+  I18N.setLang('te');
+  assert.strictEqual(I18N.t('defaultProfileName'), 'యజమాని');
+  I18N.setLang('en');
+  assert.strictEqual(I18N.t('defaultProfileName'), 'Owner');
+  I18N.setLang('te');
+});
+
+check('newtab.js never assigns userSettings.name to the profile name element directly', () => {
+  const src = readFile('newtab.js');
+  assert.ok(
+    !/elProfileName\.textContent\s*=\s*userSettings\.name/.test(src),
+    'elProfileName must be set via renderProfileName() so it re-translates the default placeholder, not by direct assignment'
+  );
+  assert.ok(
+    /function renderProfileName\s*\(/.test(src),
+    'expected a renderProfileName() helper'
+  );
+  assert.ok(
+    /function applyTranslations[\s\S]*?renderProfileName\(\);[\s\S]*?\n  \}/.test(src),
+    'applyTranslations() must call renderProfileName() so the language toggle re-renders the profile name'
+  );
+});
+
 // --- English tithi labels must be unique (blocker 2) ---
 check('English tithi labels have no duplicates across Shukla/Krishna paksha', () => {
   I18N.setLang('en');

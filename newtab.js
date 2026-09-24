@@ -78,9 +78,10 @@
   const elSetTob = document.getElementById('set-tob');
 
   // Global State
+  const DEFAULT_PROFILE_NAME = 'యజమాని'; // placeholder meaning "Owner" until the user sets a real name
   let currentCity = window.CityPresets.getDefault(); // { id, name, lat, lon, timeZone }
   let currentCoordinates = { lat: currentCity.lat, lng: currentCity.lon };
-  let userSettings = { name: 'యజమాని', dob: '', tob: '12:00', rasi: '0', theme: 'light' };
+  let userSettings = { name: DEFAULT_PROFILE_NAME, dob: '', tob: '12:00', rasi: '0', theme: 'light' };
   let selectedDate = new Date();
   let calendarViewDate = new Date();
   let todayPanchang = null;
@@ -141,6 +142,17 @@
     document.querySelectorAll('[data-i18n-placeholder-bi]').forEach((el) => {
       el.placeholder = window.I18N.bi(el.dataset.i18nPlaceholderBi);
     });
+
+    renderProfileName();
+  }
+
+  // The profile name is free text the user can set via settings, so it can't
+  // carry a static data-i18n attribute — only the untouched default placeholder
+  // translates; a real custom name is shown as typed in both languages.
+  function renderProfileName() {
+    elProfileName.textContent = (userSettings.name === DEFAULT_PROFILE_NAME)
+      ? window.I18N.t('defaultProfileName')
+      : userSettings.name;
   }
 
   // Live Clock setup
@@ -159,7 +171,7 @@
       chrome.storage.local.get(['userSettings'], (result) => {
         if (result.userSettings) {
           userSettings = result.userSettings;
-          elProfileName.textContent = userSettings.name;
+          renderProfileName();
           elSelectRasi.value = userSettings.rasi;
 
           // Apply theme
@@ -753,7 +765,7 @@
 
       await chrome.storage.local.set({ userSettings });
 
-      elProfileName.textContent = userSettings.name;
+      renderProfileName();
       elSettingsModal.style.display = 'none';
 
       await refreshDashboard();

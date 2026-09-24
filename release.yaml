@@ -3,6 +3,7 @@
 # The repo root is the extension; `include` is an allowlist (the scripts newtab.html loads,
 # plus icons) so store assets, docs and package files never ship.
 app: telugupanchangam
+test: npm test
 targets:
   - type: chrome
     item_id: obgpdlhkahmdiepklldjnnmfmbhmgenn

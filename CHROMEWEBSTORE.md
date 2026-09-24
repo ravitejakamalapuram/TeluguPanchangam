@@ -44,7 +44,7 @@ Google review requires specific plain-English justification for each declared pe
 
 | Permission | Used in Code? | Sample Evidence | Required? | Risk | Plain-English Review Justification |
 | :--- | :---: | :--- | :---: | :---: | :--- |
-| `storage` | Yes | newtab.html:404 | Yes | LOW | Stores the user's settings (language/display preferences), saved location coordinates and personal reminders (solar-date and lunar-tithi reminders) locally in chrome.storage.local so they persist across new tabs. |
+| `storage` | Yes | newtab.html:404 | Yes | LOW | Stores the user's settings (language/display preferences), saved location coordinates, the name/birth date/birth time optionally entered for Sankalpam and horoscope personalization, and personal reminders (solar-date and lunar-tithi reminders) locally in chrome.storage.local so they persist across new tabs. |
 | `geolocation` | Yes | newtab.html | Yes | MEDIUM | Used, with the user's permission, to get the user's approximate coordinates once so sunrise/sunset, tithi/nakshatra timings, Rahu Kalam and the Sankalpam text are computed for their location. The user can instead pick their city from the built-in list; coordinates are stored only locally and never leave the browser. |
 
 ---
@@ -52,6 +52,16 @@ Google review requires specific plain-English justification for each declared pe
 ## 4. Privacy & Data Use Disclosure
 
 - **Privacy Policy URL**: `https://ravitejakamalapuram.github.io/telugu-panchangam.html`
+
+### Data categories to declare on the CWS submission form
+- **Personally identifiable information**: name, birth date, birth time — optionally typed in by the user for Sankalpam and horoscope personalization; stored only in `chrome.storage.local`, never transmitted.
+- **Location**: latitude/longitude, only if the user presses the opt-in "Use My Location" button; Chrome resolves the request through its own built-in geolocation service, and the extension never receives, logs, or transmits the result — it is stored only in `chrome.storage.local`, exactly like a manually picked city.
+- **User-generated content**: personal reminders (solar-date and lunar-tithi) the user creates; stored only in `chrome.storage.local`.
+
+### Certification checkboxes
+- [x] I do not sell or transfer user data to third parties outside of the approved use cases.
+- [x] I do not use or transfer user data for purposes unrelated to the item's single purpose.
+- [x] I do not use or transfer user data to determine creditworthiness or for lending purposes.
 
 ---
 

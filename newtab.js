@@ -112,7 +112,7 @@
     selectedDate = cityToday();
     calendarViewDate = new Date(selectedDate);
     setupEventListeners();
-    initStarsAndRain();
+    initStars();
     await refreshDashboard();
   }
 
@@ -845,7 +845,7 @@
   }
 
   // Initialize background starfield canvas
-  function initStarsAndRain() {
+  function initStars() {
     if (!elStarsCanvas) return;
     starsCtx = elStarsCanvas.getContext('2d');
 

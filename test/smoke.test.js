@@ -114,6 +114,29 @@ check('every festival name has an English half', () => {
   );
 });
 
+// --- No dynamic value may be assigned to innerHTML (POR-68) ---
+// Reminder titles/descriptions are free text the user types and we persist to
+// chrome.storage, and the new-tab page is an extension page, so stored markup
+// reaching innerHTML would run with access to the user's saved profile. Rather
+// than police which interpolations happen to be safe, the rule is flat: an
+// innerHTML assignment in newtab.js may only be a plain string literal (the
+// clear-the-container idiom); anything else has to be built as nodes.
+check('newtab.js assigns only literal strings to innerHTML', () => {
+  const src = readFile('newtab.js');
+  const assignments = [...src.matchAll(/^.*\.innerHTML\s*=\s*(.*)$/gm)];
+  assert.ok(assignments.length > 0, 'expected to find innerHTML assignments to check');
+  const dynamic = assignments
+    .map((m) => ({ line: m[0].trim(), value: m[1].trim() }))
+    .filter(({ value }) => !/^(''|""|'[^'`$]*'|"[^"`$]*")\s*;?$/.test(value));
+  assert.strictEqual(
+    dynamic.length,
+    0,
+    `build these as nodes with textContent instead of interpolating into innerHTML:\n  ${dynamic
+      .map((d) => d.line)
+      .join('\n  ')}`
+  );
+});
+
 if (failures > 0) {
   console.error(`\n${failures} smoke test(s) failed`);
   process.exit(1);

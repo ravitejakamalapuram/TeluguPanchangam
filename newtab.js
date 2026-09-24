@@ -288,6 +288,16 @@
     return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: currentCity.timeZone });
   }
 
+  // A bold label followed by its body text, as nodes rather than an HTML
+  // string, so the body is inserted as text and can never be parsed as markup.
+  function labelledLine(label, body) {
+    const frag = document.createDocumentFragment();
+    const strong = document.createElement('strong');
+    strong.textContent = label;
+    frag.append(strong, document.createElement('br'), document.createTextNode(body));
+    return frag;
+  }
+
   // Trigger Rasi horoscope details
   function renderHoroscope(panchang) {
     const rasiIndex = parseInt(elSelectRasi.value);
@@ -371,7 +381,12 @@
     // 5. Render Sankalpam (kept in Sanskrit/Telugu regardless of UI language —
     // a Sankalpam is a liturgical declaration always recited in those languages)
     const sankalpam = window.Sankalpam.generateSankalpam(activePanchang, currentCoordinates.lat, currentCoordinates.lng);
-    elSankalpamTxt.innerHTML = `<strong>${window.I18N.t('sanskritLabel')}</strong><br>${sankalpam.sanskrit}<br><br><strong>${window.I18N.t('teluguLabel')}</strong><br>${sankalpam.telugu}`;
+    elSankalpamTxt.replaceChildren(
+      labelledLine(window.I18N.t('sanskritLabel'), sankalpam.sanskrit),
+      document.createElement('br'),
+      document.createElement('br'),
+      labelledLine(window.I18N.t('teluguLabel'), sankalpam.telugu)
+    );
 
     // 6. Eclipses detection
     checkForEclipses(activePanchang);
@@ -448,7 +463,10 @@
     elRemindersList.innerHTML = '';
     
     if (list.length === 0) {
-      elRemindersList.innerHTML = `<p style="font-size: 0.9rem; color: var(--text-secondary); text-align: center; padding: 20px 0;">${window.I18N.t('remindersEmpty')}</p>`;
+      const empty = document.createElement('p');
+      empty.className = 'no-reminders-msg';
+      empty.textContent = window.I18N.t('remindersEmpty');
+      elRemindersList.appendChild(empty);
       return;
     }
 
@@ -458,8 +476,16 @@
       
       const details = document.createElement('div');
       details.className = 'reminder-details';
-      details.innerHTML = `<h4>${r.title}</h4><p>${r.desc}</p>`;
-      
+      // Reminder title/desc are free text the user typed and we persist
+      // verbatim, so they are built as text nodes: interpolating them into
+      // innerHTML would execute stored markup on an extension page that can
+      // read chrome.storage (profile, reminders).
+      const title = document.createElement('h4');
+      title.textContent = r.title;
+      const desc = document.createElement('p');
+      desc.textContent = r.desc;
+      details.append(title, desc);
+
       const btnDelete = document.createElement('button');
       btnDelete.className = 'reminder-delete';
       btnDelete.innerHTML = '🗑️';

@@ -248,12 +248,20 @@
     const daylightDuration = sunset.getTime() - sunrise.getTime();
     const midday = new Date(sunrise.getTime() + daylightDuration / 2);
 
-    // 2. Main Astrological Elements (computed at local midday, which represents the day's main Tithi/Nakshatra - Udaya Tithi)
+    // 2. Main Astrological Elements (computed at local midday; used for month/ritu/ayana
+    // and as the anchor for Varjyam/Amritakalam window lookups below)
     const middayAstro = Astronomy.MakeTime(midday);
     const tithi = getTithiAt(middayAstro);
     const nakshatra = getNakshatraAt(middayAstro);
     const yoga = getYogaAt(middayAstro);
     const karana = getKaranaAt(middayAstro);
+
+    // The Tithi/Nakshatra shown to the user follow the Udaya (sunrise-prevailing) convention,
+    // which is what printed Panchangams (and Drik Panchang's day header) report as "today's"
+    // Tithi/Nakshatra, even when a transition happens later the same day.
+    const sunriseAstro = Astronomy.MakeTime(sunrise);
+    const tithiUdaya = getTithiAt(sunriseAstro);
+    const nakshatraUdaya = getNakshatraAt(sunriseAstro);
 
     // Find transitions during the day
     const tithiTransitions = findTransitionsForDay(y, mo, da, getTithiAt, timeZone);
@@ -339,14 +347,16 @@
     const abhijitEnd = new Date(sunrise.getTime() + (8.0 / 15.0) * daylightDuration);
 
     // 4. Varjyam & Amritakalam (based on Nakshatra duration)
-    // We estimate Nakshatra duration by looking at when current Nakshatra starts and ends
+    // These must key off the Udaya nakshatra (nakshatraUdaya) - the same one shown in the
+    // header - not the midday sample; otherwise the window can be computed for a different
+    // nakshatra than the one the UI displays it under.
     let nStart = midday;
     let nEnd = midday;
-    
+
     if (nakshatraTransitions.length > 0) {
       // If a transition happens today, we can find the start/end easily
       const tToday = nakshatraTransitions[0];
-      if (tToday.toIndex === nakshatra.index) {
+      if (tToday.toIndex === nakshatraUdaya.index) {
         nStart = tToday.time;
         // Search forward for next transition
         const searchTime = Astronomy.MakeTime(new Date(nStart.getTime() + 3600000));
@@ -372,12 +382,12 @@
     const nakshatraDuration = nEnd.getTime() - nStart.getTime();
 
     // Varjyam calculation
-    const varjyamOffsetPercent = PANCHANG_DATA.varjyamOffsets[nakshatra.index] / 60.0;
+    const varjyamOffsetPercent = PANCHANG_DATA.varjyamOffsets[nakshatraUdaya.index] / 60.0;
     const varjyamStart = new Date(nStart.getTime() + varjyamOffsetPercent * nakshatraDuration);
     const varjyamEnd = new Date(varjyamStart.getTime() + (4.0 / 60.0) * nakshatraDuration); // always 4 Ghatis duration
 
     // Amritakalam calculation
-    const amritaOffsetPercent = PANCHANG_DATA.amritaOffsets[nakshatra.index] / 60.0;
+    const amritaOffsetPercent = PANCHANG_DATA.amritaOffsets[nakshatraUdaya.index] / 60.0;
     const amritaStart = new Date(nStart.getTime() + amritaOffsetPercent * nakshatraDuration);
     const amritaEnd = new Date(amritaStart.getTime() + (4.0 / 60.0) * nakshatraDuration); // always 4 Ghatis duration
 
@@ -423,7 +433,7 @@
     }
 
     const monthName = (isAdhika ? "అధిక " : "") + PANCHANG_DATA.months[monthIndex];
-    const pakshaName = (tithi.index < 15) ? "శుక్ల పక్షం (Shukla Paksham)" : "కృష్ణ పక్షం (Krishna Paksham)";
+    const pakshaName = (tithiUdaya.index < 15) ? "శుక్ల పక్షం (Shukla Paksham)" : "కృష్ణ పక్షం (Krishna Paksham)";
 
     // Samvatsara calculation
     // Year 1 (Prabhava) starts around Ugadi of 1987.
@@ -478,15 +488,15 @@
       sunset,
       midday,
       tithi: {
-        index: tithi.index,
-        name: PANCHANG_DATA.tithis[tithi.index],
+        index: tithiUdaya.index,
+        name: PANCHANG_DATA.tithis[tithiUdaya.index],
         transitions: tithiTransitions
       },
       nakshatra: {
-        index: nakshatra.index,
-        name: PANCHANG_DATA.nakshatras[nakshatra.index],
+        index: nakshatraUdaya.index,
+        name: PANCHANG_DATA.nakshatras[nakshatraUdaya.index],
         transitions: nakshatraTransitions,
-        moonLongSidereal: nakshatra.moonLongSidereal
+        moonLongSidereal: nakshatraUdaya.moonLongSidereal
       },
       yoga: {
         index: yoga.index,

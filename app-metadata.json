@@ -21,7 +21,7 @@
         "singlePurpose": "Replaces the new tab page with a Telugu calendar (Panchangam) showing daily tithi, nakshatra, festivals, horoscope (Rasi Phalalu) and Sankalpam for the user's location.",
         "privacyPolicyUrl": "https://ravitejakamalapuram.github.io/telugu-panchangam.html",
         "remoteCodeUsed": false,
-        "remoteCodeJustification": "The extension does not use remote code. All JavaScript (including the vendored lib/astronomy.js) is packaged in the extension; there is no eval(), new Function() or remotely hosted script. It only loads Google Fonts stylesheets, which are not executed.",
+        "remoteCodeJustification": "The extension does not use remote code. All JavaScript (including the vendored lib/astronomy.js) is packaged in the extension; there is no eval(), new Function() or remotely hosted script. Fonts (Cinzel, Noto Sans Telugu, Outfit) are also vendored locally, so the extension makes no network requests at all.",
         "dataUsageCertified": true,
         "permissionJustifications": {
           "storage": "Stores the user's settings (language/display preferences), saved location coordinates and personal reminders (solar-date and lunar-tithi reminders) locally in chrome.storage.local so they persist across new tabs.",

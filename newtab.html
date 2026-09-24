@@ -4,13 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>శ్రీ తెలుగు పంచాంగం (Telugu Calendar Dashboard)</title>
-  
-  <!-- Premium Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Noto+Sans+Telugu:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Custom Stylesheet -->
+
+  <!-- Custom Stylesheet (vendors Cinzel, Noto Sans Telugu, Outfit locally) -->
   <link rel="stylesheet" href="newtab.css">
 </head>
 <body>
@@ -389,39 +384,7 @@
   </div>
 
   <!-- Mock Chrome Extension APIs if running in standard browser tab -->
-  <script>
-    if (typeof chrome === 'undefined' || !chrome.storage || !chrome.storage.local) {
-      window.chrome = window.chrome || {};
-      window.chrome.storage = window.chrome.storage || {};
-      window.chrome.storage.local = {
-        get: function (keys, callback) {
-          const result = {};
-          const keysArray = Array.isArray(keys) ? keys : [keys];
-          keysArray.forEach(key => {
-            try {
-              const val = localStorage.getItem('chrome_storage_' + key);
-              if (val !== null) {
-                result[key] = JSON.parse(val);
-              }
-            } catch (e) {
-              console.error("Error loading key " + key + " from localStorage:", e);
-            }
-          });
-          if (callback) setTimeout(() => callback(result), 0);
-        },
-        set: function (items, callback) {
-          Object.keys(items).forEach(key => {
-            try {
-              localStorage.setItem('chrome_storage_' + key, JSON.stringify(items[key]));
-            } catch (e) {
-              console.error("Error saving key " + key + " to localStorage:", e);
-            }
-          });
-          if (callback) setTimeout(callback, 0);
-        }
-      };
-    }
-  </script>
+  <script src="storage-shim.js"></script>
 
   <!-- Vendor & Core Scripts -->
   <script src="lib/astronomy.js"></script>

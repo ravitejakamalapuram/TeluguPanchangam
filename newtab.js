@@ -16,6 +16,7 @@
   const elLocationStatus = document.getElementById('location-status');
   const elSelectRasi = document.getElementById('select-rasi');
   const elThemeToggle = document.getElementById('theme-toggle');
+  const elLangToggle = document.getElementById('lang-toggle');
   const elPanchangTithi = document.getElementById('panchang-tithi');
   const elPanchangTithiTime = document.getElementById('panchang-tithi-time');
   const elPanchangNaks = document.getElementById('panchang-naks');
@@ -77,9 +78,10 @@
   const elSetTob = document.getElementById('set-tob');
 
   // Global State
+  const DEFAULT_PROFILE_NAME = 'యజమాని'; // placeholder meaning "Owner" until the user sets a real name
   let currentCity = window.CityPresets.getDefault(); // { id, name, lat, lon, timeZone }
   let currentCoordinates = { lat: currentCity.lat, lng: currentCity.lon };
-  let userSettings = { name: 'యజమాని', dob: '', tob: '12:00', rasi: '0', theme: 'light' };
+  let userSettings = { name: DEFAULT_PROFILE_NAME, dob: '', tob: '12:00', rasi: '0', theme: 'light' };
   let selectedDate = new Date();
   let calendarViewDate = new Date();
   let todayPanchang = null;
@@ -105,6 +107,9 @@
 
   // Initialize Extension
   async function init() {
+    await window.I18N.loadLang();
+    elLangToggle.checked = (window.I18N.getLang() === 'en');
+    applyTranslations();
     populateCitySelect();
     setupClock();
     await loadSettings();
@@ -114,6 +119,40 @@
     setupEventListeners();
     initStars();
     await refreshDashboard();
+  }
+
+  // Apply the active UI language to every statically-marked element, plus
+  // the document chrome (title, <html lang>) that isn't part of the DOM tree.
+  function applyTranslations() {
+    document.documentElement.lang = window.I18N.getLang();
+    document.title = window.I18N.bi('శ్రీ తెలుగు పంచాంగం (Telugu Calendar Dashboard)');
+
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      el.textContent = window.I18N.t(el.dataset.i18n);
+    });
+    document.querySelectorAll('[data-i18n-bi]').forEach((el) => {
+      el.textContent = window.I18N.bi(el.dataset.i18nBi);
+    });
+    document.querySelectorAll('[data-i18n-split-bi]').forEach((el) => {
+      el.textContent = window.I18N.splitBi(el.dataset.i18nSplitBi);
+    });
+    document.querySelectorAll('[data-i18n-te]').forEach((el) => {
+      el.textContent = window.I18N.teEn(el.dataset.i18nTe, el.dataset.i18nEn);
+    });
+    document.querySelectorAll('[data-i18n-placeholder-bi]').forEach((el) => {
+      el.placeholder = window.I18N.bi(el.dataset.i18nPlaceholderBi);
+    });
+
+    renderProfileName();
+  }
+
+  // The profile name is free text the user can set via settings, so it can't
+  // carry a static data-i18n attribute — only the untouched default placeholder
+  // translates; a real custom name is shown as typed in both languages.
+  function renderProfileName() {
+    elProfileName.textContent = (userSettings.name === DEFAULT_PROFILE_NAME)
+      ? window.I18N.t('defaultProfileName')
+      : userSettings.name;
   }
 
   // Live Clock setup
@@ -132,15 +171,17 @@
       chrome.storage.local.get(['userSettings'], (result) => {
         if (result.userSettings) {
           userSettings = result.userSettings;
-          elProfileName.textContent = userSettings.name;
+          renderProfileName();
           elSelectRasi.value = userSettings.rasi;
 
           // Apply theme
           document.body.setAttribute('data-theme', userSettings.theme || 'light');
           elThemeToggle.checked = (userSettings.theme === 'dark');
 
-          // Populate Settings form
-          elSetName.value = userSettings.name;
+          // Populate Settings form. The untouched default is a placeholder,
+          // not real text, so the input stays blank and shows its
+          // (localized) placeholder hint instead of leaking Telugu into it.
+          elSetName.value = (userSettings.name === DEFAULT_PROFILE_NAME) ? '' : userSettings.name;
           elSetDob.value = userSettings.dob;
           elSetTob.value = userSettings.tob;
         }
@@ -149,20 +190,33 @@
     });
   }
 
-  // Populate the city picker with built-in presets, grouped India / US
+  // Populate the city picker with built-in presets, grouped India / US.
+  // Also called on language toggle to re-render the composite proper-noun
+  // option labels, so it clears any previous content first.
   function populateCitySelect() {
+    elSelectCity.innerHTML = '';
     const groupLabels = { IN: 'భారతదేశం (India)', US: 'అమెరికా (USA)' };
     Object.keys(groupLabels).forEach((region) => {
       const optgroup = document.createElement('optgroup');
-      optgroup.label = groupLabels[region];
+      optgroup.label = window.I18N.bi(groupLabels[region]);
       window.CityPresets.PRESETS.filter((c) => c.region === region).forEach((c) => {
         const opt = document.createElement('option');
         opt.value = c.id;
-        opt.textContent = c.name;
+        opt.textContent = cityDisplayName(c);
         optgroup.appendChild(opt);
       });
       elSelectCity.appendChild(optgroup);
     });
+  }
+
+  // A city's display name: built-in presets are "Telugu (English)" composite
+  // strings (split per active language); a geolocated "custom" city has no
+  // such pair, so its label is built fresh from the current language.
+  function cityDisplayName(city) {
+    if (city.id === 'custom') {
+      return `${window.I18N.t('myLocationLabel')} (Lat: ${city.lat.toFixed(2)}, Lng: ${city.lon.toFixed(2)})`;
+    }
+    return window.I18N.bi(city.name);
   }
 
   // Apply a city (built-in preset or a one-off geolocated position) as the
@@ -178,11 +232,11 @@
         customOption.value = 'custom';
         elSelectCity.appendChild(customOption);
       }
-      customOption.textContent = city.name;
+      customOption.textContent = cityDisplayName(city);
     }
     elSelectCity.value = city.id;
 
-    elProfileLocation.textContent = city.name;
+    elProfileLocation.textContent = cityDisplayName(city);
 
     if (persist) {
       chrome.storage.local.set({ selectedCity: city });
@@ -218,12 +272,12 @@
   // On-demand geolocation as an optional convenience alongside the picker
   function useMyLocation() {
     if (!navigator.geolocation) {
-      elLocationStatus.textContent = "ఈ బ్రౌజర్‌లో స్థాన గుర్తింపు అందుబాటులో లేదు. (Geolocation unavailable.)";
+      elLocationStatus.textContent = window.I18N.t('locGeoUnavailable');
       elLocationStatus.style.display = 'block';
       return;
     }
 
-    elLocationStatus.textContent = "స్థానం కనుగొనబడుతోంది... (Locating...)";
+    elLocationStatus.textContent = window.I18N.t('locLocating');
     elLocationStatus.style.display = 'block';
 
     navigator.geolocation.getCurrentPosition(
@@ -231,7 +285,7 @@
         const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || currentCity.timeZone;
         const customCity = {
           id: 'custom',
-          name: `నా ప్రస్తుత స్థానం (Lat: ${position.coords.latitude.toFixed(2)}, Lng: ${position.coords.longitude.toFixed(2)})`,
+          name: `${window.I18N.t('myLocationLabel')} (Lat: ${position.coords.latitude.toFixed(2)}, Lng: ${position.coords.longitude.toFixed(2)})`,
           lat: position.coords.latitude,
           lon: position.coords.longitude,
           timeZone
@@ -242,7 +296,7 @@
       },
       (error) => {
         console.warn("Geolocation blocked/failed:", error.message);
-        elLocationStatus.textContent = "స్థానం లభించలేదు, దయచేసి నగరాన్ని ఎంచుకోండి. (Location unavailable, please pick a city.)";
+        elLocationStatus.textContent = window.I18N.t('locUnavailable');
       },
       { timeout: 5000 }
     );
@@ -254,10 +308,20 @@
     return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: currentCity.timeZone });
   }
 
+  // A bold label followed by its body text, as nodes rather than an HTML
+  // string, so the body is inserted as text and can never be parsed as markup.
+  function labelledLine(label, body) {
+    const frag = document.createDocumentFragment();
+    const strong = document.createElement('strong');
+    strong.textContent = label;
+    frag.append(strong, document.createElement('br'), document.createTextNode(body));
+    return frag;
+  }
+
   // Trigger Rasi horoscope details
   function renderHoroscope(panchang) {
     const rasiIndex = parseInt(elSelectRasi.value);
-    const horoscope = window.Horoscope.getHoroscope(panchang, rasiIndex);
+    const horoscope = window.Horoscope.getHoroscope(panchang, rasiIndex, window.I18N.getLang());
     
     // Render stars
     elHoroscopeRating.textContent = "⭐".repeat(horoscope.score);
@@ -274,12 +338,15 @@
   // Format transition times for calendar display
   function formatTransitionText(transitions, elementsList, fallbackName) {
     if (!transitions || transitions.length === 0) {
-      return `${fallbackName} (రోజంతా)`;
+      return `${fallbackName} ${window.I18N.t('allDaySuffix')}`;
     }
     const t = transitions[0];
-    const name = elementsList[t.fromIndex].split(" (")[0];
-    const nextName = elementsList[t.toIndex].split(" (")[0];
-    return `${name} ${formatTime(t.time)} వరకు, ఆపై ${nextName}`;
+    const name = window.I18N.splitBi(elementsList[t.fromIndex]);
+    const nextName = window.I18N.splitBi(elementsList[t.toIndex]);
+    const time = formatTime(t.time);
+    return window.I18N.getLang() === 'en'
+      ? `${name} until ${time}, then ${nextName}`
+      : `${name} ${time} వరకు, ఆపై ${nextName}`;
   }
 
   // Update Main Dashboard UI Cards
@@ -301,22 +368,22 @@
     // browser's own zone reads back the same date. Passing currentCity.timeZone
     // here would reinterpret that already-city-local day through a second zone
     // shift and could show the wrong date.
-    elDateGregorian.textContent = selectedDate.toLocaleDateString('te-IN', {
+    elDateGregorian.textContent = selectedDate.toLocaleDateString(window.I18N.getLang() === 'en' ? 'en-US' : 'te-IN', {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
 
     // 3. Render Panchang card values
-    elPanchangTithi.textContent = activePanchang.tithi.name.split(" (")[0];
-    elPanchangTithiTime.textContent = formatTransitionText(activePanchang.tithi.transitions, window.Panchang.PANCHANG_DATA.tithis, activePanchang.tithi.name.split(" (")[0]);
+    elPanchangTithi.textContent = window.I18N.splitBi(activePanchang.tithi.name);
+    elPanchangTithiTime.textContent = formatTransitionText(activePanchang.tithi.transitions, window.Panchang.PANCHANG_DATA.tithis, window.I18N.splitBi(activePanchang.tithi.name));
 
-    elPanchangNaks.textContent = activePanchang.nakshatra.name.split(" (")[0];
-    elPanchangNaksTime.textContent = formatTransitionText(activePanchang.nakshatra.transitions, window.Panchang.PANCHANG_DATA.nakshatras, activePanchang.nakshatra.name.split(" (")[0]);
+    elPanchangNaks.textContent = window.I18N.splitBi(activePanchang.nakshatra.name);
+    elPanchangNaksTime.textContent = formatTransitionText(activePanchang.nakshatra.transitions, window.Panchang.PANCHANG_DATA.nakshatras, window.I18N.splitBi(activePanchang.nakshatra.name));
 
-    elPanchangYoga.textContent = activePanchang.yoga.name.split(" (")[0];
-    elPanchangYogaTime.textContent = formatTransitionText(activePanchang.yoga.transitions, window.Panchang.PANCHANG_DATA.yogas, activePanchang.yoga.name.split(" (")[0]);
+    elPanchangYoga.textContent = window.I18N.splitBi(activePanchang.yoga.name);
+    elPanchangYogaTime.textContent = formatTransitionText(activePanchang.yoga.transitions, window.Panchang.PANCHANG_DATA.yogas, window.I18N.splitBi(activePanchang.yoga.name));
 
-    elPanchangKarana.textContent = activePanchang.karana.name.split(" (")[0];
-    elPanchangKaranaTime.textContent = `కరణం: ${activePanchang.karana.name.split(" (")[0]}`;
+    elPanchangKarana.textContent = window.I18N.splitBi(activePanchang.karana.name);
+    elPanchangKaranaTime.textContent = `${window.I18N.splitBi('కరణం (Karana)')}: ${window.I18N.splitBi(activePanchang.karana.name)}`;
 
     // 4. Inauspicious / Auspicious Timings
     elTimeRahu.textContent = `${formatTime(activePanchang.rahuKalam.start)} - ${formatTime(activePanchang.rahuKalam.end)}`;
@@ -328,12 +395,18 @@
 
     elTimeVarj.textContent = `${formatTime(activePanchang.varjyam.start)} - ${formatTime(activePanchang.varjyam.end)}`;
     elTimeAmrita.textContent = `${formatTime(activePanchang.amritakalam.start)} - ${formatTime(activePanchang.amritakalam.end)}`;
-    elTimeAbhijit.textContent = `${formatTime(activePanchang.abhijitMuhurtham.start)} - ${formatTime(activePanchang.abhijitMuhurtham.end)}` + 
-                                (activePanchang.abhijitMuhurtham.isAvoided ? " (బుధవారం వర్జ్యం)" : "");
+    elTimeAbhijit.textContent = `${formatTime(activePanchang.abhijitMuhurtham.start)} - ${formatTime(activePanchang.abhijitMuhurtham.end)}` +
+                                (activePanchang.abhijitMuhurtham.isAvoided ? window.I18N.t('abhijitAvoidedSuffix') : "");
 
-    // 5. Render Sankalpam
+    // 5. Render Sankalpam (kept in Sanskrit/Telugu regardless of UI language —
+    // a Sankalpam is a liturgical declaration always recited in those languages)
     const sankalpam = window.Sankalpam.generateSankalpam(activePanchang, currentCoordinates.lat, currentCoordinates.lng);
-    elSankalpamTxt.innerHTML = `<strong>సంస్కృతం:</strong><br>${sankalpam.sanskrit}<br><br><strong>తెలుగు:</strong><br>${sankalpam.telugu}`;
+    elSankalpamTxt.replaceChildren(
+      labelledLine(window.I18N.t('sanskritLabel'), sankalpam.sanskrit),
+      document.createElement('br'),
+      document.createElement('br'),
+      labelledLine(window.I18N.t('teluguLabel'), sankalpam.telugu)
+    );
 
     // 6. Eclipses detection
     checkForEclipses(activePanchang);
@@ -379,10 +452,13 @@
     
     // Check solar eclipse
     const nextSolar = Astronomy.SearchGlobalSolarEclipse(time);
+    const eclipseLang = window.I18N.getLang();
     if (nextSolar && isSameDay(nextSolar.peak.date, panchang.date)) {
       elEclipseBanner.style.display = 'flex';
-      elEclipseTitle.textContent = "సూర్య గ్రహణం హెచ్చరిక (Solar Eclipse Alert!)";
-      elEclipseDesc.textContent = `గ్రహణ పీక్ సమయం: ${formatTime(nextSolar.peak.date)}. గ్రహణ నియమ నిబంధనలు పాటించవలెను.`;
+      elEclipseTitle.textContent = window.I18N.bi("సూర్య గ్రహణం హెచ్చరిక (Solar Eclipse Alert!)");
+      elEclipseDesc.textContent = eclipseLang === 'en'
+        ? `Eclipse peak time: ${formatTime(nextSolar.peak.date)}. Please observe eclipse precautions.`
+        : `గ్రహణ పీక్ సమయం: ${formatTime(nextSolar.peak.date)}. గ్రహణ నియమ నిబంధనలు పాటించవలెను.`;
       return;
     }
 
@@ -390,8 +466,10 @@
     const nextLunar = Astronomy.SearchLunarEclipse(time);
     if (nextLunar && isSameDay(nextLunar.peak.date, panchang.date)) {
       elEclipseBanner.style.display = 'flex';
-      elEclipseTitle.textContent = "చంద్ర గ్రహణం హెచ్చరిక (Lunar Eclipse Alert!)";
-      elEclipseDesc.textContent = `గ్రహణ పీక్ సమయం: ${formatTime(nextLunar.peak.date)}. గ్రహణ నియమ నిబంధనలు పాటించవలెను.`;
+      elEclipseTitle.textContent = window.I18N.bi("చంద్ర గ్రహణం హెచ్చరిక (Lunar Eclipse Alert!)");
+      elEclipseDesc.textContent = eclipseLang === 'en'
+        ? `Eclipse peak time: ${formatTime(nextLunar.peak.date)}. Please observe eclipse precautions.`
+        : `గ్రహణ పీక్ సమయం: ${formatTime(nextLunar.peak.date)}. గ్రహణ నియమ నిబంధనలు పాటించవలెను.`;
       return;
     }
 
@@ -405,7 +483,10 @@
     elRemindersList.innerHTML = '';
     
     if (list.length === 0) {
-      elRemindersList.innerHTML = `<p style="font-size: 0.9rem; color: var(--text-secondary); text-align: center; padding: 20px 0;">రిమైండర్లు ఏమీ లేవు.</p>`;
+      const empty = document.createElement('p');
+      empty.className = 'no-reminders-msg';
+      empty.textContent = window.I18N.t('remindersEmpty');
+      elRemindersList.appendChild(empty);
       return;
     }
 
@@ -415,8 +496,16 @@
       
       const details = document.createElement('div');
       details.className = 'reminder-details';
-      details.innerHTML = `<h4>${r.title}</h4><p>${r.desc}</p>`;
-      
+      // Reminder title/desc are free text the user typed and we persist
+      // verbatim, so they are built as text nodes: interpolating them into
+      // innerHTML would execute stored markup on an extension page that can
+      // read chrome.storage (profile, reminders).
+      const title = document.createElement('h4');
+      title.textContent = r.title;
+      const desc = document.createElement('p');
+      desc.textContent = r.desc;
+      details.append(title, desc);
+
       const btnDelete = document.createElement('button');
       btnDelete.className = 'reminder-delete';
       btnDelete.innerHTML = '🗑️';
@@ -439,8 +528,7 @@
     const month = calendarViewDate.getMonth(); // 0 = Jan, 1 = Feb, ...
 
     // Set title
-    const monthsEnglish = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    elCalendarMonthTitle.textContent = `${monthsEnglish[month]} ${year}`;
+    elCalendarMonthTitle.textContent = calendarViewDate.toLocaleDateString(window.I18N.getLang() === 'en' ? 'en-US' : 'te-IN', { month: 'long', year: 'numeric' });
 
     // Get first day of month & number of days
     const firstDayIndex = new Date(year, month, 1).getDay();
@@ -492,7 +580,10 @@
 
     const elTithi = document.createElement('span');
     elTithi.className = 'day-tithi';
-    elTithi.textContent = panchang.tithi.name.split(" (")[0].replace("శుక్ల ", "").replace("కృష్ణ ", "");
+    const tithiName = window.I18N.splitBi(panchang.tithi.name);
+    elTithi.textContent = window.I18N.getLang() === 'en'
+      ? tithiName.replace("Shukla ", "").replace("Krishna ", "")
+      : tithiName.replace("శుక్ల ", "").replace("కృష్ణ ", "");
 
     cell.appendChild(elNum);
     cell.appendChild(elTithi);
@@ -501,8 +592,8 @@
     if (festivals.length > 0) {
       const elFest = document.createElement('span');
       elFest.className = 'day-festivals';
-      elFest.textContent = festivals[0].name.split(" (")[0];
-      elFest.title = festivals.map(f => f.name).join(", ");
+      elFest.textContent = window.I18N.splitBi(festivals[0].name);
+      elFest.title = festivals.map(f => window.I18N.bi(f.name)).join(", ");
       cell.appendChild(elFest);
     }
 
@@ -534,6 +625,16 @@
 
     elBtnUseLocation.addEventListener('click', useMyLocation);
 
+    // Language toggle: persist, re-render static chrome, then the dashboard
+    // (proper-noun panchang/horoscope content depends on the active language)
+    elLangToggle.addEventListener('change', async () => {
+      window.I18N.saveLang(elLangToggle.checked ? 'en' : 'te');
+      applyTranslations();
+      populateCitySelect();
+      applyCity(currentCity, false);
+      await refreshDashboard();
+    });
+
     // Horoscope Category Tabs
     const btnHealth = document.getElementById('btn-horo-health');
     const btnWealth = document.getElementById('btn-horo-wealth');
@@ -560,11 +661,11 @@
     if (btnCopySankalpam) {
       btnCopySankalpam.addEventListener('click', () => {
         const sankalpam = window.Sankalpam.generateSankalpam(activePanchang, currentCoordinates.lat, currentCoordinates.lng);
-        const textToCopy = `దిన సంకల్పము:\nSanskrit:\n${sankalpam.sanskrit}\n\nTelugu:\n${sankalpam.telugu}`;
-        
+        const textToCopy = `${window.I18N.t('sankalpamCopyHeader')}\nSanskrit:\n${sankalpam.sanskrit}\n\nTelugu:\n${sankalpam.telugu}`;
+
         navigator.clipboard.writeText(textToCopy).then(() => {
           const originalText = btnCopySankalpam.textContent;
-          btnCopySankalpam.textContent = "నకలు చేయబడింది! (Copied!)";
+          btnCopySankalpam.textContent = window.I18N.bi("నకలు చేయబడింది! (Copied!)");
           btnCopySankalpam.style.background = "var(--color-auspicious)";
           btnCopySankalpam.style.borderColor = "var(--color-auspicious)";
           setTimeout(() => {
@@ -660,13 +761,13 @@
     elSettingsForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      userSettings.name = elSetName.value;
+      userSettings.name = elSetName.value.trim() || DEFAULT_PROFILE_NAME;
       userSettings.dob = elSetDob.value;
       userSettings.tob = elSetTob.value;
 
       await chrome.storage.local.set({ userSettings });
 
-      elProfileName.textContent = userSettings.name;
+      renderProfileName();
       elSettingsModal.style.display = 'none';
 
       await refreshDashboard();
@@ -991,7 +1092,7 @@
 
     if (panchang.rahuKalam && panchang.rahuKalam.start && panchang.rahuKalam.end) {
       blocks.push({
-        label: 'రాహుకాలం (Rahu Kalam)',
+        label: window.I18N.bi('రాహుకాలం (Rahu Kalam)'),
         start: panchang.rahuKalam.start,
         end: panchang.rahuKalam.end,
         type: 'inauspicious'
@@ -1000,7 +1101,7 @@
 
     if (panchang.yamaGandam && panchang.yamaGandam.start && panchang.yamaGandam.end) {
       blocks.push({
-        label: 'యమగండం (Yama Gandam)',
+        label: window.I18N.bi('యమగండం (Yama Gandam)'),
         start: panchang.yamaGandam.start,
         end: panchang.yamaGandam.end,
         type: 'inauspicious'
@@ -1011,7 +1112,7 @@
       panchang.durmuhurthams.forEach((dm, idx) => {
         if (dm.start && dm.end) {
           blocks.push({
-            label: `దుర్ముహూర్తం (Durmuhurtham ${panchang.durmuhurthams.length > 1 ? idx + 1 : ''})`,
+            label: window.I18N.bi(`దుర్ముహూర్తం (Durmuhurtham${panchang.durmuhurthams.length > 1 ? ' ' + (idx + 1) : ''})`),
             start: dm.start,
             end: dm.end,
             type: 'inauspicious'
@@ -1022,7 +1123,7 @@
 
     if (panchang.varjyam && panchang.varjyam.start && panchang.varjyam.end) {
       blocks.push({
-        label: 'వర్జ్యం (Varjyam)',
+        label: window.I18N.bi('వర్జ్యం (Varjyam)'),
         start: panchang.varjyam.start,
         end: panchang.varjyam.end,
         type: 'inauspicious'
@@ -1031,7 +1132,7 @@
 
     if (panchang.amritakalam && panchang.amritakalam.start && panchang.amritakalam.end) {
       blocks.push({
-        label: 'అమృతకాలం (Amrita Kalam)',
+        label: window.I18N.bi('అమృతకాలం (Amrita Kalam)'),
         start: panchang.amritakalam.start,
         end: panchang.amritakalam.end,
         type: 'auspicious'
@@ -1040,7 +1141,7 @@
 
     if (panchang.abhijitMuhurtham && panchang.abhijitMuhurtham.start && panchang.abhijitMuhurtham.end && !panchang.abhijitMuhurtham.isAvoided) {
       blocks.push({
-        label: 'అభిజిత్ ముహూర్తం (Abhijit)',
+        label: window.I18N.bi('అభిజిత్ ముహూర్తం (Abhijit)'),
         start: panchang.abhijitMuhurtham.start,
         end: panchang.abhijitMuhurtham.end,
         type: 'auspicious'
@@ -1063,7 +1164,7 @@
         blockEl.style.left = `${leftPercent}%`;
         blockEl.style.width = `${widthPercent}%`;
         
-        const timeStr = `${b.start.toLocaleTimeString('te-IN', { hour: '2-digit', minute: '2-digit', timeZone: currentCity.timeZone })} - ${b.end.toLocaleTimeString('te-IN', { hour: '2-digit', minute: '2-digit', timeZone: currentCity.timeZone })}`;
+        const timeStr = `${formatTime(b.start)} - ${formatTime(b.end)}`;
         blockEl.title = `${b.label}: ${timeStr}`;
 
         blocksContainer.appendChild(blockEl);

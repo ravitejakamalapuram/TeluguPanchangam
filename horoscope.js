@@ -16,38 +16,72 @@
   ];
 
   const RASI_TELUGU = ["మేష రాశి", "వృషభ రాశి", "మిథున రాశి", "కర్కాటక రాశి", "సింహ రాశి", "కన్యా రాశి", "తులా రాశి", "వృశ్చిక రాశి", "ధనూ రాశి", "మకర రాశి", "కుంభ రాశి", "మీన రాశి"];
+  const RASI_ENGLISH = ["Mesha Rasi", "Vrishabha Rasi", "Mithuna Rasi", "Karka Rasi", "Simha Rasi", "Kanya Rasi", "Tula Rasi", "Vrischika Rasi", "Dhanus Rasi", "Makara Rasi", "Kumbha Rasi", "Meena Rasi"];
 
   // Transit predictions templates based on house relative to Moon
   const GURU_PREDICTIONS = {
-    benefic: "గురు గోచారం అద్భుతంగా ఉంది. మీ గౌరవ ప్రతిష్ఠలు పెరుగుతాయి, ఆర్థిక పురోగతి ఉంటుంది, కుటుంబంలో శుభకార్యాలు జరిగే అవకాశం ఉంది.",
-    neutral: "గురు బలం సాధారణంగా ఉంది. అనవసర ఖర్చులు నియంత్రించుకోవడం అవసరం, కుటుంబ సభ్యులతో సమయం గడపడం మంచిది. పనులలో పట్టుదల అవసరం."
+    te: {
+      benefic: "గురు గోచారం అద్భుతంగా ఉంది. మీ గౌరవ ప్రతిష్ఠలు పెరుగుతాయి, ఆర్థిక పురోగతి ఉంటుంది, కుటుంబంలో శుభకార్యాలు జరిగే అవకాశం ఉంది.",
+      neutral: "గురు బలం సాధారణంగా ఉంది. అనవసర ఖర్చులు నియంత్రించుకోవడం అవసరం, కుటుంబ సభ్యులతో సమయం గడపడం మంచిది. పనులలో పట్టుదల అవసరం."
+    },
+    en: {
+      benefic: "Jupiter's transit is excellent. Your reputation grows, financial progress is likely, and there's a good chance of auspicious events in the family.",
+      neutral: "Jupiter's strength is average today. Keep unnecessary expenses in check, spend time with family, and stay persistent in your work."
+    }
   };
 
   const SHANI_PREDICTIONS = {
-    benefic: "శని గోచారం అనుకూలంగా ఉంది. శత్రువులపై విజయం సాధిస్తారు, పాత సమస్యలు తొలగిపోతాయి, ఆకస్మిక ధన లాభం లేదా కెరీర్‌లో ప్రమోషన్ లభించవచ్చు.",
-    sade_sati_12: "ప్రస్తుతం మీకు ఏల్నాటి శని ప్రారంభ దశ (12వ ఇల్లు). అనవసర ప్రయాణాలు తగ్గించుకోవడం, ఖర్చుల విషయంలో నియంత్రణ చాలా అవసరం. మానసిక ఒత్తిడికి లోనుకావద్దు.",
-    sade_sati_1: "ప్రస్తుతం జన్మ శని నడుస్తోంది (1వ ఇల్లు). ఆరోగ్య విషయాలలో అత్యంత శ్రద్ధ వహించాలి. కష్టపడి పనిచేసినా ఫలితం ఆలస్యం కావచ్చు. సంయమనం ముఖ్యం.",
-    sade_sati_2: "ప్రస్తుతం ఏల్నాటి శని చివరి దశ (2వ ఇల్లు). మాట పట్టింపులు, వాదనలకు దూరంగా ఉండండి. కుటుంబ సభ్యులతో మనస్పర్థలు రాకుండా జాగ్రత్త పడాలి. ఆర్థికంగా జాగ్రత్త.",
-    ardhastama: "ప్రస్తుతం అర్ధాష్టమ శని నడుస్తోంది (4వ ఇల్లు). నివాసం లేదా వాహన మార్పుల సూచనలు ఉన్నాయి. తల్లి ఆరోగ్యం పట్ల శ్రద్ధ వహించాలి. ప్రయాణాలలో మెలకువ అవసరం.",
-    ashtama: "ప్రస్తుతం మీకు అత్యంత కఠినమైన అష్టమ శని నడుస్తోంది (8వ ఇల్లు). కెరీర్ మరియు వ్యాపారాలలో ఎలాంటి సాహస నిర్ణయాలు తీసుకోవద్దు. ఆరోగ్య భద్రత ముఖ్యం, ప్రతి పనిలోనూ ఆటంకాలు ఎదురుకావచ్చు.",
-    neutral: "శని గోచారం మిశ్రమంగా ఉంది. కష్టానికి తగిన ఫలితం లభిస్తుంది. సహోద్యోగులతో సఖ్యత అవసరం, ఆరోగ్యం సాధారణంగా ఉంటుంది."
+    te: {
+      benefic: "శని గోచారం అనుకూలంగా ఉంది. శత్రువులపై విజయం సాధిస్తారు, పాత సమస్యలు తొలగిపోతాయి, ఆకస్మిక ధన లాభం లేదా కెరీర్‌లో ప్రమోషన్ లభించవచ్చు.",
+      sade_sati_12: "ప్రస్తుతం మీకు ఏల్నాటి శని ప్రారంభ దశ (12వ ఇల్లు). అనవసర ప్రయాణాలు తగ్గించుకోవడం, ఖర్చుల విషయంలో నియంత్రణ చాలా అవసరం. మానసిక ఒత్తిడికి లోనుకావద్దు.",
+      sade_sati_1: "ప్రస్తుతం జన్మ శని నడుస్తోంది (1వ ఇల్లు). ఆరోగ్య విషయాలలో అత్యంత శ్రద్ధ వహించాలి. కష్టపడి పనిచేసినా ఫలితం ఆలస్యం కావచ్చు. సంయమనం ముఖ్యం.",
+      sade_sati_2: "ప్రస్తుతం ఏల్నాటి శని చివరి దశ (2వ ఇల్లు). మాట పట్టింపులు, వాదనలకు దూరంగా ఉండండి. కుటుంబ సభ్యులతో మనస్పర్థలు రాకుండా జాగ్రత్త పడాలి. ఆర్థికంగా జాగ్రత్త.",
+      ardhastama: "ప్రస్తుతం అర్ధాష్టమ శని నడుస్తోంది (4వ ఇల్లు). నివాసం లేదా వాహన మార్పుల సూచనలు ఉన్నాయి. తల్లి ఆరోగ్యం పట్ల శ్రద్ధ వహించాలి. ప్రయాణాలలో మెలకువ అవసరం.",
+      ashtama: "ప్రస్తుతం మీకు అత్యంత కఠినమైన అష్టమ శని నడుస్తోంది (8వ ఇల్లు). కెరీర్ మరియు వ్యాపారాలలో ఎలాంటి సాహస నిర్ణయాలు తీసుకోవద్దు. ఆరోగ్య భద్రత ముఖ్యం, ప్రతి పనిలోనూ ఆటంకాలు ఎదురుకావచ్చు.",
+      neutral: "శని గోచారం మిశ్రమంగా ఉంది. కష్టానికి తగిన ఫలితం లభిస్తుంది. సహోద్యోగులతో సఖ్యత అవసరం, ఆరోగ్యం సాధారణంగా ఉంటుంది."
+    },
+    en: {
+      benefic: "Saturn's transit is favorable. You'll overcome rivals, old problems will resolve, and you may see unexpected financial gains or a career promotion.",
+      sade_sati_12: "You're in the opening phase of Sade Sati (Saturn in the 12th house). Cut back on unnecessary travel and keep a close watch on expenses. Avoid letting stress get to you.",
+      sade_sati_1: "You're in the peak phase of Sade Sati (Saturn in the 1st house). Pay close attention to your health. Results may be delayed despite hard work — patience is key.",
+      sade_sati_2: "You're in the closing phase of Sade Sati (Saturn in the 2nd house). Stay away from arguments and disputes. Be careful to avoid friction with family, and watch your finances.",
+      ardhastama: "Ardhashtama Shani is in effect (Saturn in the 4th house). There are signs of a possible change of home or vehicle. Pay attention to your mother's health, and stay alert while traveling.",
+      ashtama: "You're going through the demanding Ashtama Shani (Saturn in the 8th house). Avoid bold decisions in career or business. Guard your health carefully, as obstacles may show up in everyday tasks.",
+      neutral: "Saturn's transit is mixed. Effort will bring fair results. Keep good relations with colleagues; health stays average."
+    }
   };
 
   const SURYA_PREDICTIONS = {
-    benefic: "ఆదిత్యుని ప్రభావం అనుకూలం. ఆత్మవిశ్వాసం పెరుగుతుంది, ప్రభుత్వ పనులు సులభంగా పూర్తవుతాయి, పై అధికారుల మద్దతు లభిస్తుంది.",
-    neutral: "సూర్య గోచారం మిశ్రమం. ఉష్ణ సంబంధిత అనారోగ్యం మరియు అలసట కలగవచ్చు. వివాదాలకు దూరంగా ఉండడం మంచిది, కోపం అదుపులో ఉంచుకోవాలి."
+    te: {
+      benefic: "ఆదిత్యుని ప్రభావం అనుకూలం. ఆత్మవిశ్వాసం పెరుగుతుంది, ప్రభుత్వ పనులు సులభంగా పూర్తవుతాయి, పై అధికారుల మద్దతు లభిస్తుంది.",
+      neutral: "సూర్య గోచారం మిశ్రమం. ఉష్ణ సంబంధిత అనారోగ్యం మరియు అలసట కలగవచ్చు. వివాదాలకు దూరంగా ఉండడం మంచిది, కోపం అదుపులో ఉంచుకోవాలి."
+    },
+    en: {
+      benefic: "The Sun's influence is favorable. Confidence grows, official/government tasks go smoothly, and you gain support from superiors.",
+      neutral: "The Sun's transit is mixed. Heat-related discomfort and fatigue are possible. It's best to avoid disputes and keep your temper in check."
+    }
   };
 
   // Base prediction elements per Rasi to make it daily dynamic (using date-based seeds)
-  const DAILY_SEEDS = [
-    { health: "ఆరోగ్యం అనుకూలిస్తుంది, ఉత్సాహంగా ఉంటారు.", wealth: "ఆర్థిక లాభాలు ఉంటాయి, పాత బాకీలు వసూలవుతాయి.", career: "ఉద్యోగంలో గుర్తింపు లభిస్తుంది, నూతన అవకాశాలు వస్తాయి." },
-    { health: "అలసట, కంటి సమస్యల పట్ల జాగ్రత్త అవసరం.", wealth: "ఆకస్మిక ఖర్చులు రావచ్చు, బడ్జెట్ నియంత్రణ ముఖ్యం.", career: "సహోద్యోగులతో విభేదాలు రాకుండా చూసుకోవాలి." },
-    { health: "శారీరక దారుఢ్యం బాగుంటుంది, యోగా లేదా ధ్యానానికి అనుకూలం.", wealth: "నూతన పెట్టుబడులకు అనుకూలమైన సమయం.", career: "వ్యాపార విస్తరణ ప్రయత్నాలు ఫలించి లాభాలు అందుతాయి." },
-    { health: "మానసిక ఒత్తిడి అధికంగా ఉంటుంది, ప్రశాంతత అవసరం.", wealth: "ఆర్థిక పరిస్థితి సాధారణంగా ఉంటుంది, అప్పులు ఇవ్వవద్దు.", career: "పై అధికారుల ఒత్తిడి ఉంటుంది, సహనంతో వ్యవహరించాలి." },
-    { health: "ఆరోగ్య సమస్యల నుండి ఉపశమనం లభిస్తుంది.", wealth: "బంధువుల ద్వారా ఆర్థిక సహాయం అందుతుంది.", career: "కీలకమైన పనులు సజావుగా సాగుతాయి, శుభవార్తలు వింటారు." }
-  ];
+  const DAILY_SEEDS = {
+    te: [
+      { health: "ఆరోగ్యం అనుకూలిస్తుంది, ఉత్సాహంగా ఉంటారు.", wealth: "ఆర్థిక లాభాలు ఉంటాయి, పాత బాకీలు వసూలవుతాయి.", career: "ఉద్యోగంలో గుర్తింపు లభిస్తుంది, నూతన అవకాశాలు వస్తాయి." },
+      { health: "అలసట, కంటి సమస్యల పట్ల జాగ్రత్త అవసరం.", wealth: "ఆకస్మిక ఖర్చులు రావచ్చు, బడ్జెట్ నియంత్రణ ముఖ్యం.", career: "సహోద్యోగులతో విభేదాలు రాకుండా చూసుకోవాలి." },
+      { health: "శారీరక దారుఢ్యం బాగుంటుంది, యోగా లేదా ధ్యానానికి అనుకూలం.", wealth: "నూతన పెట్టుబడులకు అనుకూలమైన సమయం.", career: "వ్యాపార విస్తరణ ప్రయత్నాలు ఫలించి లాభాలు అందుతాయి." },
+      { health: "మానసిక ఒత్తిడి అధికంగా ఉంటుంది, ప్రశాంతత అవసరం.", wealth: "ఆర్థిక పరిస్థితి సాధారణంగా ఉంటుంది, అప్పులు ఇవ్వవద్దు.", career: "పై అధికారుల ఒత్తిడి ఉంటుంది, సహనంతో వ్యవహరించాలి." },
+      { health: "ఆరోగ్య సమస్యల నుండి ఉపశమనం లభిస్తుంది.", wealth: "బంధువుల ద్వారా ఆర్థిక సహాయం అందుతుంది.", career: "కీలకమైన పనులు సజావుగా సాగుతాయి, శుభవార్తలు వింటారు." }
+    ],
+    en: [
+      { health: "Health stays favorable; you'll feel energetic.", wealth: "Financial gains are likely; old dues may get settled.", career: "Recognition at work is likely, and new opportunities will come your way." },
+      { health: "Be careful of fatigue and eye strain.", wealth: "Unexpected expenses may arise; keep your budget in check.", career: "Avoid disagreements with colleagues." },
+      { health: "Physical stamina is good; a favorable day for yoga or meditation.", wealth: "A favorable time for new investments.", career: "Efforts to expand your business pay off with gains." },
+      { health: "Mental stress runs higher than usual; stay calm.", wealth: "Finances stay average; avoid lending money.", career: "Pressure from superiors is likely; handle it with patience." },
+      { health: "Relief from ongoing health concerns.", wealth: "Financial help may come through relatives.", career: "Important tasks proceed smoothly, and you'll hear good news." }
+    ]
+  };
 
-  function getHoroscope(panchang, birthRasiIndex) {
+  function getHoroscope(panchang, birthRasiIndex, lang) {
+    const L = (lang === 'en') ? 'en' : 'te';
     const time = Astronomy.MakeTime(panchang.date);
     const ayanamsa = Panchang.getAyanamsa(time);
 
@@ -76,42 +110,42 @@
     const sunHouse = (sunRasi - birthRasiIndex + 12) % 12 + 1;
 
     // 1. Evaluate Jupiter Gochara
-    let jupiterText = GURU_PREDICTIONS.neutral;
+    let jupiterText = GURU_PREDICTIONS[L].neutral;
     let isJupiterGood = false;
     if ([2, 5, 7, 9, 11].includes(jupiterHouse)) {
-      jupiterText = GURU_PREDICTIONS.benefic;
+      jupiterText = GURU_PREDICTIONS[L].benefic;
       isJupiterGood = true;
     }
 
     // 2. Evaluate Saturn Gochara
-    let saturnText = SHANI_PREDICTIONS.neutral;
+    let saturnText = SHANI_PREDICTIONS[L].neutral;
     let saturnSeverity = "neutral"; // neutral, benefic, warning
-    
+
     if ([3, 6, 11].includes(saturnHouse)) {
-      saturnText = SHANI_PREDICTIONS.benefic;
+      saturnText = SHANI_PREDICTIONS[L].benefic;
       saturnSeverity = "benefic";
     } else if (saturnHouse === 12) {
-      saturnText = SHANI_PREDICTIONS.sade_sati_12;
+      saturnText = SHANI_PREDICTIONS[L].sade_sati_12;
       saturnSeverity = "warning";
     } else if (saturnHouse === 1) {
-      saturnText = SHANI_PREDICTIONS.sade_sati_1;
+      saturnText = SHANI_PREDICTIONS[L].sade_sati_1;
       saturnSeverity = "warning";
     } else if (saturnHouse === 2) {
-      saturnText = SHANI_PREDICTIONS.sade_sati_2;
+      saturnText = SHANI_PREDICTIONS[L].sade_sati_2;
       saturnSeverity = "warning";
     } else if (saturnHouse === 4) {
-      saturnText = SHANI_PREDICTIONS.ardhastama;
+      saturnText = SHANI_PREDICTIONS[L].ardhastama;
       saturnSeverity = "warning";
     } else if (saturnHouse === 8) {
-      saturnText = SHANI_PREDICTIONS.ashtama;
+      saturnText = SHANI_PREDICTIONS[L].ashtama;
       saturnSeverity = "warning";
     }
 
     // 3. Evaluate Sun Gochara
-    let sunText = SURYA_PREDICTIONS.neutral;
+    let sunText = SURYA_PREDICTIONS[L].neutral;
     let isSunGood = false;
     if ([3, 6, 10, 11].includes(sunHouse)) {
-      sunText = SURYA_PREDICTIONS.benefic;
+      sunText = SURYA_PREDICTIONS[L].benefic;
       isSunGood = true;
     }
 
@@ -125,15 +159,17 @@
     score = Math.max(1, Math.min(5, Math.round(score)));
 
     // Generate daily dynamic text based on date seed
-    const daySeed = (panchang.date.getDate() + birthRasiIndex) % DAILY_SEEDS.length;
-    const seed = DAILY_SEEDS[daySeed];
+    const daySeed = (panchang.date.getDate() + birthRasiIndex) % DAILY_SEEDS[L].length;
+    const seed = DAILY_SEEDS[L][daySeed];
 
-    const rasiName = RASI_TELUGU[birthRasiIndex];
+    const rasiName = (L === 'en') ? RASI_ENGLISH[birthRasiIndex] : RASI_TELUGU[birthRasiIndex];
 
-    const healthPred = `${seed.health} గోచార శని ప్రభావం వల్ల ${saturnText}`;
-    const wealthPred = `${seed.wealth} గోచార గురు బలం వల్ల ${jupiterText}`;
-    const careerPred = `${seed.career} గోచార సూర్య సంచారం వల్ల ${sunText}`;
-    const fullPrediction = `ఈ రోజు ${rasiName} వారికి ఫలితాలు మిశ్రమంగా ఉన్నాయి.\n\n- ఆరోగ్యం: ${healthPred}\n- ఆర్థికం: ${wealthPred}\n- కెరీర్: ${careerPred}`;
+    const healthPred = (L === 'en') ? `${seed.health} Saturn's transit also brings: ${saturnText}` : `${seed.health} గోచార శని ప్రభావం వల్ల ${saturnText}`;
+    const wealthPred = (L === 'en') ? `${seed.wealth} Jupiter's strength also brings: ${jupiterText}` : `${seed.wealth} గోచార గురు బలం వల్ల ${jupiterText}`;
+    const careerPred = (L === 'en') ? `${seed.career} The Sun's transit also brings: ${sunText}` : `${seed.career} గోచార సూర్య సంచారం వల్ల ${sunText}`;
+    const fullPrediction = (L === 'en')
+      ? `Today's results for ${rasiName} are mixed.\n\n- Health: ${healthPred}\n- Wealth: ${wealthPred}\n- Career: ${careerPred}`
+      : `ఈ రోజు ${rasiName} వారికి ఫలితాలు మిశ్రమంగా ఉన్నాయి.\n\n- ఆరోగ్యం: ${healthPred}\n- ఆర్థికం: ${wealthPred}\n- కెరీర్: ${careerPred}`;
 
     return {
       rasiName,

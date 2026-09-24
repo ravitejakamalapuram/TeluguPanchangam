@@ -16,14 +16,14 @@
 
   const PANCHANG_DATA = {
     tithis: [
-      "శుక్ల పాడ్యమి (Prathama)", "శుక్ల విదియ (Dwitiya)", "శుక్ల తదియ (Tritiya)", "శుక్ల చవితి (Chaturthi)",
-      "శుక్ల పంచమి (Panchami)", "శుక్ల షష్ఠి (Shashti)", "శుక్ల సప్తమి (Saptami)", "శుక్ల అష్టమి (Ashtami)",
-      "శుక్ల నవమి (Navami)", "శుక్ల దశమి (Dashami)", "శుక్ల ఏకాదశి (Ekadashi)", "శుక్ల ద్వాదశి (Dwadashi)",
-      "శుక్ల త్రయోదశి (Trayodashi)", "శుక్ల చతుర్దశి (Chaturdashi)", "పూర్ణిమ (Purnima)",
-      "కృష్ణ పాడ్యమి (Prathama)", "కృష్ణ విదియ (Dwitiya)", "కృష్ణ తదియ (Tritiya)", "కృష్ణ చవితి (Chaturthi)",
-      "కృష్ణ పంచమి (Panchami)", "కృష్ణ షష్ఠి (Shashti)", "కృష్ణ సప్తమి (Saptami)", "కృష్ణ అష్టమి (Ashtami)",
-      "కృష్ణ నవమి (Navami)", "కృష్ణ దశమి (Dashami)", "కృష్ణ ఏకాదశి (Ekadashi)", "కృష్ణ ద్వాదశి (Dwadashi)",
-      "కృష్ణ త్రయోదశి (Trayodashi)", "కృష్ణ చతుర్దశి (Chaturdashi)", "అమావాస్య (Amavasya)"
+      "శుక్ల పాడ్యమి (Shukla Prathama)", "శుక్ల విదియ (Shukla Dwitiya)", "శుక్ల తదియ (Shukla Tritiya)", "శుక్ల చవితి (Shukla Chaturthi)",
+      "శుక్ల పంచమి (Shukla Panchami)", "శుక్ల షష్ఠి (Shukla Shashti)", "శుక్ల సప్తమి (Shukla Saptami)", "శుక్ల అష్టమి (Shukla Ashtami)",
+      "శుక్ల నవమి (Shukla Navami)", "శుక్ల దశమి (Shukla Dashami)", "శుక్ల ఏకాదశి (Shukla Ekadashi)", "శుక్ల ద్వాదశి (Shukla Dwadashi)",
+      "శుక్ల త్రయోదశి (Shukla Trayodashi)", "శుక్ల చతుర్దశి (Shukla Chaturdashi)", "పూర్ణిమ (Purnima)",
+      "కృష్ణ పాడ్యమి (Krishna Prathama)", "కృష్ణ విదియ (Krishna Dwitiya)", "కృష్ణ తదియ (Krishna Tritiya)", "కృష్ణ చవితి (Krishna Chaturthi)",
+      "కృష్ణ పంచమి (Krishna Panchami)", "కృష్ణ షష్ఠి (Krishna Shashti)", "కృష్ణ సప్తమి (Krishna Saptami)", "కృష్ణ అష్టమి (Krishna Ashtami)",
+      "కృష్ణ నవమి (Krishna Navami)", "కృష్ణ దశమి (Krishna Dashami)", "కృష్ణ ఏకాదశి (Krishna Ekadashi)", "కృష్ణ ద్వాదశి (Krishna Dwadashi)",
+      "కృష్ణ త్రయోదశి (Krishna Trayodashi)", "కృష్ణ చతుర్దశి (Krishna Chaturdashi)", "అమావాస్య (Amavasya)"
     ],
     nakshatras: [
       "అశ్విని (Ashwini)", "భరణి (Bharani)", "కృత్తిక (Krittika)", "రోహిణి (Rohini)",

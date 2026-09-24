@@ -8,6 +8,7 @@ const path = require('node:path');
 // where we can read them back, then load them in the same order the extension does.
 global.window = global;
 window.Astronomy = require(path.join(__dirname, '..', '..', 'lib', 'astronomy.js'));
+require(path.join(__dirname, '..', '..', 'lib', 'tz.js'));
 require(path.join(__dirname, '..', '..', 'panchang.js'));
 require(path.join(__dirname, '..', '..', 'festivals.js'));
 

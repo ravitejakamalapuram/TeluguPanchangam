@@ -34,7 +34,7 @@ Telugu New Tab Calendar transforms the default Chrome new tab page into a compre
 ## Permissions Justifications
 
 ### storage
-Required to save user city selection, festival notification preferences, and saved sankalpam details locally.
+Stores the user's settings (language/display preferences), saved location coordinates, the name/birth date/birth time optionally entered for Sankalpam and horoscope personalization, and personal reminders (solar-date and lunar-tithi reminders) locally in chrome.storage.local so they persist across new tabs.
 
 ### geolocation
 Detects latitude and longitude, with the user's permission, so sunrise, sunset, Rahu Kalam and other Panchangam timings are computed for their location. The user can instead pick their city from the built-in list. Chrome resolves the request through its own built-in geolocation service; we never receive, log, or transmit the coordinates, which are stored only locally and never leave the browser.

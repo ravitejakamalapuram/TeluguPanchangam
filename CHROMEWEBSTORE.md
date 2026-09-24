@@ -45,7 +45,7 @@ Google review requires specific plain-English justification for each declared pe
 | Permission | Used in Code? | Sample Evidence | Required? | Risk | Plain-English Review Justification |
 | :--- | :---: | :--- | :---: | :---: | :--- |
 | `storage` | Yes | newtab.html:404 | Yes | LOW | Stores the user's settings (language/display preferences), saved location coordinates and personal reminders (solar-date and lunar-tithi reminders) locally in chrome.storage.local so they persist across new tabs. |
-| `geolocation` | Yes | newtab.html | Yes | MEDIUM | Used, with the user's permission, to get the user's approximate coordinates once so sunrise/sunset, tithi/nakshatra timings, Rahu Kalam and the Sankalpam text are computed for their location, and to show local weather (coordinates are sent to the Open-Meteo weather API). The user can instead enter a location manually; coordinates are stored only locally. |
+| `geolocation` | Yes | newtab.html | Yes | MEDIUM | Used, with the user's permission, to get the user's approximate coordinates once so sunrise/sunset, tithi/nakshatra timings, Rahu Kalam and the Sankalpam text are computed for their location. The user can instead enter a location manually; coordinates are stored only locally and never leave the browser. |
 
 ---
 

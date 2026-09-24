@@ -21,11 +21,11 @@
         "singlePurpose": "Replaces the new tab page with a Telugu calendar (Panchangam) showing daily tithi, nakshatra, festivals, horoscope (Rasi Phalalu) and Sankalpam for the user's location.",
         "privacyPolicyUrl": "https://ravitejakamalapuram.github.io/telugu-panchangam.html",
         "remoteCodeUsed": false,
-        "remoteCodeJustification": "The extension does not use remote code. All JavaScript (including the vendored lib/astronomy.js) is packaged in the extension; there is no eval(), new Function() or remotely hosted script. It only loads Google Fonts stylesheets and fetches JSON weather data from Open-Meteo, neither of which is executed.",
+        "remoteCodeJustification": "The extension does not use remote code. All JavaScript (including the vendored lib/astronomy.js) is packaged in the extension; there is no eval(), new Function() or remotely hosted script. It only loads Google Fonts stylesheets, which are not executed.",
         "dataUsageCertified": true,
         "permissionJustifications": {
           "storage": "Stores the user's settings (language/display preferences), saved location coordinates and personal reminders (solar-date and lunar-tithi reminders) locally in chrome.storage.local so they persist across new tabs.",
-          "geolocation": "Used, with the user's permission, to get the user's approximate coordinates once so sunrise/sunset, tithi/nakshatra timings, Rahu Kalam and the Sankalpam text are computed for their location, and to show local weather (coordinates are sent to the Open-Meteo weather API). The user can instead enter a location manually; coordinates are stored only locally."
+          "geolocation": "Used, with the user's permission, to get the user's approximate coordinates once so sunrise/sunset, tithi/nakshatra timings, Rahu Kalam and the Sankalpam text are computed for their location. The user can instead enter a location manually; coordinates are stored only locally."
         }
       }
     }

@@ -12,7 +12,7 @@ KEY FEATURES
 • Daily Horoscope (రాశి ఫలాలు): Daily astrological predictions for all 12 Rasis (Mesha to Meena).
 • Hindu Festivals & Vratams: Accurate dates and reminders for major festivals including Ugadi, Vinayaka Chavithi, Dasara, and Sankranti.
 • Vedic Sankalpam Generator: Automatic generation of customized daily pooja Sankalpam text (సంకల్పం) with correct Samvatsara, Ayana, Ritu, and Masa.
-• Private by design: all Panchangam and astronomical calculations run inside your browser. No tracking or analytics. The only network request is an optional weather lookup (Open-Meteo) using your approximate location.
+• Private by design: all Panchangam and astronomical calculations run inside your browser. No tracking or analytics, and no data is sent to any server.
 
 HOW TO USE
 1. Install the extension and open a new tab in Chrome.
@@ -37,4 +37,4 @@ Telugu New Tab Calendar transforms the default Chrome new tab page into a compre
 Required to save user city selection, festival notification preferences, and saved sankalpam details locally.
 
 ### geolocation
-Detects latitude and longitude for accurate sunrise, sunset and Rahu Kalam times. The coordinates are also sent to the Open-Meteo weather API to show local weather; nothing else leaves the browser.
+Detects latitude and longitude, with the user's permission, so sunrise, sunset, Rahu Kalam and other Panchangam timings are computed for their location. The user can instead enter a location manually; coordinates are stored only locally and never leave the browser.

@@ -1,7 +1,7 @@
 {
   "name": "Telugu New Tab Calendar (పంచాంగం)",
   "shortDescription": "Offline Telugu Panchangam, daily Rasi Phalalu, Rahu Kalam and festival calendar on your new tab.",
-  "description": "Telugu New Tab Calendar (పంచాంగం) turns your Chrome new tab into a Telugu Vedic calendar for the Telugu community worldwide.\n\nFeatures:\n- Daily Panchangam: Tithi, Vara, Nakshatra, Yoga and Karana, calculated for your location.\n- Rahu Kalam, Yamagandam and Gulika Kalam timings.\n- Daily Rasi Phalalu (రాశి ఫలాలు) for all 12 rasis.\n- Festivals and vratams (Ugadi, Vinayaka Chavithi, Dasara, Sankranti and more) with reminders.\n- Vedic Sankalpam text generator with the correct Samvatsara, Ayana, Ritu and Masa.\n\nPrivacy: calculations run inside your browser. No tracking or analytics. Your approximate location is used for timings and an optional Open-Meteo weather lookup.\n",
+  "description": "Telugu New Tab Calendar (పంచాంగం) turns your Chrome new tab into a Telugu Vedic calendar for the Telugu community worldwide.\n\nFeatures:\n- Daily Panchangam: Tithi, Vara, Nakshatra, Yoga and Karana, calculated for your location.\n- Rahu Kalam, Yamagandam and Gulika Kalam timings.\n- Daily Rasi Phalalu (రాశి ఫలాలు) for all 12 rasis.\n- Festivals and vratams (Ugadi, Vinayaka Chavithi, Dasara, Sankranti and more) with reminders.\n- Vedic Sankalpam text generator with the correct Samvatsara, Ayana, Ritu and Masa.\n\nPrivacy: calculations run inside your browser. No tracking or analytics. Your approximate location is used only to compute timings for your location.\n",
   "category": "Lifestyle",
   "language": "en",
   "supportUrl": "https://github.com/ravitejakamalapuram/TeluguPanchangam/issues",

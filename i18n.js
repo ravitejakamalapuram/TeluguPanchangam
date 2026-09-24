@@ -73,16 +73,17 @@
   }
 
   // Split a "Telugu (English)[:suffix]" composite string per active
-  // language, e.g. "తిథి (Tithi)" -> "తిథి" (te) / "Tithi" (en), or
-  // "నగరం ఎంచుకోండి (City):" -> "నగరం ఎంచుకోండి:" (te) / "City:" (en).
+  // language, e.g. "తిథి (Tithi)" -> "Tithi" (en), or
+  // "నగరం ఎంచుకోండి (City):" -> "City:" (en). Telugu is the app's default
+  // and existing behavior, so `te` keeps the full composite string
+  // unchanged (no info lost) and the toggle only strips it down for `en`.
   function bi(str) {
-    if (typeof str !== 'string') return str;
+    if (typeof str !== 'string' || currentLang === 'te') return str;
     const m = str.match(/^(.*?)\s*\(([^()]*)\)(.*)$/);
     if (!m) return str;
-    const teluguPart = m[1];
     const englishPart = m[2];
     const suffix = m[3];
-    return (currentLang === 'te' ? teluguPart : englishPart) + suffix;
+    return englishPart + suffix;
   }
 
   function getLang() {

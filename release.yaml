@@ -13,6 +13,7 @@ targets:
       - newtab.css
       - newtab.js
       - storage-shim.js
+      - i18n.js
       - cities.js
       - panchang.js
       - festivals.js

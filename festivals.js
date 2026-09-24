@@ -106,12 +106,12 @@
 
     // Margashiram (8)
     if (m === 8 && t === 10 && !panchang.month.isAdhika) {
-      festivals.push({ name: "వైకుంఠ ఏకాదశి / ముక్కోటి ఏకాదశి", desc: "ఉత్తర ద్వార దర్శనం సకల పాపహరణం." });
+      festivals.push({ name: "వైకుంఠ ఏకాదశి / ముక్కోటి ఏకాదశి (Vaikunta Ekadashi / Mukkoti Ekadashi)", desc: "ఉత్తర ద్వార దర్శనం సకల పాపహరణం." });
     }
 
     // Magham (10)
     if (m === 10 && t === 4 && !panchang.month.isAdhika) {
-      festivals.push({ name: "శ్రీ పంచమి / వసంత పంచమి", desc: "సరస్వతీ దేవి పూజ, అక్షరాభ్యాసాలకు అత్యంత అనుకూలం." });
+      festivals.push({ name: "శ్రీ పంచమి / వసంత పంచమి (Sri Panchami / Vasanta Panchami)", desc: "సరస్వతీ దేవి పూజ, అక్షరాభ్యాసాలకు అత్యంత అనుకూలం." });
     }
     if (m === 10 && t === 6 && !panchang.month.isAdhika) {
       festivals.push({ name: "రథ సప్తమి (Ratha Saptami)", desc: "సూర్య జయంతి, సూర్య భగవానుడికి చిక్కుడు ఆకులలో క్షీరాన్న నివేదన." });

@@ -158,13 +158,55 @@ check('newtab.js never assigns userSettings.name to the profile name element dir
     'elProfileName must be set via renderProfileName() so it re-translates the default placeholder, not by direct assignment'
   );
   assert.ok(
-    /function renderProfileName\s*\(/.test(src),
-    'expected a renderProfileName() helper'
-  );
-  assert.ok(
     /function applyTranslations[\s\S]*?renderProfileName\(\);[\s\S]*?\n  \}/.test(src),
     'applyTranslations() must call renderProfileName() so the language toggle re-renders the profile name'
   );
+});
+
+// Extract and run the real renderProfileName() against a stub DOM element,
+// rather than re-deriving its expected behavior by hand, so this actually
+// exercises the shipped function: the untouched default placeholder must
+// translate (and match main's literal `te` byte-for-byte), while a real
+// user-entered name must survive a te -> en -> te round trip unchanged.
+check('renderProfileName() translates only the untouched default, never a real name', () => {
+  const src = readFile('newtab.js');
+  const constMatch = src.match(/const DEFAULT_PROFILE_NAME = '([^']*)'/);
+  const fnMatch = src.match(/function renderProfileName\s*\([^)]*\)\s*\{[\s\S]*?\n  \}/);
+  assert.ok(constMatch, 'expected a DEFAULT_PROFILE_NAME constant');
+  assert.ok(fnMatch, 'expected a renderProfileName() function body');
+  assert.strictEqual(constMatch[1], 'యజమాని', "DEFAULT_PROFILE_NAME must match main's literal te text exactly");
+
+  const elProfileName = { textContent: '' };
+  let currentUserSettings = { name: constMatch[1] };
+  const fnSandbox = vm.createContext({
+    window: { I18N },
+    DEFAULT_PROFILE_NAME: constMatch[1],
+    elProfileName,
+    get userSettings() { return currentUserSettings; }
+  });
+  vm.runInContext(fnMatch[0], fnSandbox);
+
+  I18N.setLang('te');
+  currentUserSettings = { name: constMatch[1] };
+  vm.runInContext('renderProfileName();', fnSandbox);
+  assert.strictEqual(elProfileName.textContent, 'యజమాని', 'te placeholder must match main byte-for-byte');
+
+  I18N.setLang('en');
+  vm.runInContext('renderProfileName();', fnSandbox);
+  assert.strictEqual(elProfileName.textContent, 'Owner', 'en placeholder must translate, no Telugu left');
+
+  currentUserSettings = { name: 'Ravi' };
+  I18N.setLang('te');
+  vm.runInContext('renderProfileName();', fnSandbox);
+  assert.strictEqual(elProfileName.textContent, 'Ravi', 'a real name must survive unchanged in te');
+  I18N.setLang('en');
+  vm.runInContext('renderProfileName();', fnSandbox);
+  assert.strictEqual(elProfileName.textContent, 'Ravi', 'a real name must survive a te -> en round trip unchanged');
+  I18N.setLang('te');
+  vm.runInContext('renderProfileName();', fnSandbox);
+  assert.strictEqual(elProfileName.textContent, 'Ravi', 'a real name must survive a te -> en -> te round trip unchanged');
+
+  I18N.setLang('te');
 });
 
 // --- English tithi labels must be unique (blocker 2) ---

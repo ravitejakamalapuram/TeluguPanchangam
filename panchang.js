@@ -12,6 +12,7 @@
     console.error("Astronomy Engine (lib/astronomy.js) must be loaded before panchang.js");
     return;
   }
+  const TZ = window.TZ;
 
   const PANCHANG_DATA = {
     tithis: [
@@ -185,9 +186,11 @@
   }
 
   // Scans the day (24 hours) for transitions of Tithi, Nakshatra, Yoga, Karana
-  function findTransitionsForDay(date, valFuncGetter) {
+  // year/month/day identify the calendar day being scanned (already resolved by
+  // the caller); timeZone anchors "midnight" to that city's wall clock.
+  function findTransitionsForDay(year, month, day, valFuncGetter, timeZone) {
     const transitions = [];
-    const tStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+    const tStart = TZ.zonedTimeToUtc(year, month, day, 0, 0, 0, timeZone);
     
     // Evaluate hourly points to check for transitions
     for (let i = 0; i < 24; i++) {
@@ -207,29 +210,40 @@
     return transitions;
   }
 
-  // Core function: Calculate all Panchang parameters for a location & date
-  function calculatePanchang(date, latitude, longitude) {
+  // Core function: Calculate all Panchang parameters for a location & date.
+  // timeZone (IANA name, e.g. "America/Chicago") anchors the day's midnight/
+  // noon to that city's wall clock, including its DST rules, instead of the
+  // browser's system timezone. Falls back to system-local when omitted.
+  function calculatePanchang(date, latitude, longitude, timeZone) {
     const localTime = new Date(date);
     const time = Astronomy.MakeTime(localTime);
     const observer = new Astronomy.Observer(latitude, longitude, 0);
 
+    // The calendar day being calculated is identified by these Y/M/D (read
+    // using the same convention the caller used to build `date`); timeZone
+    // only changes which clock that day's midnight/noon is anchored to.
+    const y = localTime.getFullYear();
+    const mo = localTime.getMonth();
+    const da = localTime.getDate();
+    const weekday = new Date(y, mo, da).getDay(); // 0 = Sunday, 1 = Monday, ... (timezone-independent for a given calendar date)
+
     // 1. Sunrise / Sunset / Midday
     // Search around 12:00 PM local time of that day to prevent crossing boundaries
-    const midDayTime = new Date(localTime.getFullYear(), localTime.getMonth(), localTime.getDate(), 12, 0, 0);
+    const midDayTime = TZ.zonedTimeToUtc(y, mo, da, 12, 0, 0, timeZone);
     const midDayAstro = Astronomy.MakeTime(midDayTime);
-    
+
     let sunrise = null;
     let sunset = null;
-    
+
     const riseResult = Astronomy.SearchRiseSet(Astronomy.Body.Sun, observer, 1, midDayAstro, -1.0); // Search backwards for rise
     const setResult = Astronomy.SearchRiseSet(Astronomy.Body.Sun, observer, -1, midDayAstro, 1.0);  // Search forwards for set
-    
+
     if (riseResult) sunrise = riseResult.date;
     if (setResult) sunset = setResult.date;
 
     // Fallbacks if rise/set calculation fails
-    if (!sunrise) sunrise = new Date(localTime.getFullYear(), localTime.getMonth(), localTime.getDate(), 6, 0, 0);
-    if (!sunset) sunset = new Date(localTime.getFullYear(), localTime.getMonth(), localTime.getDate(), 18, 0, 0);
+    if (!sunrise) sunrise = TZ.zonedTimeToUtc(y, mo, da, 6, 0, 0, timeZone);
+    if (!sunset) sunset = TZ.zonedTimeToUtc(y, mo, da, 18, 0, 0, timeZone);
 
     const daylightDuration = sunset.getTime() - sunrise.getTime();
     const midday = new Date(sunrise.getTime() + daylightDuration / 2);
@@ -242,14 +256,13 @@
     const karana = getKaranaAt(middayAstro);
 
     // Find transitions during the day
-    const tithiTransitions = findTransitionsForDay(midday, getTithiAt);
-    const nakshatraTransitions = findTransitionsForDay(midday, getNakshatraAt);
-    const yogaTransitions = findTransitionsForDay(midday, getYogaAt);
+    const tithiTransitions = findTransitionsForDay(y, mo, da, getTithiAt, timeZone);
+    const nakshatraTransitions = findTransitionsForDay(y, mo, da, getNakshatraAt, timeZone);
+    const yogaTransitions = findTransitionsForDay(y, mo, da, getYogaAt, timeZone);
 
     // 3. Auspicious & Inauspicious Times
     // Rahu Kalam, Yama Gandam, Durmuhurtham are based on sunrise/sunset duration
     const dayPart = daylightDuration / 8.0;
-    const weekday = midday.getDay(); // 0 = Sunday, 1 = Monday, ...
 
     // Rahu Kalam weekday index mapping (1-based parts)
     const rahuParts = [8, 2, 7, 5, 6, 4, 3]; // Sun=8, Mon=2, Tue=7, Wed=5, Thu=6, Fri=4, Sat=3
@@ -415,16 +428,16 @@
     // Samvatsara calculation
     // Year 1 (Prabhava) starts around Ugadi of 1987.
     // We adjust by finding Ugadi (start of Chaitram) of the current year.
-    let samvatsaraYear = localTime.getFullYear();
+    let samvatsaraYear = y;
     // Approximate Ugadi time (around March 20)
     const approxUgadi = new Date(samvatsaraYear, 2, 20);
     // If current date is before Ugadi, we belong to the previous year
     // Wait, let's refine: check if current month is Phalguna or if we are in Chaitra before Ugadi.
     // A safe approximation:
     let isNewYear = false;
-    if (localTime.getMonth() > 2) {
+    if (mo > 2) {
       isNewYear = true;
-    } else if (localTime.getMonth() === 2) { // March
+    } else if (mo === 2) { // March
       // If we are in March, check if current monthIndex is Chaitram (0) or later
       isNewYear = (monthIndex === 0 && tithi.index >= 0) || (monthIndex > 0);
     } else {

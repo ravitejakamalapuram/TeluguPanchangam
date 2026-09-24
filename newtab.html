@@ -47,8 +47,17 @@
           <div class="profile-avatar">🕉️</div>
         </div>
         <h2 id="profile-name">యజమాని</h2>
-        <p id="profile-location">స్థానం కనుగొనబడుతోంది...</p>
+        <p id="profile-location">హైదరాబాద్ (Hyderabad)</p>
         <button id="btn-open-settings" class="cyber-btn small-btn">జన్మ వివరాలు</button>
+      </div>
+
+      <div class="city-selector-card">
+        <label for="select-city">నగరం ఎంచుకోండి (City):</label>
+        <div class="select-wrapper">
+          <select id="select-city"></select>
+        </div>
+        <button id="btn-use-location" type="button" class="cyber-btn tiny-btn city-locate-btn">📍 నా స్థానం వాడు (Use My Location)</button>
+        <p id="location-status" class="location-status-msg" style="display: none;"></p>
       </div>
 
       <div class="rasi-selector-card">
@@ -388,6 +397,8 @@
 
   <!-- Vendor & Core Scripts -->
   <script src="lib/astronomy.js"></script>
+  <script src="lib/tz.js"></script>
+  <script src="cities.js"></script>
   <script src="panchang.js"></script>
   <script src="festivals.js"></script>
   <script src="sankalpam.js"></script>

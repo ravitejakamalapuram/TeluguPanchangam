@@ -18,3 +18,18 @@ jobs:
       actions: read   # lets app-ci.yml find which release-platform commit it runs at
     uses: ravitejakamalapuram/release-platform/.github/workflows/app-ci.yml@v2
     # Deliberately no `secrets:` and no id-token: PR code never sees credentials.
+
+  listing-check:
+    # Repo-local Chrome Web Store listing check (chrome-store/validate-listing.mjs).
+    # Stricter than release-platform's own rule in places (e.g. screenshot count),
+    # and it's the only thing that validates the store icon today. Deliberately
+    # does not call release-platform or any shared workflow.
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node chrome-store/validate-listing.mjs

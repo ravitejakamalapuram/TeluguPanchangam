@@ -1,26 +1,29 @@
 # Store Listing: Telugu New Tab Calendar (పంచాంగం)
 
 ## Summary
-Offline Telugu Panchangam, daily horoscope (రాశి ఫలాలు), Rahu Kalam, and festival calendar on your Chrome New Tab page.
+Telugu Panchangam on your new tab: tithi, nakshatra, Rahu Kalam, sankalpam & festivals — computed for your own city. Offline.
+
+125 / 132 characters. Source of truth is `chrome-store/store.config.json`; this file mirrors it for human review.
 
 ## Description
-Telugu New Tab Calendar (పంచాంగం) is a beautiful, offline-first Vedic astrology calendar and festival guide for your Chrome new tab page. Designed for the Telugu community worldwide, it brings daily planetary data, auspicious timings, and personalized devotional tools right into your browser.
+See `chrome-store/store.config.json`'s `description` field for the exact submitted text (English, then a Telugu section — the Chrome listing schema has no separate-locale field for this listing).
 
 KEY FEATURES
 • Comprehensive Panchangam: Real-time calculation of Tithi (తిథి), Vara (వారం), Nakshatra (నక్షత్రం), Yoga (యోగం), and Karana (కరణం).
 • Auspicious & Inauspicious Timings: Precise Rahu Kalam (రాహుకాలం), Yamagandam (యమగండం), Gulika Kalam, Varjyam, and Amritakalam calculated for your location.
-• Daily Horoscope (రాశి ఫలాలు): Daily astrological predictions for all 12 Rasis (Mesha to Meena).
+• Built for the Telugu diaspora: pick your own city — Hyderabad and Vijayawada alongside US metros like Dallas, Austin, Houston, Atlanta, Bay Area, and Seattle — with every timing computed for that city's real (DST-correct) time zone.
+• Daily Rasi Phalalu (రాశి ఫలాలు): a daily reading for all 12 Rasis (Mesha to Meena).
 • Hindu Festivals & Vratams: Accurate dates and reminders for major festivals including Ugadi, Vinayaka Chavithi, Dasara, and Sankranti.
 • Vedic Sankalpam Generator: Automatic generation of customized daily pooja Sankalpam text (సంకల్పం) with correct Samvatsara, Ayana, Ritu, and Masa.
-• Private by design: all Panchangam and astronomical calculations run inside your browser, with no tracking or analytics. The only action that ever sends anything off your device is the optional "Use My Location" button, which hands the request to Chrome's own built-in geolocation service rather than to us.
+• Private by design: the extension makes no network requests of its own — no tracking, no analytics. The only action that ever sends anything off your device is the optional "Use My Location" button, which hands the request to Chrome's own built-in geolocation service rather than to us.
 
 HOW TO USE
 1. Install the extension and open a new tab in Chrome.
-2. Allow location access or select your preferred city from the list.
+2. Pick your city from the list, or allow location access.
 3. View daily Telugu Panchangam, festival reminders, and astrological timings instantly.
 
 ## Category
-Lifestyle
+Workflow & Planning
 
 ## Language
 English

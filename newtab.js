@@ -43,11 +43,6 @@
   const elMoonCanvas = document.getElementById('moon-canvas');
   const elSunBody = document.getElementById('sun-body');
   
-  // Weather
-  const elWeatherTemp = document.getElementById('weather-temp');
-  const elWeatherText = document.getElementById('weather-text');
-  const elWeatherAnim = document.getElementById('weather-anim');
-
   // Horoscope
   const elHoroscopeRating = document.getElementById('horoscope-rating');
   const elHoroscopeTxt = document.getElementById('horoscope-txt');
@@ -92,8 +87,6 @@
   let starsAnimationId = null;
   let starsCtx = null;
   let stars = [];
-  let rainDrops = [];
-  let weatherCondition = 'clear';
 
   // Dynamic UI & Nebula Animation State
   let activeHoroTab = 'health';
@@ -279,10 +272,7 @@
     updateSunPathMarker(activePanchang);
     renderDayTimeline(activePanchang);
 
-    // 9. Fetch weather details
-    fetchWeather();
-
-    // 10. Re-render monthly calendar grid
+    // 9. Re-render monthly calendar grid
     renderMonthlyCalendar();
   }
 
@@ -362,56 +352,6 @@
       item.appendChild(btnDelete);
       elRemindersList.appendChild(item);
     });
-  }
-
-  // Free Open-Meteo Weather API integration
-  async function fetchWeather() {
-    try {
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${currentCoordinates.lat}&longitude=${currentCoordinates.lng}&current_weather=true`;
-      const res = await fetch(url);
-      const data = await res.json();
-      
-      if (data && data.current_weather) {
-        const temp = Math.round(data.current_weather.temperature);
-        elWeatherTemp.textContent = `${temp}°C`;
-        
-        // Translate weather code
-        const code = data.current_weather.weathercode;
-        let text = "ప్రశాంతం";
-        let anim = "☀️";
-
-        if (code === 0) { text = "నిర్మలంగా ఉంది"; anim = "☀️"; }
-        else if (code >= 1 && code <= 3) { text = "పాక్షికంగా మేఘాలు"; anim = "⛅"; }
-        else if (code >= 45 && code <= 48) { text = "పొగమంచు"; anim = "🌫️"; }
-        else if (code >= 51 && code <= 67) { text = "చిరుజల్లులు"; anim = "🌧️"; }
-        else if (code >= 71 && code <= 77) { text = "మంచు కురుస్తోంది"; anim = "❄️"; }
-        else if (code >= 80 && code <= 82) { text = "వర్షం"; anim = "🌧️"; }
-        else if (code >= 95) { text = "ఉరుములతో కూడిన వర్షం"; anim = "⛈️"; }
-
-        elWeatherText.textContent = text;
-        elWeatherAnim.textContent = anim;
-
-        // Map weather code to sky backdrop state
-        let state = 'clear';
-        if (code === 0) state = 'clear';
-        else if (code >= 1 && code <= 3) state = 'cloudy';
-        else if (code >= 45 && code <= 48) state = 'foggy';
-        else if (code >= 51 && code <= 67) state = 'rainy';
-        else if (code >= 71 && code <= 77) state = 'snowy';
-        else if (code >= 80 && code <= 82) state = 'rainy';
-        else if (code >= 95) state = 'stormy';
-
-        weatherCondition = state;
-        if (elSkyBackdrop) {
-          elSkyBackdrop.classList.remove('weather-clear', 'weather-cloudy', 'weather-foggy', 'weather-rainy', 'weather-snowy', 'weather-stormy');
-          elSkyBackdrop.classList.add(`weather-${state}`);
-        }
-        updateClouds(state);
-      }
-    } catch (e) {
-      console.warn("Weather fetch failed:", e);
-      elWeatherText.textContent = "వాతావరణం అందుబాటులో లేదు";
-    }
   }
 
   // Render 7-column Monthly Calendar Grid
@@ -822,34 +762,7 @@
     }
   }
 
-  // Dynamically populate floating cloud divs for cloudy/stormy conditions
-  function updateClouds(state) {
-    const container = document.getElementById('clouds-container');
-    if (!container) return;
-    container.innerHTML = '';
-
-    if (state === 'cloudy' || state === 'stormy') {
-      const count = state === 'stormy' ? 10 : 6;
-      for (let i = 0; i < count; i++) {
-        const cloud = document.createElement('div');
-        cloud.className = 'cloud-particle';
-        const height = Math.random() * 45 + 30; // 30px to 75px
-        const width = height * (Math.random() * 1.5 + 2.0); // wider aspect ratios
-        cloud.style.height = `${height}px`;
-        cloud.style.width = `${width}px`;
-        cloud.style.top = `${Math.random() * 40 + 5}%`; // upper screen portion
-        cloud.style.left = `${Math.random() * 95}%`;
-
-        const duration = Math.random() * 40 + 35; // 35s to 75s float speed
-        cloud.style.animationDuration = `${duration}s`;
-        cloud.style.animationDelay = `-${Math.random() * duration}s`;
-
-        container.appendChild(cloud);
-      }
-    }
-  }
-
-  // Initialize background starfield and rain canvases
+  // Initialize background starfield canvas
   function initStarsAndRain() {
     if (!elStarsCanvas) return;
     starsCtx = elStarsCanvas.getContext('2d');
@@ -868,19 +781,6 @@
           size: Math.random() * 1.4 + 0.4,
           alpha: Math.random(),
           speed: Math.random() * 0.015 + 0.005
-        });
-      }
-
-      // Rain configuration
-      rainDrops = [];
-      const rainCount = Math.min(180, Math.floor(window.innerWidth / 10));
-      for (let i = 0; i < rainCount; i++) {
-        rainDrops.push({
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * -window.innerHeight,
-          length: Math.random() * 20 + 15,
-          speed: Math.random() * 14 + 18,
-          opacity: Math.random() * 0.22 + 0.08
         });
       }
     }
@@ -904,11 +804,9 @@
       return;
     }
 
-    const isNight = elSkyBackdrop.classList.contains('sky-night') || 
-                    elSkyBackdrop.classList.contains('sky-sunset') || 
+    const isNight = elSkyBackdrop.classList.contains('sky-night') ||
+                    elSkyBackdrop.classList.contains('sky-sunset') ||
                     elSkyBackdrop.classList.contains('sky-sunrise');
-    const isRainy = elSkyBackdrop.classList.contains('weather-rainy') || 
-                    elSkyBackdrop.classList.contains('weather-stormy');
 
     // 1. Draw Twinkling Stars
     if (isNight) {
@@ -952,30 +850,6 @@
           stars.shooting = null;
         }
       }
-    }
-
-    // 2. Draw Falling Rain
-    if (isRainy) {
-      const activeTheme = document.body.getAttribute('data-theme') || 'light';
-      starsCtx.strokeStyle = activeTheme === 'dark' 
-        ? 'rgba(0, 229, 255, 0.22)' 
-        : 'rgba(255, 94, 0, 0.2)';
-      starsCtx.lineWidth = 1.2;
-
-      rainDrops.forEach(drop => {
-        starsCtx.beginPath();
-        starsCtx.moveTo(drop.x, drop.y);
-        starsCtx.lineTo(drop.x + 2, drop.y + drop.length);
-        starsCtx.stroke();
-
-        drop.y += drop.speed;
-        drop.x += 0.8;
-
-        if (drop.y > h) {
-          drop.y = Math.random() * -100 - 20;
-          drop.x = Math.random() * w;
-        }
-      });
     }
 
     starsAnimationId = requestAnimationFrame(loopParticles);

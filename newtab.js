@@ -178,8 +178,10 @@
           document.body.setAttribute('data-theme', userSettings.theme || 'light');
           elThemeToggle.checked = (userSettings.theme === 'dark');
 
-          // Populate Settings form
-          elSetName.value = userSettings.name;
+          // Populate Settings form. The untouched default is a placeholder,
+          // not real text, so the input stays blank and shows its
+          // (localized) placeholder hint instead of leaking Telugu into it.
+          elSetName.value = (userSettings.name === DEFAULT_PROFILE_NAME) ? '' : userSettings.name;
           elSetDob.value = userSettings.dob;
           elSetTob.value = userSettings.tob;
         }
@@ -759,7 +761,7 @@
     elSettingsForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      userSettings.name = elSetName.value;
+      userSettings.name = elSetName.value.trim() || DEFAULT_PROFILE_NAME;
       userSettings.dob = elSetDob.value;
       userSettings.tob = elSetTob.value;
 

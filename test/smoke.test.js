@@ -209,6 +209,16 @@ check('renderProfileName() translates only the untouched default, never a real n
   I18N.setLang('te');
 });
 
+// --- #set-name must not hardcode the Telugu placeholder as its value
+// (PR #14 review round: the sidebar name translated, but the settings
+// dialog's input still shipped the raw Telugu string as `value`, which
+// showed up unconditionally regardless of language) ---
+check('no Telugu codepoints in any value="..." attribute in newtab.html', () => {
+  const html = readFile('newtab.html');
+  const teluguValue = html.match(/value="[^"]*[ఀ-౿][^"]*"/);
+  assert.ok(!teluguValue, `Telugu text found in a value attribute: ${teluguValue && teluguValue[0]}`);
+});
+
 // --- English tithi labels must be unique (blocker 2) ---
 check('English tithi labels have no duplicates across Shukla/Krishna paksha', () => {
   I18N.setLang('en');

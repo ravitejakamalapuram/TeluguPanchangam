@@ -33,3 +33,4 @@ jobs:
         with:
           node-version: 20
       - run: node chrome-store/validate-listing.mjs
+      - run: node chrome-store/validate-privacy.mjs

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "node --test test/panchang.test.js && node test/smoke.test.js",
-    "validate:listing": "node chrome-store/validate-listing.mjs"
+    "validate:listing": "node chrome-store/validate-listing.mjs",
+    "validate:privacy": "node chrome-store/validate-privacy.mjs"
   },
   "keywords": [],
   "author": "",

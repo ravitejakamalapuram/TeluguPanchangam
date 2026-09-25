@@ -134,17 +134,50 @@ one day per year, matching the reviewer's report of 15/18 pre-round-1 correct da
 new mismatches introduced, and the round-1 regression is gone). A broader script-driven sweep
 of every calendar day 2024-2027 for both cities, checking that *every* festival this app
 tracks (not just the six named ones) fires on exactly one day per year, found and fixed one
-more instance of the same duplicate-firing bug (#2's solar festivals, see below). It is *not*
-fully clean: four festivals still never fire in one of the four years, because their tithi is
-never the majority-of-daylight tithi on any day that year (Kshaya tithi) - Hyderabad
+more instance of the same duplicate-firing bug (#2's solar festivals, see below). At the time,
+it was *not* fully clean: four festivals never fired in one of the four years, because their
+tithi was never the majority-of-daylight tithi on any day that year (Kshaya tithi) - Hyderabad
 Mahanavami 2024 and Vasanta Panchami 2024, Dallas Raksha Bandhan 2024 and Ratha Saptami 2026.
-All four behave identically on pre-PR `main`, so they are pre-existing and not introduced
-here; the same sweep run against `main` shows 11 anomalous festivals for Hyderabad and 9 for
-Dallas versus 2 and 2 after this PR. Eliminating the remaining four needs interval-based
-assignment of a tithi to its governing day rather than any single per-day scalar, and is
-tracked as follow-up rather than fixed here. That sweep isn't part of `npm test` since it isn't checked against real Drik
-Panchang values - it verifies internal consistency (no vanish/duplicate), not correctness
-against source-of-truth dates outside the 33-date fixture.
+Eliminating those needed interval-based assignment of a tithi to its governing day rather than
+any single per-day scalar - done in round 3 below.
+
+## Round 3 (POR-49: Kshaya-tithi vanish)
+
+8. **A tithi that never wins majority-of-daylight on *any* day was matched by no day at all.**
+   `majorityTithiOfDaylight` is still the right primary signal (verified directly against the
+   fixture's Drik source: Sri Rama Navami 2026-03-26 Hyderabad's *displayed* tithi that day is
+   Ashtami, but Drik still calls it Navami because Navami holds the larger daylight share -
+   switching the default rule to plain Udaya tithi, the obvious "fix", breaks this and four
+   other fixture rows). `tithiGovernsDefaultDay` in `festivals.js` now falls through three
+   tiers instead of one scalar: (1) majority-of-daylight, unchanged; (2) if that never selects
+   the target tithi on any nearby day, but the target *is* the plain Udaya tithi of one specific
+   day, that day governs (with the existing Vriddhi suppression, now also guarding this tier);
+   (3) only if the target is Udaya on no day either (a true Kshaya tithi, touching no sunrise)
+   is it assigned by comparing its share of the full sunrise-to-sunrise span (not just daylight)
+   between the (at most two) adjacent days it can touch - the actual interval-based assignment,
+   applied to the default rule rather than only the three kaal-specific festivals that already
+   had it. All four regression cases now fire exactly once (Vasanta Panchami 2024 resolves to
+   Feb 13, the day its tithi holds the larger full-day share). A multi-year sweep test now lives
+   in `test/panchang.test.js` (previously this class could only be checked by an ad hoc script,
+   never regression-tested) - seeded with these four cases, and asserting every tracked festival
+   fires exactly once per year for both cities, 2024-2027.
+9. **The suite now drives the same 4-argument `calculatePanchang` call `newtab.js` makes**
+   (explicit `city.tz`, not just `process.env.TZ`), so a regression specific to that argument
+   path would be caught instead of silently passing on the 3-argument path alone.
+
+One known anomaly remains in the multi-year sweep, excluded from the test's assertion by name:
+Dallas 2027 fires "Mahalaya Amavasya" twice (Aug 31 and Sep 29). This is **not** a tithi-
+governance bug and is untouched by the above fix - `panchang.js`'s month/`isAdhika`
+computation assigns the same month index (5) to two consecutive lunar months that year, so the
+festival's `m === 5` gate can't tell the two real Amavasya days apart. It reproduces
+byte-for-byte on pre-PR `festivals.js` too (confirmed by direct trace); the old, less-complete
+majority-of-daylight-only rule happened to fire on only one of the two by chance, masking it.
+Tracked as a follow-up against `panchang.js`'s month calculation, not filed here.
+
+`festivals.js:239-245`'s solar-transit day bounds still build `new Date(y, m, d, ...)` in
+system-local time rather than the city zone (harmless today only because callers pass a `Date`
+already carrying the city's Y/M/D) - deferred rather than fixed in this PR, since making it
+explicit needs threading `timeZone` through `panchang.js`'s return value, outside POR-49's scope.
 
 7. **Bhogi/Makara Sankranti/Kanuma/Mukkanuma could double-fire.** Each of the four solar-
    transit checks in `festivals.js` OR'd the real astronomical crossing check with a

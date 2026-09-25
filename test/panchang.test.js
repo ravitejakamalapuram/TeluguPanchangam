@@ -152,7 +152,7 @@ test('every tracked festival fires exactly once per year, 2024-2027, both cities
 // selected their tithi on any single day.
 const POR_49_REGRESSION_CASES = [
   { city: 'hyderabad', year: 2024, name: 'mahanavami' },
-  { city: 'hyderabad', year: 2024, name: 'శ్రీ పంచమి' }, // Vasanta Panchami has no Latin name
+  { city: 'hyderabad', year: 2024, name: 'sri panchami' },
   { city: 'dallas', year: 2024, name: 'raksha bandhan' },
   { city: 'dallas', year: 2026, name: 'ratha saptami' },
 ];

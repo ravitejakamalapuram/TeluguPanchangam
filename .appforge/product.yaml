@@ -1,0 +1,35 @@
+# Backfilled by the AppForge factory (P1-07). Fields marked null are not yet knowable —
+# they depend on infrastructure (appforge-control, appforge-edge, Paperclip) not built yet.
+product_id: telugupanchangam
+name: Telugu Panchangam
+description: "A premium, fully offline-capable Telugu Calendar (Panchangam), Daily Horoscope, and Vedic Sankalpam for your New Tab page."
+platform: [chrome]
+state: PRODUCTION
+portfolio_state: NEW # waiting for a free Chrome Web Store publication slot per the 2-slot default (§13.6)
+repository: ravitejakamalapuram/TeluguPanchangam
+owner: founder
+team: []
+architecture: null
+analytics_project: null
+store_ids:
+  cws: obgpdlhkahmdiepklldjnnmfmbhmgenn
+monetization:
+  model: free
+permissions: .appforge/permissions.yaml
+data_collection:
+  collected: [device_location_opt_in]
+  stored:
+    local: [chrome_storage_local_city_coords_settings_reminders_language]
+    remote: []
+  transmitted:
+    endpoints: [] # no fetch/XHR anywhere in the extension; all panchangam/astronomy math is done locally
+  sensitive: [device_location_when_opted_in]
+  third_party: []
+  retention: { local: indefinite_until_user_clears, remote: none }
+  deletion: "Uninstall clears all local storage"
+security_classification: low
+release_channel: default
+current_version: "1.0.0"
+kill_policy: null
+scale_policy: null
+slot: waiting_for_free_cws_slot # see §13.6

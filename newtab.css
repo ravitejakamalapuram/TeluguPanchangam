@@ -1238,3 +1238,10 @@ input:checked + .slider:before {
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
+
+/* Gita verse of the day */
+.gita-card { padding: 18px 20px; }
+.gita-ref { margin: 4px 0 10px; font-size: 0.8rem; letter-spacing: 0.04em; opacity: 0.75; text-align: center; }
+.gita-sanskrit { margin: 0 0 8px; font-size: 1.15rem; line-height: 1.7; text-align: center; white-space: pre-line; }
+.gita-translit { margin: 0 0 10px; font-size: 0.9rem; line-height: 1.5; text-align: center; font-style: italic; opacity: 0.85; white-space: pre-line; }
+.gita-english { margin: 0; font-size: 0.95rem; line-height: 1.6; text-align: center; }

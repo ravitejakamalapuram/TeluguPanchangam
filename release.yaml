@@ -22,6 +22,8 @@ targets:
       - sankalpam.js
       - horoscope.js
       - reminders.js
+      - gita-verses.js
+      - gita-verse.js
       - lib/astronomy.js
       - lib/tz.js
       - icons

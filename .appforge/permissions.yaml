@@ -1,0 +1,12 @@
+schema: appforge/permissions@1
+permissions:
+  - permission: storage
+    required: true
+    reason: "Persist saved location/city, user settings, reminders, and UI language locally"
+    data_access: [user_settings_local]
+    security_impact: low
+  - permission: geolocation
+    required: true
+    reason: "Opt-in 'Use My Location' button for accurate sunrise/sunset panchangam calculations; not requested automatically, and a hardcoded Hyderabad default is used if the user never opts in"
+    data_access: [device_location_opt_in]
+    security_impact: medium

@@ -240,6 +240,19 @@
         <button id="copy-sankalpam-btn" class="cyber-btn tiny-btn" data-i18n-bi="సంకల్పమును నకలు చేయి (Copy Text)">సంకల్పమును నకలు చేయి (Copy Text)</button>
       </section>
 
+      <!-- Gita verse of the day (offline; one verse per calendar day) -->
+      <section class="gita-card glass-panel" aria-labelledby="gita-card-title">
+        <div class="sankalpam-scroll-decor">
+          <div class="decor-line"></div>
+          <h3 id="gita-card-title" class="sankalpam-card-title" data-i18n-bi="నేటి గీతా శ్లోకం (Gita Verse of the Day)">నేటి గీతా శ్లోకం (Gita Verse of the Day)</h3>
+          <div class="decor-line"></div>
+        </div>
+        <p id="gita-ref" class="gita-ref"></p>
+        <p id="gita-sanskrit" class="gita-sanskrit" lang="sa"></p>
+        <p id="gita-translit" class="gita-translit" lang="sa-Latn"></p>
+        <p id="gita-english" class="gita-english" lang="en"></p>
+      </section>
+
       <!-- Monthly Calendar Navigation -->
       <section class="calendar-card glass-panel">
         <div class="calendar-nav-bar">
@@ -404,6 +417,8 @@
   <script src="sankalpam.js"></script>
   <script src="horoscope.js"></script>
   <script src="reminders.js"></script>
+  <script src="gita-verses.js"></script>
+  <script src="gita-verse.js"></script>
   <script src="newtab.js"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --test test/panchang.test.js && node test/smoke.test.js",
+    "test": "node --test test/panchang.test.js test/gita-verse.test.js && node test/smoke.test.js",
     "validate:listing": "node chrome-store/validate-listing.mjs",
     "validate:privacy": "node chrome-store/validate-privacy.mjs"
   },

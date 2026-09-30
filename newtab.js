@@ -319,6 +319,21 @@
   }
 
   // Trigger Rasi horoscope details
+  // Fills the Gita card. Sanskrit is shown as written; the English is Annie Besant's public-domain
+  // translation (CREDITS.md). Text goes in via textContent, never innerHTML.
+  function renderGitaVerse(date) {
+    const verse = window.GitaVerse && window.GitaVerse.verseForDate(date);
+    const card = document.querySelector('.gita-card');
+    if (!card) return;
+    if (!verse) { card.style.display = 'none'; return; }
+    card.style.display = '';
+    document.getElementById('gita-ref').textContent =
+      'Bhagavad Gita ' + verse.chapter + '.' + verse.verse + ' \u00b7 ' + verse.theme;
+    document.getElementById('gita-sanskrit').textContent = verse.sanskrit;
+    document.getElementById('gita-translit').textContent = verse.transliteration;
+    document.getElementById('gita-english').textContent = verse.translation.en;
+  }
+
   function renderHoroscope(panchang) {
     const rasiIndex = parseInt(elSelectRasi.value);
     const horoscope = window.Horoscope.getHoroscope(panchang, rasiIndex, window.I18N.getLang());
@@ -407,6 +422,9 @@
       document.createElement('br'),
       labelledLine(window.I18N.t('teluguLabel'), sankalpam.telugu)
     );
+
+    // 5b. Gita verse of the day: one verse per calendar day, offline, follows the selected date.
+    renderGitaVerse(selectedDate);
 
     // 6. Eclipses detection
     checkForEclipses(activePanchang);

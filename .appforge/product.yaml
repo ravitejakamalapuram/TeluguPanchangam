@@ -6,6 +6,15 @@ description: "A premium, fully offline-capable Telugu Calendar (Panchangam), Dai
 platform: [chrome]
 state: PRODUCTION
 portfolio_state: NEW # waiting for a free Chrome Web Store publication slot per the 2-slot default (§13.6)
+
+# §22.1 day-30/60/90 clock (APP-41). `first_published` is the
+# clock origin; `store_item_status` ∈ [published, draft, unlisted,
+# internal_track, unpublished] gates whether the clock runs at all.
+# Never published — awaiting a free CWS publication slot (§13.6);
+# see `slot: waiting_for_free_cws_slot` below.
+store_item_status: unpublished
+# Correctly null: the item has never been published.
+first_published: null
 repository: ravitejakamalapuram/TeluguPanchangam
 owner: founder
 team: []

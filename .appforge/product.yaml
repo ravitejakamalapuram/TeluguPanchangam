@@ -5,15 +5,15 @@ name: Telugu Panchangam
 description: "A premium, fully offline-capable Telugu Calendar (Panchangam), Daily Horoscope, and Vedic Sankalpam for your New Tab page."
 platform: [chrome]
 state: PRODUCTION
-portfolio_state: NEW # waiting for a free Chrome Web Store publication slot per the 2-slot default (§13.6)
+portfolio_state: NEW
 
 # §22.1 day-30/60/90 clock (APP-41). `first_published` is the
 # clock origin; `store_item_status` ∈ [published, draft, unlisted,
 # internal_track, unpublished] gates whether the clock runs at all.
-# Never published — awaiting a free CWS publication slot (§13.6);
-# see `slot: waiting_for_free_cws_slot` below.
-store_item_status: unpublished
-# Correctly null: the item has never been published.
+# 2026-10-01 (APP-321): the public CWS page shows v1.2.0, "Updated October 1, 2026".
+store_item_status: published
+# Unknown: the public page shows only the last-updated date, not when the item
+# first went live. Set it once the CWS dashboard confirms the first publish date.
 first_published: null
 repository: ravitejakamalapuram/TeluguPanchangam
 owner: founder
@@ -38,7 +38,6 @@ data_collection:
   deletion: "Uninstall clears all local storage"
 security_classification: low
 release_channel: default
-current_version: "1.0.0"
+current_version: "1.2.0"
 kill_policy: null
 scale_policy: null
-slot: waiting_for_free_cws_slot # see §13.6

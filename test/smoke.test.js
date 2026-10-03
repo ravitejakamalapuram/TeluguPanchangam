@@ -88,6 +88,39 @@ check('every ES module newtab.js imports (transitively) is in release.yaml\'s in
   assert.deepStrictEqual(missing, [], 'modules imported by newtab.js but not shipped');
 });
 
+// --- Manifest name/description come from _locales (review §4.1). Chrome refuses
+// to load a manifest with default_locale but no shipped _locales/, the English
+// name must stay the store listing's name, and Telugu copy stays Telugu. ---
+check('manifest name/description resolve in every shipped locale, within Chrome limits', () => {
+  const manifest = JSON.parse(readFile('manifest.json'));
+  assert.strictEqual(manifest.default_locale, 'en');
+  assert.strictEqual(manifest.name, '__MSG_appName__');
+  assert.strictEqual(manifest.description, '__MSG_appDescription__');
+  assert.ok(shipped('_locales/en/messages.json', releaseIncludes()), 'release.yaml must ship _locales');
+  for (const locale of fs.readdirSync(path.join(ROOT, '_locales'))) {
+    const messages = JSON.parse(readFile(`_locales/${locale}/messages.json`));
+    assert.ok([...messages.appName.message].length <= 75, `${locale} appName is over 75 characters`);
+    assert.ok([...messages.appDescription.message].length <= 132, `${locale} appDescription is over 132 characters`);
+  }
+  const en = JSON.parse(readFile('_locales/en/messages.json'));
+  assert.strictEqual(en.appName.message, JSON.parse(readFile('chrome-store/store.config.json')).name);
+  const te = JSON.parse(readFile('_locales/te/messages.json'));
+  for (const key of ['appName', 'appDescription']) {
+    assert.match(te[key].message, /^[ఀ-౿\s.,;:!?()–—-]+$/, `te ${key} must be Telugu script only`);
+  }
+});
+
+// --- geolocation must not be declared (review §3/§5.1). As a required
+// permission it puts "Detect your physical location" in the install dialog,
+// and Chrome refuses it in optional_permissions ("Only permissions specified
+// in the manifest may be requested"), so "Use My Location" relies on Chrome's
+// own location prompt for the page, shown on the click. ---
+check('manifest declares no geolocation permission, required or optional', () => {
+  const manifest = JSON.parse(readFile('manifest.json'));
+  const declared = [...(manifest.permissions || []), ...(manifest.optional_permissions || [])];
+  assert.ok(!declared.includes('geolocation'), 'geolocation is declared in manifest.json');
+});
+
 // --- te mode must reproduce the pre-toggle Telugu UI byte-for-byte on
 // every data-i18n-bi/-split-bi/-te surface (POR-63: "te output === main
 // output on every surface"). Each of these attributes carries what the

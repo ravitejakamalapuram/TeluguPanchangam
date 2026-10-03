@@ -297,7 +297,10 @@ import { horoscopeText } from './core/horoscope-text.js';
     });
   }
 
-  // On-demand geolocation as an optional convenience alongside the picker
+  // On-demand geolocation as an optional convenience alongside the picker.
+  // The manifest deliberately declares no "geolocation" permission (it would
+  // warn at install, and Chrome refuses it as optional), so Chrome shows its
+  // own location prompt on this click; a denial lands in the error path below.
   function useMyLocation() {
     if (!navigator.geolocation) {
       elLocationStatus.textContent = window.I18N.t('locGeoUnavailable');

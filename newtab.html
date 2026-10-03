@@ -106,6 +106,11 @@
           <div class="hero-left">
             <div id="clock" class="clock-display">00:00:00</div>
             <div id="date-gregorian" class="date-display" data-i18n="loadingText">లోడ్ అవుతోంది...</div>
+            <!-- Day-1 note after onboarding (ui/onboarding.js): answers Chrome's "Change back?" bubble -->
+            <p id="day-one-note" class="day-one-note" hidden>
+              <span data-i18n-te="ఈ కొత్త ట్యాబును ఉంచండి — రోజూ పంచాంగం ఇక్కడే" data-i18n-en="Keep this new tab to see today's panchangam">ఈ కొత్త ట్యాబును ఉంచండి — రోజూ పంచాంగం ఇక్కడే</span>
+              <button id="day-one-dismiss" type="button" class="day-one-dismiss"><span aria-hidden="true">&times;</span><span class="visually-hidden" data-i18n-te="మూసివేయి" data-i18n-en="Dismiss">మూసివేయి</span></button>
+            </p>
           </div>
           
           <div class="hero-right">
@@ -429,6 +434,55 @@
       </form>
     </div>
   </div>
+
+  <!-- First-run onboarding (ui/onboarding.js): language → city → optional birth details -->
+  <dialog id="onboarding" class="onboarding" aria-labelledby="onboarding-title">
+    <p id="onboarding-progress" class="onboarding-progress" aria-live="polite"></p>
+    <h2 id="onboarding-title" class="onboarding-title" data-i18n-te="తెలుగు పంచాంగానికి స్వాగతం" data-i18n-en="Welcome to Telugu Panchangam">తెలుగు పంచాంగానికి స్వాగతం</h2>
+
+    <section class="onboarding-step" aria-labelledby="onboarding-lang-title">
+      <h3 id="onboarding-lang-title" data-i18n-te="భాషను ఎంచుకోండి" data-i18n-en="Choose your language">భాషను ఎంచుకోండి</h3>
+      <p data-i18n-te="తర్వాత ఎప్పుడైనా మార్చుకోవచ్చు." data-i18n-en="You can change this any time.">తర్వాత ఎప్పుడైనా మార్చుకోవచ్చు.</p>
+      <div class="onboarding-choices" role="group" aria-labelledby="onboarding-lang-title">
+        <button type="button" class="onboarding-choice" data-onboarding-lang="te" lang="te" aria-pressed="true">తెలుగు</button>
+        <button type="button" class="onboarding-choice" data-onboarding-lang="en" lang="en" aria-pressed="false">English</button>
+      </div>
+    </section>
+
+    <section class="onboarding-step" aria-labelledby="onboarding-city-title" hidden>
+      <h3 id="onboarding-city-title" data-i18n-te="మీ నగరాన్ని ఎంచుకోండి" data-i18n-en="Choose your city">మీ నగరాన్ని ఎంచుకోండి</h3>
+      <p data-i18n-te="సూర్యోదయం, రాహుకాలం మొదలైన సమయాలు మీ నగరాన్ని బట్టి లెక్కించబడతాయి." data-i18n-en="Sunrise, Rahu Kalam and other timings are calculated for your city.">సూర్యోదయం, రాహుకాలం మొదలైన సమయాలు మీ నగరాన్ని బట్టి లెక్కించబడతాయి.</p>
+      <div id="onboarding-cities" class="onboarding-cities" role="radiogroup" aria-labelledby="onboarding-city-title"></div>
+      <button id="onboarding-locate" type="button" class="onboarding-secondary"><span aria-hidden="true">📍</span> <span data-i18n-te="నా స్థానం వాడు" data-i18n-en="Use my location">నా స్థానం వాడు</span></button>
+      <p id="onboarding-locate-status" class="onboarding-locate-status" role="status"></p>
+    </section>
+
+    <section class="onboarding-step" aria-labelledby="onboarding-birth-title" hidden>
+      <h3 id="onboarding-birth-title" data-i18n-te="జన్మ వివరాలు (ఐచ్ఛికం)" data-i18n-en="Birth details (optional)">జన్మ వివరాలు (ఐచ్ఛికం)</h3>
+      <p data-i18n-te="మీ జన్మ నక్షత్రం, తెలుగు పుట్టినరోజు తెలుసుకోవడానికి. ఈ వివరాలు మీ పరికరంలోనే ఉంటాయి." data-i18n-en="Used for your birth nakshatra and Telugu birthday. They stay on this device.">మీ జన్మ నక్షత్రం, తెలుగు పుట్టినరోజు తెలుసుకోవడానికి. ఈ వివరాలు మీ పరికరంలోనే ఉంటాయి.</p>
+      <form id="onboarding-birth" class="modal-form-grid" aria-labelledby="onboarding-birth-title">
+        <div class="input-group">
+          <label for="onboarding-name" data-i18n-te="పేరు" data-i18n-en="Name">పేరు</label>
+          <input type="text" id="onboarding-name" autocomplete="name">
+        </div>
+        <div class="input-group">
+          <label for="onboarding-dob" data-i18n-te="పుట్టిన తేదీ" data-i18n-en="Date of birth">పుట్టిన తేదీ</label>
+          <input type="date" id="onboarding-dob">
+        </div>
+        <div class="input-group">
+          <label for="onboarding-tob" data-i18n-te="పుట్టిన సమయం" data-i18n-en="Time of birth">పుట్టిన సమయం</label>
+          <input type="time" id="onboarding-tob" value="12:00">
+        </div>
+      </form>
+    </section>
+
+    <div class="onboarding-actions">
+      <button id="onboarding-skip" type="button" class="onboarding-secondary onboarding-skip" data-i18n-te="దాటవేయి" data-i18n-en="Skip">దాటవేయి</button>
+      <button id="onboarding-back" type="button" class="onboarding-secondary" data-i18n-te="వెనుకకు" data-i18n-en="Back" hidden>వెనుకకు</button>
+      <button id="onboarding-next" type="button" class="cyber-btn" data-i18n-te="తదుపరి" data-i18n-en="Next">తదుపరి</button>
+      <button id="onboarding-finish" type="submit" form="onboarding-birth" class="cyber-btn" data-i18n-te="పూర్తి చేయి" data-i18n-en="Finish" hidden>పూర్తి చేయి</button>
+    </div>
+  </dialog>
 
   <!-- Mock Chrome Extension APIs if running in standard browser tab -->
   <script src="storage-shim.js"></script>

@@ -11,6 +11,7 @@ import { dailyHoroscope } from './core/horoscope.js';
 import { horoscopeText } from './core/horoscope-text.js';
 import { birthDetails, isTeluguBirthday } from './core/birth.js';
 import { formatClock } from './ui/time-format.js';
+import { startOnboarding } from './ui/onboarding.js';
 
 (function () {
   'use strict';
@@ -155,6 +156,17 @@ import { formatClock } from './ui/time-format.js';
     setupEventListeners();
     initStars();
     await refreshDashboard();
+    // First-run onboarding drives the page's own controls, so its choices take the same save/refresh paths.
+    startOnboarding({
+      setLanguage: (lang) => { elLangToggle.checked = (lang === 'en'); elLangToggle.dispatchEvent(new Event('change')); },
+      cityId: () => currentCity.id,
+      setCity: async (city) => { switchCity(city, true); await refreshDashboard(); },
+      useMyLocation,
+      saveBirthDetails: ({ name, dob, tob }) => {
+        elSetName.value = name; elSetDob.value = dob; elSetTob.value = tob;
+        elSettingsForm.dispatchEvent(new Event('submit', { cancelable: true }));
+      }
+    });
   }
 
   // Apply the active UI language to every statically-marked element, plus
@@ -317,17 +329,18 @@ import { formatClock } from './ui/time-format.js';
   // The manifest deliberately declares no "geolocation" permission (it would
   // warn at install, and Chrome refuses it as optional), so Chrome shows its
   // own location prompt on this click; a denial lands in the error path below.
+  // Resolves true once the located city is applied, false if no fix came.
   function useMyLocation() {
     if (!navigator.geolocation) {
       elLocationStatus.textContent = window.I18N.t('locGeoUnavailable');
       elLocationStatus.style.display = 'block';
-      return;
+      return Promise.resolve(false);
     }
 
     elLocationStatus.textContent = window.I18N.t('locLocating');
     elLocationStatus.style.display = 'block';
 
-    navigator.geolocation.getCurrentPosition(
+    return new Promise((resolve) => navigator.geolocation.getCurrentPosition(
       async (position) => {
         const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || currentCity.timeZone;
         const customCity = {
@@ -340,13 +353,15 @@ import { formatClock } from './ui/time-format.js';
         switchCity(customCity, true);
         elLocationStatus.style.display = 'none';
         await refreshDashboard();
+        resolve(true);
       },
       (error) => {
         console.warn("Geolocation blocked/failed:", error.message);
         elLocationStatus.textContent = window.I18N.t('locUnavailable');
+        resolve(false);
       },
       { timeout: 5000 }
-    );
+    ));
   }
 
   // Clock time in the selected city: "రా. 10:42" in Telugu, "10:42 PM" in English.

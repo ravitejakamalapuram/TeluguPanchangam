@@ -111,3 +111,47 @@ Changes this implies (no behaviour change for users until a second profile exist
   re-capture yearly with the new samvatsara.
 - This environment can't reach drikpanchang.com (egress blocked), so capture has to run from a
   normal machine; the existing fixture shows that's how it was done before.
+
+## Addendum: a printed Telugu panchangam as a second, offline reference
+
+Drik can only be checked by reading web pages. A printed book gives a reference we can keep in
+the repo's toolchain and re-check offline, and it becomes the fixture set for the first
+additional profile.
+
+**Book:** TTD's *Sri Parabhava Nama Samvatsara Panchangam 2026–27* (Tirumala Tirupati
+Devasthanams, Telugu, released March 2026, free PDF on the TTD site). Chosen over Sringeri,
+Uttaradi and Raghavendra Mutt editions because TTD is the most widely followed Telugu temple
+calendar and has no single-sampradaya bias. Covers 19 Mar 2026 – 6 Apr 2027, computed for
+Tirupati (13.63 N, 79.42 E, IST).
+
+**Role:** fixture source for a `ttd` profile, and a cross-check for the default profile on
+things that don't depend on location: festival dates, month/paksha/samvatsara, Varjyam and
+Amrita tables. Where TTD and Drik disagree, the default (`drik-telugu`) still follows Drik; the
+difference is recorded, not "fixed".
+
+**Storage:**
+- The PDF itself is **not committed** (size, and redistribution rights are TTD's). It lives at
+  `reference/ttd-2026-27.pdf`, which is git-ignored; `reference/SOURCES.md` records its URL,
+  download date and SHA-256 so anyone can fetch the identical file.
+- What we commit is the extracted data — facts (dates, times, names) — in
+  `test/fixtures/profiles/ttd.json`, same row schema as `drik-telugu.json` with
+  `"location": "tirupati"`, plus a `page` number on every row so a reviewer can check it against
+  the book.
+
+**Pipeline** (`tools/parse-panchangam/`, run by hand once per year, not in CI):
+1. `pdftotext -layout` per page (available here). If the text comes out as legacy-font garbage
+   (common in Telugu PDFs that use non-Unicode fonts like Anu/Shree), switch to
+   `pdftoppm -r 300` + Tesseract OCR with the `tel` language pack — Tesseract is **not**
+   installed in this environment, so OCR runs on a normal machine.
+2. A layout-specific parser for the book's daily pages: one record per day with tithi, nakshatra,
+   yoga, karana and their end times (ghati-vighati or clock time — convert ghatis with
+   1 ghati = 24 min from sunrise), Varjyam, Durmuhurtham, Amrita ghadiyalu, Rahu/Yama, sunrise,
+   sunset; plus the festival pages into `{ date, name }`.
+3. Normalise names to the engine's index (tithi 0–29, nakshatra 0–26 …) via a Telugu→index map,
+   so spelling variants (పుబ్బ/పూర్వ ఫల్గుణి) don't cause false failures.
+4. Validation pass: every day present exactly once, times monotonic, each tithi/nakshatra
+   follows its predecessor; anything that fails goes to a `needs-review` list instead of the
+   fixture.
+5. Spot-check 20 random rows against the page images by hand before committing.
+
+The parser is written once the actual PDF is in hand, because the layout decides the code.

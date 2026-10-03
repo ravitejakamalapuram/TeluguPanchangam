@@ -24,6 +24,13 @@ test('onboarding shows only on a fresh install; existing users count as onboarde
   assert.equal(needsOnboarding({ uiLang: 'te' }), false);
 });
 
+test('onboarding left half-way shows again: keys its own steps saved do not count as an existing user', () => {
+  assert.equal(needsOnboarding({ onboardingDone: false }), true);
+  assert.equal(needsOnboarding({ onboardingDone: false, uiLang: 'en' }), true);
+  assert.equal(needsOnboarding({ onboardingDone: false, uiLang: 'en', selectedCity: { id: 'dallas' } }), true);
+  assert.equal(showDayOneNote({ onboardingDone: false }, Date.now()), false);
+});
+
 test('US metros come first for an American time zone; otherwise the preset order stands', () => {
   const all = presets();
   const us = orderCities(all, 'America/Chicago');

@@ -11,8 +11,11 @@ const DAY_MS = 24 * 3600 * 1000;
 // Anything saved before onboarding existed (settings, city, reminders, language) marks an existing user.
 const EXISTING_USER_KEYS = ['userSettings', 'selectedCity', 'reminders', 'uiLang'];
 
+// onboardingDone is false while the dialog is open, so a user who leaves half-way sees it again even
+// though its steps already saved uiLang/selectedCity; it becomes the finish time once the dialog closes.
 export function needsOnboarding(stored) {
-  return !stored.onboardingDone && !EXISTING_USER_KEYS.some((k) => k in stored);
+  if ('onboardingDone' in stored) return stored.onboardingDone === false;
+  return !EXISTING_USER_KEYS.some((k) => k in stored);
 }
 
 // US metros first when the browser runs on an American time zone; otherwise the preset order.
@@ -29,7 +32,7 @@ export function showDayOneNote(stored, now) {
 const storageGet = (keys) => new Promise((resolve) => chrome.storage.local.get(keys, resolve));
 
 /**
- * app: { setLanguage(lang), cityId(), setCity(city), useMyLocation(), saveBirthDetails({ name, dob, tob }) }.
+ * app: { setLanguage(lang), cityId(), setCity(city), useMyLocation() → Promise<found>, saveBirthDetails({ name, dob, tob }) }.
  * Each of these refreshes the dashboard itself, so closing the dialog needs no extra refresh.
  */
 export async function startOnboarding(app) {
@@ -92,10 +95,14 @@ function openDialog(app, note) {
     app.setLanguage(b.dataset.onboardingLang);
     show(step); // re-renders the progress line and pressed state in the new language
   }));
-  // The location fix arrives in the background and shows in the sidebar; move on meanwhile.
-  document.getElementById('onboarding-locate').addEventListener('click', () => {
-    app.useMyLocation();
-    show(2);
+  // Stay on this step until the location arrives: the sidebar's own status line sits behind the backdrop.
+  const locate = document.getElementById('onboarding-locate');
+  const locateStatus = document.getElementById('onboarding-locate-status');
+  locate.addEventListener('click', async () => {
+    locateStatus.textContent = window.I18N.t('locLocating');
+    const found = await app.useMyLocation();
+    locateStatus.textContent = found ? '' : window.I18N.t('locUnavailable');
+    if (found && dialog.open && step === 1) show(2);
   });
   btnBack.addEventListener('click', () => show(step - 1));
   btnNext.addEventListener('click', () => show(step + 1));
@@ -116,6 +123,7 @@ function openDialog(app, note) {
     note.hidden = false;
   }, { once: true });
 
+  chrome.storage.local.set({ onboardingDone: false }); // in progress, before any step saves a key
   dialog.showModal();
   show(0);
 }

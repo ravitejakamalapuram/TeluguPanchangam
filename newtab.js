@@ -153,7 +153,7 @@ import { startOnboarding } from './ui/onboarding.js';
       setLanguage: (lang) => { elLangToggle.checked = (lang === 'en'); elLangToggle.dispatchEvent(new Event('change')); },
       cityId: () => currentCity.id,
       setCity: async (city) => { switchCity(city, true); await refreshDashboard(); },
-      useMyLocation: () => elBtnUseLocation.click(),
+      useMyLocation,
       saveBirthDetails: ({ name, dob, tob }) => {
         elSetName.value = name; elSetDob.value = dob; elSetTob.value = tob;
         elSettingsForm.dispatchEvent(new Event('submit', { cancelable: true }));
@@ -309,18 +309,19 @@ import { startOnboarding } from './ui/onboarding.js';
     });
   }
 
-  // On-demand geolocation as an optional convenience alongside the picker
+  // On-demand geolocation as an optional convenience alongside the picker.
+  // Resolves true once the located city is applied, false if no fix came.
   function useMyLocation() {
     if (!navigator.geolocation) {
       elLocationStatus.textContent = window.I18N.t('locGeoUnavailable');
       elLocationStatus.style.display = 'block';
-      return;
+      return Promise.resolve(false);
     }
 
     elLocationStatus.textContent = window.I18N.t('locLocating');
     elLocationStatus.style.display = 'block';
 
-    navigator.geolocation.getCurrentPosition(
+    return new Promise((resolve) => navigator.geolocation.getCurrentPosition(
       async (position) => {
         const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || currentCity.timeZone;
         const customCity = {
@@ -333,13 +334,15 @@ import { startOnboarding } from './ui/onboarding.js';
         switchCity(customCity, true);
         elLocationStatus.style.display = 'none';
         await refreshDashboard();
+        resolve(true);
       },
       (error) => {
         console.warn("Geolocation blocked/failed:", error.message);
         elLocationStatus.textContent = window.I18N.t('locUnavailable');
+        resolve(false);
       },
       { timeout: 5000 }
-    );
+    ));
   }
 
   // Format times as HH:MM AM/PM

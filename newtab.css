@@ -1346,6 +1346,11 @@ input:checked + .slider:before {
   padding: 10px 16px;
   cursor: pointer;
 }
+.onboarding-locate-status {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
 .onboarding-actions {
   display: flex;
   flex-wrap: wrap;

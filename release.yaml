@@ -33,6 +33,7 @@ targets:
       - core/sankalpam.js
       - core/horoscope.js
       - core/horoscope-text.js
+      - core/birth.js
       - core/profiles
       - lib/astronomy.js
       - lib/tz.js

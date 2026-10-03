@@ -9,6 +9,7 @@ import { TITHI, MASA } from './core/ids.js';
 import { generateSankalpam } from './core/sankalpam.js';
 import { dailyHoroscope } from './core/horoscope.js';
 import { horoscopeText } from './core/horoscope-text.js';
+import { birthDetails, isTeluguBirthday } from './core/birth.js';
 
 (function () {
   'use strict';
@@ -503,22 +504,11 @@ import { horoscopeText } from './core/horoscope-text.js';
     return engine.elementAt('nakshatra', birthInstant()).index;
   }
 
-  // Reverse match birth details to trigger Telugu Birthday greetings
+  // Telugu birthday: once a year, in the nija birth masa, on the first day with the janma nakshatra
+  // at sunrise (else the janma tithi); see core/birth.js.
   function checkBirthday(panchang) {
-    if (!userSettings.dob) {
-      elBirthdayBanner.style.display = 'none';
-      return;
-    }
-
-    // Telugu birthday: the day in the birth masa whose sunrise nakshatra is the janma nakshatra.
-    const birth = birthInstant();
-    const birthMasa = engine.masaAt(birth).id;
-    const birthNakshatra = engine.elementAt('nakshatra', birth).id;
-    if (panchang.calendar.masa.id === birthMasa && !panchang.calendar.masa.adhika && panchang.panchanga.nakshatra.id === birthNakshatra) {
-      elBirthdayBanner.style.display = 'block';
-    } else {
-      elBirthdayBanner.style.display = 'none';
-    }
+    const show = !!userSettings.dob && isTeluguBirthday(engine, panchang, birthDetails(engine, birthInstant()));
+    elBirthdayBanner.style.display = show ? 'block' : 'none';
   }
 
   // Eclipses visible from the selected city during the selected day.
@@ -756,6 +746,7 @@ import { horoscopeText } from './core/horoscope-text.js';
     // Rasi change
     elSelectRasi.addEventListener('change', async () => {
       userSettings.rasi = elSelectRasi.value;
+      userSettings.rasiSource = 'user'; // a hand-picked rasi is never overwritten from the DOB
       await chrome.storage.local.set({ userSettings });
       renderHoroscope(activePanchang);
     });
@@ -827,6 +818,15 @@ import { horoscopeText } from './core/horoscope-text.js';
       userSettings.name = elSetName.value.trim() || DEFAULT_PROFILE_NAME;
       userSettings.dob = elSetDob.value;
       userSettings.tob = elSetTob.value;
+
+      // Janma rasi from the DOB unless the user picked one. Before rasiSource existed, a rasi other
+      // than the default Mesha could only have come from the picker.
+      const pickedByHand = userSettings.rasiSource === 'user' || (!userSettings.rasiSource && userSettings.rasi !== '0');
+      if (userSettings.dob && !pickedByHand) {
+        userSettings.rasi = String(birthDetails(engine, birthInstant()).chandraRasi.index);
+        userSettings.rasiSource = 'dob';
+        elSelectRasi.value = userSettings.rasi;
+      }
 
       await chrome.storage.local.set({ userSettings });
 

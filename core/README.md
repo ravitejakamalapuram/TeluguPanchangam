@@ -20,8 +20,9 @@ name(day.panchanga.tithi.id, 'te'); // "నవమి"
 | Panchanga | `panchanga.js` | Tithi, nakshatra, yoga, karana, rasi spans with exact start/end. |
 | Calendar | `calendar.js` | Amanta masa (adhika/kshaya), samvatsara, ritu, ayana, sankranti. |
 | Timings | `timings.js` | Rahu/Yama/Gulika, Durmuhurtham, Abhijit, Brahma muhurta, Varjyam, Amrita kalam. |
-| Observances | `rules.js` | Which civil day a festival/vrata falls on, Ekadashi parana; every result has a trace. |
+| Observances | `rules.js` | Which civil day a festival/vrata falls on (with nakshatra tie-breaks), Ekadashi names and parana; every result has a trace. |
 | Horoscope | `horoscope.js` | Daily gochara from the janma rasi: transit houses, chandra/tara balam, Saturn phases, 1–5 score with basis. |
+| Birth | `birth.js` | Janma nakshatra/pada, chandra rasi, tithi and masa from a birth instant; the one Telugu birthday per year (nija birth masa, janma nakshatra at sunrise, else janma tithi). |
 | Presentation | `i18n.js` | Telugu/English names by canonical ID. |
 | Sankalpam | `sankalpam.js` | Daily Sankalpam text (Sanskrit and plain Telugu) from a day's IDs, with a location-based desha line. |
 | Presentation | `horoscope-text.js` | Telugu/English Rasi Phalalu text for a `dailyHoroscope()` result. |
@@ -43,4 +44,5 @@ Every `day()` result includes `meta` with engine, astronomy provider and profile
 
 `npm test` runs `core/test/`: the Drik Panchang fixture (`test/fixtures/drik-panchang.json`),
 year-long invariants for Hyderabad and Dallas (each annual festival exactly once, parana windows,
-samvatsara at Ugadi), and a Telugu-script check on every name.
+every Ekadashi named, samvatsara at Ugadi), observance tie-breaks and dates (`observances.test.js`),
+the Telugu birthday (`birth.test.js`), and a Telugu-script check on every name.

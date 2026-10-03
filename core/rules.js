@@ -38,8 +38,8 @@ function overlap([a, b], s, e) {
 }
 
 /**
- * ctx: { basics(localDate), localDateOf(instant), tithiSpansNear(localDate), masaAt(instant),
- *        signAt(instant), astro, observance }
+ * ctx: { basics(localDate), localDateOf(instant), tithiSpansNear(localDate), nakshatraSpans(from, to),
+ *        masaAt(instant), signAt(instant), astro, observance }
  */
 export function createRuleEngine(ctx) {
   const byId = new Map(ctx.observance.rules.map((r) => [r.id, r]));
@@ -73,14 +73,24 @@ export function createRuleEngine(ctx) {
     }
 
     const touching = candidates.filter((c) => c.inKaal > 0);
-    let chosen, reason;
+    let chosen, reason, preferNakshatra;
     if (touching.length === 1) {
       [chosen] = touching; reason = `only day the tithi holds at ${rule.kaal}`;
     } else if (touching.length > 1) {
-      const policy = rule.both || DEFAULT_BOTH[rule.kaal] || 'first';
-      chosen = policy === 'max-overlap' ? touching.reduce((a, c) => (c.inKaal > a.inKaal ? c : a))
-        : policy === 'second' ? touching[1] : touching[0];
-      reason = `tithi holds at ${rule.kaal} on ${touching.length} days; rule picks ${policy}`;
+      reason = `tithi holds at ${rule.kaal} on ${touching.length} days; `;
+      if (rule.preferNakshatra) {
+        // The preferred nakshatra at any point of the kaal settles it when exactly one day has it.
+        const starred = touching.filter((c) => ctx.nakshatraSpans(...c.window).some((s) => s.id === rule.preferNakshatra));
+        preferNakshatra = { id: rule.preferNakshatra, days: starred.map((c) => formatLocalDate(c.date)) };
+        if (starred.length === 1) [chosen] = starred;
+        reason += chosen ? `only this one has ${rule.preferNakshatra} then` : `${rule.preferNakshatra} then on ${starred.length} of them; `;
+      }
+      if (!chosen) {
+        const policy = rule.both || DEFAULT_BOTH[rule.kaal] || 'first';
+        chosen = policy === 'max-overlap' ? touching.reduce((a, c) => (c.inKaal > a.inKaal ? c : a))
+          : policy === 'second' ? touching[1] : touching[0];
+        reason += `rule picks ${policy}`;
+      }
     } else {
       chosen = candidates.reduce((a, c) => (c.inDay > a.inDay ? c : a));
       reason = `tithi misses ${rule.kaal} on every day; picked the day it covers most`;
@@ -92,6 +102,7 @@ export function createRuleEngine(ctx) {
         tithi: rule.tithi, tithiStart: occ.start, tithiEnd: occ.end, masa: masa.id, adhika: masa.adhika,
         kaal: rule.kaal,
         candidates: candidates.map((c) => ({ date: formatLocalDate(c.date), window: c.window, inKaalMs: c.inKaal })),
+        ...(preferNakshatra && { preferNakshatra }),
         reason
       }
     };
@@ -116,6 +127,11 @@ export function createRuleEngine(ctx) {
         const masa = ctx.masaAt(ctx.basics(D).sunrise);
         if (masa.id !== rule.masa || masa.adhika) return null;
         return { date: D, trace: { masa: masa.id, reason: `weekday ${rule.weekday} in ${masa.id}` } };
+      }
+      case 'masaStart': {
+        const masa = ctx.masaAt(ctx.basics(D).sunrise);
+        if (masa.id !== rule.masa || masa.adhika || masa.start <= ctx.basics(addDays(D, -1)).sunrise) return null;
+        return { date: D, trace: { masa: masa.id, newMoon: masa.start, reason: `first sunrise of nija ${masa.id}` } };
       }
       case 'weekdayBefore': {
         if (weekdayOf(D) !== rule.weekday) return null;
@@ -155,6 +171,12 @@ export function createRuleEngine(ctx) {
     return { start, end, hariVasaraEnd, dwadashiEnd: dwadashi.end, basis: 'after Hari Vasara, within the morning, before Dwadashi ends' };
   }
 
+  // EKADASHI_* name from the amanta masa of the tithi: [shukla, krishna] per masa, or the adhika pair.
+  function ekadashiName(trace) {
+    const names = ctx.observance.ekadashiNames;
+    return (trace.adhika ? names.adhika : names[trace.masa])[trace.tithi === 'TITHI_SHUKLA_EKADASHI' ? 0 : 1];
+  }
+
   return {
     isObserved: (id, D) => !!observedOn(byId.get(id), D),
     eventsOn(D) {
@@ -163,7 +185,7 @@ export function createRuleEngine(ctx) {
         const r = observedOn(rule, D);
         if (!r) continue;
         const ev = { id: rule.id, ruleVersion: ctx.observance.version, verified: rule.verified || [], trace: r.trace };
-        if (rule.ekadashi) ev.parana = parana(D);
+        if (rule.ekadashi) { ev.nameId = ekadashiName(r.trace); ev.parana = parana(D); }
         events.push(ev);
       }
       return events;

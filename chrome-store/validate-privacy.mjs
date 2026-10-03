@@ -2,9 +2,11 @@
 // Repo-local privacy-policy drift check (ADR 0001, POR-71). Dependency-light
 // (Node built-ins only) and scoped to this repo — it does not read or call
 // release-platform. Checks facts, not wording: it derives the permission set
-// from manifest.json and the policy URL from store.config.json, then asserts
-// every in-repo doc and the published policy page mention each permission,
-// rather than restating the expectations here where they could drift too.
+// from manifest.json plus .appforge/permissions.yaml (which also lists what
+// Chrome prompts for at runtime instead, like geolocation) and the policy URL
+// from store.config.json, then asserts every in-repo doc and the published
+// policy page mention each permission, rather than restating the expectations
+// here where they could drift too.
 //
 //   node chrome-store/validate-privacy.mjs
 //   SKIP_PUBLISHED_PRIVACY_CHECK=1 node chrome-store/validate-privacy.mjs   # local tier only; do not set in CI
@@ -50,10 +52,11 @@ async function main() {
   const manifest = JSON.parse(readFileSync(resolve(REPO_ROOT, 'manifest.json'), 'utf8'));
   const config = JSON.parse(readFileSync(resolve(CHROME_STORE_DIR, 'store.config.json'), 'utf8'));
 
-  const permissions = [...(manifest.permissions || []), ...(manifest.host_permissions || [])];
+  const yamlPermissions = [...readDoc(errors, '.appforge/permissions.yaml').matchAll(/^\s*-\s*permission:\s*(\S+)/gm)].map((m) => m[1]);
+  const permissions = [...new Set([...(manifest.permissions || []), ...(manifest.host_permissions || []), ...yamlPermissions])];
   const privacyPolicyUrl = config.privacyPolicyUrl;
   if (permissions.length === 0) {
-    errors.push('manifest.json declares no permissions or host_permissions; nothing to check');
+    errors.push('manifest.json and .appforge/permissions.yaml declare no permissions; nothing to check');
   }
   if (!privacyPolicyUrl) {
     errors.push('store.config.json is missing privacyPolicyUrl');

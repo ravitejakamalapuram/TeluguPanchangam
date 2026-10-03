@@ -9,8 +9,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const vm = require('vm');
 const assert = require('assert');
+const { spawnSync } = require('child_process');
 
 const ROOT = path.join(__dirname, '..');
 
@@ -86,6 +88,67 @@ check('every ES module newtab.js imports (transitively) is in release.yaml\'s in
   assert.ok(seen.size > 5, 'expected newtab.js to import the core modules');
   const missing = [...seen].filter((f) => !shipped(f, includes));
   assert.deepStrictEqual(missing, [], 'modules imported by newtab.js but not shipped');
+});
+
+// --- Manifest name/description come from _locales (review §4.1). Chrome refuses
+// to load a manifest with default_locale but no shipped _locales/, the English
+// name must stay the store listing's name, and Telugu copy stays Telugu. ---
+check('manifest name/description resolve in every shipped locale, within Chrome limits', () => {
+  const manifest = JSON.parse(readFile('manifest.json'));
+  assert.strictEqual(manifest.default_locale, 'en');
+  assert.strictEqual(manifest.name, '__MSG_appName__');
+  assert.strictEqual(manifest.description, '__MSG_appDescription__');
+  assert.ok(shipped('_locales/en/messages.json', releaseIncludes()), 'release.yaml must ship _locales');
+  for (const locale of fs.readdirSync(path.join(ROOT, '_locales'))) {
+    const messages = JSON.parse(readFile(`_locales/${locale}/messages.json`));
+    assert.ok([...messages.appName.message].length <= 75, `${locale} appName is over 75 characters`);
+    assert.ok([...messages.appDescription.message].length <= 132, `${locale} appDescription is over 132 characters`);
+  }
+  const en = JSON.parse(readFile('_locales/en/messages.json'));
+  assert.strictEqual(en.appName.message, JSON.parse(readFile('chrome-store/store.config.json')).name);
+  const te = JSON.parse(readFile('_locales/te/messages.json'));
+  for (const key of ['appName', 'appDescription']) {
+    assert.match(te[key].message, /^[ఀ-౿\s.,;:!?()–—-]+$/, `te ${key} must be Telugu script only`);
+  }
+});
+
+// --- geolocation must not be declared (review §3/§5.1). As a required
+// permission it puts "Detect your physical location" in the install dialog,
+// and Chrome refuses it in optional_permissions ("Only permissions specified
+// in the manifest may be requested"), so "Use My Location" relies on Chrome's
+// own location prompt for the page, shown on the click. ---
+check('manifest declares no geolocation permission, required or optional', () => {
+  const manifest = JSON.parse(readFile('manifest.json'));
+  const declared = [...(manifest.permissions || []), ...(manifest.optional_permissions || [])];
+  assert.ok(!declared.includes('geolocation'), 'geolocation is declared in manifest.json');
+});
+
+// --- ...but the page still reads the device location, so the ADR 0001 drift
+// check must keep requiring every privacy copy to disclose geolocation. Runs
+// the real validator (local tier) on a scratch copy with the word removed. ---
+check('privacy drift check still fails when a doc stops mentioning geolocation', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'privacy-drift-'));
+  const docs = ['PRIVACY.md', 'CHROMEWEBSTORE.md', 'store-listing.md'];
+  const files = ['manifest.json', '.appforge/permissions.yaml', 'chrome-store/validate-privacy.mjs', 'chrome-store/store.config.json', ...docs];
+  try {
+    for (const file of files) {
+      fs.mkdirSync(path.dirname(path.join(tmp, file)), { recursive: true });
+      fs.copyFileSync(path.join(ROOT, file), path.join(tmp, file));
+    }
+    const validate = () => spawnSync(process.execPath, ['chrome-store/validate-privacy.mjs'], {
+      cwd: tmp,
+      env: { ...process.env, SKIP_PUBLISHED_PRIVACY_CHECK: '1' },
+      encoding: 'utf8'
+    });
+    const clean = validate();
+    assert.strictEqual(clean.status, 0, `unmodified copy should pass:\n${clean.stderr}`);
+    for (const doc of docs) fs.writeFileSync(path.join(tmp, doc), readFile(doc).replace(/geolocation/gi, 'location'));
+    const drifted = validate();
+    assert.strictEqual(drifted.status, 1, 'validator passed with geolocation removed from every doc');
+    for (const doc of docs) assert.ok(drifted.stderr.includes(`${doc} does not mention the "geolocation" permission`), drifted.stderr);
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
 });
 
 // --- te mode must reproduce the pre-toggle Telugu UI byte-for-byte on

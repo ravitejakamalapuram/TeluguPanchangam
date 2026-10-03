@@ -11,6 +11,7 @@ targets:
     listing: chrome-store/store.config.json
     include:
       - manifest.json
+      - _locales
       - newtab.html
       - newtab.css
       - newtab.js

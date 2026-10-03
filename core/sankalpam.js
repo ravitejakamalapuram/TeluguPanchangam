@@ -94,8 +94,10 @@ function river(lat, lng) {
 }
 
 // Returns { variant, sa, te } for the place clause.
+// skinflint: a bounding box for Andhra Pradesh + Telangana; it leaves out Kuppam (12.75 N) and takes in
+// Raichur/Bidar. Use state polygons if users report the wrong clause.
 function desha(lat, lng) {
-  if (lat >= 12.5 && lat <= 19.95 && lng >= 76.7 && lng <= 84.8) {
+  if (lat >= 13.5 && lat <= 19.95 && lng >= 77.2 && lng <= 84.8) {
     const [rSa, rTe] = river(lat, lng);
     const [dSa, dTe] = srisailamDirection(lat, lng);
     return { variant: 'andhra-telangana', sa: `${BHARATA[0]}, ${rSa}, ${dSa}`, te: `${BHARATA[1]}, ${rTe}, ${dTe}` };

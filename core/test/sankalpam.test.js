@@ -57,6 +57,9 @@ test('other Indian and foreign places drop the Andhra clauses', () => {
   const delhi = generateSankalpam(engine.day(DATE, { latitude: 28.6139, longitude: 77.209, timezone: 'Asia/Kolkata' }));
   const london = generateSankalpam(engine.day(DATE, { latitude: 51.5074, longitude: -0.1278, timezone: 'Europe/London' }));
   assert.equal(delhi.deshaVariant, 'india');
+  for (const c of ['bengaluru', 'chennai']) {
+    assert.equal(generateSankalpam(engine.day('2026-10-03', PLACES[c])).deshaVariant, 'india', `${c} is outside Andhra/Telangana`);
+  }
   assert.equal(london.deshaVariant, 'other');
   for (const s of [delhi, london]) {
     assert.ok(s.sanskrit.includes('జంబూద్వీపే, భరతవర్షే, భరతఖండే, మేరోః దక్షిణ దిగ్భాగే, అస్మిన్'));

@@ -149,7 +149,10 @@ export function createEngine({ Astronomy, calculation, regional, observance } = 
     };
   }
 
-  return { day, profiles, meta, astronomy: astro };
+  // The span of a panchanga element ('tithi', 'nakshatra', 'yoga', 'karana', 'chandraRasi') at any instant.
+  const elementAt = (elementName, instant) => spanAt(el[elementName], instant);
+
+  return { day, elementAt, masaAt: (instant) => masaAt(astro, instant), profiles, meta, astronomy: astro };
 }
 
 export { PanchangaError } from './errors.js';

@@ -3,8 +3,18 @@
  * Main UI Controller for the Telugu Calendar New Tab page.
  */
 
+import { createEngine } from './core/index.js';
+import { name as coreName } from './core/i18n.js';
+import { TITHI, MASA } from './core/ids.js';
+import { generateSankalpam } from './core/sankalpam.js';
+import { dailyHoroscope } from './core/horoscope.js';
+import { horoscopeText } from './core/horoscope-text.js';
+
 (function () {
   'use strict';
+
+  // The Panchanga engine (core/). Offline; astronomy-engine is loaded as a classic script before this module.
+  const engine = createEngine({ Astronomy: window.Astronomy });
 
   // DOM Elements
   const elClock = document.getElementById('clock');
@@ -34,6 +44,8 @@
   const elTimeVarj = document.getElementById('time-varj');
   const elTimeAmrita = document.getElementById('time-amrita');
   const elTimeAbhijit = document.getElementById('time-abhijit');
+  const elTimeGulika = document.getElementById('time-gulika');
+  const elTimeBrahma = document.getElementById('time-brahma');
   
   // Eclipses & Birthdays
   const elEclipseBanner = document.getElementById('eclipse-banner');
@@ -104,6 +116,22 @@
     const p = window.TZ.getZonedParts(new Date(), currentCity.timeZone);
     return new Date(p.year, p.month, p.day, 12, 0, 0);
   }
+
+  function cityLocation() {
+    return { latitude: currentCoordinates.lat, longitude: currentCoordinates.lng, timezone: currentCity.timeZone };
+  }
+
+  // selectedDate-style Dates carry the city's calendar day in their system-local Y/M/D (see cityToday).
+  function localDateOf(date) {
+    return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
+  }
+
+  function dayFor(date) {
+    return engine.day(localDateOf(date), cityLocation());
+  }
+
+  const nm = (id) => coreName(id, window.I18N.getLang());
+  const tithiIndexOf = (day) => TITHI.indexOf(day.panchanga.tithi.id);
 
   // Initialize Extension
   async function init() {
@@ -336,39 +364,52 @@
 
   function renderHoroscope(panchang) {
     const rasiIndex = parseInt(elSelectRasi.value);
-    const horoscope = window.Horoscope.getHoroscope(panchang, rasiIndex, window.I18N.getLang());
-    
-    // Render stars
-    elHoroscopeRating.textContent = "⭐".repeat(horoscope.score);
-    
-    if (activeHoroTab === 'health') {
-      elHoroscopeTxt.textContent = horoscope.predictionHealth;
-    } else if (activeHoroTab === 'wealth') {
-      elHoroscopeTxt.textContent = horoscope.predictionWealth;
-    } else {
-      elHoroscopeTxt.textContent = horoscope.predictionCareer;
-    }
+    const h = dailyHoroscope(panchang, engine.astronomy, rasiIndex, { janmaNakshatraIndex: birthNakshatraIndex() });
+    const text = horoscopeText(h, window.I18N.getLang());
+
+    elHoroscopeRating.textContent = "⭐".repeat(h.score);
+    elHoroscopeTxt.textContent = activeHoroTab === 'health' ? text.health
+      : activeHoroTab === 'wealth' ? text.wealth : text.career;
   }
 
   // Format transition times for calendar display
-  function formatTransitionText(transitions, elementsList, fallbackName) {
-    if (!transitions || transitions.length === 0) {
-      return `${fallbackName} ${window.I18N.t('allDaySuffix')}`;
-    }
-    const t = transitions[0];
-    const name = window.I18N.splitBi(elementsList[t.fromIndex]);
-    const nextName = window.I18N.splitBi(elementsList[t.toIndex]);
-    const time = formatTime(t.time);
+  // "<name> until <time>, then <next>" across the Hindu day (sunrise to next sunrise).
+  // Times after midnight get a "+1" so a 2 AM end isn't read as this morning.
+  function formatTransitionText(spans) {
+    const first = spans[0];
+    if (spans.length === 1) return `${nm(first.id)} ${window.I18N.t('allDaySuffix')}`;
+    const ends = formatTime(first.end) + (isSameDay(cityDateOf(first.end), selectedDate) ? '' : ' (+1)');
     return window.I18N.getLang() === 'en'
-      ? `${name} until ${time}, then ${nextName}`
-      : `${name} ${time} వరకు, ఆపై ${nextName}`;
+      ? `${nm(first.id)} until ${ends}, then ${nm(spans[1].id)}`
+      : `${nm(first.id)} ${ends} వరకు, ఆపై ${nm(spans[1].id)}`;
+  }
+
+  // An instant's calendar day in the selected city, as a selectedDate-style Date.
+  function cityDateOf(instant) {
+    const p = window.TZ.getZonedParts(instant, currentCity.timeZone);
+    return new Date(p.year, p.month, p.day, 12, 0, 0);
+  }
+
+  const formatWindow = (w) => `${formatTime(w.start)} - ${formatTime(w.end)}`;
+  const formatWindows = (list) => (list.length ? list.map(formatWindow).join(', ') : '—');
+
+  // Sankalpam names the tithi/nakshatra current when it is recited: "now" for today, sunrise otherwise.
+  function sankalpamFor(day) {
+    if (!isSameDay(selectedDate, cityToday())) return generateSankalpam(day);
+    const now = new Date();
+    return generateSankalpam(day, {
+      tithiId: engine.elementAt('tithi', now).id,
+      nakshatraId: engine.elementAt('nakshatra', now).id
+    });
   }
 
   // Update Main Dashboard UI Cards
   async function refreshDashboard() {
     // 1. Calculate Panchang for selectedDate
-    activePanchang = window.Panchang.calculatePanchang(selectedDate, currentCoordinates.lat, currentCoordinates.lng, currentCity.timeZone);
-    
+    activePanchang = dayFor(selectedDate);
+    const p = activePanchang.panchanga;
+    const tm = activePanchang.timings;
+
     // Store today's panchang if the viewed date is indeed today (in the selected city)
     if (isSameDay(selectedDate, cityToday())) {
       todayPanchang = activePanchang;
@@ -387,41 +428,45 @@
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
 
-    // 3. Render Panchang card values
-    elPanchangTithi.textContent = window.I18N.splitBi(activePanchang.tithi.name);
-    elPanchangTithiTime.textContent = formatTransitionText(activePanchang.tithi.transitions, window.Panchang.PANCHANG_DATA.tithis, window.I18N.splitBi(activePanchang.tithi.name));
+    // 3. Render Panchang card values (paksha + tithi, e.g. "బహుళ నవమి")
+    const cal = activePanchang.calendar;
+    elPanchangTithi.textContent = `${nm(cal.paksha.id)} ${nm(p.tithi.id)}`;
+    elPanchangTithiTime.textContent = formatTransitionText(p.tithi.spans);
 
-    elPanchangNaks.textContent = window.I18N.splitBi(activePanchang.nakshatra.name);
-    elPanchangNaksTime.textContent = formatTransitionText(activePanchang.nakshatra.transitions, window.Panchang.PANCHANG_DATA.nakshatras, window.I18N.splitBi(activePanchang.nakshatra.name));
+    elPanchangNaks.textContent = `${nm(p.nakshatra.id)} (${p.nakshatra.pada})`;
+    elPanchangNaksTime.textContent = formatTransitionText(p.nakshatra.spans);
 
-    elPanchangYoga.textContent = window.I18N.splitBi(activePanchang.yoga.name);
-    elPanchangYogaTime.textContent = formatTransitionText(activePanchang.yoga.transitions, window.Panchang.PANCHANG_DATA.yogas, window.I18N.splitBi(activePanchang.yoga.name));
+    elPanchangYoga.textContent = nm(p.yoga.id);
+    elPanchangYogaTime.textContent = formatTransitionText(p.yoga.spans);
 
-    elPanchangKarana.textContent = window.I18N.splitBi(activePanchang.karana.name);
-    elPanchangKaranaTime.textContent = `${window.I18N.splitBi('కరణం (Karana)')}: ${window.I18N.splitBi(activePanchang.karana.name)}`;
+    elPanchangKarana.textContent = nm(p.karana.id);
+    elPanchangKaranaTime.textContent = formatTransitionText(p.karana.spans);
 
     // 4. Inauspicious / Auspicious Timings
-    elTimeRahu.textContent = `${formatTime(activePanchang.rahuKalam.start)} - ${formatTime(activePanchang.rahuKalam.end)}`;
-    elTimeYama.textContent = `${formatTime(activePanchang.yamaGandam.start)} - ${formatTime(activePanchang.yamaGandam.end)}`;
-    
-    // Durmuhurtham can have 1 or 2 parts
-    const durTexts = activePanchang.durmuhurthams.map(d => `${formatTime(d.start)} - ${formatTime(d.end)}`);
-    elTimeDur.textContent = durTexts.join(", ");
-
-    elTimeVarj.textContent = `${formatTime(activePanchang.varjyam.start)} - ${formatTime(activePanchang.varjyam.end)}`;
-    elTimeAmrita.textContent = `${formatTime(activePanchang.amritakalam.start)} - ${formatTime(activePanchang.amritakalam.end)}`;
-    elTimeAbhijit.textContent = `${formatTime(activePanchang.abhijitMuhurtham.start)} - ${formatTime(activePanchang.abhijitMuhurtham.end)}` +
-                                (activePanchang.abhijitMuhurtham.isAvoided ? window.I18N.t('abhijitAvoidedSuffix') : "");
+    elTimeRahu.textContent = formatWindow(tm.rahuKalam);
+    elTimeYama.textContent = formatWindow(tm.yamagandam);
+    elTimeGulika.textContent = formatWindow(tm.gulikaKalam);
+    elTimeDur.textContent = formatWindows(tm.durmuhurtham);
+    elTimeVarj.textContent = formatWindows(tm.varjyam);
+    elTimeAmrita.textContent = formatWindows(tm.amritaKalam);
+    elTimeAbhijit.textContent = formatWindow(tm.abhijit) + (tm.abhijit.avoided ? window.I18N.t('abhijitAvoidedSuffix') : "");
+    elTimeBrahma.textContent = formatWindow(tm.brahmaMuhurta);
 
     // 5. Render Sankalpam (kept in Sanskrit/Telugu regardless of UI language —
     // a Sankalpam is a liturgical declaration always recited in those languages)
-    const sankalpam = window.Sankalpam.generateSankalpam(activePanchang, currentCoordinates.lat, currentCoordinates.lng);
+    const sankalpam = sankalpamFor(activePanchang);
     elSankalpamTxt.replaceChildren(
       labelledLine(window.I18N.t('sanskritLabel'), sankalpam.sanskrit),
       document.createElement('br'),
       document.createElement('br'),
       labelledLine(window.I18N.t('teluguLabel'), sankalpam.telugu)
     );
+    if (sankalpam.deshaNote && sankalpam.deshaVariant !== 'andhra-telangana') {
+      const note = document.createElement('p');
+      note.className = 'sankalpam-note';
+      note.textContent = sankalpam.deshaNote;
+      elSankalpamTxt.append(note);
+    }
 
     // 5b. Gita verse of the day: one verse per calendar day, offline, follows the selected date.
     renderGitaVerse(selectedDate);
@@ -444,6 +489,19 @@
     renderMonthlyCalendar();
   }
 
+  // The saved date/time of birth as an instant. Parsed as wall-clock time in the selected city
+  // (birthplace isn't collected); `new Date('YYYY-MM-DD')` would read it as UTC and shift US users a day.
+  function birthInstant() {
+    const [y, m, d] = userSettings.dob.split('-').map(Number);
+    const [hh, mm] = (userSettings.tob || '12:00').split(':').map(Number);
+    return window.TZ.zonedTimeToUtc(y, m - 1, d, hh, mm, 0, currentCity.timeZone);
+  }
+
+  function birthNakshatraIndex() {
+    if (!userSettings.dob) return undefined;
+    return engine.elementAt('nakshatra', birthInstant()).index;
+  }
+
   // Reverse match birth details to trigger Telugu Birthday greetings
   function checkBirthday(panchang) {
     if (!userSettings.dob) {
@@ -451,53 +509,38 @@
       return;
     }
 
-    const birthDate = new Date(userSettings.dob);
-    // Find birth Panchang (using birth coordinates or defaults)
-    const birthPanchang = window.Panchang.calculatePanchang(birthDate, currentCoordinates.lat, currentCoordinates.lng, currentCity.timeZone);
-    
-    // Birthday is matching Lunar month index and Nakshatra index
-    if (panchang.month.index === birthPanchang.month.index && panchang.nakshatra.index === birthPanchang.nakshatra.index) {
+    // Telugu birthday: the day in the birth masa whose sunrise nakshatra is the janma nakshatra.
+    const birth = birthInstant();
+    const birthMasa = engine.masaAt(birth).id;
+    const birthNakshatra = engine.elementAt('nakshatra', birth).id;
+    if (panchang.calendar.masa.id === birthMasa && !panchang.calendar.masa.adhika && panchang.panchanga.nakshatra.id === birthNakshatra) {
       elBirthdayBanner.style.display = 'block';
     } else {
       elBirthdayBanner.style.display = 'none';
     }
   }
 
-  // Solar and Lunar eclipses detector
+  // Eclipses visible from the selected city during the selected day.
   function checkForEclipses(panchang) {
-    const Astronomy = panchang.astronomyEngine;
-    const time = Astronomy.MakeTime(panchang.date);
-    
-    // Check solar eclipse
-    const nextSolar = Astronomy.SearchGlobalSolarEclipse(time);
-    const eclipseLang = window.I18N.getLang();
-    if (nextSolar && isSameDay(nextSolar.peak.date, panchang.date)) {
-      elEclipseBanner.style.display = 'flex';
-      elEclipseTitle.textContent = window.I18N.bi("సూర్య గ్రహణం హెచ్చరిక (Solar Eclipse Alert!)");
-      elEclipseDesc.textContent = eclipseLang === 'en'
-        ? `Eclipse peak time: ${formatTime(nextSolar.peak.date)}. Please observe eclipse precautions.`
-        : `గ్రహణ పీక్ సమయం: ${formatTime(nextSolar.peak.date)}. గ్రహణ నియమ నిబంధనలు పాటించవలెను.`;
+    const from = window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 0, 0, 0, currentCity.timeZone);
+    const to = new Date(from.getTime() + 24 * 3600 * 1000);
+    const visible = engine.astronomy.eclipsesBetween(cityLocation(), from, to).filter((e) => e.visible);
+    if (!visible.length) {
+      elEclipseBanner.style.display = 'none';
       return;
     }
-
-    // Check lunar eclipse
-    const nextLunar = Astronomy.SearchLunarEclipse(time);
-    if (nextLunar && isSameDay(nextLunar.peak.date, panchang.date)) {
-      elEclipseBanner.style.display = 'flex';
-      elEclipseTitle.textContent = window.I18N.bi("చంద్ర గ్రహణం హెచ్చరిక (Lunar Eclipse Alert!)");
-      elEclipseDesc.textContent = eclipseLang === 'en'
-        ? `Eclipse peak time: ${formatTime(nextLunar.peak.date)}. Please observe eclipse precautions.`
-        : `గ్రహణ పీక్ సమయం: ${formatTime(nextLunar.peak.date)}. గ్రహణ నియమ నిబంధనలు పాటించవలెను.`;
-      return;
-    }
-
-    // Default: hide banner
-    elEclipseBanner.style.display = 'none';
+    const e = visible[0];
+    const solar = e.kind === 'solar';
+    elEclipseBanner.style.display = 'flex';
+    elEclipseTitle.textContent = window.I18N.bi(solar ? "సూర్య గ్రహణం (Solar Eclipse)" : "చంద్ర గ్రహణం (Lunar Eclipse)");
+    elEclipseDesc.textContent = window.I18N.getLang() === 'en'
+      ? `Visible from ${currentCity.name ? window.I18N.splitBi(currentCity.name) : 'your city'}. Peak: ${formatTime(e.peak)}. Please observe eclipse precautions.`
+      : `మీ నగరం నుండి కనిపిస్తుంది. గ్రహణ మధ్య కాలం: ${formatTime(e.peak)}. గ్రహణ నియమ నిబంధనలు పాటించవలెను.`;
   }
 
   // Render active reminders list
   async function renderRemindersList(panchang) {
-    const list = await window.Reminders.getRemindersForDay(panchang);
+    const list = await window.Reminders.getRemindersForDay({ date: panchang.date, masaIndex: MASA.indexOf(panchang.calendar.masa.id), tithiIndex: tithiIndexOf(panchang) });
     elRemindersList.innerHTML = '';
     
     if (list.length === 0) {
@@ -589,8 +632,12 @@
     }
 
     // Calculate Tithi for the day (fast calculation using defaults)
-    const panchang = window.Panchang.calculatePanchang(cellDate, currentCoordinates.lat, currentCoordinates.lng, currentCity.timeZone);
-    const festivals = window.Festivals.getFestivals(panchang);
+    const panchang = dayFor(cellDate);
+    // Festivals first, then recurring vratas (Ekadashi, Pradosham, ...).
+    const festivals = [
+      ...panchang.events.filter((e) => e.id.startsWith('FESTIVAL_')),
+      ...panchang.events.filter((e) => !e.id.startsWith('FESTIVAL_'))
+    ];
 
     const elNum = document.createElement('span');
     elNum.className = 'day-number';
@@ -598,10 +645,7 @@
 
     const elTithi = document.createElement('span');
     elTithi.className = 'day-tithi';
-    const tithiName = window.I18N.splitBi(panchang.tithi.name);
-    elTithi.textContent = window.I18N.getLang() === 'en'
-      ? tithiName.replace("Shukla ", "").replace("Krishna ", "")
-      : tithiName.replace("శుక్ల ", "").replace("కృష్ణ ", "");
+    elTithi.textContent = nm(panchang.panchanga.tithi.id);
 
     cell.appendChild(elNum);
     cell.appendChild(elTithi);
@@ -610,8 +654,8 @@
     if (festivals.length > 0) {
       const elFest = document.createElement('span');
       elFest.className = 'day-festivals';
-      elFest.textContent = window.I18N.splitBi(festivals[0].name);
-      elFest.title = festivals.map(f => window.I18N.bi(f.name)).join(", ");
+      elFest.textContent = nm(festivals[0].id);
+      elFest.title = festivals.map((f) => `${coreName(f.id, 'te')} (${coreName(f.id, 'en')})`).join(", ");
       cell.appendChild(elFest);
     }
 
@@ -678,7 +722,7 @@
     const btnCopySankalpam = document.getElementById('copy-sankalpam-btn');
     if (btnCopySankalpam) {
       btnCopySankalpam.addEventListener('click', () => {
-        const sankalpam = window.Sankalpam.generateSankalpam(activePanchang, currentCoordinates.lat, currentCoordinates.lng);
+        const sankalpam = sankalpamFor(activePanchang);
         const textToCopy = `${window.I18N.t('sankalpamCopyHeader')}\nSanskrit:\n${sankalpam.sanskrit}\n\nTelugu:\n${sankalpam.telugu}`;
 
         navigator.clipboard.writeText(textToCopy).then(() => {
@@ -932,8 +976,8 @@
     const timeMs = skyTime.getTime();
 
     // Default to 6:00 AM / 6:30 PM if sunrise/sunset is not loaded
-    const sunriseTime = panchang.sunrise ? panchang.sunrise.getTime() : window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 6, 0, 0, currentCity.timeZone).getTime();
-    const sunsetTime = panchang.sunset ? panchang.sunset.getTime() : window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 18, 30, 0, currentCity.timeZone).getTime();
+    const sunriseTime = panchang.astronomy.sunrise ? panchang.astronomy.sunrise.getTime() : window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 6, 0, 0, currentCity.timeZone).getTime();
+    const sunsetTime = panchang.astronomy.sunset ? panchang.astronomy.sunset.getTime() : window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 18, 30, 0, currentCity.timeZone).getTime();
 
     let skyState = 'day';
     const transitionMs = 30 * 60 * 1000; // 30 minutes golden-hour window
@@ -958,7 +1002,7 @@
       if (elSunBody) elSunBody.style.display = 'none';
       if (elMoonCanvas) {
         elMoonCanvas.style.display = 'block';
-        drawMoon(elMoonCanvas, panchang.tithi.index);
+        drawMoon(elMoonCanvas, tithiIndexOf(panchang));
       }
     }
   }
@@ -1070,8 +1114,8 @@
     );
     const timeMs = skyTime.getTime();
 
-    const sunriseTime = panchang.sunrise ? panchang.sunrise.getTime() : window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 6, 0, 0, currentCity.timeZone).getTime();
-    const sunsetTime = panchang.sunset ? panchang.sunset.getTime() : window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 18, 30, 0, currentCity.timeZone).getTime();
+    const sunriseTime = panchang.astronomy.sunrise ? panchang.astronomy.sunrise.getTime() : window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 6, 0, 0, currentCity.timeZone).getTime();
+    const sunsetTime = panchang.astronomy.sunset ? panchang.astronomy.sunset.getTime() : window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 18, 30, 0, currentCity.timeZone).getTime();
 
     let fraction = 0;
     if (timeMs <= sunriseTime) {
@@ -1108,63 +1152,17 @@
 
     const blocks = [];
 
-    if (panchang.rahuKalam && panchang.rahuKalam.start && panchang.rahuKalam.end) {
-      blocks.push({
-        label: window.I18N.bi('రాహుకాలం (Rahu Kalam)'),
-        start: panchang.rahuKalam.start,
-        end: panchang.rahuKalam.end,
-        type: 'inauspicious'
-      });
-    }
-
-    if (panchang.yamaGandam && panchang.yamaGandam.start && panchang.yamaGandam.end) {
-      blocks.push({
-        label: window.I18N.bi('యమగండం (Yama Gandam)'),
-        start: panchang.yamaGandam.start,
-        end: panchang.yamaGandam.end,
-        type: 'inauspicious'
-      });
-    }
-
-    if (panchang.durmuhurthams && Array.isArray(panchang.durmuhurthams)) {
-      panchang.durmuhurthams.forEach((dm, idx) => {
-        if (dm.start && dm.end) {
-          blocks.push({
-            label: window.I18N.bi(`దుర్ముహూర్తం (Durmuhurtham${panchang.durmuhurthams.length > 1 ? ' ' + (idx + 1) : ''})`),
-            start: dm.start,
-            end: dm.end,
-            type: 'inauspicious'
-          });
-        }
-      });
-    }
-
-    if (panchang.varjyam && panchang.varjyam.start && panchang.varjyam.end) {
-      blocks.push({
-        label: window.I18N.bi('వర్జ్యం (Varjyam)'),
-        start: panchang.varjyam.start,
-        end: panchang.varjyam.end,
-        type: 'inauspicious'
-      });
-    }
-
-    if (panchang.amritakalam && panchang.amritakalam.start && panchang.amritakalam.end) {
-      blocks.push({
-        label: window.I18N.bi('అమృతకాలం (Amrita Kalam)'),
-        start: panchang.amritakalam.start,
-        end: panchang.amritakalam.end,
-        type: 'auspicious'
-      });
-    }
-
-    if (panchang.abhijitMuhurtham && panchang.abhijitMuhurtham.start && panchang.abhijitMuhurtham.end && !panchang.abhijitMuhurtham.isAvoided) {
-      blocks.push({
-        label: window.I18N.bi('అభిజిత్ ముహూర్తం (Abhijit)'),
-        start: panchang.abhijitMuhurtham.start,
-        end: panchang.abhijitMuhurtham.end,
-        type: 'auspicious'
-      });
-    }
+    const tm = panchang.timings;
+    const add = (label, list, type) => list.forEach((w, i) => blocks.push({
+      label: window.I18N.bi(list.length > 1 ? label.replace(')', ` ${i + 1})`) : label), start: w.start, end: w.end, type
+    }));
+    add('రాహుకాలం (Rahu Kalam)', [tm.rahuKalam], 'inauspicious');
+    add('యమగండం (Yama Gandam)', [tm.yamagandam], 'inauspicious');
+    add('గుళిక కాలం (Gulika Kalam)', [tm.gulikaKalam], 'inauspicious');
+    add('దుర్ముహూర్తం (Durmuhurtham)', tm.durmuhurtham, 'inauspicious');
+    add('వర్జ్యం (Varjyam)', tm.varjyam, 'inauspicious');
+    add('అమృతకాలం (Amrita Kalam)', tm.amritaKalam, 'auspicious');
+    if (!tm.abhijit.avoided) add('అభిజిత్ ముహూర్తం (Abhijit)', [tm.abhijit], 'auspicious');
 
     blocks.forEach(b => {
       const bStartMs = b.start.getTime();

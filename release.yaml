@@ -17,13 +17,23 @@ targets:
       - storage-shim.js
       - i18n.js
       - cities.js
-      - panchang.js
-      - festivals.js
-      - sankalpam.js
-      - horoscope.js
       - reminders.js
       - gita-verses.js
       - gita-verse.js
+      - core/index.js
+      - core/astronomy.js
+      - core/calendar.js
+      - core/errors.js
+      - core/i18n.js
+      - core/ids.js
+      - core/panchanga.js
+      - core/rules.js
+      - core/time.js
+      - core/timings.js
+      - core/sankalpam.js
+      - core/horoscope.js
+      - core/horoscope-text.js
+      - core/profiles
       - lib/astronomy.js
       - lib/tz.js
       - icons

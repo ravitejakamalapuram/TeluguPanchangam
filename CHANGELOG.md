@@ -6,6 +6,27 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 
 _Nothing yet._
 
+## [2.0.0] - unreleased
+
+### Changed
+- **New Panchanga engine (`core/`)** replaces `panchang.js`, `festivals.js`, `sankalpam.js` and `horoscope.js`. It is still fully offline and makes no network requests. Conventions are data: a calculation profile (Drik-style, Lahiri), a Telugu regional profile and an Andhra/Telangana observance profile; every festival carries a trace of why it fell on its day. Design: `docs/adr/0002-reference-panchangam.md`, `core/README.md`.
+- Tithi, nakshatra, yoga and karana end times now cover the Hindu day (sunrise to next sunrise); times after midnight are marked "+1". Krishna paksha is shown as బహుళ, Shukla as శుద్ధ.
+- Daily Rasi Phalalu now follow the Moon's transit (Chandra balam) and, when a date of birth is saved, Tara balam, so readings change every couple of days instead of staying fixed for weeks.
+- Sankalpam names the tithi and nakshatra current when you read it today, the day's actual yoga and karana, and uses a location line that fits the city (Andhra/Telangana, elsewhere in India, or the Americas form used by US Telugu priests).
+
+### Added
+- Gulika Kalam and Brahma Muhurtham timings; Varjyam and Amrita Kalam for every nakshatra in the day; nakshatra pada.
+- Festivals and vratas: Bathukamma (Engili Pula, Saddula), Bonalu, Atla Tadde, Undralla Tadde, Nagula Panchami, Narasimha Jayanti, Karthika Somavaram, Shravana Mangalavaram, Utthana Ekadashi, Ksheerabdi Dwadashi; every Ekadashi with parana time, Sankashti Chaturthi, Pradosham, Masa Shivaratri, Purnima and Amavasya.
+
+### Fixed
+- Durmuhurtham was wrong on Sunday, Monday, Tuesday and Friday.
+- The Telugu year (samvatsara) changed on 1 March instead of at Ugadi.
+- Yoga and karana were taken at midday while tithi and nakshatra used sunrise.
+- Vaikunta Ekadashi now follows Dhanurmasam (it was a month early in 2025); Subrahmanya Shashthi is in Margashira, not Karthika; Maha Shivaratri uses the midnight (nishita) rule.
+- The date of birth was read one day early for users west of UTC, giving the wrong birth nakshatra and birthday banner.
+- Eclipse alerts now appear only for eclipses visible from the selected city, including ones that peak before noon.
+- Telugu spellings: ఉత్తర ఫల్గుణి label, విక్రమ (had a Devanagari letter), జ్యేష్ఠ, తుల; Sankalpam spelling fixes (పంచమ్యాం, పశ్చిమ, శరదృతౌ).
+
 ## [1.2.0] - 2026-09-25
 
 > Version numbering note: this entry jumps from `1.0.0` to `1.2.0`. The released `v*` tags

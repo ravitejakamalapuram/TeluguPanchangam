@@ -9,6 +9,7 @@ import { TITHI, MASA } from './core/ids.js';
 import { generateSankalpam } from './core/sankalpam.js';
 import { dailyHoroscope } from './core/horoscope.js';
 import { horoscopeText } from './core/horoscope-text.js';
+import { startOnboarding } from './ui/onboarding.js';
 
 (function () {
   'use strict';
@@ -147,6 +148,17 @@ import { horoscopeText } from './core/horoscope-text.js';
     setupEventListeners();
     initStars();
     await refreshDashboard();
+    // First-run onboarding drives the page's own controls, so its choices take the same save/refresh paths.
+    startOnboarding({
+      setLanguage: (lang) => { elLangToggle.checked = (lang === 'en'); elLangToggle.dispatchEvent(new Event('change')); },
+      cityId: () => currentCity.id,
+      setCity: async (city) => { switchCity(city, true); await refreshDashboard(); },
+      useMyLocation: () => elBtnUseLocation.click(),
+      saveBirthDetails: ({ name, dob, tob }) => {
+        elSetName.value = name; elSetDob.value = dob; elSetTob.value = tob;
+        elSettingsForm.dispatchEvent(new Event('submit', { cancelable: true }));
+      }
+    });
   }
 
   // Apply the active UI language to every statically-marked element, plus

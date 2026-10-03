@@ -64,6 +64,11 @@ size: ~250 rows per city. One JSON file per profile: `test/fixtures/profiles/dri
 
 ## Designing for more panchangams later
 
+> **Update (implemented in `core/`):** the single profile below is split into three — calculation,
+> regional and observance — following the Mana Panchangam brief. See `core/README.md`. The table
+> below still describes which settings vary; they now live in whichever of the three profiles they
+> belong to.
+
 The engine already separates astronomy from conventions; make the conventions a **profile**:
 
 ```

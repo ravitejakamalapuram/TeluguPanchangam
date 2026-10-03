@@ -378,7 +378,7 @@ import { horoscopeText } from './core/horoscope-text.js';
   function formatTransitionText(spans) {
     const first = spans[0];
     if (spans.length === 1) return `${nm(first.id)} ${window.I18N.t('allDaySuffix')}`;
-    const ends = formatTime(first.end) + (isSameDay(cityDateOf(first.end), selectedDate) ? '' : ' (+1)');
+    const ends = formatTimeOnDay(first.end);
     return window.I18N.getLang() === 'en'
       ? `${nm(first.id)} until ${ends}, then ${nm(spans[1].id)}`
       : `${nm(first.id)} ${ends} వరకు, ఆపై ${nm(spans[1].id)}`;
@@ -390,7 +390,9 @@ import { horoscopeText } from './core/horoscope-text.js';
     return new Date(p.year, p.month, p.day, 12, 0, 0);
   }
 
-  const formatWindow = (w) => `${formatTime(w.start)} - ${formatTime(w.end)}`;
+  // Clock time, with "(+1)" when it falls after midnight of the selected day.
+  const formatTimeOnDay = (d) => formatTime(d) + (isSameDay(cityDateOf(d), selectedDate) ? '' : ' (+1)');
+  const formatWindow = (w) => `${formatTimeOnDay(w.start)} - ${formatTimeOnDay(w.end)}`;
   const formatWindows = (list) => (list.length ? list.map(formatWindow).join(', ') : '—');
 
   // Sankalpam names the tithi/nakshatra current when it is recited: "now" for today, sunrise otherwise.

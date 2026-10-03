@@ -65,7 +65,7 @@ export function createAstronomyProvider(Astronomy, calculation) {
     // Solar: found globally, then checked for the observer. SearchLocalSolarEclipse skips any eclipse
     // whose partial phase misses the observer or happens with the Sun's centre below the horizon at
     // both its start and end, so a local result whose peak matches the global peak means "visible here".
-    // Lunar: visible when the Moon is above the observer's horizon at peak.
+    // Lunar: visible when the Moon is above the observer's horizon at the start, peak or end.
     eclipsesBetween(loc, from, to) {
       const obs = observer(loc);
       const out = [];
@@ -79,12 +79,17 @@ export function createAstronomyProvider(Astronomy, calculation) {
       }
       for (let e = Astronomy.SearchLunarEclipse(t(from)); e.peak.date < to; e = Astronomy.NextLunarEclipse(e.peak)) {
         const sd = e.sd_partial || e.sd_penum; // minutes; umbral contacts when the eclipse has them
-        const eq = Astronomy.Equator(Astronomy.Body.Moon, e.peak, obs, true, true);
-        const altitude = Astronomy.Horizon(e.peak, obs, eq.ra, eq.dec, 'normal').altitude;
+        const start = new Date(e.peak.date.getTime() - sd * MINUTE);
+        const end = new Date(e.peak.date.getTime() + sd * MINUTE);
+        const moonUp = (d) => {
+          const at = t(d);
+          const eq = Astronomy.Equator(Astronomy.Body.Moon, at, obs, true, true);
+          return Astronomy.Horizon(at, obs, eq.ra, eq.dec, 'normal').altitude > 0;
+        };
+        // Observed (grahanam rules apply) if the Moon is up for any part of the eclipse: start, peak or end.
         out.push({
-          kind: 'lunar', type: e.kind, peak: e.peak.date,
-          start: new Date(e.peak.date.getTime() - sd * MINUTE), end: new Date(e.peak.date.getTime() + sd * MINUTE),
-          visible: altitude > 0, obscuration: e.obscuration
+          kind: 'lunar', type: e.kind, peak: e.peak.date, start, end,
+          visible: moonUp(start) || moonUp(e.peak.date) || moonUp(end), obscuration: e.obscuration
         });
       }
       return out.sort((a, b) => a.peak - b.peak);

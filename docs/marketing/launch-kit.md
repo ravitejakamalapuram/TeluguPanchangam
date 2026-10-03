@@ -9,7 +9,9 @@ the owner and board to approve; nothing in `chrome-store/` is changed here.
 - **Live on the Chrome Web Store: 1.2.0.** Version 2.0.0 is not published yet; publishing waits for the
   owner to run the release workflow. 2.0.0 adds Bathukamma, Atla Tadde, Karthika Somavaram, every
   Ekadashi with its parana time, Gulika Kalam, Moon-based Rasi Phalalu and the sankalpam place line for
-  US cities. A post may only mention what the published version does; the "Needs" column in §2.2 says
+  US cities. A post may only mention or show what the published version does. The §5 screenshots are
+  of 2.0.0 (they show Gulika Kalam, for one), so until 2.0.0 is live a post uses a 1.2.0 store
+  screenshot from `chrome-store/assets/screenshots/` or no image. The "Needs" column in §2.2 says
   which version or lane each post depends on.
 - **Not built yet:** printable month (lane F), share card and rating prompt (lane E), onboarding
   (lane D), Telugu store listing and optional location permission (lane B), "Upcoming this week"
@@ -41,9 +43,9 @@ India. Offline, no ads, no tracking.
    (`core/profiles/observance/andhra-telangana.js`): Engili Pula Bathukamma on Bhadrapada Amavasya and
    Saddula Bathukamma on Ashwayuja Shukla Ashtami; Atla Tadde by moonrise, so it can fall a day apart
    (27 Oct in Dallas, 28 Oct in Hyderabad this year); every Ekadashi with its parana window (after Hari
-   Vasara, within the morning, before Dwadashi ends; `core/rules.js`); Vaikunta Ekadashi by Dhanurmasam;
-   శుద్ధ/బహుళ; the samvatsara changes at Ugadi. **Needs 2.0.0.** Say "follows Telugu practice", not
-   "verified": most of these rules have no reference fixture yet.
+   Vasara, in the morning where it can be, before Dwadashi ends; `core/rules.js`); Vaikunta Ekadashi
+   by Dhanurmasam; శుద్ధ/బహుళ; the samvatsara changes at Ugadi. **Needs 2.0.0.** Say "follows Telugu
+   practice", not "verified": most of these rules have no reference fixture yet.
 
 ## 2. Seasonal content calendar, Oct 2026 to Apr 2027
 
@@ -96,17 +98,19 @@ starts Sunday 14 Mar 2027.
 Posts go out three days before the earlier of the two city dates. Association newsletters need
 about four weeks' lead; send Template 1 when the version it describes is already published.
 Reddit gets two posts in the whole window (Sankranti and Ugadi) so it never reads as spam.
+"Needs" is what must be live on the store (or shipped by a lane) on the posting day; if it isn't,
+skip the post, or the part of it that needs it.
 
 | Post on | For | What to post | Where | Needs |
 |---|---|---|---|---|
-| Tue 6 Oct | Engili Pula Bathukamma (Dallas 9 Oct, Hyderabad 10 Oct); Navaratri from 11 Oct | Bathukamma's nine days, with Saddula Bathukamma on 18 Oct marked on the tab for your city. Template 3. | Bathukamma event pages of ATA, TAGDV and the Dallas and Bay Area associations; Telangana WhatsApp groups; Instagram creators | 2.0.0 published by 6 Oct; otherwise skip |
-| Thu 15 Oct | Saddula Bathukamma and Durgashtami 18 Oct, Mahanavami 19 Oct, Dasara 20 Oct | Dasara week at a glance; screenshot 01. | Association social pages, temple WhatsApp groups | Dasara: 1.2.0. Bathukamma: 2.0.0 |
+| Tue 6 Oct | Engili Pula Bathukamma (Dallas 9 Oct, Hyderabad 10 Oct); Navaratri from 11 Oct | Bathukamma's nine days, with Saddula Bathukamma on 18 Oct marked on the tab for your city. Template 3. | Bathukamma event pages of ATA, TAGDV and the Dallas and Bay Area associations; Telangana WhatsApp groups; Instagram creators | 2.0.0 |
+| Thu 15 Oct | Saddula Bathukamma and Durgashtami 18 Oct, Mahanavami 19 Oct, Dasara 20 Oct | Dasara week at a glance. No image: on the tab, festivals show only in the month grid (shot 3, blocked). | Association social pages, temple WhatsApp groups | Dasara: 1.2.0. Bathukamma: 2.0.0 |
 | Sat 24 Oct | Atla Tadde (Dallas 27 Oct, Hyderabad 28 Oct) | "Atla Tadde follows moonrise, so the day depends on where you live." The clearest city-specific example. | TANA and NATA social pages, Andhra WhatsApp groups, cooking creators | 2.0.0 |
-| Thu 29 Oct | Clocks fall back Sun 1 Nov | "Rahu Kalam moves an hour with the clocks; the tab already accounts for it." Screenshot 02. | US association pages and US temple WhatsApp groups only | 1.2.0 (Drik fixture covers 1 Nov in Dallas) |
+| Thu 29 Oct | Clocks fall back Sun 1 Nov | "Rahu Kalam moves an hour with the clocks; the tab already accounts for it." Image: screenshot 02 if 2.0.0 is live, otherwise the 1.2.0 store shot `chrome-store/assets/screenshots/02-dallas-full.png` or none. | US association pages and US temple WhatsApp groups only | 1.2.0 (Drik fixture covers 1 Nov in Dallas) |
 | Wed 4 Nov | Naraka Chaturdashi (Dallas 7 Nov, Hyderabad 8 Nov), Deepavali 8 Nov | Deepavali; note that the pre-dawn oil bath day differs by city this year. | All channels except Reddit | Deepavali: 1.2.0. The date split: 2.0.0, checked against Drik first |
 | Fri 6 Nov | Karthika masam (Mondays from 9 Nov in Dallas, 16 Nov in Hyderabad), Nagula Chavithi, Karthika Purnima | Every Karthika Somavaram marked for your city. | Shiva temple WhatsApp groups, creators doing Karthika vratam content | 2.0.0 |
 | Tue 17 Nov | Utthana Ekadashi (Dallas 20 Nov, Hyderabad 21 Nov) | Optional: parana time on the tab. | Temple WhatsApp groups | 2.0.0 |
-| Thu 17 Dec | Vaikunta Ekadashi 20 Dec, parana 21 Dec | Vaikunta Ekadashi with the next morning's parana window for your city. Tell people to check their own city: the engine puts it on 19 Dec for the Bay Area. | Venkateswara/Balaji temple WhatsApp groups and newsletters, creators | 2.0.0; check the Bay Area date against Drik first |
+| Thu 17 Dec | Vaikunta Ekadashi: 20 Dec with parana the morning of 21 Dec in India and every US preset except the West Coast; 19 Dec in the Bay Area and Seattle, with parana from 12:05 PM on 20 Dec | Vaikunta Ekadashi with the parana window for your city; tell people to check their own city on the tab. Say "next-morning parana on 21 Dec" only for the cities where it holds. | Venkateswara/Balaji temple WhatsApp groups and newsletters, creators | 2.0.0; check the Bay Area and Seattle date and parana against Drik first, and leave them out of the post if Drik differs |
 | Sun 10 Jan | Bhogi (Dallas 13 Jan, Hyderabad 14 Jan), Sankranti, Kanuma, Mukkanuma | "Sankranti 2027 is on 14 Jan in the US and 15 Jan in Hyderabad": the Sun enters Makara in the evening in India, which is still morning in the US. First Reddit post. | All channels; r/telugu (Template 4), r/ABCDesis (English) | 2.0.0; check the dates against Drik first. Share card (lane E) if shipped |
 | Mon 8 Feb | Vasanta Panchami 11 Feb, Ratha Saptami 13 Feb | Optional, short. | Creators | 1.2.0 |
 | Tue 2 Mar | Maha Shivaratri (Dallas 5 Mar, Hyderabad 6 Mar) | Shivaratri follows the midnight (nishita) rule, so the US night can be a day earlier. | Shiva temple WhatsApp groups, association pages | 2.0.0 |
@@ -120,7 +124,7 @@ sankalpam reads ప్లవంగ from 7 Apr (screenshot 04).
 
 | Date | Step |
 |---|---|
-| By Sat 20 Feb | Printable month (lane F) published; rating prompt (lane E) live since Sankranti. |
+| By Sat 20 Feb | Printable month (lane F) published (submitted by Sat 13 Feb); rating prompt (lane E) live since Sankranti. |
 | Mon 8 Mar | Template 1 to TANA, ATA, NATA, TAGDV and local association newsletter editors for April issues. Template 2 to US temple admins, with the April 2027 page printed for their city (Ugadi 7 Apr, Sri Rama Navami 14 Apr in Dallas, 15 Apr in Hyderabad). |
 | Wed 24 Mar | Template 5 to creators, with the §2.1 table. |
 | Sun 4 Apr | Main push: Template 3 to WhatsApp groups, Template 4 to r/telugu, an English version to r/ABCDesis, association social posts. Message: the new samvatsara Plavanga starts on 7 Apr and the tab's sankalpam already says it. |
@@ -288,14 +292,16 @@ paragraph stays word for word.
 | Paragraph 1, timings sentence | …plus the day's Rahu Kalam (రాహు కాలం), Yamagandam and Gulika Kalam — the timings people check before starting anything important. | …plus the day's Rahu Kalam (రాహు కాలం), Yamagandam, Gulika Kalam, Durmuhurtham and Varjyam — the timings people check before starting anything important. Tithi and nakshatra end times run to the next sunrise, as in a printed Telugu panchangam. |
 | New sentence after paragraph 2 | — | Festivals and vratas follow Telugu household practice, from Bathukamma and Atla Tadde to every Ekadashi, which comes with the time to break the fast. |
 | Rasi Phalalu bullet | Daily Rasi Phalalu (రాశి ఫలాలు) for all 12 rasis, presented as a daily reading, not a prediction. | Daily Rasi Phalalu (రాశి ఫలాలు) for all 12 rasis, following the Moon's transit so the reading changes every couple of days; presented as a daily reading, not a prediction. |
-| Sankalpam bullet | A Vedic Sankalpam (సంకల్పం) generated automatically with the correct Samvatsara, Ayana, Ritu, and Masa for your pooja. | A Vedic Sankalpam (సంకల్పం) generated automatically with the correct Samvatsara, Ayana, Ritu and Masa for your pooja, and a place line that suits your city, in India or the Americas. |
+| Sankalpam bullet | A Vedic Sankalpam (సంకల్పం) generated automatically with the correct Samvatsara, Ayana, Ritu and Masa for your pooja. | A Vedic Sankalpam (సంకల్పం) generated automatically with the correct Samvatsara, Ayana, Ritu and Masa for your pooja, and a place line that suits your city, in India or the Americas. |
 
 Telugu section, same edits:
 
 - Timings sentence, add: దుర్ముహూర్తం, వర్జ్యం; then: తిథి, నక్షత్రాల ముగింపు సమయాలు మరుసటి సూర్యోదయం వరకు, ముద్రించిన తెలుగు పంచాంగంలో లాగానే ఉంటాయి.
 - New sentence: బతుకమ్మ, అట్లతద్దె నుంచి ప్రతి ఏకాదశి వరకు పండుగలు, వ్రతాలు మన తెలుగు ఇళ్లలో పాటించే పద్ధతిలోనే ఉంటాయి; ఏకాదశికి ఉపవాసం విరమించే పారణ సమయం కూడా ఉంటుంది.
 - Rasi Phalalu bullet: పన్నెండు రాశులకూ రోజువారీ రాశి ఫలాలు, చంద్ర గోచారాన్ని బట్టి ప్రతి రెండు మూడు రోజులకు మారుతాయి. ఇది ఒక రోజువారీ పఠనం మాత్రమే, భవిష్యవాణి కాదు.
-- Sankalpam bullet: సరైన సంవత్సరం, ఆయనం, ఋతువు, మాసంతో పాటు మీ నగరానికి తగిన దేశ వర్ణనతో (భారతదేశం లేదా అమెరికా) స్వయంచాలకంగా తయారయ్యే సంకల్పం.
+- Sankalpam bullet: సరైన సంవత్సరం, అయనం, ఋతువు, మాసంతో పాటు మీ నగరానికి తగిన దేశ వర్ణనతో (భారతదేశం లేదా అమెరికా) స్వయంచాలకంగా తయారయ్యే సంకల్పం.
+  This also corrects a misspelling in the approved copy, which has ఆయనం with a long ఆ (ఆయన means "he");
+  the word is అయనం, as in ఉత్తరాయణం.
 
 For lane B: the manifest description starts "Premium offline Telugu Calendar…". "Premium" reads as a paid
 tier, which the extension doesn't have. Suggested for `_locales/en`: "Offline Telugu Panchangam, Rasi
@@ -305,20 +311,23 @@ Phalalu and Sankalpam on your new tab, computed for your own city."
 
 `node docs/marketing/tools/screenshots.mjs` loads the unpacked extension in headless Chromium, sets each
 scene's state in `chrome.storage.local`, freezes the page clock at the city's local time (so "today" is
-the festival day), and writes `docs/marketing/screenshots/`. It refuses to write a shot whose month grid
-is clipped and exits non-zero on any page or console error. One capture-only override: the city and
-rasi `<select>`s get the page's Telugu font, because headless Linux has no system Telugu font (see §7).
+the scene's date), and writes `docs/marketing/screenshots/`. It refuses to write a shot whose month
+grid is clipped or whose clock card overflows, and exits non-zero on any page or console error. One
+capture-only override: the city and rasi `<select>`s get the page's Telugu font, because headless Linux
+has no system Telugu font (see §7). Festivals show only in the month grid, so of these shots only 3
+(the month) and 4 (the new samvatsara on Ugadi) show one; don't caption the others as festival scenes.
 
 | # | File | State (language, city, local time, theme, view) | Shows | Caption (en / te) | Status |
 |---|---|---|---|---|---|
-| 1 | `01-today-telugu-hyderabad.png` | te, Hyderabad, Sun 18 Oct 2026 07:30 (Saddula Bathukamma), light, top | Clock, శుద్ధ సప్తమి then అష్టమి, nakshatra pada, timings | Today's panchangam, in Telugu / ఈరోజు పంచాంగం, తెలుగులో | Committed |
-| 2 | `02-dallas-rahu-kalam.png` | en, Dallas, Sun 8 Nov 2026 16:20 (Deepavali), light, top | Rahu Kalam 4:10–5:30 PM (matches Drik), cursor inside it | Built for US cities: Rahu Kalam for Dallas, daylight saving included / అమెరికా నగరాలకూ: డల్లాసు రాహుకాలం, డేలైట్ సేవింగ్ మార్పులతో సహా | Committed |
+| 1 | `01-today-telugu-hyderabad.png` | te, Hyderabad, Sun 18 Oct 2026 07:30, light, top | Clock, శుద్ధ సప్తమి then అష్టమి, nakshatra pada, timings | Today's panchangam, in Telugu / ఈరోజు పంచాంగం, తెలుగులో | **Blocked**: the Telugu clock card overflows (§7) |
+| 2 | `02-dallas-rahu-kalam.png` | en, Dallas, Sun 8 Nov 2026 17:11, light, top | Rahu Kalam 4:10–5:30 PM (matches Drik), cursor inside it | Built for US cities: Rahu Kalam for Dallas, daylight saving included / అమెరికా నగరాలకూ: డల్లాసు రాహుకాలం, డేలైట్ సేవింగ్ మార్పులతో సహా | Committed; 17:11 keeps the clock clear of the sunrise label (§7) |
 | 3 | `03-festival-month.png` | te, Hyderabad, Tue 20 Oct 2026 10:00 (Vijayadashami), light, month grid | October: Navaratri, Durgashtami, Dasara, Atla Tadde | The month at a glance, with festivals and vratas / పండుగలు, వ్రతాలతో నెల పట్టిక | **Blocked**: the month grid is clipped (§7) |
 | 4 | `04-sankalpam-dallas-ugadi.png` | te, Dallas, Wed 7 Apr 2027 07:45 (Ugadi), light, sankalpam card at the bottom | The new year (ప్లవంగ నామ సంవత్సరే, చైత్ర మాసే) and the US place line | A daily sankalpam with a place line for the US, here on Ugadi / అమెరికాకు తగిన దేశ వర్ణనతో రోజువారీ సంకల్పం, ఉగాది నాడు | Committed |
-| 5 | `05-gita-verse.png` | en, New York / Edison NJ, Sun 20 Dec 2026 06:30 (Vaikunta Ekadashi), dark, Gita card at the bottom | Gita 12.10 in Sanskrit, transliteration and English; dark theme | A Bhagavad Gita verse every day / ప్రతిరోజూ ఒక భగవద్గీత శ్లోకం | Committed |
+| 5 | `05-gita-verse.png` | en, New York / Edison NJ, Sun 20 Dec 2026 06:30, dark, Gita card at the bottom | Gita 12.10 in Sanskrit, transliteration and English; dark theme | A Bhagavad Gita verse every day / ప్రతిరోజూ ఒక భగవద్గీత శ్లోకం | Committed |
 
-The store keeps its current five screenshots until shot 3 can be captured and the owner approves the
-set; then copy the five into `chrome-store/assets/screenshots/` and update `store.config.json`.
+The store keeps its current five screenshots until 2.0.0 is live, shots 1 and 3 can be captured and
+the owner approves the set; then copy the five into `chrome-store/assets/screenshots/` and update
+`store.config.json`.
 
 ## 6. Metrics (CWS Developer Dashboard only)
 
@@ -330,16 +339,16 @@ release notes or an issue.
 | Weekly users | The trend line. Record the baseline on Mon 5 Oct 2026. | The plan sets no number. A push that doesn't lift weekly users within a week: drop that channel next time. |
 | Installs by region | US against India share shows whether the US-city message lands. | Watch after the 29 Oct, 10 Jan and 4 Apr posts, which target US readers. |
 | Uninstalls by region | Weekly uninstalls divided by weekly installs. | A jump after a release or a push: look at the "Change back to Google?" bubble first (§5.1, lane D's day-one note). |
-| Ratings | Average and count. | **≥ 4.5★ with 50+ reviews before Ugadi (by Tue 6 Apr 2027)**, per §5.4. Proposed checkpoints on a straight line: 20 by Mon 18 Jan, 35 by Mon 8 Mar. |
+| Ratings | Average and count. | **≥ 4.5★ with 50+ reviews before Ugadi (by Tue 6 Apr 2027)**, per §5.4. Proposed checkpoints: 20 by Mon 18 Jan, then on a straight line to the target, 39 by Mon 8 Mar. |
 
 Milestones from §5.4, with a submission date that leaves a week for CWS review (1.2.0 needed a
 resubmission after its rejection):
 
 | Before | Date | Must be live | Submit by |
 |---|---|---|---|
-| Deepavali 2026 | Sun 8 Nov (Naraka Chaturdashi Sat 7 Nov in Dallas) | 2.0.0 (carries the P0 fixes planned for 1.2.1); Telugu store listing (lane B) | Thu 29 Oct |
+| Deepavali 2026 | Sun 8 Nov (Naraka Chaturdashi Sat 7 Nov in Dallas) | 2.0.0 (carries the P0 fixes planned for 1.2.1); Telugu store listing (lane B). Live by Sat 24 Oct for the Atla Tadde post (§2.2) | Thu 15 Oct |
 | Sankranti 2027 | Wed 13 Jan (Bhogi in the US) | Onboarding (D), optional location permission (B), share card (E); the Moon-based horoscope is already in 2.0.0 | Mon 4 Jan |
-| Ugadi 2027 | Wed 7 Apr | Printable month (F); temple and association outreach sent (8 Mar); ratings target | Sat 20 Feb (lane F) |
+| Ugadi 2027 | Wed 7 Apr | Printable month (F), live by Sat 20 Feb (§2.3); temple and association outreach sent (8 Mar); ratings target | Sat 13 Feb (lane F) |
 
 Reviews: Mon 9 Nov (Deepavali), Mon 18 Jan (Sankranti), Mon 12 Apr (Ugadi).
 
@@ -352,13 +361,23 @@ For the owning lanes; none is fixed here.
   in English while the card is at most 860px wide. In the three-column layout (windows wider than
   1200px) the right-hand columns are always cut off; at 1280px only Sunday to Wednesday show.
   `repeat(7, minmax(0, 1fr))` should fix it. Blocks shot 3.
+- **Clock card overflows (lane C, user-visible).** In the three-column layout the clock's column grows
+  to fit the clock, and the sun-arc row (two labels around the 180px arc) needs 278px in Telugu and
+  263px in English but gets 229px and 241px. Centred, it spills both ways: wide digits such as 07:30:00
+  run into the సూర్యోదయం label, and in Telugu the సూర్యాస్తమయం label runs 16–24px past the card and is
+  cut off (the live store's `01-hyderabad-full.png` shows it too). Letting the arc shrink to fit should
+  fix it. Blocks shot 1; shot 2 is taken at 17:11 so its clock clears the label.
 - **City and rasi selects use the default font (lane C).** They have no `font-family`, unlike the
   reminders select, so their Telugu falls back to whatever the OS has.
 - **Clock shows Hyderabad time for up to a second (lane C).** `setupClock()` runs before the saved city
   loads.
-- **Parana past the morning (lane A).** Bhishma Ekadashi 2027 in Dallas: Hari Vasara ends 11:16 AM, so
-  the window runs from 11:16 AM until Dwadashi ends at 2:58 AM the next night. Check the display and
-  the rule against Drik.
-- **Kshaya Ekadashi (lane A).** Vaikunta Ekadashi 2026 lands on 19 Dec for the Bay Area (Ekadashi holds
-  at no sunrise there), against 20 Dec for Dallas, Edison and Hyderabad. Confirm which day Telugu
-  practice keeps.
+- **Parana past the morning (lane A).** When Hari Vasara outlasts the morning, `core/rules.js` runs the
+  window on until Dwadashi ends. Bhishma Ekadashi 2027 in Dallas: 11:16 AM on 17 Feb to 2:58 AM the
+  next night (the same shape, in local time, in every US preset but New York, Boston, Raleigh and
+  Seattle). In Seattle the window is 13 seconds long (9:16:11 to 9:16:24 AM), because the morning ends
+  just after Hari Vasara does. Vaikunta Ekadashi 2026 in the Bay Area and Seattle: 12:05 PM on 20 Dec
+  to 4:06 AM on 21 Dec. Utthana Ekadashi 2026 in Delhi: 12:08 PM on 21 Nov to 4:56 AM on 22 Nov. Check
+  the display and the rule against Drik.
+- **Kshaya Ekadashi (lane A).** Vaikunta Ekadashi 2026 lands on 19 Dec for the Bay Area and Seattle
+  (Ekadashi runs 8:39 AM on 19 Dec to 6:44 AM on 20 Dec Pacific time, so it holds at no sunrise
+  there), against 20 Dec for every other preset. Confirm which day Telugu practice keeps.

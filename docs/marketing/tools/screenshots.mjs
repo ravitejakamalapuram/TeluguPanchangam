@@ -21,11 +21,12 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
 const OUT = join(ROOT, 'docs/marketing/screenshots');
 
 // Each scene: UI language, city preset id (cities.js), the city's local date and time the page
-// is frozen at (so "today" is the festival day), theme, and the section scrolled into view with
-// where it lands ('start' or 'end'). No section means the top of the page.
+// is frozen at (so "today" is the scene's date), theme, and the section scrolled into view with
+// where it lands ('start' or 'end'). No section means the top of the page. Shot 02's time has
+// narrow digits so the clock clears the sunrise label (launch kit §7).
 const SCENES = [
   { file: '01-today-telugu-hyderabad.png', lang: 'te', city: 'hyderabad', at: '2026-10-18 07:30', theme: 'light' },
-  { file: '02-dallas-rahu-kalam.png', lang: 'en', city: 'dallas', at: '2026-11-08 16:20', theme: 'light' },
+  { file: '02-dallas-rahu-kalam.png', lang: 'en', city: 'dallas', at: '2026-11-08 17:11', theme: 'light' },
   { file: '03-festival-month.png', lang: 'te', city: 'hyderabad', at: '2026-10-20 10:00', theme: 'light', section: '.calendar-card', block: 'start' },
   { file: '04-sankalpam-dallas-ugadi.png', lang: 'te', city: 'dallas', at: '2027-04-07 07:45', theme: 'light', section: '.sankalpam-card', block: 'end' },
   { file: '05-gita-verse.png', lang: 'en', city: 'newyork', at: '2026-12-20 06:30', theme: 'dark', section: '.gita-card', block: 'end' }
@@ -79,12 +80,25 @@ for (const s of SCENES) {
     : window.scrollTo(0, 0)), { section: s.section, block: s.block });
   await page.waitForTimeout(500);
 
-  // Only write shots that render correctly: a month grid in view must fit inside its card.
+  // Only write shots that render correctly: a month grid in view must fit inside its card, and a
+  // clock card in view must keep the clock clear of the sunrise label and the sunset label inside it.
   const clipped = await page.evaluate(() => {
+    const inView = (el) => { const r = el.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0; };
     const grid = document.querySelector('.calendar-grid-container');
-    const r = grid.getBoundingClientRect();
-    return r.top < innerHeight && r.bottom > 0 && grid.scrollWidth > grid.clientWidth
-      ? `month grid needs ${grid.scrollWidth}px but its card gives ${grid.clientWidth}px` : null;
+    if (inView(grid) && grid.scrollWidth > grid.clientWidth) {
+      return `month grid needs ${grid.scrollWidth}px but its card gives ${grid.clientWidth}px`;
+    }
+    const hero = document.querySelector('.hero-card');
+    if (!inView(hero)) return null;
+    const digits = document.createRange();
+    digits.selectNodeContents(document.getElementById('clock'));
+    const clock = digits.getBoundingClientRect();
+    const rise = document.querySelector('.arc-label-left').getBoundingClientRect();
+    const set = document.querySelector('.arc-label-right').getBoundingClientRect();
+    const card = hero.getBoundingClientRect();
+    if (clock.right > rise.left) return `clock runs ${Math.ceil(clock.right - rise.left)}px into the sunrise label`;
+    if (set.right > card.right) return `sunset label runs ${Math.ceil(set.right - card.right)}px past its card`;
+    return null;
   });
   if (clipped) {
     skipped.push(`${s.file} not written: ${clipped}`);

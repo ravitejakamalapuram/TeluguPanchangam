@@ -22,6 +22,7 @@ name(day.panchanga.tithi.id, 'te'); // "నవమి"
 | Timings | `timings.js` | Rahu/Yama/Gulika, Durmuhurtham, Abhijit, Brahma muhurta, Varjyam, Amrita kalam. |
 | Observances | `rules.js` | Which civil day a festival/vrata falls on, Ekadashi parana; every result has a trace. |
 | Presentation | `i18n.js` | Telugu/English names by canonical ID. |
+| Sankalpam | `sankalpam.js` | Daily Sankalpam text (Sanskrit and plain Telugu) from a day's IDs, with a location-based desha line. |
 
 ## Profiles
 

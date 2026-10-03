@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>నెల పంచాంగం (Monthly Panchangam)</title>
+  <link rel="stylesheet" href="print.css">
+</head>
+<body>
+  <header class="sheet-header">
+    <h1 id="print-title">నెల పంచాంగం</h1>
+    <button id="btn-print" type="button" class="no-print">ముద్రించు (Print)</button>
+  </header>
+  <dl id="print-meta" class="sheet-meta"></dl>
+
+  <table class="month-table">
+    <thead id="print-head"></thead>
+    <tbody id="print-rows"></tbody>
+  </table>
+
+  <!-- Same classic scripts, in the same order, as newtab.html -->
+  <script src="storage-shim.js"></script>
+  <script src="i18n.js"></script>
+  <script src="lib/astronomy.js"></script>
+  <script src="lib/tz.js"></script>
+  <script src="cities.js"></script>
+  <script type="module" src="print.js"></script>
+</body>
+</html>

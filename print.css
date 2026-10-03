@@ -1,0 +1,124 @@
+/**
+ * print.css
+ * Printable monthly panchangam (print.html): black on white, A4 landscape, one row per day.
+ */
+
+/* Vendored Noto Sans Telugu (SIL OFL), as in newtab.css; one variable file per subset. */
+@font-face {
+  font-family: 'Noto Sans Telugu';
+  font-weight: 400 700;
+  src: url(fonts/noto-sans-telugu-telugu.woff2) format('woff2');
+  unicode-range: U+0951-0952, U+0964-0965, U+0C00-0C7F, U+1CDA, U+1CF2, U+200C-200D, U+25CC;
+}
+@font-face {
+  font-family: 'Noto Sans Telugu';
+  font-weight: 400 700;
+  src: url(fonts/noto-sans-telugu-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@page {
+  size: A4 landscape;
+  margin: 10mm;
+}
+
+body {
+  margin: 24px;
+  background: #fff;
+  color: #000;
+  font-family: 'Noto Sans Telugu', sans-serif;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+#btn-print {
+  font: inherit;
+  font-weight: 700;
+  padding: 6px 18px;
+  border: 1px solid #000;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.sheet-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 24px;
+  margin: 6px 0 10px;
+}
+.sheet-meta div {
+  display: flex;
+  gap: 6px;
+}
+.sheet-meta dt {
+  font-weight: 700;
+}
+.sheet-meta dt::after {
+  content: ':';
+}
+.sheet-meta dd {
+  margin: 0;
+}
+
+.month-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.month-table th,
+.month-table td {
+  border: 1px solid #555;
+  padding: 3px 5px;
+  text-align: left;
+  vertical-align: top;
+  white-space: pre-line; /* multi-entry cells are newline-separated text */
+}
+.month-table th {
+  background: #eee;
+}
+.month-table td:first-child {
+  font-weight: 700;
+  text-align: center;
+}
+/* Sunrise through Varjyam: keep each time or window on one line, so only the name columns wrap. */
+.month-table td:nth-child(n+6):nth-child(-n+10) {
+  white-space: pre;
+}
+.month-table tr.festival td:last-child {
+  font-weight: 700;
+}
+
+@media print {
+  body {
+    margin: 0;
+    font-size: 8.5pt;
+    line-height: 1.25;
+  }
+  .month-table th,
+  .month-table td {
+    padding: 2px 4px;
+  }
+  .no-print {
+    display: none;
+  }
+  .month-table th {
+    background: none;
+  }
+  /* Repeat the column headings on every page and never split a day across pages. */
+  .month-table thead {
+    display: table-header-group;
+  }
+  .month-table tr {
+    break-inside: avoid;
+  }
+}

@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/ravitejakamalapuram/release-platform/main/schema/release.schema.json
 # Release contract for ravitejakamalapuram/release-platform@v2 (keyless Chrome Web Store publishing).
-# The repo root is the extension; `include` is an allowlist (the scripts newtab.html loads,
-# plus icons) so store assets, docs and package files never ship.
+# The repo root is the extension; `include` is an allowlist (newtab.html, print.html, the scripts
+# they load, plus icons) so store assets, docs and package files never ship.
 app: telugupanchangam
 test: npm test
 targets:
@@ -15,6 +15,9 @@ targets:
       - newtab.html
       - newtab.css
       - newtab.js
+      - print.html
+      - print.css
+      - print.js
       - storage-shim.js
       - i18n.js
       - cities.js

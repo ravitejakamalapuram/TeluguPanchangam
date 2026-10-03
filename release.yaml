@@ -38,6 +38,8 @@ targets:
       - core/profiles
       - ui/time-format.js
       - ui/onboarding.js
+      - ui/share-card.js
+      - ui/rating.js
       - lib/astronomy.js
       - lib/tz.js
       - icons

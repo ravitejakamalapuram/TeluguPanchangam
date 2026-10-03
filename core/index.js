@@ -94,6 +94,7 @@ export function createEngine({ Astronomy, calculation, regional, observance } = 
 
     const rules = createRuleEngine({
       basics, tithiSpansNear, astro, observance: profiles.observance,
+      nakshatraSpans: (from, to) => spansBetween(el.nakshatra, from, to),
       localDateOf: (i) => localDateOf(i, loc.timezone),
       masaAt: masaCached,
       signAt: (i) => RASI[Math.floor(astro.siderealSun(i) / 30) % 12]

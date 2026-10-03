@@ -5,7 +5,7 @@
 
 import { createEngine } from './core/index.js';
 import { name as coreName } from './core/i18n.js';
-import { TITHI, MASA } from './core/ids.js';
+import { TITHI, MASA, NAKSHATRA } from './core/ids.js';
 import { generateSankalpam } from './core/sankalpam.js';
 import { dailyHoroscope } from './core/horoscope.js';
 import { horoscopeText } from './core/horoscope-text.js';
@@ -464,7 +464,19 @@ import { formatClock } from './ui/time-format.js';
 
     // Moon sign through the day, and the Sun's sign and karte (its sidereal nakshatra).
     elPanchangMoon.textContent = formatTransitionText(p.chandraRasi.spans, window.I18N.t('rasiNoun'));
-    elPanchangSun.textContent = `${withNoun(p.suryaRasi.id, window.I18N.t('rasiNoun'))}, ${withNoun(p.karte.id, window.I18N.t('karteNoun'))}`;
+    // Both ids are sampled at sunrise, so on a sankranti or karte-change day name the change and its time.
+    // karte.end is null unless the change falls within the engine's ~32h edge search.
+    const rasiNoun = window.I18N.t('rasiNoun');
+    const karteNoun = window.I18N.t('karteNoun');
+    const karteEnds = p.karte.end && p.karte.end < activePanchang.astronomy.nextSunrise;
+    const sun = cal.sankranti
+      ? formatTransitionText([{ id: p.suryaRasi.id, end: cal.sankranti.instant }, { id: cal.sankranti.rasi }], rasiNoun)
+      : withNoun(p.suryaRasi.id, rasiNoun);
+    const karte = karteEnds
+      ? formatTransitionText([{ id: p.karte.id, end: p.karte.end }, { id: NAKSHATRA[(p.karte.index + 1) % 27] }], karteNoun)
+      : withNoun(p.karte.id, karteNoun);
+    // A semicolon keeps "..., then Makara" from running into the karte.
+    elPanchangSun.textContent = `${sun}${cal.sankranti || karteEnds ? ';' : ','} ${karte}`;
 
     // 4. Inauspicious / Auspicious Timings
     elTimeRahu.textContent = formatWindow(tm.rahuKalam);
@@ -700,8 +712,10 @@ import { formatClock } from './ui/time-format.js';
   const traceReason = (ev) => (ev.trace.reason || '').replace(/\b[A-Z]+_[A-Z_]+\b/g, (id) => coreName(id, 'en'));
 
   // "Upcoming this week": festivals and vratas from today through the next six days in the selected city.
-  // A vrata on the same tithi as a festival that day (Ekadashi on Vaikunta Ekadashi) is folded into the
-  // festival, keeping its Ekadashi parana (next morning's fast-breaking window).
+  // A generic tithi vrata (Ekadashi, Purnima, Amavasya) on the same tithi as a festival that day
+  // (Ekadashi on Vaikunta Ekadashi) is folded into the festival, keeping its Ekadashi parana (next
+  // morning's fast-breaking window). Pradosham, Sankashti and Masa Shivaratri always stay listed.
+  const GENERIC_VRATA = /^VRATA_(SHUKLA_|KRISHNA_)?(EKADASHI|PURNIMA|AMAVASYA)$/;
   function renderUpcoming() {
     const items = [];
     const today = cityToday();
@@ -710,7 +724,8 @@ import { formatClock } from './ui/time-format.js';
       const events = dayFor(date).events;
       const fests = events.filter((e) => e.id.startsWith('FESTIVAL_'));
       const vratas = events.filter((e) => e.id.startsWith('VRATA_'));
-      const shown = [...fests, ...vratas.filter((v) => !fests.some((f) => f.trace.tithi === v.trace.tithi))];
+      const folded = (v) => GENERIC_VRATA.test(v.id) && fests.some((f) => f.trace.tithi === v.trace.tithi);
+      const shown = [...fests, ...vratas.filter((v) => !folded(v))];
       shown.forEach((ev) => {
         const twin = vratas.find((v) => v.parana && v.trace.tithi === ev.trace.tithi);
         items.push({ date, id: ev.id, parana: ev.parana || (twin && twin.parana) });

@@ -16,13 +16,15 @@ name(day.panchanga.tithi.id, 'te'); // "నవమి"
 
 | Layer | File | Decides |
 |---|---|---|
-| Astronomy | `astronomy.js` | Sun/Moon longitudes, ayanamsa, rise/set, new moons. The only file that touches the ephemeris. |
+| Astronomy | `astronomy.js` | Sun/Moon/planet longitudes, ayanamsa, rise/set, new moons, local eclipse visibility. The only file that touches the ephemeris. |
 | Panchanga | `panchanga.js` | Tithi, nakshatra, yoga, karana, rasi spans with exact start/end. |
 | Calendar | `calendar.js` | Amanta masa (adhika/kshaya), samvatsara, ritu, ayana, sankranti. |
 | Timings | `timings.js` | Rahu/Yama/Gulika, Durmuhurtham, Abhijit, Brahma muhurta, Varjyam, Amrita kalam. |
 | Observances | `rules.js` | Which civil day a festival/vrata falls on, Ekadashi parana; every result has a trace. |
+| Horoscope | `horoscope.js` | Daily gochara from the janma rasi: transit houses, chandra/tara balam, Saturn phases, 1–5 score with basis. |
 | Presentation | `i18n.js` | Telugu/English names by canonical ID. |
 | Sankalpam | `sankalpam.js` | Daily Sankalpam text (Sanskrit and plain Telugu) from a day's IDs, with a location-based desha line. |
+| Presentation | `horoscope-text.js` | Telugu/English Rasi Phalalu text for a `dailyHoroscope()` result. |
 
 ## Profiles
 

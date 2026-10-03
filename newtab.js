@@ -395,12 +395,11 @@ import { horoscopeText } from './core/horoscope-text.js';
 
   // Sankalpam names the tithi/nakshatra current when it is recited: "now" for today, sunrise otherwise.
   function sankalpamFor(day) {
-    if (!isSameDay(selectedDate, cityToday())) return generateSankalpam(day);
+    const lang = window.I18N.getLang();
+    if (!isSameDay(selectedDate, cityToday())) return generateSankalpam(day, { lang });
     const now = new Date();
-    return generateSankalpam(day, {
-      tithiId: engine.elementAt('tithi', now).id,
-      nakshatraId: engine.elementAt('nakshatra', now).id
-    });
+    const at = (el) => engine.elementAt(el, now).id;
+    return generateSankalpam(day, { lang, tithiId: at('tithi'), nakshatraId: at('nakshatra'), yogaId: at('yoga'), karanaId: at('karana') });
   }
 
   // Update Main Dashboard UI Cards

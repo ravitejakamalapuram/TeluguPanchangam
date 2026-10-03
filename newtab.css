@@ -958,6 +958,10 @@ input:checked + .slider:before {
   color: #fff;
   border-color: var(--accent-secondary);
 }
+.calendar-print-btn {
+  display: block;
+  margin: 16px auto 0;
+}
 
 .calendar-grid-container {
   display: grid;

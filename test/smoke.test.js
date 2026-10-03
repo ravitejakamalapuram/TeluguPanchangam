@@ -54,39 +54,45 @@ runInSandbox(sandbox, 'lib/tz.js');
 
 const I18N = sandbox.window.I18N;
 
-// --- release.yaml must ship every script newtab.html loads, and every module those import (blocker 1) ---
+// --- release.yaml must ship every page, every script/stylesheet a page loads, and every module those import (blocker 1) ---
 function releaseIncludes() {
   const includeBlock = readFile('release.yaml').match(/include:\n([\s\S]*)/)[1];
   return [...includeBlock.matchAll(/^\s*-\s*(\S+)/gm)].map((m) => m[1]);
 }
 const shipped = (file, includes) => includes.some((inc) => file === inc || file.startsWith(inc + '/'));
 
-check('every <script src> in newtab.html is in release.yaml\'s include list', () => {
-  const html = readFile('newtab.html');
-  const scriptSrcs = [...html.matchAll(/<script\b[^>]*\ssrc="([^"]+)"/g)].map((m) => m[1]);
-  assert.ok(scriptSrcs.length > 5, 'expected to find the page\'s <script> tags');
-  const includes = releaseIncludes();
-  for (const src of scriptSrcs) {
-    assert.ok(shipped(src, includes), `newtab.html loads "${src}" but release.yaml's include list does not ship it`);
-  }
-});
+// The extension's pages (the new tab and the printable month it opens) and their module scripts.
+const PAGES = { 'newtab.html': 'newtab.js', 'print.html': 'print.js' };
 
-check('every ES module newtab.js imports (transitively) is in release.yaml\'s include list', () => {
-  const includes = releaseIncludes();
-  const seen = new Set();
-  const visit = (file) => {
-    if (seen.has(file)) return;
-    seen.add(file);
-    for (const [, spec] of readFile(file).matchAll(/^\s*(?:import|export)\b[^'"]*?from\s+'([^']+)'/gm)) {
-      visit(path.posix.normalize(path.posix.join(path.posix.dirname(file), spec)));
+for (const [page, entry] of Object.entries(PAGES)) {
+  check(`${page}, and every <script src> and stylesheet it loads, is in release.yaml's include list`, () => {
+    const html = readFile(page);
+    const refs = [...html.matchAll(/<(?:script|link)\b[^>]*\s(?:src|href)="([^"]+)"/g)].map((m) => m[1]);
+    assert.ok(refs.includes(entry), `expected ${page} to load ${entry}`);
+    const includes = releaseIncludes();
+    assert.ok(shipped(page, includes), `release.yaml's include list does not ship ${page}`);
+    for (const ref of refs) {
+      assert.ok(shipped(ref, includes), `${page} loads "${ref}" but release.yaml's include list does not ship it`);
     }
-  };
-  visit('newtab.js');
-  seen.delete('newtab.js');
-  assert.ok(seen.size > 5, 'expected newtab.js to import the core modules');
-  const missing = [...seen].filter((f) => !shipped(f, includes));
-  assert.deepStrictEqual(missing, [], 'modules imported by newtab.js but not shipped');
-});
+  });
+
+  check(`every ES module ${entry} imports (transitively) is in release.yaml's include list`, () => {
+    const includes = releaseIncludes();
+    const seen = new Set();
+    const visit = (file) => {
+      if (seen.has(file)) return;
+      seen.add(file);
+      for (const [, spec] of readFile(file).matchAll(/^\s*(?:import|export)\b[^'"]*?from\s+'([^']+)'/gm)) {
+        visit(path.posix.normalize(path.posix.join(path.posix.dirname(file), spec)));
+      }
+    };
+    visit(entry);
+    seen.delete(entry);
+    assert.ok(seen.size > 5, `expected ${entry} to import the core modules`);
+    const missing = [...seen].filter((f) => !shipped(f, includes));
+    assert.deepStrictEqual(missing, [], `modules imported by ${entry} but not shipped`);
+  });
+}
 
 // --- te mode must reproduce the pre-toggle Telugu UI byte-for-byte on
 // every data-i18n-bi/-split-bi/-te surface (POR-63: "te output === main
@@ -240,10 +246,10 @@ check('no Telugu codepoints in any value="..." attribute in newtab.html', () => 
 // chrome.storage, and the new-tab page is an extension page, so stored markup
 // reaching innerHTML would run with access to the user's saved profile. Rather
 // than police which interpolations happen to be safe, the rule is flat: an
-// innerHTML assignment in newtab.js may only be a plain string literal (the
+// innerHTML assignment in a page script may only be a plain string literal (the
 // clear-the-container idiom); anything else has to be built as nodes.
-check('newtab.js assigns only literal strings to innerHTML', () => {
-  const src = readFile('newtab.js');
+check('newtab.js and print.js assign only literal strings to innerHTML', () => {
+  const src = ['newtab.js', 'print.js'].map(readFile).join('\n');
   const assignments = [...src.matchAll(/^.*\.innerHTML\s*=\s*(.*)$/gm)];
   assert.ok(assignments.length > 0, 'expected to find innerHTML assignments to check');
   const dynamic = assignments

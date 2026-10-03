@@ -753,6 +753,12 @@ import { horoscopeText } from './core/horoscope-text.js';
       renderMonthlyCalendar();
     });
 
+    // Printable panchangam for the month the calendar shows, in a new tab (no "tabs" permission needed).
+    document.getElementById('btn-print-month').addEventListener('click', () => {
+      const month = String(calendarViewDate.getMonth() + 1).padStart(2, '0');
+      window.open(`print.html?year=${calendarViewDate.getFullYear()}&month=${month}`, '_blank');
+    });
+
     // Rasi change
     elSelectRasi.addEventListener('change', async () => {
       userSettings.rasi = elSelectRasi.value;

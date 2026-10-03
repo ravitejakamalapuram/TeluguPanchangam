@@ -5,11 +5,12 @@
 
 import { createEngine } from './core/index.js';
 import { name as coreName } from './core/i18n.js';
-import { TITHI, MASA } from './core/ids.js';
+import { TITHI, MASA, NAKSHATRA } from './core/ids.js';
 import { generateSankalpam } from './core/sankalpam.js';
 import { dailyHoroscope } from './core/horoscope.js';
 import { horoscopeText } from './core/horoscope-text.js';
 import { birthDetails, isTeluguBirthday } from './core/birth.js';
+import { formatClock } from './ui/time-format.js';
 
 (function () {
   'use strict';
@@ -36,6 +37,10 @@ import { birthDetails, isTeluguBirthday } from './core/birth.js';
   const elPanchangYogaTime = document.getElementById('panchang-yoga-time');
   const elPanchangKarana = document.getElementById('panchang-karana');
   const elPanchangKaranaTime = document.getElementById('panchang-karana-time');
+  const elPanchangMoon = document.getElementById('panchang-moon');
+  const elPanchangSun = document.getElementById('panchang-sun');
+  const elUpcomingCard = document.getElementById('upcoming-card');
+  const elUpcomingList = document.getElementById('upcoming-list');
   const elSankalpamTxt = document.getElementById('sankalpam-txt');
   
   // Timings
@@ -89,6 +94,7 @@ import { birthDetails, isTeluguBirthday } from './core/birth.js';
   const elSetName = document.getElementById('set-name');
   const elSetDob = document.getElementById('set-dob');
   const elSetTob = document.getElementById('set-tob');
+  const elSetReference = document.getElementById('set-reference');
 
   // Global State
   const DEFAULT_PROFILE_NAME = 'యజమాని'; // placeholder meaning "Owner" until the user sets a real name
@@ -142,6 +148,7 @@ import { birthDetails, isTeluguBirthday } from './core/birth.js';
     populateCitySelect();
     setupClock();
     await loadSettings();
+    loadReference();
     await loadCityPreference();
     selectedDate = cityToday();
     calendarViewDate = new Date(selectedDate);
@@ -216,6 +223,14 @@ import { birthDetails, isTeluguBirthday } from './core/birth.js';
         }
         resolve();
       });
+    });
+  }
+
+  // ADR 0002 "Panchangam reference". Only the choice is stored for now: Drik (Telugu) is the one
+  // profile, so results don't depend on it yet. Kept apart from userSettings so it saves on change.
+  function loadReference() {
+    chrome.storage.local.get(['panchangReference'], (r) => {
+      if (r.panchangReference) elSetReference.value = r.panchangReference;
     });
   }
 
@@ -334,10 +349,9 @@ import { birthDetails, isTeluguBirthday } from './core/birth.js';
     );
   }
 
-  // Format times as HH:MM AM/PM
+  // Clock time in the selected city: "రా. 10:42" in Telugu, "10:42 PM" in English.
   function formatTime(date) {
-    if (!date) return "--:--";
-    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: currentCity.timeZone });
+    return formatClock(date, currentCity.timeZone, window.I18N.getLang());
   }
 
   // A bold label followed by its body text, as nodes rather than an HTML
@@ -379,14 +393,19 @@ import { birthDetails, isTeluguBirthday } from './core/birth.js';
   // Format transition times for calendar display
   // "<name> until <time>, then <next>" across the Hindu day (sunrise to next sunrise).
   // Times after midnight get a "+1" so a 2 AM end isn't read as this morning.
-  function formatTransitionText(spans) {
-    const first = spans[0];
-    if (spans.length === 1) return `${nm(first.id)} ${window.I18N.t('allDaySuffix')}`;
-    const ends = formatTimeOnDay(first.end);
+  // `noun` follows the first name ("మిథున రాశి"); see withNoun.
+  function formatTransitionText(spans, noun = '') {
+    const first = withNoun(spans[0].id, noun);
+    if (spans.length === 1) return `${first} ${window.I18N.t('allDaySuffix')}`;
+    const ends = formatTimeOnDay(spans[0].end);
     return window.I18N.getLang() === 'en'
-      ? `${nm(first.id)} until ${ends}, then ${nm(spans[1].id)}`
-      : `${nm(first.id)} ${ends} వరకు, ఆపై ${nm(spans[1].id)}`;
+      ? `${first} until ${ends}, then ${nm(spans[1].id)}`
+      : `${first} ${ends} వరకు, ఆపై ${nm(spans[1].id)}`;
   }
+
+  // A name with a following noun, e.g. "మిథునం" + "రాశి" -> "మిథున రాశి", "శ్రవణం" + "కార్తె" -> "శ్రవణ కార్తె":
+  // in a Telugu compound the first word drops its final anusvara. No noun leaves the name as is.
+  const withNoun = (id, noun) => (noun ? `${nm(id).replace(/ం$/, '')} ${noun}` : nm(id));
 
   // An instant's calendar day in the selected city, as a selectedDate-style Date.
   function cityDateOf(instant) {
@@ -447,6 +466,22 @@ import { birthDetails, isTeluguBirthday } from './core/birth.js';
     elPanchangKarana.textContent = nm(p.karana.id);
     elPanchangKaranaTime.textContent = formatTransitionText(p.karana.spans);
 
+    // Moon sign through the day, and the Sun's sign and karte (its sidereal nakshatra).
+    elPanchangMoon.textContent = formatTransitionText(p.chandraRasi.spans, window.I18N.t('rasiNoun'));
+    // Both ids are sampled at sunrise, so on a sankranti or karte-change day name the change and its time.
+    // karte.end is null unless the change falls within the engine's ~32h edge search.
+    const rasiNoun = window.I18N.t('rasiNoun');
+    const karteNoun = window.I18N.t('karteNoun');
+    const karteEnds = p.karte.end && p.karte.end < activePanchang.astronomy.nextSunrise;
+    const sun = cal.sankranti
+      ? formatTransitionText([{ id: p.suryaRasi.id, end: cal.sankranti.instant }, { id: cal.sankranti.rasi }], rasiNoun)
+      : withNoun(p.suryaRasi.id, rasiNoun);
+    const karte = karteEnds
+      ? formatTransitionText([{ id: p.karte.id, end: p.karte.end }, { id: NAKSHATRA[(p.karte.index + 1) % 27] }], karteNoun)
+      : withNoun(p.karte.id, karteNoun);
+    // A semicolon keeps "..., then Makara" from running into the karte.
+    elPanchangSun.textContent = `${sun}${cal.sankranti || karteEnds ? ';' : ','} ${karte}`;
+
     // 4. Inauspicious / Auspicious Timings
     elTimeRahu.textContent = formatWindow(tm.rahuKalam);
     elTimeYama.textContent = formatWindow(tm.yamagandam);
@@ -489,6 +524,7 @@ import { birthDetails, isTeluguBirthday } from './core/birth.js';
     // Custom Professional Widgets
     updateSunPathMarker(activePanchang);
     renderDayTimeline(activePanchang);
+    renderUpcoming();
 
     // 9. Re-render monthly calendar grid
     renderMonthlyCalendar();
@@ -649,7 +685,10 @@ import { birthDetails, isTeluguBirthday } from './core/birth.js';
       const elFest = document.createElement('span');
       elFest.className = 'day-festivals';
       elFest.textContent = nm(festivals[0].id);
-      elFest.title = festivals.map((f) => `${coreName(f.id, 'te')} (${coreName(f.id, 'en')})`).join(", ");
+      // English adds why the rule picked this day (traces are English); Telugu keeps the names.
+      elFest.title = window.I18N.getLang() === 'en'
+        ? festivals.map((f) => `${coreName(f.id, 'en')}: ${traceReason(f)}`).join('\n')
+        : festivals.map((f) => `${coreName(f.id, 'te')} (${coreName(f.id, 'en')})`).join(", ");
       cell.appendChild(elFest);
     }
 
@@ -660,6 +699,49 @@ import { birthDetails, isTeluguBirthday } from './core/birth.js';
     });
 
     elCalendarDaysContainer.appendChild(cell);
+  }
+
+  // A rule trace's reason with canonical IDs (MASA_KARTHIKA, RASI_MAKARA) shown as English names.
+  const traceReason = (ev) => (ev.trace.reason || '').replace(/\b[A-Z]+_[A-Z_]+\b/g, (id) => coreName(id, 'en'));
+
+  // "Upcoming this week": festivals and vratas from today through the next six days in the selected city.
+  // A generic tithi vrata (Ekadashi, Purnima, Amavasya) on the same tithi as a festival that day
+  // (Ekadashi on Vaikunta Ekadashi) is folded into the festival, keeping its Ekadashi parana (next
+  // morning's fast-breaking window). Pradosham, Sankashti and Masa Shivaratri always stay listed.
+  const GENERIC_VRATA = /^VRATA_(SHUKLA_|KRISHNA_)?(EKADASHI|PURNIMA|AMAVASYA)$/;
+  function renderUpcoming() {
+    const items = [];
+    const today = cityToday();
+    for (let i = 0; i < 7 && items.length < 6; i++) {
+      const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i, 12);
+      const events = dayFor(date).events;
+      const fests = events.filter((e) => e.id.startsWith('FESTIVAL_'));
+      const vratas = events.filter((e) => e.id.startsWith('VRATA_'));
+      const folded = (v) => GENERIC_VRATA.test(v.id) && fests.some((f) => f.trace.tithi === v.trace.tithi);
+      const shown = [...fests, ...vratas.filter((v) => !folded(v))];
+      shown.forEach((ev) => {
+        const twin = vratas.find((v) => v.parana && v.trace.tithi === ev.trace.tithi);
+        items.push({ date, id: ev.id, parana: ev.parana || (twin && twin.parana) });
+      });
+    }
+
+    elUpcomingList.replaceChildren(...items.slice(0, 6).map((it) => {
+      const li = document.createElement('li');
+      const when = document.createElement('span');
+      when.className = 'upcoming-date';
+      when.textContent = it.date.toLocaleDateString(window.I18N.getLang() === 'en' ? 'en-US' : 'te-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+      const what = document.createElement('strong');
+      what.textContent = nm(it.id);
+      li.append(when, what);
+      if (it.parana) {
+        const parana = document.createElement('span');
+        parana.className = 'upcoming-parana';
+        parana.textContent = `${window.I18N.t('paranaNextDay')} ${formatTime(it.parana.start)} - ${formatTime(it.parana.end)}`;
+        li.append(parana);
+      }
+      return li;
+    }));
+    elUpcomingCard.style.display = items.length ? '' : 'none';
   }
 
   // Helper: check if same calendar day
@@ -802,6 +884,10 @@ import { birthDetails, isTeluguBirthday } from './core/birth.js';
     // Settings Modal controls
     elBtnOpenSettings.addEventListener('click', () => {
       elSettingsModal.style.display = 'flex';
+    });
+
+    elSetReference.addEventListener('change', () => {
+      chrome.storage.local.set({ panchangReference: elSetReference.value });
     });
 
     elBtnCloseSettings.addEventListener('click', () => {
@@ -1165,7 +1251,7 @@ import { birthDetails, isTeluguBirthday } from './core/birth.js';
     add('గుళిక కాలం (Gulika Kalam)', [tm.gulikaKalam], 'inauspicious');
     add('దుర్ముహూర్తం (Durmuhurtham)', tm.durmuhurtham, 'inauspicious');
     add('వర్జ్యం (Varjyam)', tm.varjyam, 'inauspicious');
-    add('అమృతకాలం (Amrita Kalam)', tm.amritaKalam, 'auspicious');
+    add('అమృత ఘడియలు (Amrita Kalam)', tm.amritaKalam, 'auspicious');
     if (!tm.abhijit.avoided) add('అభిజిత్ ముహూర్తం (Abhijit)', [tm.abhijit], 'auspicious');
 
     blocks.forEach(b => {

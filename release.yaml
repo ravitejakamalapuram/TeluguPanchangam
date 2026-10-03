@@ -36,6 +36,7 @@ targets:
       - core/horoscope-text.js
       - core/birth.js
       - core/profiles
+      - ui/time-format.js
       - lib/astronomy.js
       - lib/tz.js
       - icons

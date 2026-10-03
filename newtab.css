@@ -588,7 +588,8 @@ body {
   cursor: pointer;
 }
 .city-selector-card select option,
-.rasi-selector-card select option {
+.rasi-selector-card select option,
+.modal-form-grid select option {
   background: #120808;
   color: #fff;
 }
@@ -761,6 +762,57 @@ input:checked + .slider:before {
   font-weight: 600;
   color: var(--text-secondary);
   font-style: italic;
+}
+/* Moon / Sun signs row and the calculation-source note, full width under the quad cards */
+.signs-card {
+  grid-column: 1 / -1;
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(14, 6, 6, 0.5);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.signs-card .quad-title { margin-right: 4px; }
+.source-note {
+  grid-column: 1 / -1;
+  margin-top: -8px;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  text-align: right;
+}
+
+/* Upcoming this week */
+.upcoming-card { padding: 16px 20px; }
+.upcoming-card h3 {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--accent-secondary);
+  margin-bottom: 10px;
+}
+.upcoming-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.upcoming-list li {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  border-left: 3px solid var(--accent-primary);
+  font-size: 0.8rem;
+}
+.upcoming-date, .upcoming-parana {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
 }
 
 /* 8. 24-Hour Visual Timeline */
@@ -1224,7 +1276,7 @@ input:checked + .slider:before {
   text-transform: uppercase;
   color: var(--text-secondary);
 }
-.modal-form-grid input {
+.modal-form-grid input, .modal-form-grid select {
   padding: 10px;
   border-radius: 8px;
   border: 1px solid rgba(255,255,255,0.06);

@@ -165,6 +165,19 @@
           <h3 id="panchang-karana" class="quad-value">--</h3>
           <p id="panchang-karana-time" class="quad-details">--</p>
         </div>
+
+        <!-- Moon sign through the day; Sun's sign and karte -->
+        <div class="signs-card glass-panel">
+          <p><span class="quad-title" data-i18n-split-bi="చంద్రుడు (Moon):">చంద్రుడు:</span> <span id="panchang-moon">--</span></p>
+          <p><span class="quad-title" data-i18n-split-bi="సూర్యుడు (Sun):">సూర్యుడు:</span> <span id="panchang-sun">--</span></p>
+        </div>
+        <p class="source-note" data-i18n="sourceNote">గణన: దృక్ పద్ధతి, లాహిరి అయనాంశ</p>
+      </section>
+
+      <!-- Festivals and vratas from today through the next six days -->
+      <section id="upcoming-card" class="upcoming-card glass-panel">
+        <h3 data-i18n-bi="ఈ వారం పర్వదినాలు (Upcoming this week)">ఈ వారం పర్వదినాలు (Upcoming this week)</h3>
+        <ul id="upcoming-list" class="upcoming-list"></ul>
       </section>
 
       <!-- 24-Hour Muhurthams Visual Timeline -->
@@ -221,7 +234,7 @@
             <span id="time-varj">--</span>
           </div>
           <div class="timing-detail-box auspicious">
-            <span data-i18n-split-bi="అమృతకాలం (Amrita Kalam):">అమృతకాలం:</span>
+            <span data-i18n-split-bi="అమృత ఘడియలు (Amrita Kalam):">అమృత ఘడియలు:</span>
             <span id="time-amrita">--</span>
           </div>
           <div class="timing-detail-box auspicious">
@@ -403,6 +416,13 @@
         <div class="input-group">
           <label for="set-tob" data-i18n-bi="పుట్టిన సమయం (Birth Time)">పుట్టిన సమయం (Birth Time)</label>
           <input type="time" id="set-tob" value="12:00" required>
+        </div>
+
+        <div class="input-group">
+          <label for="set-reference" data-i18n-bi="ప్రమాణ పంచాంగం (Panchangam reference)">ప్రమాణ పంచాంగం (Panchangam reference)</label>
+          <select id="set-reference">
+            <option value="drik-telugu" data-i18n-bi="దృక్ పంచాంగం – తెలుగు (Drik Panchang, Telugu)">దృక్ పంచాంగం – తెలుగు (Drik Panchang, Telugu)</option>
+          </select>
         </div>
 
         <button type="submit" class="cyber-btn" style="margin-top: 10px;" data-i18n-bi="వివరములు భద్రపరుచు (Save Details)">వివరములు భద్రపరుచు (Save Details)</button>

@@ -39,7 +39,11 @@
       teluguLabel: 'తెలుగు:',
       sankalpamCopyHeader: 'దిన సంకల్పము:',
       allDaySuffix: '(రోజంతా)',
-      abhijitAvoidedSuffix: ' (బుధవారం వర్జ్యం)'
+      abhijitAvoidedSuffix: ' (బుధవారం వర్జ్యం)',
+      rasiNoun: 'రాశి',
+      karteNoun: 'కార్తె',
+      paranaNextDay: 'మరునాడు పారణ:',
+      sourceNote: 'గణన: దృక్ పద్ధతి, లాహిరి అయనాంశ'
     },
     en: {
       btnBirthDetails: 'Birth Details',
@@ -67,7 +71,11 @@
       teluguLabel: 'Telugu:',
       sankalpamCopyHeader: 'Daily Sankalpam:',
       allDaySuffix: '(All day)',
-      abhijitAvoidedSuffix: ' (Avoided on Wednesday)'
+      abhijitAvoidedSuffix: ' (Avoided on Wednesday)',
+      rasiNoun: '',
+      karteNoun: 'Karte',
+      paranaNextDay: 'Parana next day:',
+      sourceNote: 'Calculated: Drik method, Lahiri ayanamsa'
     }
   };
 

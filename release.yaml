@@ -34,6 +34,8 @@ targets:
       - core/horoscope.js
       - core/horoscope-text.js
       - core/profiles
+      - ui/share-card.js
+      - ui/rating.js
       - lib/astronomy.js
       - lib/tz.js
       - icons

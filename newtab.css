@@ -1176,6 +1176,55 @@ input:checked + .slider:before {
   margin-bottom: 20px;
 }
 
+/* One-time rating prompt (ui/rating.js) */
+.rating-banner {
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 94, 0, 0.1) 100%);
+  border: 1px solid var(--accent-secondary);
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  margin-bottom: 20px;
+}
+.rating-banner a {
+  color: var(--accent-secondary);
+  font-weight: 700;
+}
+.rating-dismiss {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+/* Share card (ui/share-card.js) */
+.share-btn {
+  margin-top: 10px;
+}
+.share-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  background: var(--panel-bg);
+  backdrop-filter: var(--blur);
+  border: 1px solid var(--accent-secondary);
+  color: var(--text-primary);
+  padding: 10px 18px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  font-weight: 600;
+  z-index: 1100;
+}
+.share-toast a {
+  color: var(--accent-secondary);
+}
+
 /* Modals */
 .modal-overlay {
   position: fixed;

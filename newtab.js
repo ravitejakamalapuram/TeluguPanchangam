@@ -9,6 +9,8 @@ import { TITHI, MASA } from './core/ids.js';
 import { generateSankalpam } from './core/sankalpam.js';
 import { dailyHoroscope } from './core/horoscope.js';
 import { horoscopeText } from './core/horoscope-text.js';
+import { shareDay } from './ui/share-card.js';
+import { initRatingPrompt } from './ui/rating.js';
 
 (function () {
   'use strict';
@@ -147,6 +149,7 @@ import { horoscopeText } from './core/horoscope-text.js';
     setupEventListeners();
     initStars();
     await refreshDashboard();
+    initRatingPrompt(todayPanchang);
   }
 
   // Apply the active UI language to every statically-marked element, plus
@@ -741,6 +744,16 @@ import { horoscopeText } from './core/horoscope-text.js';
         });
       });
     }
+
+    // Share the viewed day as an image card. A geolocated position goes on the card as its time zone,
+    // so a shared image never carries the user's coordinates.
+    document.getElementById('btn-share').addEventListener('click', () => shareDay(activePanchang, {
+      lang: window.I18N.getLang(),
+      city: currentCity.id === 'custom' ? currentCity.timeZone : cityDisplayName(currentCity),
+      date: elDateGregorian.textContent,
+      time: formatTime,
+      timeWindow: formatWindow
+    }));
 
     // Month navigation
     elBtnPrevMonth.addEventListener('click', () => {

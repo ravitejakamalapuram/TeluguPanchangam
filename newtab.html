@@ -37,6 +37,12 @@
     <p id="birthday-desc" data-i18n="birthdayDesc">ఈ రోజు మీ జన్మ నక్షత్రయుక్త పుట్టినరోజు. సకల శుభాలు కలుగుగాక!</p>
   </div>
 
+  <!-- One-time rating prompt (ui/rating.js) -->
+  <div id="rating-banner" class="rating-banner" style="display: none;">
+    <a id="rating-link" href="https://chromewebstore.google.com/detail/obgpdlhkahmdiepklldjnnmfmbhmgenn/reviews" target="_blank" rel="noopener" data-i18n-te="మీకు నచ్చిందా? ఒక్క నిమిషంలో రేటింగ్ ఇవ్వండి" data-i18n-en="Enjoying it? Rate us in a minute">మీకు నచ్చిందా? ఒక్క నిమిషంలో రేటింగ్ ఇవ్వండి</a>
+    <button id="rating-dismiss" type="button" class="rating-dismiss" aria-label="Dismiss">&times;</button>
+  </div>
+
   <!-- Professional Grid Dashboard -->
   <div class="dashboard">
     
@@ -106,6 +112,7 @@
           <div class="hero-left">
             <div id="clock" class="clock-display">00:00:00</div>
             <div id="date-gregorian" class="date-display" data-i18n="loadingText">లోడ్ అవుతోంది...</div>
+            <button id="btn-share" type="button" class="cyber-btn tiny-btn share-btn" data-i18n-bi="పంచుకోండి (Share)">పంచుకోండి (Share)</button>
           </div>
           
           <div class="hero-right">

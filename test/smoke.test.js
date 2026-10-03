@@ -9,8 +9,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const vm = require('vm');
 const assert = require('assert');
+const { spawnSync } = require('child_process');
 
 const ROOT = path.join(__dirname, '..');
 
@@ -119,6 +121,34 @@ check('manifest declares no geolocation permission, required or optional', () =>
   const manifest = JSON.parse(readFile('manifest.json'));
   const declared = [...(manifest.permissions || []), ...(manifest.optional_permissions || [])];
   assert.ok(!declared.includes('geolocation'), 'geolocation is declared in manifest.json');
+});
+
+// --- ...but the page still reads the device location, so the ADR 0001 drift
+// check must keep requiring every privacy copy to disclose geolocation. Runs
+// the real validator (local tier) on a scratch copy with the word removed. ---
+check('privacy drift check still fails when a doc stops mentioning geolocation', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'privacy-drift-'));
+  const docs = ['PRIVACY.md', 'CHROMEWEBSTORE.md', 'store-listing.md'];
+  const files = ['manifest.json', '.appforge/permissions.yaml', 'chrome-store/validate-privacy.mjs', 'chrome-store/store.config.json', ...docs];
+  try {
+    for (const file of files) {
+      fs.mkdirSync(path.dirname(path.join(tmp, file)), { recursive: true });
+      fs.copyFileSync(path.join(ROOT, file), path.join(tmp, file));
+    }
+    const validate = () => spawnSync(process.execPath, ['chrome-store/validate-privacy.mjs'], {
+      cwd: tmp,
+      env: { ...process.env, SKIP_PUBLISHED_PRIVACY_CHECK: '1' },
+      encoding: 'utf8'
+    });
+    const clean = validate();
+    assert.strictEqual(clean.status, 0, `unmodified copy should pass:\n${clean.stderr}`);
+    for (const doc of docs) fs.writeFileSync(path.join(tmp, doc), readFile(doc).replace(/geolocation/gi, 'location'));
+    const drifted = validate();
+    assert.strictEqual(drifted.status, 1, 'validator passed with geolocation removed from every doc');
+    for (const doc of docs) assert.ok(drifted.stderr.includes(`${doc} does not mention the "geolocation" permission`), drifted.stderr);
+  } finally {
+    fs.rmSync(tmp, { recursive: true, force: true });
+  }
 });
 
 // --- te mode must reproduce the pre-toggle Telugu UI byte-for-byte on

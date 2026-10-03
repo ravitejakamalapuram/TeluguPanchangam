@@ -1,5 +1,5 @@
-// One-time "rate us" banner (review §4.7): after 14 days of use, on a festival day. Clicking the
-// link or dismissing the banner sets ratingPromptDone, so it never shows again.
+// One-time "rate us" banner (review §4.7): after 14 days of use, on a festival day. Opening the
+// link (left or middle click) or dismissing the banner sets ratingPromptDone, so it never shows again.
 
 const DAY_MS = 86400000;
 
@@ -21,7 +21,10 @@ export function initRatingPrompt(day) {
       banner.style.display = 'none';
       chrome.storage.local.set({ ratingPromptDone: true });
     };
-    document.getElementById('rating-link').addEventListener('click', finish);
+    const link = document.getElementById('rating-link');
+    link.addEventListener('click', finish);
+    // A middle click opens the link too, but fires auxclick instead of click.
+    link.addEventListener('auxclick', (e) => { if (e.button === 1) finish(); });
     document.getElementById('rating-dismiss').addEventListener('click', finish);
     banner.style.display = 'flex';
   });

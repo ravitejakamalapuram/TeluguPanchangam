@@ -86,7 +86,14 @@ export function createRuleEngine(ctx) {
         reason += chosen ? `only this one has ${rule.preferNakshatra} then` : `${rule.preferNakshatra} then on ${starred.length} of them; `;
       }
       if (!chosen) {
-        const policy = rule.both || DEFAULT_BOTH[rule.kaal] || 'first';
+        let policy = rule.both || DEFAULT_BOTH[rule.kaal] || 'first';
+        if (policy === 'dwadashi') {
+          // Dwadashi growing into the next sunrise moves everyone to the second day (Nirnaya Sindhu).
+          const next = ctx.basics(addDays(touching[1].date, 1)).sunrise;
+          const dwadashi = ctx.tithiSpansNear(touching[1].date).find((s) => /_DWADASHI$/.test(s.id) && s.start > occ.start);
+          policy = dwadashi && dwadashi.end > next ? 'second' : 'first';
+          reason += `Dwadashi ${policy === 'second' ? 'holds' : 'is over'} at the next sunrise, so `;
+        }
         chosen = policy === 'max-overlap' ? touching.reduce((a, c) => (c.inKaal > a.inKaal ? c : a))
           : policy === 'second' ? touching[1] : touching[0];
         reason += `rule picks ${policy}`;
@@ -108,7 +115,24 @@ export function createRuleEngine(ctx) {
     };
   }
 
+  // Punya-kaal day (Dharmasindhu, as Drik dates sankramanams): a day-time sankranti counts for that
+  // day; a night one for the day before if it falls before midnight (sunset–sunrise midpoint), else
+  // for the day after. Karka at night always goes to the day before.
+  function punyaDay(rule, D) {
+    for (const d of [addDays(D, -1), D]) {
+      const b = ctx.basics(d);
+      const s = sankrantiBetween(ctx.astro, b.sunrise, b.nextSunrise);
+      if (!s || s.rasi !== rule.rasi) continue;
+      const mid = (ms(b.sunset) + ms(b.nextSunrise)) / 2;
+      const day = ms(s.instant) < ms(b.sunset) || ms(s.instant) < mid || s.rasi === 'RASI_KARKATAKA' ? d : addDays(d, 1);
+      if (formatLocalDate(day) !== formatLocalDate(D)) continue;
+      return { date: D, trace: { sankranti: s.rasi, instant: s.instant, reason: `punya kaal day for the Sun entering ${s.rasi}` } };
+    }
+    return null;
+  }
+
   function resolveSolar(rule, D) {
+    if (rule.day === 'punya') return punyaDay(rule, D);
     const target = addDays(D, -rule.offsetDays);
     const s = sankrantiBetween(ctx.astro, ctx.basics(addDays(target, -1)).sunset, ctx.basics(target).sunset);
     if (!s || s.rasi !== rule.rasi) return null;

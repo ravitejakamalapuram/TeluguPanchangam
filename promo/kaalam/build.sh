@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Rebuilds kaalam-teaser.mp4 from src/: UI screenshot, text/dial layers, frames, audio mix, mux.
+# Rebuilds kaalam-teaser.mp4 from src/ and the store screenshot: text/dial layers, frames, audio mix, mux.
 # Needs node + Playwright (Chromium), python3 with numpy + pillow, ffmpeg.
 set -euo pipefail
 cd "$(dirname "$0")"

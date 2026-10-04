@@ -18,7 +18,15 @@ const TITHI = ['పాడ్యమి','విదియ','తదియ','చవ�
   'పాడ్యమి','విదియ','తదియ','చవితి','పంచమి','షష్ఠి','సప్తమి','అష్టమి','నవమి','దశమి','ఏకాదశి','ద్వాదశి','త్రయోదశి','చతుర్దశి','అమావాస్య'];
 const NAK = ['అశ్విని','భరణి','కృత్తిక','రోహిణి','మృగశిర','ఆర్ద్ర','పునర్వసు','పుష్యమి','ఆశ్లేష','మఖ','పుబ్బ','ఉత్తర','హస్త','చిత్త','స్వాతి','విశాఖ',
   'అనూరాధ','జ్యేష్ఠ','మూల','పూర్వాషాఢ','ఉత్తరాషాఢ','శ్రవణం','ధనిష్ఠ','శతభిషం','పూర్వాభాద్ర','ఉత్తరాభాద్ర','రేవతి'];
-const TODAY_TITHI = 23, TODAY_NAK = 6; // కృష్ణ నవమి, పునర్వసు — what the app shows for 4 Oct 2026
+// The day the film shows: the moment of the store screenshot the UI shot uses
+// (chrome-store/assets/screenshots/01-today-telugu-hyderabad.png, Hyderabad). Change all four together.
+const TODAY_AT = '2026-10-18T07:30:00+05:30', TODAY_EN = '18 OCT 2026';
+const TODAY_TITHI = 6, TODAY_NAK = 19; // శుద్ధ సప్తమి, పూర్వాషాఢ
+const TODAY_TITHI_EN = 'SHUKLA SAPTAMI';
+const TODAY_TITHI_TE = (TODAY_TITHI % 15 === 14 ? '' : TODAY_TITHI < 15 ? 'శుద్ధ ' : 'బహుళ ') + TITHI[TODAY_TITHI];
+// Where the tithi dial stops turning (degrees clockwise): today's tithi at 12 o'clock in shukla paksha,
+// 6 o'clock in krishna paksha, so the wheel turns as little as possible and its labels read upright.
+const WHEEL_END = ((((TODAY_TITHI < 15 ? 270 : 90) - (180 + (TODAY_TITHI + 0.5) * 12)) % 360) + 540) % 360 - 180;
 
 /** Convert an angle in degrees to radians. */
 const rad = d => d * Math.PI / 180;
@@ -66,7 +74,7 @@ function tithiWheel(highlightOnly) {
     g += `<g transform="translate(${mx},${my}) rotate(${a + 90}) scale(${flip ? -1 : 1},1)">
       <circle r="46" fill="#120c08" stroke="${GOLD}" stroke-width="1.2" opacity=".9"/>
       <path d="${d}" fill="url(#moon)" filter="url(#glow)"/></g>`;
-    const an = ((a % 360) + 360) % 360, flipText = an > 90 && an < 270;
+    const an = (((a + WHEEL_END) % 360) + 360) % 360, flipText = an >= 90 && an < 270;  // as it rests on screen
     const [tx, ty] = pol(C, C, 815, a);
     g += `<text x="${tx}" y="${ty}" transform="rotate(${flipText ? a + 180 : a} ${tx} ${ty})" text-anchor="${flipText ? 'end' : 'start'}" dominant-baseline="middle"
       font-family="Te" font-size="${hi ? 46 : 38}" font-weight="${hi ? 700 : 500}" fill="${hi ? '#FFF1D0' : GOLD}" opacity="${hi ? 1 : .85}"
@@ -115,13 +123,13 @@ const HTML = {
      <div style="font-family:Ou;font-weight:300;font-size:30px;letter-spacing:22px;color:#F3C98A;margin-top:10px;padding-left:22px">K A A L A M</div></div>`],
   tithi_center: [1000, 600, `<div style="width:1000px;height:600px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Te;">
      <div style="font-weight:500;font-size:38px;letter-spacing:4px;color:#F3C98A">ఈ రోజు తిథి</div>
-     <div style="font-weight:800;font-size:120px;color:#FFF1D0;margin:6px 0 4px;${glowTxt('#FF7A1A')}">కృష్ణ నవమి</div>
-     <div style="font-family:Ou;font-weight:400;font-size:28px;letter-spacing:10px;color:#F3C98A">KRISHNA NAVAMI · 4 OCT 2026</div></div>`],
+     <div style="font-weight:800;font-size:120px;color:#FFF1D0;margin:6px 0 4px;${glowTxt('#FF7A1A')}">${TODAY_TITHI_TE}</div>
+     <div style="font-family:Ou;font-weight:400;font-size:28px;letter-spacing:6px;color:#F3C98A">${TODAY_TITHI_EN} · ${TODAY_EN}</div></div>`],
   chapter_tithi: [900, 140, `<div style="font-family:Te;font-weight:600;font-size:44px;color:#FFD27A;letter-spacing:3px;padding:20px 30px">తిథి <span style="font-family:Ou;font-weight:300;font-size:26px;letter-spacing:12px;color:#E9C48B">&nbsp;·&nbsp; TITHI</span></div>`],
   chapter_nak: [900, 140, `<div style="font-family:Te;font-weight:600;font-size:44px;color:#E8F1FF;letter-spacing:3px;padding:20px 30px">నక్షత్రం <span style="font-family:Ou;font-weight:300;font-size:26px;letter-spacing:12px;color:#BFD6F5">&nbsp;·&nbsp; NAKSHATRA</span></div>`],
   nak_today: [900, 260, `<div style="width:900px;height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Te;">
      <div style="font-weight:500;font-size:34px;letter-spacing:4px;color:#CFE0FA">ఈ రోజు నక్షత్రం</div>
-     <div style="font-weight:800;font-size:96px;color:#FFE9B8;${glowTxt('#FFB547')}">పునర్వసు</div></div>`],
+     <div style="font-weight:800;font-size:96px;color:#FFE9B8;${glowTxt('#FFB547')}">${NAK[TODAY_NAK]}</div></div>`],
   endcard: [1920, 1080, `<div style="width:1920px;height:1080px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Te;">
      <div style="width:210px;height:210px;border-radius:52px;background:linear-gradient(145deg,#FF9A3C,#F26A10 55%,#D8540A);display:flex;align-items:center;justify-content:center;box-shadow:0 0 90px #FF6A0077,0 30px 60px #0008;">
        <span style="font-weight:700;font-size:120px;color:#fff;margin-top:-6px">పం</span></div>
@@ -153,12 +161,17 @@ SUBS.forEach((s, i) => HTML['sub_' + (i + 1)] = [1920, 110, `<div style="width:1
   for (const [k, [w, h, b]] of Object.entries(HTML)) await shoot(k, w, h, b);
 
   // The day's Sankalpam exactly as the app computes it, for the "manuscript" shot.
-  const app = await browser.newPage();
+  const app = await (await browser.newContext({ timezoneId: 'Asia/Kolkata' })).newPage();
+  await app.clock.setFixedTime(new Date(TODAY_AT));
   await app.context().grantPermissions(['geolocation']);
-  await app.goto('file://' + require('path').resolve(__dirname, '../../newtab.html') + '');
+  // newtab.js is an ES module, which Chromium will not load from file://, so serve the repo from disk.
+  const ROOT = require('path').resolve(__dirname, '../..');
+  await app.route('http://app.local/**', r => r.fulfill({ path: ROOT + decodeURIComponent(new URL(r.request().url()).pathname) }));
+  await app.goto('http://app.local/newtab.html');
   await app.waitForTimeout(3000);
   const sk = await app.$eval('#sankalpam-txt', el => el.innerText);
   fs.writeFileSync(`${OUT}/sankalpam.txt`, sk);
+  fs.writeFileSync(`${OUT}/today.json`, JSON.stringify({ tithi: TODAY_TITHI, nak: TODAY_NAK, wheel_end: WHEEL_END }));
   await browser.close();
   console.log('ok', fs.readdirSync(OUT).length, 'files; sankalpam chars', sk.length);
 })();

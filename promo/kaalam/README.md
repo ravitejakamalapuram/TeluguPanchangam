@@ -9,7 +9,12 @@ Nothing here ships: `release.yaml` packages only the files in its `include` allo
 Sources in `src/`: three stills (Seedream 5 Lite), narration (`eleven_v3`, voice "Prasad") and score
 (Eleven Music v2.5), all generated on ElevenLabs. Everything that moves is built in code.
 
-Rebuild a 1080p `kaalam-teaser.mp4` with `./build.sh` (Node with `playwright` resolvable, e.g. `npm i -g playwright`, Python with numpy/pillow,
-ffmpeg; about 5 minutes on 4 cores). The dials read today's tithi/nakshatra as fixed constants
-(`TODAY_TITHI`, `TODAY_NAK` in `assets.cjs`, `UI_FOCUS` and the highlight boxes in `render.py`);
-update them together if you re-shoot the UI (`node shot_ui.cjs`) on another day.
+Rebuild a 1080p `kaalam-teaser.mp4` with `./build.sh`. It needs Node with `playwright` resolvable
+from this folder (`npm i --no-save playwright` here, or point `NODE_PATH` at an existing install),
+Python with numpy/pillow, and ffmpeg; about 5 minutes on 4 cores.
+
+The UI shot is the store listing's first screenshot, `chrome-store/assets/screenshots/01-today-telugu-hyderabad.png`,
+so the film shows what the listing shows. The dials and the Sankalpam are pinned to the moment in that
+screenshot (`TODAY_AT`, `TODAY_TITHI`, `TODAY_NAK` and the English labels at the top of `assets.cjs`).
+If the screenshot is retaken, update those, and `UI_FOCUS` and the two highlight boxes in `render.py`
+(fractions of the screenshot around its tithi and nakshatra cards).

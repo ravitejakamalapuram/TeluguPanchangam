@@ -4,11 +4,12 @@
 // Rule types:
 //   tithi          the day `tithi` touches `kaal` (see KAALS in rules.js) in `masa` (or with the Sun in
 //                  `sunRasi`). `both` picks between two qualifying days, `none` handles a tithi that
-//                  misses the kaal on every day. Adhika months are skipped unless `inAdhika`.
+//                  misses the kaal on every day. `both: 'dwadashi'` (Ekadashi):
+//                  the second day when Dwadashi still holds at the sunrise after it, else the first. Adhika months are skipped unless `inAdhika`.
 //                  `preferNakshatra` decides two qualifying days first: the one day with that
 //                  nakshatra at any point of the kaal wins; if both or neither have it, `both` applies.
 //   solar          the civil day of the Sun's sidereal entry into `rasi` (next day if after sunset),
-//                  shifted by `offsetDays`.
+//                  shifted by `offsetDays`; with `day: 'punya'`, the punya-kaal day instead (rules.js).
 //   weekdayInMasa  every `weekday` (0 = Sunday) of `masa`.
 //   weekdayBefore  the last `weekday` on or before the day rule `anchor` falls on, within 6 days.
 //   masaStart      the first civil day whose sunrise falls in nija `masa`.
@@ -22,8 +23,7 @@ const t = (id, masa, tithi, kaal, extra = {}) => ({ id, type: 'tithi', masa, tit
 
 export default {
   id: 'andhra-telangana',
-  version: '1.1.0',
-  ekadashi: { kaal: 'udaya', both: 'first' },
+  version: '1.2.0',
   // Ekadashi names by amanta masa as [shukla, krishna]. Purnimanta lists put each krishna name one
   // month later (amanta Chaitra krishna = Varuthini). Adhika months have their own pair.
   ekadashiNames: {
@@ -52,7 +52,7 @@ export default {
     // Jyeshtha
     t('FESTIVAL_ERUVAKA_PURNIMA', 'MASA_JYESHTHA', 'TITHI_PURNIMA', 'daylight'),
     // Ashadha
-    t('FESTIVAL_TOLI_EKADASHI', 'MASA_ASHADHA', 'TITHI_SHUKLA_EKADASHI', 'udaya'),
+    t('FESTIVAL_TOLI_EKADASHI', 'MASA_ASHADHA', 'TITHI_SHUKLA_EKADASHI', 'udaya', { both: 'dwadashi' }),
     t('FESTIVAL_GURU_PURNIMA', 'MASA_ASHADHA', 'TITHI_PURNIMA', 'daylight'),
     { id: 'FESTIVAL_BONALU', type: 'weekdayInMasa', masa: 'MASA_ASHADHA', weekday: 0 },
     // Shravana
@@ -80,13 +80,13 @@ export default {
     { id: 'FESTIVAL_KARTHIKA_MASA_START', type: 'masaStart', masa: 'MASA_KARTHIKA' },
     { id: 'FESTIVAL_KARTHIKA_SOMAVARAM', type: 'weekdayInMasa', masa: 'MASA_KARTHIKA', weekday: 1 },
     t('FESTIVAL_NAGULA_CHAVITHI', 'MASA_KARTHIKA', 'TITHI_SHUKLA_CHATURTHI', 'daylight'),
-    t('FESTIVAL_UTTHANA_EKADASHI', 'MASA_KARTHIKA', 'TITHI_SHUKLA_EKADASHI', 'udaya'),
+    t('FESTIVAL_UTTHANA_EKADASHI', 'MASA_KARTHIKA', 'TITHI_SHUKLA_EKADASHI', 'udaya', { both: 'dwadashi' }),
     t('FESTIVAL_KSHEERABDI_DWADASHI', 'MASA_KARTHIKA', 'TITHI_SHUKLA_DWADASHI', 'daylight'),
     t('FESTIVAL_KARTHIKA_PURNIMA', 'MASA_KARTHIKA', 'TITHI_PURNIMA', 'pradosha'),
     // Margashira / Dhanurmasa
     t('FESTIVAL_SUBRAHMANYA_SHASHTHI', 'MASA_MARGASHIRA', 'TITHI_SHUKLA_SHASHTHI', 'daylight'),
     { id: 'FESTIVAL_DHANURMASA_START', type: 'solar', rasi: 'RASI_DHANUS', offsetDays: 0 },
-    { id: 'FESTIVAL_VAIKUNTA_EKADASHI', type: 'tithi', sunRasi: 'RASI_DHANUS', tithi: 'TITHI_SHUKLA_EKADASHI', kaal: 'udaya' },
+    { id: 'FESTIVAL_VAIKUNTA_EKADASHI', type: 'tithi', sunRasi: 'RASI_DHANUS', tithi: 'TITHI_SHUKLA_EKADASHI', kaal: 'udaya', both: 'dwadashi' },
     // Makara Sankranti block
     { id: 'FESTIVAL_BHOGI', type: 'solar', rasi: 'RASI_MAKARA', offsetDays: -1 },
     { id: 'FESTIVAL_MAKARA_SANKRANTI', type: 'solar', rasi: 'RASI_MAKARA', offsetDays: 0, verified: [DRIK] },
@@ -95,18 +95,18 @@ export default {
     // Magha
     t('FESTIVAL_VASANTA_PANCHAMI', 'MASA_MAGHA', 'TITHI_SHUKLA_PANCHAMI', 'daylight'),
     t('FESTIVAL_RATHA_SAPTAMI', 'MASA_MAGHA', 'TITHI_SHUKLA_SAPTAMI', 'udaya'),
-    t('FESTIVAL_BHISHMA_EKADASHI', 'MASA_MAGHA', 'TITHI_SHUKLA_EKADASHI', 'udaya'),
+    t('FESTIVAL_BHISHMA_EKADASHI', 'MASA_MAGHA', 'TITHI_SHUKLA_EKADASHI', 'udaya', { both: 'dwadashi' }),
     t('FESTIVAL_MAHA_SHIVARATRI', 'MASA_MAGHA', 'TITHI_KRISHNA_CHATURDASHI', 'nishita'),
     // Phalguna
     t('FESTIVAL_HOLI', 'MASA_PHALGUNA', 'TITHI_PURNIMA', 'pradosha'),
     // The other sankramanams: SANKRANTI_MESHA, ... Makara is FESTIVAL_MAKARA_SANKRANTI and Dhanus is
     // FESTIVAL_DHANURMASA_START above, so they aren't listed twice on the same day.
     ...RASI.filter((rasi) => rasi !== 'RASI_MAKARA' && rasi !== 'RASI_DHANUS')
-      .map((rasi) => ({ id: rasi.replace('RASI_', 'SANKRANTI_'), type: 'solar', rasi, offsetDays: 0 })),
+      .map((rasi) => ({ id: rasi.replace('RASI_', 'SANKRANTI_'), type: 'solar', rasi, offsetDays: 0, day: 'punya' })),
 
     // Recurring every month
-    t('VRATA_SHUKLA_EKADASHI', null, 'TITHI_SHUKLA_EKADASHI', 'udaya', { ekadashi: true, inAdhika: true }),
-    t('VRATA_KRISHNA_EKADASHI', null, 'TITHI_KRISHNA_EKADASHI', 'udaya', { ekadashi: true, inAdhika: true }),
+    t('VRATA_SHUKLA_EKADASHI', null, 'TITHI_SHUKLA_EKADASHI', 'udaya', { ekadashi: true, inAdhika: true, both: 'dwadashi' }),
+    t('VRATA_KRISHNA_EKADASHI', null, 'TITHI_KRISHNA_EKADASHI', 'udaya', { ekadashi: true, inAdhika: true, both: 'dwadashi' }),
     t('VRATA_PURNIMA', null, 'TITHI_PURNIMA', 'daylight', { inAdhika: true }),
     t('VRATA_AMAVASYA', null, 'TITHI_AMAVASYA', 'daylight', { inAdhika: true }),
     t('VRATA_SANKASHTI_CHATURTHI', null, 'TITHI_KRISHNA_CHATURTHI', 'chandrodaya', { inAdhika: true }),

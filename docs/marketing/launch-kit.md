@@ -58,7 +58,7 @@ Vijayadashami, Deepavali, Makara Sankranti, Kanuma. The fixture checks the rule 
 2027 dates below are the engine's. Check a date against Drik before a post states it as fact (the
 Sankranti 2027 split especially).
 
-Festivals 2026-10-01 to 2027-04-30, engine 0.1.0, observance profile andhra-telangana@1.0.0
+Festivals 2026-10-01 to 2027-04-30, engine 0.1.0, observance profile andhra-telangana@1.2.0
 
 | Festival | తెలుగు | Hyderabad | Dallas | Notes |
 |---|---|---|---|---|
@@ -72,12 +72,14 @@ Festivals 2026-10-01 to 2027-04-30, engine 0.1.0, observance profile andhra-tela
 | Atla Tadde | అట్లతద్దె | 2026-10-28 | 2026-10-27 (differs) |  |
 | Naraka Chaturdashi | నరక చతుర్దశి | 2026-11-08 | 2026-11-07 (differs) |  |
 | Deepavali | దీపావళి | 2026-11-08 | 2026-11-08 |  |
+| Karthika Masam begins | కార్తీక మాసం ప్రారంభం | 2026-11-10 | 2026-11-09 (differs) |  |
 | Karthika Somavaram | కార్తీక సోమవారం | 2026-11-16, 2026-11-23, 2026-11-30, 2026-12-07 | 2026-11-09, 2026-11-16, 2026-11-23, 2026-11-30, 2026-12-07 (differs) |  |
 | Nagula Chavithi | నాగుల చవితి | 2026-11-13 | 2026-11-12 (differs) |  |
 | Utthana Ekadashi | ఉత్థాన ఏకాదశి | 2026-11-21 | 2026-11-20 (differs) | Hyderabad: parana Nov 22, 6:24 AM – Nov 22, 8:39 AM; Dallas: parana Nov 21, 7:02 AM – Nov 21, 9:06 AM |
 | Ksheerabdi Dwadashi | క్షీరాబ్ది ద్వాదశి | 2026-11-21 | 2026-11-21 |  |
 | Karthika Purnima | కార్తీక పౌర్ణమి | 2026-11-24 | 2026-11-23 (differs) |  |
 | Subrahmanya Shashthi | సుబ్రహ్మణ్య షష్ఠి | 2026-12-15 | 2026-12-14 (differs) |  |
+| Dhanurmasam begins | ధనుర్మాసం ప్రారంభం | 2026-12-16 | 2026-12-16 |  |
 | Vaikunta Ekadashi | వైకుంఠ ఏకాదశి / ముక్కోటి ఏకాదశి | 2026-12-20 | 2026-12-20 | Hyderabad: parana Dec 21, 6:41 AM – Dec 21, 8:54 AM; Dallas: parana Dec 21, 7:25 AM – Dec 21, 9:25 AM |
 | Bhogi | భోగి | 2027-01-14 | 2027-01-13 (differs) |  |
 | Makara Sankranti | మకర సంక్రాంతి | 2027-01-15 | 2027-01-14 (differs) |  |
@@ -276,10 +278,10 @@ https://chromewebstore.google.com/detail/obgpdlhkahmdiepklldjnnmfmbhmgenn
 https://chromewebstore.google.com/detail/obgpdlhkahmdiepklldjnnmfmbhmgenn
 ```
 
-## 4. Chrome Web Store listing: draft for approval only
+## 4. Chrome Web Store listing
 
-The current copy in `chrome-store/store.config.json` is board-approved; these edits need the same
-approval, and should go live together with the 2.0.0 package (they describe 2.0.0). Publishing 2.0.0
+Applied to `chrome-store/store.config.json` (summary, both language sections; privacy paragraphs
+unchanged), to go live with the 2.0.0 package, which they describe. Publishing 2.0.0
 also closes a gap in the live listing: it already names Gulika Kalam, which 1.2.0 does not show.
 
 Policy limits: CWS rejected 1.2.0 on 2026-09-30 for excessive keywords (the US city list and the
@@ -325,9 +327,8 @@ has no system Telugu font (see §7). Festivals show only in the month grid, so o
 | 4 | `04-sankalpam-dallas-ugadi.png` | te, Dallas, Wed 7 Apr 2027 07:45 (Ugadi), light, sankalpam card at the bottom | The new year (ప్లవంగ నామ సంవత్సరే, చైత్ర మాసే) and the US place line | A daily sankalpam with a place line for the US, here on Ugadi / అమెరికాకు తగిన దేశ వర్ణనతో రోజువారీ సంకల్పం, ఉగాది నాడు | Committed |
 | 5 | `05-gita-verse.png` | en, New York / Edison NJ, Sun 20 Dec 2026 06:30, dark, Gita card at the bottom | Gita 12.10 in Sanskrit, transliteration and English; dark theme | A Bhagavad Gita verse every day / ప్రతిరోజూ ఒక భగవద్గీత శ్లోకం | Committed |
 
-The store keeps its current five screenshots until 2.0.0 is live, shots 1 and 3 can be captured and
-the owner approves the set; then copy the five into `chrome-store/assets/screenshots/` and update
-`store.config.json`.
+The five shots are in `chrome-store/assets/screenshots/` and `store.config.json`; re-run the script
+and copy them again after any UI change.
 
 ## 6. Metrics (CWS Developer Dashboard only)
 

@@ -49,11 +49,12 @@ and clock-card overflow; screenshot script seeds a returning user. 98 tests, bot
 local checks, and headless runs (fresh install, Dallas/English, Hyderabad/Telugu, print page,
 share image) pass with zero console errors and zero external requests.
 
+Follow-up (after PR #28): Chrome's location prompt confirmed with the unpacked extension (prompt shown
+on click, city applied after "Allow this time"); Mahalaya paksham starts on Bhadrapada bahula padyami
+(27 Sep 2026, as Drik and the Telugu calendars list it); Ekadashi at two sunrises goes to the second day
+when Dwadashi holds at the next sunrise (Padmini 2026: 27 May, as Drik); sankramanams other than Makara
+and Dhanus are dated by punya kaal (Karkataka 2026: 16 Jul); listing copy and screenshots applied.
+
 Needs the owner:
-- Board sign-off on the `CHROMEWEBSTORE.md` geolocation row and the ADR 0001 amendment
-  (geolocation removed from `manifest.json`).
-- Approve the listing-copy draft and swap in the new screenshots from `docs/marketing/screenshots/`.
-- Confirm on a real Chrome profile that "Use My Location" shows Chrome's location prompt.
-- Owner decisions listed in `docs/marketing/launch-kit.md` and lane notes: Mahalaya paksham start
-  convention, Padmini Ekadashi / Karkataka sankramanam dates once Drik is reachable.
+- Board sign-off on the `CHROMEWEBSTORE.md` geolocation row, the ADR 0001 amendment and the listing copy.
 - Drik/TTD reference fixtures (blocked by network), then the release workflow (bump=major).

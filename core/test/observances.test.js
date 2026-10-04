@@ -70,7 +70,7 @@ test('named Ekadashis follow the amanta masa and paksha; adhika months get Padmi
   const expected = {
     '2026-03-29': 'EKADASHI_KAMADA', // Chaitra shukla
     '2026-04-13': 'EKADASHI_VARUTHINI', // Chaitra krishna (Vaishakha krishna in purnimanta lists)
-    '2026-05-26': 'EKADASHI_PADMINI', // adhika Jyeshtha shukla
+    '2026-05-27': 'EKADASHI_PADMINI', // adhika Jyeshtha shukla; Ekadashi at both sunrises, Dwadashi at the third (Drik: 27 May)
     '2026-06-11': 'EKADASHI_PARAMA', // adhika Jyeshtha krishna
     '2026-06-25': 'EKADASHI_NIRJALA', // nija Jyeshtha shukla
     '2026-12-20': 'EKADASHI_MOKSHADA' // Margashira shukla, also Vaikunta Ekadashi this year
@@ -99,7 +99,7 @@ test('Mahalaya paksham, sankrantis, Dhanurmasam and Karthika masam start on thei
   const expected = {
     FESTIVAL_MAHALAYA_PAKSHAM_START: '2026-09-27', // Bhadrapada bahula padyami
     SANKRANTI_MESHA: '2026-04-14',
-    SANKRANTI_KARKATAKA: '2026-07-17',
+    SANKRANTI_KARKATAKA: '2026-07-16', // 23:36 IST, before midnight: punya kaal that day
     FESTIVAL_DHANURMASA_START: '2026-12-16',
     FESTIVAL_KARTHIKA_MASA_START: '2026-11-10' // new moon 9 Nov after sunrise; first Karthika sunrise is 10 Nov
   };

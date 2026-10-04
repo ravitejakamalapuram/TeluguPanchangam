@@ -8,7 +8,12 @@ _Nothing yet._
 
 ## [2.0.0] - unreleased
 
+### Fixed
+- **Ekadashi at two sunrises**: when Dwadashi still holds at the following sunrise, the fast moves to the second day (Padmini Ekadashi 2026: 27 May, as Drik lists it).
+- **Sankramanams** (other than Makara and Dhanus) fall on the punya kaal day: a night sankranti before midnight counts for that day, Karkataka at night always does (Karkataka 2026: 16 Jul).
+
 ### Changed
+- Store listing copy and screenshots updated for 2.0.0.
 - **New Panchanga engine (`core/`)** replaces `panchang.js`, `festivals.js`, `sankalpam.js` and `horoscope.js`. It is still fully offline and makes no network requests. Conventions are data: a calculation profile (Drik-style, Lahiri), a Telugu regional profile and an Andhra/Telangana observance profile; every festival carries a trace of why it fell on its day. Design: `docs/adr/0002-reference-panchangam.md`, `core/README.md`.
 - Tithi, nakshatra, yoga and karana end times now cover the Hindu day (sunrise to next sunrise); times after midnight are marked "+1". Krishna paksha is shown as బహుళ, Shukla as శుద్ధ.
 - Daily Rasi Phalalu now follow the Moon's transit (Chandra balam) and, when a date of birth is saved, Tara balam, so readings change every couple of days instead of staying fixed for weeks.

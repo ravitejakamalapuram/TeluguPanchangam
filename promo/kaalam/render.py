@@ -18,15 +18,33 @@ NFRAMES = int(DUR * FPS)
 BAR = 138  # 2.39:1 letterbox
 
 # ---------- helpers ----------
-def load(p, mode='RGB'): return Image.open(p).convert(mode)
-def f32(im): return np.asarray(im, dtype=np.float32) / 255.0
-def clamp01(x): return min(1.0, max(0.0, x))
-def ramp(t, a, b): return clamp01((t - a) / (b - a)) if b > a else float(t >= a)
-def smooth(x): x = clamp01(x); return x * x * (3 - 2 * x)
-def ease_io(x): x = clamp01(x); return 0.5 - 0.5 * math.cos(math.pi * x)
-def ease_out(x): x = clamp01(x); return 1 - (1 - x) ** 3
-def lerp(a, b, x): return a + (b - a) * x
-def window(t, a, b, fi=0.6, fo=0.6): return smooth(ramp(t, a, a + fi)) * (1 - smooth(ramp(t, b - fo, b)))
+def load(p, mode='RGB'):
+    """Open an image at p and convert it to the requested Pillow color mode."""
+    return Image.open(p).convert(mode)
+def f32(im):
+    """Convert an 8-bit image to a float32 array with values in [0, 1]."""
+    return np.asarray(im, dtype=np.float32) / 255.0
+def clamp01(x):
+    """Clamp a scalar to the inclusive interval [0, 1]."""
+    return min(1.0, max(0.0, x))
+def ramp(t, a, b):
+    """Map t from [a, b] to [0, 1], using a step at a when b <= a."""
+    return clamp01((t - a) / (b - a)) if b > a else float(t >= a)
+def smooth(x):
+    """Apply cubic smoothstep to x after clamping it to [0, 1]."""
+    x = clamp01(x); return x * x * (3 - 2 * x)
+def ease_io(x):
+    """Apply cosine ease-in/ease-out to x clamped to [0, 1]."""
+    x = clamp01(x); return 0.5 - 0.5 * math.cos(math.pi * x)
+def ease_out(x):
+    """Apply cubic ease-out to x clamped to [0, 1]."""
+    x = clamp01(x); return 1 - (1 - x) ** 3
+def lerp(a, b, x):
+    """Linearly interpolate from a to b using the unclamped factor x."""
+    return a + (b - a) * x
+def window(t, a, b, fi=0.6, fo=0.6):
+    """Return a smooth fade envelope over [a, b] with fade lengths fi and fo."""
+    return smooth(ramp(t, a, a + fi)) * (1 - smooth(ramp(t, b - fo, b)))
 
 def camera(img, s, cx, cy):
     """Virtual camera on a still: zoom s (1 = fill frame width), centre (cx, cy) normalised."""
@@ -48,6 +66,7 @@ def rot_scale(img, theta_deg, s, ox, oy, squash=1.0):
                          resample=Image.BICUBIC, fillcolor=(0, 0, 0, 0))
 
 def persp_coeffs(dst, src):
+    """Solve Pillow perspective coefficients mapping four dst points to src points."""
     m = []
     for (x, y), (u, v) in zip(dst, src):
         m.append([x, y, 1, 0, 0, 0, -u * x, -u * y]); m.append([0, 0, 0, x, y, 1, -v * x, -v * y])
@@ -64,6 +83,7 @@ def over(base, rgba, opacity=1.0, x=0, y=0):
     base[y0:y1, x0:x1] = base[y0:y1, x0:x1] * (1 - a) + l[..., :3] * a
 
 def screen(base, rgb, opacity=1.0):
+    """Screen-blend rgb onto base in place, scaling the layer by opacity."""
     base[:] = 1 - (1 - base) * (1 - np.clip(rgb * opacity, 0, 1))
 
 # ---------- assets ----------
@@ -89,6 +109,7 @@ rng = np.random.default_rng(7)
 GRAIN = [rng.normal(0, 1, (H // 2, W // 2)).astype(np.float32) for _ in range(6)]
 
 def radial(cx, cy, r, color, power=2.0):
+    """Return a full-frame RGB glow centered at (cx, cy) with radius r in pixels."""
     g = np.exp(-(((xx - cx) ** 2 + (yy - cy) ** 2) / (r * r)) ** (power / 2))
     return g[..., None] * np.array(color, np.float32)
 
@@ -103,11 +124,13 @@ def flare(cx, cy, k):
 
 # soft particle sprites
 def sprite(r):
+    """Return a float32 Gaussian particle mask with standard deviation r pixels."""
     n = int(r * 4) | 1; c = n // 2
     g = np.exp(-(((np.arange(n) - c)[:, None]) ** 2 + ((np.arange(n) - c)[None, :]) ** 2) / (2 * r * r))
     return g.astype(np.float32)
 SPRITES = [sprite(r) for r in (1.2, 2.0, 3.2, 6.0, 10.0)]
 def add_sprite(buf, x, y, si, col, k):
+    """Add the tinted SPRITES[si] to buf in place at (x, y), clipped to the frame."""
     sp = SPRITES[si]; n = sp.shape[0]; x0, y0 = int(x) - n // 2, int(y) - n // 2
     xa, ya, xb, yb = max(x0, 0), max(y0, 0), min(x0 + n, W), min(y0 + n, H)
     if xb <= xa or yb <= ya: return
@@ -120,6 +143,7 @@ MOTES = [dict(x=prng.uniform(0, W), y=prng.uniform(0, H), vx=prng.uniform(-12, 1
               ph=prng.uniform(0, 7), si=int(prng.integers(1, 5)), k=prng.uniform(0.05, 0.22)) for _ in range(46)]
 
 def embers(buf, t, ox, oy, k):
+    """Add rising ember particles to buf at time t in seconds, with intensity k."""
     for e in EMBERS:
         age = (t + e['off']) % e['life']
         x = ox + e['x0'] + e['sw'] * math.sin(e['w'] * t + e['ph'])
@@ -128,6 +152,7 @@ def embers(buf, t, ox, oy, k):
         add_sprite(buf, x, y, e['si'], (1.0, 0.55, 0.15), 0.9 * k * max(fade, 0))
 
 def motes(buf, t, k, col=(1.0, 0.75, 0.35)):
+    """Add drifting, twinkling motes to buf at time t in seconds, tinted by col."""
     for m in MOTES:
         x = (m['x'] + m['vx'] * t) % W
         y = (m['y'] + m['vy'] * t) % H
@@ -138,6 +163,7 @@ def motes(buf, t, k, col=(1.0, 0.75, 0.35)):
 FLAME = (0.664, 0.585)  # flame position in the diya still (normalised)
 
 def shot_diya(t):
+    """Return an RGB float frame of the diya and embers at timeline time t in seconds."""
     u = ease_io(ramp(t, 2.0, 9.4))
     s, cx, cy = lerp(1.0, 1.22, u), lerp(0.56, 0.63, u), lerp(0.55, 0.57, u)
     f = f32(camera(DIYA, s, cx, cy))
@@ -153,6 +179,7 @@ def shot_diya(t):
 
 MOON = (0.508, 0.226)
 def shot_gopuram(t):
+    """Return an RGB float frame of the moon and gopuram at timeline time t in seconds."""
     u = ease_io(ramp(t, 7.4, 14.4))
     s = lerp(1.75, 1.06, u)
     cx, cy = lerp(MOON[0], 0.5, u), lerp(MOON[1] + 0.06, 0.5, u)
@@ -161,10 +188,12 @@ def shot_gopuram(t):
     return f
 
 def wheel_bg():
+    """Return the dim, blurred gopuram background for the tithi wheel as RGB floats."""
     b = camera(GOP, 1.9, 0.5, 0.2).filter(ImageFilter.GaussianBlur(14))
     return f32(b) * np.array([0.32, 0.30, 0.30], np.float32)
 WHEEL_BG = None
 def shot_wheel(t):
+    """Return an RGB float frame of the tithi dial at timeline time t in seconds."""
     global WHEEL_BG
     if WHEEL_BG is None: WHEEL_BG = wheel_bg()
     f = WHEEL_BG.copy()
@@ -183,6 +212,7 @@ def shot_wheel(t):
     return f
 
 def shot_godavari(t):
+    """Return an RGB float frame of the nakshatra carousel at timeline time t in seconds."""
     u = ease_io(ramp(t, 20.2, 28.4))
     f = f32(camera(GOD, lerp(1.06, 1.2, u), lerp(0.47, 0.53, u), lerp(0.46, 0.52, u)))
     ring_k = window(t, 21.0, 28.6, 1.6, 0.8)
@@ -214,6 +244,7 @@ _el = f32(_el.filter(ImageFilter.GaussianBlur(1.2)))
 ELLIPSE = _el[..., :3] * _el[..., 3:4] * np.clip((yy - CY_R) / RY * 0.5 + 0.55, 0.15, 1)[..., None]
 GOP_X = 0.505
 def shot_dawn(t):
+    """Return an RGB float frame of dawn and Sankalpam at timeline time t in seconds."""
     u = ease_io(ramp(t, 27.2, 34.0))
     s, cx, cy = lerp(1.02, 1.12, u), 0.5, lerp(0.55, 0.5, u)
     f = f32(camera(GOP, s, cx, cy))
@@ -238,12 +269,14 @@ def shot_dawn(t):
 
 UI_BG = None
 def ui_bg():
+    """Return the warm, blurred backdrop for the UI reveal as RGB floats."""
     b = camera(GOP, 1.3, 0.5, 0.55).filter(ImageFilter.GaussianBlur(22))
     f = f32(b) * np.array([0.55, 0.30, 0.14], np.float32)
     return f + radial(W / 2, H / 2 + 60, 900, (0.10, 0.04, 0.0))
 
 UI_FOCUS = (0.484, 0.255)
 def ui_transform(t):
+    """Return UI corner points, scale, center x/y, and tilt in radians at time t in seconds."""
     a = ease_out(ramp(t, 33.0, 35.8))
     p = ease_io(ramp(t, 35.6, 40.8))
     sc = lerp(lerp(0.62, 0.80, a), 1.30, p)
@@ -257,6 +290,7 @@ def ui_transform(t):
     return dst, sc, cx, cy, phi
 
 def shot_ui(t):
+    """Return an RGB float frame of the UI reveal at timeline time t in seconds."""
     global UI_BG
     if UI_BG is None: UI_BG = ui_bg()
     f = UI_BG.copy()
@@ -284,6 +318,7 @@ def shot_ui(t):
     return f
 
 def shot_end(t):
+    """Return an RGB float frame of the end card at timeline time t in seconds."""
     f = np.zeros((H, W, 3), np.float32) + np.array([0.03, 0.02, 0.015], np.float32)
     f += radial(W / 2, H / 2 - 40, 760, (0.20, 0.08, 0.015))
     e = TXT['endcard']
@@ -306,6 +341,7 @@ FADES = {shot_diya: (1.8, 1.2), shot_gopuram: (1.2, 0.5), shot_wheel: (0.4, 1.2)
 SUBS = [(6.0, 9.6), (10.6, 11.9), (22.2, 25.0), (28.4, 32.8), (34.4, 37.8), (41.8, 43.2), (43.3, 45.2)]
 
 def frame(i):
+    """Compose frame index i with transitions, grading, and subtitles as uint8 RGB."""
     t = i / FPS
     f = np.zeros((H, W, 3), np.float32)
     total = 0.0
@@ -350,6 +386,7 @@ def frame(i):
     return (np.clip(f, 0, 1) * 255 + 0.5).astype(np.uint8)
 
 def render(a, b, out):
+    """Encode frames [a, b) to out with ffmpeg, exiting on encoder failure."""
     p = subprocess.Popen(['ffmpeg', '-v', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{W}x{H}', '-r', str(FPS),
                           '-i', '-', '-c:v', 'libx264', '-preset', 'slow', '-crf', '15', '-pix_fmt', 'yuv420p', out], stdin=subprocess.PIPE)
     for i in range(a, b):

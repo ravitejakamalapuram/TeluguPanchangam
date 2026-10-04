@@ -20,9 +20,12 @@ const NAK = ['అశ్విని','భరణి','కృత్తిక','ర
   'అనూరాధ','జ్యేష్ఠ','మూల','పూర్వాషాఢ','ఉత్తరాషాఢ','శ్రవణం','ధనిష్ఠ','శతభిషం','పూర్వాభాద్ర','ఉత్తరాభాద్ర','రేవతి'];
 const TODAY_TITHI = 23, TODAY_NAK = 6; // కృష్ణ నవమి, పునర్వసు — what the app shows for 4 Oct 2026
 
+/** Convert an angle in degrees to radians. */
 const rad = d => d * Math.PI / 180;
+/** Return Cartesian coordinates for a radius and angle in degrees around (cx, cy). */
 const pol = (cx, cy, r, deg) => [cx + r * Math.cos(rad(deg)), cy + r * Math.sin(rad(deg))];
 
+/** Return SVG path data and a horizontal flip flag for elongation e (0–360 degrees) and radius r. */
 function moonPath(r, e) { // e = sun–moon elongation in degrees, 0..360
   const c = Math.cos(rad(e)), rx = Math.abs(c) * r;
   const waxing = e < 180, gibbous = c < 0;
@@ -30,6 +33,7 @@ function moonPath(r, e) { // e = sun–moon elongation in degrees, 0..360
   return { d, flip: !waxing };
 }
 
+/** Return the tithi wheel SVG, or just today's highlighted sector when highlightOnly is true. */
 function tithiWheel(highlightOnly) {
   const S = 2160, C = S / 2;
   let g = '';
@@ -76,6 +80,7 @@ function tithiWheel(highlightOnly) {
   </defs>${g}</svg>`;
 }
 
+/** Return the nakshatra ring SVG, or just today's entry when highlightOnly is true. */
 function nakRing(highlightOnly) {
   const S = 2400, C = S / 2;
   let g = '';
@@ -102,6 +107,7 @@ function nakRing(highlightOnly) {
   <defs><filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>${g}</svg>`;
 }
 
+/** Return CSS text shadows for a glow in the six-digit hex color c. */
 const glowTxt = c => `text-shadow:0 0 18px ${c}, 0 0 50px ${c}88;`;
 const HTML = {
   title_kaalam: [1920, 1080, `<div style="width:1920px;height:1080px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
@@ -131,6 +137,7 @@ SUBS.forEach((s, i) => HTML['sub_' + (i + 1)] = [1920, 110, `<div style="width:1
 (async () => {
   const browser = await chromium.launch();
   const page = await browser.newPage({ deviceScaleFactor: 1 });
+  /** Render body HTML at w × h pixels and save a transparent PNG named name in OUT. */
   const shoot = async (name, w, h, body) => {
     await page.setViewportSize({ width: w, height: h });
     fs.writeFileSync(`${OUT}/_tmp.html`, `<!doctype html><meta charset="utf-8"><style>${FONTS}</style><body>${body}</body>`);

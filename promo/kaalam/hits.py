@@ -4,6 +4,7 @@ sr, dur = 48000, 46.0
 n = int(sr * dur); out = np.zeros((n, 2), np.float32)
 rng = np.random.default_rng(3)
 def hit(t0, gain):
+    """Mix a 1.3-second riser and 3-second boom into out, with the impact at t0 seconds."""
     L = int(1.3 * sr); noise = rng.normal(0, 1, (L, 2)).astype(np.float32)
     for c in range(2): noise[:, c] = np.convolve(noise[:, c], np.ones(24) / 24, 'same') - np.convolve(noise[:, c], np.ones(400) / 400, 'same')
     s = int((t0 - 1.3) * sr); out[s:s + L] += noise * (np.linspace(0, 1, L) ** 3.2)[:, None] * 0.22 * gain

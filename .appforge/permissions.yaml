@@ -6,7 +6,7 @@ permissions:
     data_access: [user_settings_local]
     security_impact: low
   - permission: geolocation
-    required: true
-    reason: "Opt-in 'Use My Location' button for accurate sunrise/sunset panchangam calculations; not requested automatically, and a hardcoded Hyderabad default is used if the user never opts in"
+    required: false
+    reason: "Opt-in 'Use My Location' button for accurate sunrise/sunset panchangam calculations; not declared in manifest.json (Chrome does not allow it as optional), so Chrome asks the user with its own location prompt on the click, and a hardcoded Hyderabad default is used if the user never opts in"
     data_access: [device_location_opt_in]
     security_impact: medium

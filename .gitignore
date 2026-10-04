@@ -11,3 +11,5 @@ scratch/
 .env
 .env.*
 !.env.example
+reference/*.pdf
+.claude/worktrees/

@@ -56,33 +56,13 @@
     return reminders;
   }
 
-  // Filter and return reminders triggered on a specific day
-  async function getRemindersForDay(panchangResult) {
+  // Reminders due on a day: solar ones by date, lunar ones by masa + tithi index.
+  // day = { date: 'YYYY-MM-DD', masaIndex: 0..11, tithiIndex: 0..29 }
+  async function getRemindersForDay(day) {
     const reminders = await getReminders();
-    const active = [];
-
-    const date = panchangResult.date;
-    const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const dd = String(date.getDate()).padStart(2, '0');
-    const todayStr = `${yyyy}-${mm}-${dd}`;
-
-    const currentLunarMonth = panchangResult.month.index;
-    const currentLunarTithi = panchangResult.tithi.index;
-
-    for (const r of reminders) {
-      if (r.type === 'solar') {
-        if (r.date === todayStr) {
-          active.push(r);
-        }
-      } else if (r.type === 'lunar') {
-        if (r.lunarMonth === currentLunarMonth && r.lunarTithi === currentLunarTithi) {
-          active.push(r);
-        }
-      }
-    }
-
-    return active;
+    return reminders.filter((r) => (r.type === 'solar'
+      ? r.date === day.date
+      : r.type === 'lunar' && r.lunarMonth === day.masaIndex && r.lunarTithi === day.tithiIndex));
   }
 
   // Export

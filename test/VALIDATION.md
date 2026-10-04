@@ -1,6 +1,6 @@
 # Validation against Drik Panchang
 
-`npm test` (`test/panchang.test.js`) checks the on-device Panchang engine against 33 dates
+`npm test` (`core/test/drik.test.js`; formerly `test/panchang.test.js`) checks the on-device Panchang engine against 33 dates
 captured from [drikpanchang.com](https://www.drikpanchang.com) on 2026-09-24 (see
 `test/fixtures/drik-panchang.json` for the exact source URL and expected values per row):
 

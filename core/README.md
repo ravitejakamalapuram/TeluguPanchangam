@@ -1,0 +1,48 @@
+# core — Panchanga engine
+
+Deterministic, offline, platform-independent. No DOM, Chrome or network code; the astronomy
+library is injected. Runs in the extension page and in Node unchanged.
+
+```js
+import { createEngine } from './core/index.js';
+import { name } from './core/i18n.js';
+
+const engine = createEngine({ Astronomy }); // window.Astronomy, or require('../lib/astronomy.js')
+const day = engine.day('2026-10-03', { latitude: 17.385, longitude: 78.4867, timezone: 'Asia/Kolkata' });
+name(day.panchanga.tithi.id, 'te'); // "నవమి"
+```
+
+## Layers
+
+| Layer | File | Decides |
+|---|---|---|
+| Astronomy | `astronomy.js` | Sun/Moon/planet longitudes, ayanamsa, rise/set, new moons, local eclipse visibility. The only file that touches the ephemeris. |
+| Panchanga | `panchanga.js` | Tithi, nakshatra, yoga, karana, rasi spans with exact start/end. |
+| Calendar | `calendar.js` | Amanta masa (adhika/kshaya), samvatsara, ritu, ayana, sankranti. |
+| Timings | `timings.js` | Rahu/Yama/Gulika, Durmuhurtham, Abhijit, Brahma muhurta, Varjyam, Amrita kalam. |
+| Observances | `rules.js` | Which civil day a festival/vrata falls on (with nakshatra tie-breaks), Ekadashi names and parana; every result has a trace. |
+| Horoscope | `horoscope.js` | Daily gochara from the janma rasi: transit houses, chandra/tara balam, Saturn phases, 1–5 score with basis. |
+| Birth | `birth.js` | Janma nakshatra/pada, chandra rasi, tithi and masa from a birth instant; the one Telugu birthday per year (nija birth masa, janma nakshatra at sunrise, else janma tithi). |
+| Presentation | `i18n.js` | Telugu/English names by canonical ID. |
+| Sankalpam | `sankalpam.js` | Daily Sankalpam text (Sanskrit and plain Telugu) from a day's IDs, with a location-based desha line. |
+| Presentation | `horoscope-text.js` | Telugu/English Rasi Phalalu text for a `dailyHoroscope()` result. |
+
+## Profiles
+
+A result depends on three profiles, all plain data in `profiles/`:
+
+- **calculation** (`drik-like`): ayanamsa, sunrise definition.
+- **regional** (`telugu`): month system, timing tables, year-start rule.
+- **observance** (`andhra-telangana`): festival and vrata rules.
+
+Adding a panchangam (e.g. TTD) means adding profiles plus a fixture file; engine code doesn't change.
+Each rule's `verified` field lists the fixtures that confirm it; an empty list means unconfirmed.
+
+Every `day()` result includes `meta` with engine, astronomy provider and profile versions.
+
+## Tests
+
+`npm test` runs `core/test/`: the Drik Panchang fixture (`test/fixtures/drik-panchang.json`),
+year-long invariants for Hyderabad and Dallas (each annual festival exactly once, parana windows,
+every Ekadashi named, samvatsara at Ugadi), observance tie-breaks and dates (`observances.test.js`),
+the Telugu birthday (`birth.test.js`), and a Telugu-script check on every name.

@@ -5,8 +5,8 @@
  */
 
 import { createEngine } from './core/index.js';
-import { name } from './core/i18n.js';
-import { TITHI, PAKSHA } from './core/ids.js';
+import { name, tithiLabel } from './core/i18n.js';
+import { formatClock } from './ui/time-format.js';
 
 const engine = createEngine({ Astronomy: window.Astronomy });
 const { I18N } = window;
@@ -20,7 +20,6 @@ const COLUMNS = [
 
 const unique = (list) => [...new Set(list)];
 const isFestival = (e) => e.id.startsWith('FESTIVAL_');
-const pakshaOf = (tithiId) => (TITHI.indexOf(tithiId) < 15 ? PAKSHA.SHUKLA : PAKSHA.KRISHNA);
 const storageGet = (key) => new Promise((resolve) => chrome.storage.local.get([key], (r) => resolve(r[key])));
 
 // A <tr> of `tag` cells holding the given texts.
@@ -94,7 +93,8 @@ async function render() {
 
   document.getElementById('print-head').replaceChildren(rowOf('th', COLUMNS.map(([te, en]) => I18N.teEn(te, en))));
 
-  const formatTime = (d) => d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: tz });
+  // Telugu-style day-part clock (రా. 10:42) in Telugu, compact 12-hour time in English, as on the new tab.
+  const formatTime = (d) => (lang === 'en' ? d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: tz }) : formatClock(d, tz, 'te'));
   document.getElementById('print-rows').replaceChildren(...days.map((day, i) => {
     // Clock time, with "(+1)" when it falls after midnight of this row's day, as on the new tab.
     const at = (instant) => {
@@ -117,7 +117,7 @@ async function render() {
     const row = rowOf('td', [
       String(i + 1),
       I18N.t(WEEKDAYS[p.vara.index]),
-      until(p.tithi.spans, (id) => `${nm(pakshaOf(id))} ${nm(id)}`),
+      until(p.tithi.spans, (id) => tithiLabel(id, lang)),
       until(p.nakshatra.spans, nm),
       nm(p.yoga.id),
       formatTime(day.astronomy.sunrise),
@@ -125,7 +125,7 @@ async function render() {
       win(tm.rahuKalam),
       wins(tm.durmuhurtham),
       wins(tm.varjyam),
-      unique(events.map((e) => nm(e.id))).join('\n')
+      unique(events.map((e) => nm(e.nameId || e.id))).join('\n')
     ]);
     if (events.some(isFestival)) row.classList.add('festival');
     return row;

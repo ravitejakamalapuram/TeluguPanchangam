@@ -670,7 +670,8 @@ input:checked + .slider:before {
 }
 .hero-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* The clock keeps its natural width; the sun path takes what is left and shrinks, never spills */
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 16px;
 }
@@ -680,7 +681,7 @@ input:checked + .slider:before {
   }
 }
 .clock-display {
-  font-size: 3.6rem;
+  font-size: clamp(2.6rem, 4.2vw, 3.6rem);
   font-weight: 800;
   color: var(--accent-secondary);
   text-shadow: 0 0 15px var(--accent-secondary), 0 0 30px var(--accent-primary);
@@ -701,12 +702,16 @@ input:checked + .slider:before {
   gap: 8px;
 }
 #sun-path-svg {
+  flex: 1 1 auto;
+  min-width: 60px;
   width: 100%;
   max-width: 180px;
   height: auto;
   overflow: visible;
 }
 .arc-label-left, .arc-label-right {
+  min-width: 0;
+  text-align: center;
   font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -1017,7 +1022,8 @@ input:checked + .slider:before {
 
 .calendar-grid-container {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  /* minmax(0, 1fr): a long festival badge must truncate, not widen its column past the card */
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 8px;
 }
 .grid-weekday-header {
@@ -1036,6 +1042,7 @@ input:checked + .slider:before {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-width: 0;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }

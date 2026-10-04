@@ -16,7 +16,7 @@
     te: {
       btnBirthDetails: 'జన్మ వివరాలు',
       birthdayGreeting: 'జన్మదిన శుభాకాంక్షలు! 🎉',
-      birthdayDesc: 'ఈ రోజు మీ జన్మ నక్షత్రయుక్త పుట్టినరోజు. సకల శుభాలు కలుగుగాక!',
+      birthdayDesc: 'ఈ రోజు మీ తెలుగు పుట్టినరోజు (జన్మ నక్షత్రం లేదా తిథి ప్రకారం). సకల శుభాలు కలుగుగాక!',
       locGeoUnavailable: 'ఈ బ్రౌజర్‌లో స్థాన గుర్తింపు అందుబాటులో లేదు.',
       locLocating: 'స్థానం కనుగొనబడుతోంది...',
       locUnavailable: 'స్థానం లభించలేదు, దయచేసి నగరాన్ని ఎంచుకోండి.',
@@ -48,7 +48,7 @@
     en: {
       btnBirthDetails: 'Birth Details',
       birthdayGreeting: 'Happy Birthday! 🎉',
-      birthdayDesc: 'Today is your birth-nakshatra birthday. Wishing you all happiness!',
+      birthdayDesc: 'Today is your Telugu birthday (by birth nakshatra or tithi). Wishing you all happiness!',
       locGeoUnavailable: 'Geolocation is not available in this browser.',
       locLocating: 'Locating...',
       locUnavailable: 'Location unavailable, please pick a city.',

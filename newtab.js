@@ -4,7 +4,7 @@
  */
 
 import { createEngine } from './core/index.js';
-import { name as coreName } from './core/i18n.js';
+import { name as coreName, tithiLabel } from './core/i18n.js';
 import { TITHI, MASA, NAKSHATRA } from './core/ids.js';
 import { generateSankalpam } from './core/sankalpam.js';
 import { dailyHoroscope } from './core/horoscope.js';
@@ -472,7 +472,7 @@ import { initRatingPrompt } from './ui/rating.js';
 
     // 3. Render Panchang card values (paksha + tithi, e.g. "బహుళ నవమి")
     const cal = activePanchang.calendar;
-    elPanchangTithi.textContent = `${nm(cal.paksha.id)} ${nm(p.tithi.id)}`;
+    elPanchangTithi.textContent = tithiLabel(p.tithi.id, window.I18N.getLang());
     elPanchangTithiTime.textContent = formatTransitionText(p.tithi.spans);
 
     elPanchangNaks.textContent = `${nm(p.nakshatra.id)} (${p.nakshatra.pada})`;
@@ -702,11 +702,11 @@ import { initRatingPrompt } from './ui/rating.js';
     if (festivals.length > 0) {
       const elFest = document.createElement('span');
       elFest.className = 'day-festivals';
-      elFest.textContent = nm(festivals[0].id);
+      elFest.textContent = nm(festivals[0].nameId || festivals[0].id);
       // English adds why the rule picked this day (traces are English); Telugu keeps the names.
       elFest.title = window.I18N.getLang() === 'en'
-        ? festivals.map((f) => `${coreName(f.id, 'en')}: ${traceReason(f)}`).join('\n')
-        : festivals.map((f) => `${coreName(f.id, 'te')} (${coreName(f.id, 'en')})`).join(", ");
+        ? festivals.map((f) => `${coreName(f.nameId || f.id, 'en')}: ${traceReason(f)}`).join('\n')
+        : festivals.map((f) => `${coreName(f.nameId || f.id, 'te')} (${coreName(f.nameId || f.id, 'en')})`).join(", ");
       cell.appendChild(elFest);
     }
 
@@ -739,7 +739,7 @@ import { initRatingPrompt } from './ui/rating.js';
       const shown = [...fests, ...vratas.filter((v) => !folded(v))];
       shown.forEach((ev) => {
         const twin = vratas.find((v) => v.parana && v.trace.tithi === ev.trace.tithi);
-        items.push({ date, id: ev.id, parana: ev.parana || (twin && twin.parana) });
+        items.push({ date, id: ev.nameId || ev.id, parana: ev.parana || (twin && twin.parana) });
       });
     }
 

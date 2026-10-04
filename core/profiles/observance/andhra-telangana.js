@@ -99,8 +99,9 @@ export default {
     t('FESTIVAL_MAHA_SHIVARATRI', 'MASA_MAGHA', 'TITHI_KRISHNA_CHATURDASHI', 'nishita'),
     // Phalguna
     t('FESTIVAL_HOLI', 'MASA_PHALGUNA', 'TITHI_PURNIMA', 'pradosha'),
-    // The other eleven sankramanams (Makara is FESTIVAL_MAKARA_SANKRANTI above): SANKRANTI_MESHA, ...
-    ...RASI.filter((rasi) => rasi !== 'RASI_MAKARA')
+    // The other sankramanams: SANKRANTI_MESHA, ... Makara is FESTIVAL_MAKARA_SANKRANTI and Dhanus is
+    // FESTIVAL_DHANURMASA_START above, so they aren't listed twice on the same day.
+    ...RASI.filter((rasi) => rasi !== 'RASI_MAKARA' && rasi !== 'RASI_DHANUS')
       .map((rasi) => ({ id: rasi.replace('RASI_', 'SANKRANTI_'), type: 'solar', rasi, offsetDays: 0 })),
 
     // Recurring every month

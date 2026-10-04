@@ -96,7 +96,6 @@ const NAMES = {
   SANKRANTI_KANYA: { te: 'కన్యా సంక్రమణం', en: 'Kanya Sankranti' },
   SANKRANTI_TULA: { te: 'తులా సంక్రమణం', en: 'Tula Sankranti' },
   SANKRANTI_VRISCHIKA: { te: 'వృశ్చిక సంక్రమణం', en: 'Vrischika Sankranti' },
-  SANKRANTI_DHANUS: { te: 'ధనుస్సంక్రమణం', en: 'Dhanus Sankranti' },
   SANKRANTI_KUMBHA: { te: 'కుంభ సంక్రమణం', en: 'Kumbha Sankranti' },
   SANKRANTI_MEENA: { te: 'మీన సంక్రమణం', en: 'Meena Sankranti' },
 
@@ -132,6 +131,12 @@ const NAMES = {
 export function name(id, lang = 'te') {
   const n = NAMES[id];
   return n ? n[lang] || n.en : id;
+}
+
+// A tithi with its paksha ("శుద్ధ సప్తమి", "Krishna Ashtami"); Purnima and Amavasya stand alone.
+export function tithiLabel(id, lang = 'te') {
+  if (id === 'TITHI_PURNIMA' || id === 'TITHI_AMAVASYA') return name(id, lang);
+  return `${name(id.startsWith('TITHI_SHUKLA_') ? 'PAKSHA_SHUKLA' : 'PAKSHA_KRISHNA', lang)} ${name(id, lang)}`;
 }
 
 export const ALL_NAMES = NAMES;

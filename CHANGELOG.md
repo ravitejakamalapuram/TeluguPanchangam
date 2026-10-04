@@ -15,10 +15,21 @@ _Nothing yet._
 - Sankalpam names the tithi and nakshatra current when you read it today, the day's actual yoga and karana, and uses a location line that fits the city (Andhra/Telangana, elsewhere in India, or the Americas form used by US Telugu priests).
 
 ### Added
+- First-run setup: language, then city (US metros first for US time zones), then optional birth details; existing users skip it.
+- "Upcoming this week" strip with Ekadashi parana times; Moon sign and కార్తె row; Telugu panchangam time style (ఉ./మ./సా./రా.) in Telugu mode; "Panchangam reference" setting (Drik, Telugu) with a calculation note.
+- Share today's panchangam as a 1080×1350 image (copied to the clipboard, with a download link). A one-time "Rate us" banner on a festival day after 14 days of use.
+- Printable monthly panchangam page (Print month button under the calendar).
+- Named Ekadashis (Kamada … Papamochani, Padmini and Parama in adhika masa), Mahalaya paksham, every sankramanam, Dhanurmasam and Karthika masam start. Krishnashtami prefers Rohini and Vijayadashami prefers Shravana when the tithi spans two days.
+- The Telugu birthday banner fires once per year: the first day of the birth masa with the janma nakshatra at sunrise (else the janma tithi). Saving a date of birth pre-selects the janma rasi unless you picked one yourself.
+- Telugu and English extension name and description (`_locales`).
 - Gulika Kalam and Brahma Muhurtham timings; Varjyam and Amrita Kalam for every nakshatra in the day; nakshatra pada.
 - Festivals and vratas: Bathukamma (Engili Pula, Saddula), Bonalu, Atla Tadde, Undralla Tadde, Nagula Panchami, Narasimha Jayanti, Karthika Somavaram, Shravana Mangalavaram, Utthana Ekadashi, Ksheerabdi Dwadashi; every Ekadashi with parana time, Sankashti Chaturthi, Pradosham, Masa Shivaratri, Purnima and Amavasya.
 
+### Removed
+- The `geolocation` permission. Chrome doesn't allow it as an optional permission, so declaring it showed a location warning at install for a feature most people never use; "Use My Location" now gets Chrome's own prompt when clicked.
+
 ### Fixed
+- The monthly calendar could overflow its card and hide Friday/Saturday; the clock card no longer clips the sunrise/sunset labels at 1280px.
 - Durmuhurtham was wrong on Sunday, Monday, Tuesday and Friday.
 - The Telugu year (samvatsara) changed on 1 March instead of at Ugadi.
 - Yoga and karana were taken at midday while tithi and nakshatra used sunrise.

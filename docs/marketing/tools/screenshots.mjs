@@ -63,7 +63,9 @@ for (const s of SCENES) {
   await page.evaluate(({ lang, city, theme }) => chrome.storage.local.set({
     uiLang: lang,
     selectedCity: city,
-    userSettings: { name: 'యజమాని', dob: '', tob: '12:00', rasi: '0', theme }
+    userSettings: { name: 'యజమాని', dob: '', tob: '12:00', rasi: '0', theme },
+    // A returning user: no first-run dialog, day-one note or rating banner over the shot.
+    onboardingDone: 1, dayOneNoteDismissed: true, ratingPromptDone: true
   }), { lang: s.lang, city, theme: s.theme });
 
   const [date, time] = s.at.split(' ');

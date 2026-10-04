@@ -38,3 +38,22 @@ script only, no `innerHTML` with dynamic values, zero network requests.
 2. Merge lanes in order A, B, C, D, E, F, G; resolve hook conflicts in `newtab.*`.
 3. Full test run, headless load as page and as unpacked extension, whole-diff review.
 4. Regenerate store screenshots from the real UI; update changelog; push.
+
+## Status (2026-10-04)
+
+Lanes A–G implemented in parallel worktrees, each reviewed by two independent reviewers and
+fixed, then merged. Integration fixes: named Ekadashis shown in the calendar, upcoming strip and
+print view; birthday text covers the tithi fallback; one entry for the Sun entering Dhanus;
+Telugu-style times in the print view; `tithiLabel` (no paksha on Purnima/Amavasya); calendar-grid
+and clock-card overflow; screenshot script seeds a returning user. 98 tests, both validators'
+local checks, and headless runs (fresh install, Dallas/English, Hyderabad/Telugu, print page,
+share image) pass with zero console errors and zero external requests.
+
+Needs the owner:
+- Board sign-off on the `CHROMEWEBSTORE.md` geolocation row and the ADR 0001 amendment
+  (geolocation removed from `manifest.json`).
+- Approve the listing-copy draft and swap in the new screenshots from `docs/marketing/screenshots/`.
+- Confirm on a real Chrome profile that "Use My Location" shows Chrome's location prompt.
+- Owner decisions listed in `docs/marketing/launch-kit.md` and lane notes: Mahalaya paksham start
+  convention, Padmini Ekadashi / Karkataka sankramanam dates once Drik is reachable.
+- Drik/TTD reference fixtures (blocked by network), then the release workflow (bump=major).

@@ -1,6 +1,6 @@
 // "Share today's panchangam" (review §4.6): draws the viewed day on a 1080x1350 PNG with the bundled fonts,
 // copies it to the clipboard and offers it as a download. Everything happens on the device.
-import { name } from '../core/i18n.js';
+import { name, tithiLabel } from '../core/i18n.js';
 
 const W = 1080;
 const H = 1350;
@@ -104,7 +104,7 @@ async function drawCard(day, { lang, city, date, time, timeWindow }, L) {
   const rows = [
     [L.samvatsara, [nm(cal.samvatsara.id)]],
     [L.masa, [(cal.masa.adhika ? `${L.adhika} ` : '') + nm(cal.masa.id)]],
-    [L.tithi, [`${nm(cal.paksha.id)} ${nm(p.tithi.id)}`]],
+    [L.tithi, [tithiLabel(p.tithi.id, lang)]],
     [L.nakshatra, [nm(p.nakshatra.id)]],
     [L.sunrise, [time(sky.sunrise)]],
     [L.sunset, [time(sky.sunset)]],

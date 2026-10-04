@@ -1,5 +1,5 @@
 // One sprite per nakshatra name (upright), so the ring can be laid out in 3D per frame.
-const { chromium } = require('/opt/node-tools/node_modules/playwright');
+const { chromium } = require('playwright');
 const fs = require('fs');
 const OUT = __dirname + '/assets/nak', F = 'file://' + require('path').resolve(__dirname, '../../fonts') + '/';
 fs.mkdirSync(OUT, { recursive: true });

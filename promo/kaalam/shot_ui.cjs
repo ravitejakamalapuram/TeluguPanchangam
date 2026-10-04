@@ -1,6 +1,6 @@
-const { chromium } = require('/opt/node-tools/node_modules/playwright');
+const { chromium } = require('playwright');
 (async () => {
-  const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' }).catch(() => chromium.launch());
+  const browser = await chromium.launch();
   const ctx = await browser.newContext({
     viewport: { width: 1920, height: 1080 }, deviceScaleFactor: 2,
     geolocation: { latitude: 17.385, longitude: 78.4867 }, permissions: ['geolocation'],

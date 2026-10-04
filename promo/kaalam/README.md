@@ -9,7 +9,7 @@ Nothing here ships: `release.yaml` packages only the files in its `include` allo
 Sources in `src/`: three stills (Seedream 5 Lite), narration (`eleven_v3`, voice "Prasad") and score
 (Eleven Music v2.5), all generated on ElevenLabs. Everything that moves is built in code.
 
-Rebuild a 1080p `kaalam-teaser.mp4` with `./build.sh` (Node + Playwright, Python with numpy/pillow,
+Rebuild a 1080p `kaalam-teaser.mp4` with `./build.sh` (Node with `playwright` resolvable, e.g. `npm i -g playwright`, Python with numpy/pillow,
 ffmpeg; about 5 minutes on 4 cores). The dials read today's tithi/nakshatra as fixed constants
 (`TODAY_TITHI`, `TODAY_NAK` in `assets.cjs`, `UI_FOCUS` and the highlight boxes in `render.py`);
 update them together if you re-shoot the UI (`node shot_ui.cjs`) on another day.

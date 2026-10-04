@@ -1,5 +1,5 @@
 // Manuscript layer: the day's Sankalpam exactly as the app printed it, set as a tall gold text block.
-const { chromium } = require('/opt/node-tools/node_modules/playwright');
+const { chromium } = require('playwright');
 const fs = require('fs');
 const OUT = __dirname + '/assets', F = 'file://' + require('path').resolve(__dirname, '../../fonts') + '/';
 const txt = fs.readFileSync(OUT + '/sankalpam.txt', 'utf8').replace(/^.*?:\s*/, '').trim();

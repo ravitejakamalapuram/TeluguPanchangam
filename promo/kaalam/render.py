@@ -354,7 +354,9 @@ def render(a, b, out):
                           '-i', '-', '-c:v', 'libx264', '-preset', 'slow', '-crf', '15', '-pix_fmt', 'yuv420p', out], stdin=subprocess.PIPE)
     for i in range(a, b):
         p.stdin.write(frame(i).tobytes())
-    p.stdin.close(); p.wait()
+    p.stdin.close()
+    if p.wait() != 0:
+        sys.exit('ffmpeg failed for frames %d-%d' % (a, b))
 
 if __name__ == '__main__':
     if len(sys.argv) == 4:
@@ -364,7 +366,8 @@ if __name__ == '__main__':
     else:
         n = 4; step = math.ceil(NFRAMES / n)
         procs = [subprocess.Popen([sys.executable, __file__, str(k * step), str(min(NFRAMES, (k + 1) * step)), os.path.join(HERE, f'part{k}.mp4')]) for k in range(n)]
-        for p in procs: p.wait()
+        if any(p.wait() != 0 for p in procs):
+            sys.exit('a render worker failed')
         with open(os.path.join(HERE, 'parts.txt'), 'w') as fh:
             fh.writelines(f"file 'part{k}.mp4'\n" for k in range(n))
         print('rendered', NFRAMES, 'frames')

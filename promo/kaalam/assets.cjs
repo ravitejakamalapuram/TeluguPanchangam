@@ -1,6 +1,6 @@
 // Renders the film's vector/typographic layers as transparent PNGs with Chromium,
 // using the extension's own vendored fonts so Telugu shaping is exact.
-const { chromium } = require('/opt/node-tools/node_modules/playwright');
+const { chromium } = require('playwright');
 const fs = require('fs');
 const OUT = __dirname + '/assets';
 fs.mkdirSync(OUT, { recursive: true });

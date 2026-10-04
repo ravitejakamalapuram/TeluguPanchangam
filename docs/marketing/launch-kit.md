@@ -13,9 +13,10 @@ the owner and board to approve; nothing in `chrome-store/` is changed here.
   of 2.0.0 (they show Gulika Kalam, for one), so until 2.0.0 is live a post uses a 1.2.0 store
   screenshot from `chrome-store/assets/screenshots/` or no image. The "Needs" column in §2.2 says
   which version or lane each post depends on.
-- **Not built yet:** printable month (lane F), share card and rating prompt (lane E), onboarding
-  (lane D), Telugu store listing and optional location permission (lane B), "Upcoming this week"
-  strip (lane C). Templates that depend on them are marked.
+- **Built in 2.0.0, not live until it is published:** printable month (lane F), share card and rating
+  prompt (lane E), onboarding (lane D), Telugu extension name and no location permission at install
+  (lane B), "Upcoming this week" strip (lane C). Until 2.0.0 is on the store, don't mention them;
+  templates and posts that depend on them are marked with their lane.
 - **Words to avoid:** "only", "best", "most accurate", "verified" (only eight festival rules have a
   Drik Panchang fixture; see §2.1), "app" or "works on your phone" (it is a desktop Chrome extension).
 - Store link used below: `https://chromewebstore.google.com/detail/obgpdlhkahmdiepklldjnnmfmbhmgenn`
@@ -37,8 +38,8 @@ India. Offline, no ads, no tracking.
    Drik. Live in 1.2.0.
 2. **Offline, no tracking.** The extension makes no network requests of its own: fonts are bundled, there
    is no analytics or ad code, and settings stay in `chrome.storage.local`. "Use My Location" is
-   opt-in and only runs when pressed. Caveat until lane B ships: `geolocation` is still a required
-   permission, so the install dialog mentions location. Live in 1.2.0.
+   opt-in and only runs when pressed. In 1.2.0 `geolocation` is a required permission, so the install
+   dialog mentions location; 2.0.0 drops it and Chrome asks only when the button is pressed.
 3. **Telugu household conventions.** Festivals are rules, not fixed dates
    (`core/profiles/observance/andhra-telangana.js`): Engili Pula Bathukamma on Bhadrapada Amavasya and
    Saddula Bathukamma on Ashwayuja Shukla Ashtami; Atla Tadde by moonrise, so it can fall a day apart
@@ -303,9 +304,8 @@ Telugu section, same edits:
   This also corrects a misspelling in the approved copy, which has ఆయనం with a long ఆ (ఆయన means "he");
   the word is అయనం, as in ఉత్తరాయణం.
 
-For lane B: the manifest description starts "Premium offline Telugu Calendar…". "Premium" reads as a paid
-tier, which the extension doesn't have. Suggested for `_locales/en`: "Offline Telugu Panchangam, Rasi
-Phalalu and Sankalpam on your new tab, computed for your own city."
+The manifest description no longer says "Premium" (it read as a paid tier); `_locales/en` now has
+"Offline Telugu Panchangam, Rasi Phalalu and Sankalpam on your new tab, computed for your own city."
 
 ## 5. Screenshot shot list (1280x800)
 
@@ -354,14 +354,14 @@ Reviews: Mon 9 Nov (Deepavali), Mon 18 Jan (Sankranti), Mon 12 Apr (Ugadi).
 
 ## 7. Issues found while preparing this kit
 
-For the owning lanes; none is fixed here.
+For the owning lanes. The first two were fixed when the lanes were merged (commit 97e830d) and the shots retaken.
 
-- **Month grid clipped (lane C, user-visible).** `.calendar-grid-container` uses `repeat(7, 1fr)`, and the
+- **Fixed — month grid clipped (lane C, user-visible).** `.calendar-grid-container` uses `repeat(7, 1fr)`, and the
   `nowrap` festival labels set each column's minimum width, so the grid needs 893px in Telugu and 946px
   in English while the card is at most 860px wide. In the three-column layout (windows wider than
   1200px) the right-hand columns are always cut off; at 1280px only Sunday to Wednesday show.
   `repeat(7, minmax(0, 1fr))` should fix it. Blocks shot 3.
-- **Clock card overflows (lane C, user-visible).** In the three-column layout the clock's column grows
+- **Fixed — clock card overflows (lane C, user-visible).** In the three-column layout the clock's column grows
   to fit the clock, and the sun-arc row (two labels around the 180px arc) needs 278px in Telugu and
   263px in English but gets 229px and 241px. Centred, it spills both ways: wide digits such as 07:30:00
   run into the సూర్యోదయం label, and in Telugu the సూర్యాస్తమయం label runs 16–24px past the card and is

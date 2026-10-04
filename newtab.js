@@ -169,7 +169,7 @@ import { initRatingPrompt } from './ui/rating.js';
         elSettingsForm.dispatchEvent(new Event('submit', { cancelable: true }));
       }
     });
-    initRatingPrompt(todayPanchang);
+    initRatingPrompt(todayPanchang || dayFor(cityToday())); // the city's date can roll over mid-init
   }
 
   // Apply the active UI language to every statically-marked element, plus

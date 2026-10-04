@@ -5,3 +5,5 @@ hits.wav
 mix.wav
 kaalam-teaser.mp4
 still_*.jpg
+node_modules/
+__pycache__/

@@ -1,0 +1,47 @@
+name: teaser
+
+# Renders the Kaalam promo film (promo/kaalam) on demand. Manual only: it never runs on push,
+# pull requests or releases. Run it from the Actions tab; the 1080p and 720p cuts are attached
+# to the run as an artifact. No secrets and no paid APIs; the audio and stills are in src/.
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: promo/kaalam
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - name: Install tools
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+          npm i --no-save --no-package-lock playwright
+          npx playwright install --with-deps chromium
+          python -m pip install -q numpy pillow
+      - name: Render
+        run: |
+          ./build.sh
+          ffmpeg -v error -y -i kaalam-teaser.mp4 -vf scale=1280:720:flags=lanczos -c:v libx264 -preset slow \
+            -crf 23 -pix_fmt yuv420p -c:a copy -movflags +faststart kaalam-teaser-720p.mp4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: kaalam-teaser
+          path: |
+            promo/kaalam/kaalam-teaser.mp4
+            promo/kaalam/kaalam-teaser-720p.mp4
+          retention-days: 30

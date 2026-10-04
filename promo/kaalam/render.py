@@ -7,7 +7,7 @@ light-flash transitions, bloom, grain, vignette and a 2.39:1 letterbox.
 
 usage: python3 render.py [start_frame end_frame out.mp4]   (no args = render all in 4 workers)
 """
-import math, os, subprocess, sys
+import json, math, os, subprocess, sys
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
@@ -90,8 +90,10 @@ def screen(base, rgb, opacity=1.0):
 DIYA = load(os.path.join(HERE, 'src', 'diya.jpg'))
 GOP = load(os.path.join(HERE, 'src', 'gopuram.jpg'))
 GOD = load(os.path.join(HERE, 'src', 'godavari.jpg'))
-UI = load(os.path.join(HERE, 'src', 'ui.png'), 'RGBA')
-_m = Image.new('L', UI.size, 0); ImageDraw.Draw(_m).rounded_rectangle([0, 0, UI.size[0] - 1, UI.size[1] - 1], 48, fill=255)
+# The UI shot is the store listing's first screenshot, so the film shows what the listing shows.
+UI = load(os.path.join(HERE, '..', '..', 'chrome-store', 'assets', 'screenshots', '01-today-telugu-hyderabad.png'), 'RGBA')
+UI_ASPECT = UI.size[1] / UI.size[0]
+_m = Image.new('L', UI.size, 0); ImageDraw.Draw(_m).rounded_rectangle([0, 0, UI.size[0] - 1, UI.size[1] - 1], UI.size[0] // 80, fill=255)
 UI.putalpha(_m)
 WHEEL, WHEEL_HI = load(A('tithi_wheel.png'), 'RGBA'), load(A('tithi_wheel_hi.png'), 'RGBA')
 RING, RING_HI = load(A('nak_ring.png'), 'RGBA'), load(A('nak_ring_hi.png'), 'RGBA')
@@ -101,7 +103,9 @@ TXT = {n: f32(load(A(n + '.png'), 'RGBA')) for n in
 SANK = f32(load(A('sankalpam.png'), 'RGBA'))
 _tc = load(A('tithi_center.png'), 'RGBA'); TXT['tithi_center'] = f32(_tc.resize((int(_tc.width * 0.56), int(_tc.height * 0.56)), Image.LANCZOS))
 NAK = [load(A('nak/%d.png' % k), 'RGBA') for k in range(27)]
-NAK_HI = load(A('nak/6_hi.png'), 'RGBA')
+with open(A('today.json')) as fh:
+    TODAY = json.load(fh)  # today's tithi, nakshatra and dial angle, as assets.cjs drew them
+NAK_HI = load(A('nak/%d_hi.png' % TODAY['nak']), 'RGBA')
 
 yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
 VIGNETTE = (1 - 0.42 * (((xx - W / 2) / (W * 0.62)) ** 2 + ((yy - H / 2) / (H * 0.78)) ** 2)).clip(0.35, 1)[..., None]
@@ -200,7 +204,7 @@ def shot_wheel(t):
     f += radial(W / 2, H / 2, 520, (0.16, 0.08, 0.02))
     u = ease_out(ramp(t, 13.6, 20.6))
     s = lerp(0.66, 0.37, u)
-    theta = lerp(62, -12, u)  # ends with today's tithi at 6 o'clock, labels upright
+    theta = lerp(TODAY['wheel_end'] + 74, TODAY['wheel_end'], u)  # ends with today's tithi at 12 or 6 o'clock
     w = f32(rot_scale(WHEEL, theta, s, W / 2, H / 2 + 4))
     over(f, w, 0.95)
     hi = ramp(t, 16.4, 17.2) * (0.75 + 0.25 * math.sin(4 * t))
@@ -217,7 +221,7 @@ def shot_godavari(t):
     f = f32(camera(GOD, lerp(1.06, 1.2, u), lerp(0.47, 0.53, u), lerp(0.46, 0.52, u)))
     ring_k = window(t, 21.0, 28.6, 1.6, 0.8)
     hk = ramp(t, 23.8, 24.8) * ring_k
-    phi0 = 10 + 5.0 * (t - 25.6)
+    phi0 = 90 - TODAY['nak'] * 360 / 27 + 5.0 * (t - 25.6)  # today's nakshatra at the front at 25.6 s
     screen(f, ELLIPSE, ring_k * 0.9)
     items = []
     for k in range(27):
@@ -228,9 +232,9 @@ def shot_godavari(t):
         sc = 0.36 + 0.46 * d
         im = NAK[k]; w, h = int(im.width * sc), int(im.height * sc)
         spr = f32(im.resize((w, h), Image.BILINEAR))
-        a = ring_k * (0.18 + 0.82 * d ** 1.5) * (1 - hk if k == 6 else 1)
+        a = ring_k * (0.18 + 0.82 * d ** 1.5) * (1 - hk if k == TODAY['nak'] else 1)
         over(f, spr, a, int(x - w / 2), int(y - 35 * sc))
-        if k == 6 and hk > 0:
+        if k == TODAY['nak'] and hk > 0:
             hi = NAK_HI; w2, h2 = int(hi.width * sc), int(hi.height * sc)
             over(f, f32(hi.resize((w2, h2), Image.BILINEAR)), hk * (0.4 + 0.6 * d), int(x - w2 / 2), int(y - 38 * sc))
     nt = TXT['nak_today']; over(f, nt, window(t, 24.6, 28.4, 0.8, 0.6), W // 2 - nt.shape[1] // 2, BAR + 30)
@@ -274,7 +278,7 @@ def ui_bg():
     f = f32(b) * np.array([0.55, 0.30, 0.14], np.float32)
     return f + radial(W / 2, H / 2 + 60, 900, (0.10, 0.04, 0.0))
 
-UI_FOCUS = (0.484, 0.255)
+UI_FOCUS = (0.48, 0.377)  # between the tithi and nakshatra cards, as fractions of the screenshot
 def ui_transform(t):
     """Return UI corner points, scale, center x/y, and tilt in radians at time t in seconds."""
     a = ease_out(ramp(t, 33.0, 35.8))
@@ -283,8 +287,8 @@ def ui_transform(t):
     phi = math.radians(lerp(24, 0, a))
     fx, fy = lerp(0.5, UI_FOCUS[0], p), lerp(0.5, UI_FOCUS[1], p)
     sx, sy = 960, lerp(lerp(600, 540, a), 515, p)
-    cx, cy = sx - (fx - 0.5) * W * sc, sy - (fy - 0.5) * H * sc
-    hw, hh = W * sc / 2, H * sc / 2 * math.cos(phi)
+    cx, cy = sx - (fx - 0.5) * W * sc, sy - (fy - 0.5) * W * UI_ASPECT * sc
+    hw, hh = W * sc / 2, W * UI_ASPECT * sc / 2 * math.cos(phi)
     kt, kb = 1 - 0.32 * math.sin(phi), 1 + 0.08 * math.sin(phi)
     dst = [(cx - hw * kt, cy - hh), (cx + hw * kt, cy - hh), (cx + hw * kb, cy + hh), (cx - hw * kb, cy + hh)]
     return dst, sc, cx, cy, phi
@@ -304,11 +308,11 @@ def shot_ui(t):
     ui = f32(UI.transform((W, H), Image.PERSPECTIVE, coeffs, resample=Image.BICUBIC, fillcolor=(0, 0, 0, 0)))
     over(f, ui, smooth(ramp(t, 33.15, 33.9)))
     # the payoff: ring the very tithi and nakshatra the dials just showed
-    for (u0, v0, u1, v1), (a0, a1) in (((0.2635, 0.194, 0.4815, 0.302), (37.4, 41.2)), ((0.492, 0.194, 0.710, 0.302), (38.3, 41.2))):
+    for (u0, v0, u1, v1), (a0, a1) in (((0.2648, 0.3038, 0.4734, 0.45), (37.4, 41.2)), ((0.4867, 0.3038, 0.6961, 0.45), (38.3, 41.2))):
         k = window(t, a0, a1, 0.5, 0.6) * (0.8 + 0.2 * math.sin(6 * t))
         if k <= 0: continue
-        X0, Y0 = cx + (u0 - 0.5) * W * sc, cy + (v0 - 0.5) * H * sc
-        X1, Y1 = cx + (u1 - 0.5) * W * sc, cy + (v1 - 0.5) * H * sc
+        X0, Y0 = cx + (u0 - 0.5) * W * sc, cy + (v0 - 0.5) * W * UI_ASPECT * sc
+        X1, Y1 = cx + (u1 - 0.5) * W * sc, cy + (v1 - 0.5) * W * UI_ASPECT * sc
         lay = Image.new('RGBA', (W, H), (0, 0, 0, 0))
         ImageDraw.Draw(lay).rounded_rectangle([X0 - 6, Y0 - 6, X1 + 6, Y1 + 6], int(18 * sc + 6), outline=(255, 150, 40, 255), width=4)
         g = f32(lay.filter(ImageFilter.GaussianBlur(10)))
@@ -403,7 +407,8 @@ if __name__ == '__main__':
     else:
         n = 4; step = math.ceil(NFRAMES / n)
         procs = [subprocess.Popen([sys.executable, __file__, str(k * step), str(min(NFRAMES, (k + 1) * step)), os.path.join(HERE, f'part{k}.mp4')]) for k in range(n)]
-        if any(p.wait() != 0 for p in procs):
+        codes = [p.wait() for p in procs]  # wait for every worker, not just the first failure
+        if any(c != 0 for c in codes):
             sys.exit('a render worker failed')
         with open(os.path.join(HERE, 'parts.txt'), 'w') as fh:
             fh.writelines(f"file 'part{k}.mp4'\n" for k in range(n))

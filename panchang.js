@@ -28,7 +28,7 @@
     nakshatras: [
       "అశ్విని (Ashwini)", "భరణి (Bharani)", "కృత్తిక (Krittika)", "రోహిణి (Rohini)",
       "మృగశిర (Mrigashira)", "ఆర్ద్ర (Ardra)", "పునర్వసు (Punarvasu)", "పుష్యమి (Pushya)",
-      "ఆశ్లేష (Ashlesha)", "మఖ (Magha)", "పూర్వ ఫల్గుణి / పుబ్బ (Purva Phalguni)", "uttara phalguni / ఉత్తర (Uttara Phalguni)",
+      "ఆశ్లేష (Ashlesha)", "మఖ (Magha)", "పూర్వ ఫల్గుణి / పుబ్బ (Purva Phalguni)", "ఉత్తర ఫల్గుణి / ఉత్తర (Uttara Phalguni)",
       "హస్త (Hasta)", "చిత్త (Chitra)", "స్వాతి (Swati)", "విశాఖ (Vishakha)",
       "అనూరాధ (Anuradha)", "జ్యేష్ఠ (Jyeshtha)", "మూల (Mula)", "పూర్వాషాఢ (Purva Ashadha)",
       "ఉత్తరాషాఢ (Uttara Ashadha)", "శ్రవణం (Shravana)", "ధనిష్ఠ (Dhanishta)", "శతభిషం (Shatabhisha)",

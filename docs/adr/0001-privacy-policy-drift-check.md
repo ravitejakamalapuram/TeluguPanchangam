@@ -53,6 +53,11 @@ more step in the existing `listing-check` job. It derives its expectations rathe
 them: the permission set from `manifest.json` (`permissions` + `host_permissions`), the URL to
 check from `store.config.json`.
 
+*Amended 2026-10-03:* the permission set also includes every `permission:` in
+`.appforge/permissions.yaml`. `geolocation` left `manifest.json` (it warned at install and Chrome
+does not allow it as optional), but the page still reads the device location after Chrome's own
+prompt, so its disclosure must still be checked in every copy.
+
 It asserts, in two tiers:
 
 - **Local tier — no network, hard fail.** Every permission name appears in `PRIVACY.md`,

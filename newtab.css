@@ -588,7 +588,8 @@ body {
   cursor: pointer;
 }
 .city-selector-card select option,
-.rasi-selector-card select option {
+.rasi-selector-card select option,
+.modal-form-grid select option {
   background: #120808;
   color: #fff;
 }
@@ -669,7 +670,8 @@ input:checked + .slider:before {
 }
 .hero-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* The clock keeps its natural width; the sun path takes what is left and shrinks, never spills */
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 16px;
 }
@@ -679,7 +681,7 @@ input:checked + .slider:before {
   }
 }
 .clock-display {
-  font-size: 3.6rem;
+  font-size: clamp(2.6rem, 4.2vw, 3.6rem);
   font-weight: 800;
   color: var(--accent-secondary);
   text-shadow: 0 0 15px var(--accent-secondary), 0 0 30px var(--accent-primary);
@@ -700,12 +702,16 @@ input:checked + .slider:before {
   gap: 8px;
 }
 #sun-path-svg {
+  flex: 1 1 auto;
+  min-width: 60px;
   width: 100%;
   max-width: 180px;
   height: auto;
   overflow: visible;
 }
 .arc-label-left, .arc-label-right {
+  min-width: 0;
+  text-align: center;
   font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -761,6 +767,57 @@ input:checked + .slider:before {
   font-weight: 600;
   color: var(--text-secondary);
   font-style: italic;
+}
+/* Moon / Sun signs row and the calculation-source note, full width under the quad cards */
+.signs-card {
+  grid-column: 1 / -1;
+  padding: 12px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(14, 6, 6, 0.5);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.signs-card .quad-title { margin-right: 4px; }
+.source-note {
+  grid-column: 1 / -1;
+  margin-top: -8px;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  text-align: right;
+}
+
+/* Upcoming this week */
+.upcoming-card { padding: 16px 20px; }
+.upcoming-card h3 {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--accent-secondary);
+  margin-bottom: 10px;
+}
+.upcoming-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.upcoming-list li {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  border-left: 3px solid var(--accent-primary);
+  font-size: 0.8rem;
+}
+.upcoming-date, .upcoming-parana {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
 }
 
 /* 8. 24-Hour Visual Timeline */
@@ -958,10 +1015,15 @@ input:checked + .slider:before {
   color: #fff;
   border-color: var(--accent-secondary);
 }
+.calendar-print-btn {
+  display: block;
+  margin: 16px auto 0;
+}
 
 .calendar-grid-container {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  /* minmax(0, 1fr): a long festival badge must truncate, not widen its column past the card */
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 8px;
 }
 .grid-weekday-header {
@@ -980,6 +1042,7 @@ input:checked + .slider:before {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  min-width: 0;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -1176,6 +1239,55 @@ input:checked + .slider:before {
   margin-bottom: 20px;
 }
 
+/* One-time rating prompt (ui/rating.js) */
+.rating-banner {
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 94, 0, 0.1) 100%);
+  border: 1px solid var(--accent-secondary);
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  margin-bottom: 20px;
+}
+.rating-banner a {
+  color: var(--accent-secondary);
+  font-weight: 700;
+}
+.rating-dismiss {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+/* Share card (ui/share-card.js) */
+.share-btn {
+  margin-top: 10px;
+}
+.share-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  background: var(--panel-bg);
+  backdrop-filter: var(--blur);
+  border: 1px solid var(--accent-secondary);
+  color: var(--text-primary);
+  padding: 10px 18px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  font-weight: 600;
+  z-index: 1100;
+}
+.share-toast a {
+  color: var(--accent-secondary);
+}
+
 /* Modals */
 .modal-overlay {
   position: fixed;
@@ -1224,7 +1336,7 @@ input:checked + .slider:before {
   text-transform: uppercase;
   color: var(--text-secondary);
 }
-.modal-form-grid input {
+.modal-form-grid input, .modal-form-grid select {
   padding: 10px;
   border-radius: 8px;
   border: 1px solid rgba(255,255,255,0.06);
@@ -1245,3 +1357,156 @@ input:checked + .slider:before {
 .gita-sanskrit { margin: 0 0 8px; font-size: 1.15rem; line-height: 1.7; text-align: center; white-space: pre-line; }
 .gita-translit { margin: 0 0 10px; font-size: 0.9rem; line-height: 1.5; text-align: center; font-style: italic; opacity: 0.85; white-space: pre-line; }
 .gita-english { margin: 0; font-size: 0.95rem; line-height: 1.6; text-align: center; }
+
+/* Location note under a Sankalpam recited outside Andhra Pradesh/Telangana */
+.sankalpam-note {
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+/* First-run onboarding dialog and day-1 note (ui/onboarding.js) */
+.onboarding {
+  width: min(540px, calc(100vw - 32px));
+  max-height: calc(100vh - 32px);
+  margin: auto; /* the global reset zeroes the UA margin that centers a modal dialog */
+  padding: 24px;
+  overflow-y: auto;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+}
+.onboarding::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+}
+.onboarding-progress {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.onboarding-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--accent-secondary);
+  margin: 2px 0 16px;
+}
+.onboarding-step h3 {
+  font-size: 1.05rem;
+}
+.onboarding-step > p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 2px 0 14px;
+}
+.onboarding-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.onboarding-choice,
+.onboarding-city {
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  cursor: pointer;
+}
+.onboarding-choice {
+  flex: 1 1 140px;
+  padding: 14px;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+.onboarding-choice[aria-pressed="true"],
+.onboarding-city:has(input:checked) {
+  border-color: var(--accent-secondary);
+  background: rgba(255, 215, 0, 0.12);
+}
+.onboarding-cities {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 8px;
+  max-height: 40vh;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+.onboarding-city {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+}
+.onboarding-city input {
+  accent-color: var(--accent-primary);
+}
+.onboarding-secondary {
+  background: none;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-family: var(--font-family);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+.onboarding-locate-status {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.onboarding-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+.onboarding-actions .cyber-btn {
+  width: auto;
+  padding: 10px 22px;
+}
+.onboarding-skip {
+  margin-right: auto;
+}
+.onboarding :focus-visible,
+.day-one-dismiss:focus-visible {
+  outline: 2px solid var(--accent-secondary);
+  outline-offset: 2px;
+}
+.day-one-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.day-one-note[hidden] {
+  display: none;
+}
+.day-one-dismiss {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

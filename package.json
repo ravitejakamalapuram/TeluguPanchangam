@@ -1,10 +1,10 @@
 {
   "name": "telugupanchangam",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --test test/panchang.test.js test/gita-verse.test.js && node test/smoke.test.js",
+    "test": "node --test test/gita-verse.test.js test/*.test.mjs core/test/*.test.js && node test/smoke.test.js",
     "validate:listing": "node chrome-store/validate-listing.mjs",
     "validate:privacy": "node chrome-store/validate-privacy.mjs"
   },

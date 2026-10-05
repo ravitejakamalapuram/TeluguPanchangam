@@ -6,7 +6,9 @@ import { addDays } from '../time.js';
 
 const CITIES = {
   hyderabad: { latitude: 17.385, longitude: 78.4867, timezone: 'Asia/Kolkata' },
-  dallas: { latitude: 32.7767, longitude: -96.797, timezone: 'America/Chicago' }
+  dallas: { latitude: 32.7767, longitude: -96.797, timezone: 'America/Chicago' },
+  // Bhishma Ekadashi 2027: Hari Vasara ends 13 s before the morning does.
+  seattle: { latitude: 47.6062, longitude: -122.3321, timezone: 'America/Los_Angeles' }
 };
 const RECURRING = (id) => id.startsWith('VRATA_') || /SOMAVARAM|MANGALAVARAM|BONALU|VAIKUNTA/.test(id);
 const ekadashiNames = {}; // city -> Set of nameIds seen over 2025-2027
@@ -22,7 +24,7 @@ for (const [city, loc] of Object.entries(CITIES)) {
           seen[e.id] = (seen[e.id] || 0) + 1;
           if (e.parana) {
             ekadashis++;
-            assert.ok(e.parana.start < e.parana.end, `${e.id} parana window is empty`);
+            assert.ok(e.parana.end - e.parana.start >= 60e3, `${e.id} parana window is under a minute`);
             assert.ok(e.nameId, `${e.id} has no nameId`);
             ekadashiNames[city].add(e.nameId);
           }

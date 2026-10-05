@@ -20,6 +20,16 @@ if (!outDir) {
   console.error('usage: festival-pages.mjs <out dir> [from YYYY-MM-DD] [to YYYY-MM-DD]');
   process.exit(1);
 }
+// Rejects non-YYYY-MM-DD input (parseLocalDate throws) and impossible dates such as 2027-02-30.
+const bound = (s) => {
+  const D = parseLocalDate(s);
+  const t = new Date(Date.UTC(D.year, D.month - 1, D.day));
+  if (t.getUTCMonth() !== D.month - 1 || t.getUTCDate() !== D.day) throw new Error(`Not a calendar date: ${s}`);
+  return D;
+};
+const start = bound(from);
+const end = formatLocalDate(bound(to));
+if (formatLocalDate(start) > end) throw new Error(`from ${from} is after to ${to}`);
 
 const sandbox = { window: {} };
 vm.runInNewContext(readFileSync(new URL('../../../cities.js', import.meta.url), 'utf8'), sandbox);
@@ -39,7 +49,7 @@ const time = (d, timeZone) => d.toLocaleString('en-US', { month: 'short', day: '
 // Festival id -> city label -> [{ date, note }].
 const found = {};
 for (const city of CITIES) {
-  for (let D = parseLocalDate(from); formatLocalDate(D) <= to; D = addDays(D, 1)) {
+  for (let D = start; formatLocalDate(D) <= end; D = addDays(D, 1)) {
     const day = engine.day(D, city.loc);
     const parana = day.events.find((e) => e.parana)?.parana;
     for (const e of day.events.filter((ev) => ev.id.startsWith('FESTIVAL_'))) {

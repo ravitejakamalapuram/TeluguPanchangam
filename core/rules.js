@@ -191,7 +191,8 @@ export function createRuleEngine(ctx) {
     const hariVasaraEnd = new Date(ms(dwadashi.start) + (ms(dwadashi.end) - ms(dwadashi.start)) / 4);
     const start = new Date(Math.max(ms(b.sunrise), ms(hariVasaraEnd)));
     let end = new Date(Math.min(morningEnd, ms(dwadashi.end)));
-    if (start >= end) end = dwadashi.end; // Hari Vasara runs past the morning: break the fast once it ends
+    // Hari Vasara runs past (or ends within a minute of) the morning: break the fast once it ends.
+    if (ms(end) - ms(start) < 60e3) end = dwadashi.end;
     return { start, end, hariVasaraEnd, dwadashiEnd: dwadashi.end, basis: 'after Hari Vasara, within the morning, before Dwadashi ends' };
   }
 

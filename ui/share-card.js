@@ -9,13 +9,20 @@ const TEXT = '#FFF0EB';
 const MUTED = '#FFA380';
 const FOOTER = 'తెలుగు పంచాంగం – Telugu New Tab Calendar';
 const STORE_URL = 'https://chromewebstore.google.com/detail/obgpdlhkahmdiepklldjnnmfmbhmgenn?utm_source=whatsapp';
+
+// The link that goes out with a shared card: this website when running as the site (phones can't install the
+// extension), the Chrome Web Store page when running as the extension.
+function shareLink() {
+  if (document.documentElement.dataset.surface !== 'web') return STORE_URL;
+  return `${location.origin}${location.pathname.replace(/index\.html$/, '')}?utm_source=whatsapp`;
+}
 const BAND_COLOR = { GOOD: '#7CE08A', MODERATE: '#FFD27A', BAD: '#FF7A6B' };
 
 const LABELS = {
   te: {
     title: 'దిన పంచాంగం', samvatsara: 'సంవత్సరం', masa: 'మాసం', adhika: 'అధిక', tithi: 'తిథి', nakshatra: 'నక్షత్రం',
     sunrise: 'సూర్యోదయం', sunset: 'సూర్యాస్తమయం', rahu: 'రాహుకాలం', dur: 'దుర్ముహూర్తం',
-    copied: 'చిత్రం కాపీ అయింది', saved: 'చిత్రం భద్రపరచబడింది', save: 'భద్రపరచండి', whatsapp: 'WhatsApp తెరవండి',
+    copied: 'చిత్రం కాపీ అయింది', saved: 'చిత్రం భద్రపరచబడింది', save: 'భద్రపరచండి', whatsapp: 'WhatsApp తెరవండి', ready: 'చిత్రం సిద్ధంగా ఉంది', send: 'WhatsApp కు పంపండి',
     rashiTitle: 'రాశి ఫలాలు', GOOD: 'శుభం', MODERATE: 'మధ్యమం', BAD: 'జాగ్రత్త',
     moon: (h) => `చంద్రుడు ${h}వ ఇంట`, saturn: 'శని హెచ్చరిక',
     note: 'చంద్ర, సూర్య, గురు, శని గోచారం ఆధారంగా'
@@ -23,7 +30,7 @@ const LABELS = {
   en: {
     title: 'Daily Panchangam', samvatsara: 'Samvatsara', masa: 'Masa', adhika: 'Adhika', tithi: 'Tithi', nakshatra: 'Nakshatra',
     sunrise: 'Sunrise', sunset: 'Sunset', rahu: 'Rahu Kalam', dur: 'Durmuhurtham',
-    copied: 'Image copied', saved: 'Image downloaded', save: 'Download', whatsapp: 'Open WhatsApp',
+    copied: 'Image copied', saved: 'Image downloaded', save: 'Download', whatsapp: 'Open WhatsApp', ready: 'Image ready', send: 'Send on WhatsApp',
     rashiTitle: 'Rashi Phalalu', GOOD: 'Good', MODERATE: 'Moderate', BAD: 'Careful',
     moon: (h) => `Moon in house ${h}`, saturn: 'Saturn caution',
     note: 'Based on Moon, Sun, Jupiter and Saturn transits'
@@ -140,10 +147,14 @@ async function drawCard(day, { lang, city, date, time, timeWindow }, L) {
   return new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('PNG encoding failed'))), 'image/png'));
 }
 
-// Copied: the toast offers the PNG as a download too. Not copied: the PNG downloads right away.
+// Copied: the toast offers the PNG as a download too. Not copied: the PNG downloads right away, except on phones,
+// where the toast's Send button hands the image to WhatsApp (or any app) through the share sheet. The button is a
+// fresh tap because the share sheet needs a user gesture and the card finishes drawing after the first one.
 function showToast(blob, copied, L, fileName, waText) {
   document.querySelector('.share-toast')?.remove();
   const url = URL.createObjectURL(blob);
+  const file = new File([blob], fileName, { type: 'image/png' });
+  const canShareFile = Boolean(navigator.canShare?.({ files: [file] }));
   const link = document.createElement('a');
   link.href = url;
   link.download = fileName;
@@ -153,11 +164,21 @@ function showToast(blob, copied, L, fileName, waText) {
   toast.setAttribute('role', 'status');
   if (copied) {
     toast.append(L.copied, link);
+  } else if (canShareFile) {
+    toast.append(L.ready, link);
   } else {
     link.click();
     toast.append(L.saved);
   }
-  if (waText) {
+  if (canShareFile) {
+    const send = document.createElement('button');
+    send.type = 'button';
+    send.textContent = L.send;
+    send.addEventListener('click', () => navigator.share({ files: [file], text: waText }).catch((err) => {
+      if (err.name !== 'AbortError') console.error('Share failed:', err);
+    }));
+    toast.append(send);
+  } else if (waText) {
     const wa = document.createElement('a');
     wa.href = `https://wa.me/?text=${encodeURIComponent(waText)}`;
     wa.target = '_blank';
@@ -169,7 +190,7 @@ function showToast(blob, copied, L, fileName, waText) {
   setTimeout(() => {
     toast.remove();
     URL.revokeObjectURL(url);
-  }, 6000);
+  }, canShareFile ? 15000 : 6000);
 }
 
 // The "Rashi Phalalu" card: `rows` is allRashiPhalalu() for the day; each rasi is good, moderate or careful,
@@ -207,7 +228,7 @@ export function shareDay(day, opts) {
   const png = drawCard(day, opts, L);
   const copied = (async () => navigator.clipboard.write([new ClipboardItem({ 'image/png': png })]))().then(() => true, () => false);
   return Promise.all([png, copied])
-    .then(([blob, ok]) => showToast(blob, ok, L, `panchangam-${day.date}.png`))
+    .then(([blob, ok]) => showToast(blob, ok, L, `panchangam-${day.date}.png`, `${L.title} ${opts.date}\n${shareLink()}`))
     .catch((err) => console.error('Share card failed:', err));
 }
 
@@ -217,6 +238,6 @@ export function shareRashi(day, rows, opts) {
   const png = drawRashiCard(rows, opts, L);
   const copied = (async () => navigator.clipboard.write([new ClipboardItem({ 'image/png': png })]))().then(() => true, () => false);
   return Promise.all([png, copied])
-    .then(([blob, ok]) => showToast(blob, ok, L, `rashi-phalalu-${day.date}.png`, `${L.rashiTitle} ${opts.date}\n${STORE_URL}`))
+    .then(([blob, ok]) => showToast(blob, ok, L, `rashi-phalalu-${day.date}.png`, `${L.rashiTitle} ${opts.date}\n${shareLink()}`))
     .catch((err) => console.error('Rashi card failed:', err));
 }

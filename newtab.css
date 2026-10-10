@@ -1288,6 +1288,23 @@ input:checked + .slider:before {
 .share-toast a {
   color: var(--accent-secondary);
 }
+.share-toast button {
+  background: var(--accent-secondary);
+  color: #120808;
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+@media (max-width: 600px) {
+  .share-toast {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: calc(100vw - 32px);
+    max-width: 420px;
+  }
+}
 
 /* Modals */
 .modal-overlay {
@@ -1511,3 +1528,6 @@ input:checked + .slider:before {
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+/* Notes that only make sense inside the Chrome extension (store rating, "keep this new tab"); storage-shim.js sets data-surface. */
+[data-surface="web"] .ext-only { display: none !important; }

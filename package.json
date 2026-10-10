@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node --test test/gita-verse.test.js test/*.test.mjs core/test/*.test.js && node test/smoke.test.js",
+    "build:web": "node web/build.mjs dist",
     "validate:listing": "node chrome-store/validate-listing.mjs",
     "validate:privacy": "node chrome-store/validate-privacy.mjs"
   },

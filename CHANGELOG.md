@@ -5,6 +5,8 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 ## [Unreleased]
 
 ### Added
+- **Website** (not part of the extension zip): the same panchangam now builds as an installable, offline-capable web app for GitHub Pages (`npm run build:web`, `web/`). Store and "keep this new tab" notes are hidden on the web, desktop Chrome visitors are offered the extension, and on phones the Share toast has a Send button that opens the share sheet (WhatsApp) with the card image and a link to the site. Plan: `docs/plans/2026-10-05-web-app.md`.
+- The panchangam card's share toast now also offers WhatsApp, like the Rasi Phalalu card.
 - **Share Rasi Phalalu**: a second Share button makes a 1080×1350 card of all twelve rasis for the day, each marked శుభం, మధ్యమం or జాగ్రత్త with the Moon house as the reason (Saturn caution where it applies). It is copied to the clipboard like the panchangam card, and the confirmation offers a WhatsApp link that pre-fills the store link.
 
 ## [2.0.0] - unreleased

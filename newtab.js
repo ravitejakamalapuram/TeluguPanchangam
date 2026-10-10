@@ -7,12 +7,12 @@ import { createEngine } from './core/index.js';
 import { name as coreName, tithiLabel } from './core/i18n.js';
 import { TITHI, MASA, NAKSHATRA } from './core/ids.js';
 import { generateSankalpam } from './core/sankalpam.js';
-import { dailyHoroscope } from './core/horoscope.js';
+import { dailyHoroscope, allRashiPhalalu } from './core/horoscope.js';
 import { horoscopeText } from './core/horoscope-text.js';
 import { birthDetails, isTeluguBirthday } from './core/birth.js';
 import { formatClock } from './ui/time-format.js';
 import { startOnboarding } from './ui/onboarding.js';
-import { shareDay } from './ui/share-card.js';
+import { shareDay, shareRashi } from './ui/share-card.js';
 import { initRatingPrompt } from './ui/rating.js';
 
 (function () {
@@ -837,13 +837,16 @@ import { initRatingPrompt } from './ui/rating.js';
 
     // Share the viewed day as an image card. A geolocated position goes on the card as its time zone,
     // so a shared image never carries the user's coordinates.
-    document.getElementById('btn-share').addEventListener('click', () => shareDay(activePanchang, {
+    const shareOpts = () => ({
       lang: window.I18N.getLang(),
       city: currentCity.id === 'custom' ? currentCity.timeZone : cityDisplayName(currentCity),
       date: elDateGregorian.textContent,
       time: formatTime,
       timeWindow: formatWindow
-    }));
+    });
+    document.getElementById('btn-share').addEventListener('click', () => shareDay(activePanchang, shareOpts()));
+    document.getElementById('btn-share-rashi').addEventListener('click',
+      () => shareRashi(activePanchang, allRashiPhalalu(activePanchang, engine.astronomy), shareOpts()));
 
     // Month navigation
     elBtnPrevMonth.addEventListener('click', () => {

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { engine } from './load.js';
-import { dailyHoroscope } from '../horoscope.js';
+import { dailyHoroscope, rashiBand, allRashiPhalalu } from '../horoscope.js';
 import { horoscopeText } from '../horoscope-text.js';
 import { NAKSHATRA } from '../ids.js';
 
@@ -47,4 +47,28 @@ test('text exists in Telugu and English; Telugu uses only Telugu script', () => 
       }
     }
   }
+});
+
+test('rashiBand: 4-5 good, 3 moderate, 1-2 bad', () => {
+  assert.deepEqual([1, 2, 3, 4, 5].map(rashiBand), ['BAD', 'BAD', 'MODERATE', 'GOOD', 'GOOD']);
+});
+
+test('allRashiPhalalu: 12 rows in rasi order that match dailyHoroscope without tara balam', () => {
+  for (const d of days.slice(0, 5)) {
+    const rows = allRashiPhalalu(d, engine.astronomy);
+    assert.equal(rows.length, 12);
+    rows.forEach((row, r) => {
+      const h = dailyHoroscope(d, engine.astronomy, r);
+      assert.equal(row.rasi, h.rasi);
+      assert.equal(row.score, h.score);
+      assert.equal(row.band, rashiBand(h.score));
+      assert.equal(row.moonHouse, h.transits.moon.house);
+      assert.equal(row.saturnWarning, Boolean(h.sadeSati || h.ashtamaShani || h.ardhashtamaShani));
+    });
+  }
+});
+
+test('allRashiPhalalu: a month has every band, so the card is never all one colour', () => {
+  const bands = new Set(days.flatMap((d) => allRashiPhalalu(d, engine.astronomy).map((row) => row.band)));
+  assert.deepEqual([...bands].sort(), ['BAD', 'GOOD', 'MODERATE']);
 });

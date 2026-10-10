@@ -1265,6 +1265,7 @@ input:checked + .slider:before {
 /* Share card (ui/share-card.js) */
 .share-btn {
   margin-top: 10px;
+  margin-right: 8px;
 }
 .share-toast {
   position: fixed;

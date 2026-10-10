@@ -4,7 +4,8 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 
 ## [Unreleased]
 
-_Nothing yet._
+### Added
+- **Share Rasi Phalalu**: a second Share button makes a 1080×1350 card of all twelve rasis for the day, each marked శుభం, మధ్యమం or జాగ్రత్త with the Moon house as the reason (Saturn caution where it applies). It is copied to the clipboard like the panchangam card, and the confirmation offers a WhatsApp link that pre-fills the store link.
 
 ## [2.0.0] - unreleased
 

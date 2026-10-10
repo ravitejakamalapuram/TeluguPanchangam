@@ -66,3 +66,25 @@ export function dailyHoroscope(day, provider, janmaRasiIndex, { janmaNakshatraIn
 
   return { rasi: RASI[janmaRasiIndex], transits, chandraBalam, taraBalam, sadeSati, ashtamaShani, ardhashtamaShani, score, basis };
 }
+
+/** Share-card band for a 1..5 score: 4-5 GOOD, 3 MODERATE, 1-2 BAD. */
+export function rashiBand(score) {
+  return score >= 4 ? 'GOOD' : score === 3 ? 'MODERATE' : 'BAD';
+}
+
+/**
+ * All 12 janma rasis for one day, without tara balam (it needs a janma nakshatra).
+ * @returns {{ rasi: string, score: number, band: string, moonHouse: number, saturnWarning: boolean }[]}
+ */
+export function allRashiPhalalu(day, provider) {
+  return Array.from({ length: 12 }, (_, r) => {
+    const h = dailyHoroscope(day, provider, r);
+    return {
+      rasi: h.rasi,
+      score: h.score,
+      band: rashiBand(h.score),
+      moonHouse: h.transits.moon.house,
+      saturnWarning: Boolean(h.sadeSati || h.ashtamaShani || h.ardhashtamaShani)
+    };
+  });
+}

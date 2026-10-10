@@ -8,17 +8,25 @@ const GOLD = '#FFD700';
 const TEXT = '#FFF0EB';
 const MUTED = '#FFA380';
 const FOOTER = 'తెలుగు పంచాంగం – Telugu New Tab Calendar';
+const STORE_URL = 'https://chromewebstore.google.com/detail/obgpdlhkahmdiepklldjnnmfmbhmgenn?utm_source=whatsapp';
+const BAND_COLOR = { GOOD: '#7CE08A', MODERATE: '#FFD27A', BAD: '#FF7A6B' };
 
 const LABELS = {
   te: {
     title: 'దిన పంచాంగం', samvatsara: 'సంవత్సరం', masa: 'మాసం', adhika: 'అధిక', tithi: 'తిథి', nakshatra: 'నక్షత్రం',
     sunrise: 'సూర్యోదయం', sunset: 'సూర్యాస్తమయం', rahu: 'రాహుకాలం', dur: 'దుర్ముహూర్తం',
-    copied: 'చిత్రం కాపీ అయింది', saved: 'చిత్రం భద్రపరచబడింది', save: 'భద్రపరచండి'
+    copied: 'చిత్రం కాపీ అయింది', saved: 'చిత్రం భద్రపరచబడింది', save: 'భద్రపరచండి', whatsapp: 'WhatsApp తెరవండి',
+    rashiTitle: 'రాశి ఫలాలు', GOOD: 'శుభం', MODERATE: 'మధ్యమం', BAD: 'జాగ్రత్త',
+    moon: (h) => `చంద్రుడు ${h}వ ఇంట`, saturn: 'శని హెచ్చరిక',
+    note: 'చంద్ర, సూర్య, గురు, శని గోచారం ఆధారంగా'
   },
   en: {
     title: 'Daily Panchangam', samvatsara: 'Samvatsara', masa: 'Masa', adhika: 'Adhika', tithi: 'Tithi', nakshatra: 'Nakshatra',
     sunrise: 'Sunrise', sunset: 'Sunset', rahu: 'Rahu Kalam', dur: 'Durmuhurtham',
-    copied: 'Image copied', saved: 'Image downloaded', save: 'Download'
+    copied: 'Image copied', saved: 'Image downloaded', save: 'Download', whatsapp: 'Open WhatsApp',
+    rashiTitle: 'Rashi Phalalu', GOOD: 'Good', MODERATE: 'Moderate', BAD: 'Careful',
+    moon: (h) => `Moon in house ${h}`, saturn: 'Saturn caution',
+    note: 'Based on Moon, Sun, Jupiter and Saturn transits'
   }
 };
 
@@ -41,12 +49,8 @@ function wrapNames(ctx, names, width) {
   return lines;
 }
 
-// `time`/`timeWindow` are the page's own formatters, so the card reads exactly like the dashboard.
-async function drawCard(day, { lang, city, date, time, timeWindow }, L) {
-  await fontsReady();
-  const nm = (id) => name(id, lang);
-  const { calendar: cal, panchanga: p, timings: tm, astronomy: sky } = day;
-
+// The page's dark saffron card: gradient, glow behind the title and a thin gold frame, plus a text helper.
+function newCard() {
   const canvas = document.createElement('canvas');
   canvas.width = W;
   canvas.height = H;
@@ -72,6 +76,16 @@ async function drawCard(day, { lang, city, date, time, timeWindow }, L) {
   ctx.strokeStyle = 'rgba(255, 215, 0, 0.55)';
   ctx.lineWidth = 3;
   ctx.strokeRect(36, 36, W - 72, H - 72);
+  return { canvas, ctx, text };
+}
+
+// `time`/`timeWindow` are the page's own formatters, so the card reads exactly like the dashboard.
+async function drawCard(day, { lang, city, date, time, timeWindow }, L) {
+  await fontsReady();
+  const nm = (id) => name(id, lang);
+  const { calendar: cal, panchanga: p, timings: tm, astronomy: sky } = day;
+
+  const { canvas, ctx, text } = newCard();
 
   let y = 150;
   text(L.title, W / 2, y, { size: 76, weight: 700, color: GOLD, align: 'center' });
@@ -127,7 +141,7 @@ async function drawCard(day, { lang, city, date, time, timeWindow }, L) {
 }
 
 // Copied: the toast offers the PNG as a download too. Not copied: the PNG downloads right away.
-function showToast(blob, copied, L, fileName) {
+function showToast(blob, copied, L, fileName, waText) {
   document.querySelector('.share-toast')?.remove();
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
@@ -143,11 +157,48 @@ function showToast(blob, copied, L, fileName) {
     link.click();
     toast.append(L.saved);
   }
+  if (waText) {
+    const wa = document.createElement('a');
+    wa.href = `https://wa.me/?text=${encodeURIComponent(waText)}`;
+    wa.target = '_blank';
+    wa.rel = 'noopener noreferrer';
+    wa.textContent = L.whatsapp;
+    toast.append(wa);
+  }
   document.body.append(toast);
   setTimeout(() => {
     toast.remove();
     URL.revokeObjectURL(url);
   }, 6000);
+}
+
+// The "Rashi Phalalu" card: `rows` is allRashiPhalalu() for the day; each rasi is good, moderate or careful,
+// with the Moon house (and a Saturn caution) as the one-line reason.
+async function drawRashiCard(rows, { lang, city, date }, L) {
+  await fontsReady();
+  const { canvas, ctx, text } = newCard();
+  let y = 140;
+  text(L.rashiTitle, W / 2, y, { size: 76, weight: 700, color: GOLD, align: 'center' });
+  text(date, W / 2, y += 68, { size: 40, weight: 600, align: 'center' });
+  text(city, W / 2, y += 50, { size: 32, color: MUTED, align: 'center' });
+  y += 24;
+  rows.forEach((row) => {
+    y += 70;
+    ctx.fillStyle = 'rgba(255, 94, 0, 0.12)';
+    ctx.beginPath();
+    ctx.roundRect(90, y - 48, W - 180, 62, 16);
+    ctx.fill();
+    ctx.fillStyle = BAND_COLOR[row.band];
+    ctx.beginPath();
+    ctx.arc(130, y - 17, 14, 0, Math.PI * 2);
+    ctx.fill();
+    text(name(row.rasi, lang), 165, y, { size: 36, weight: 700, max: 260 });
+    text(L[row.band], 440, y, { size: 36, weight: 700, color: BAND_COLOR[row.band], max: 190 });
+    text(L.moon(row.moonHouse) + (row.saturnWarning ? ` · ${L.saturn}` : ''), W - 110, y, { size: 28, color: MUTED, align: 'right', max: 400 });
+  });
+  text(L.note, W / 2, H - 112, { size: 26, color: MUTED, align: 'center' });
+  text(FOOTER, W / 2, H - 70, { size: 30, color: MUTED, align: 'center' });
+  return new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('PNG encoding failed'))), 'image/png'));
 }
 
 // Call from the click handler: the clipboard write starts in the same task, with the PNG as a pending promise.
@@ -158,4 +209,14 @@ export function shareDay(day, opts) {
   return Promise.all([png, copied])
     .then(([blob, ok]) => showToast(blob, ok, L, `panchangam-${day.date}.png`))
     .catch((err) => console.error('Share card failed:', err));
+}
+
+// Same as shareDay for the Rashi Phalalu card; the toast also offers WhatsApp with the store link.
+export function shareRashi(day, rows, opts) {
+  const L = LABELS[opts.lang] || LABELS.te;
+  const png = drawRashiCard(rows, opts, L);
+  const copied = (async () => navigator.clipboard.write([new ClipboardItem({ 'image/png': png })]))().then(() => true, () => false);
+  return Promise.all([png, copied])
+    .then(([blob, ok]) => showToast(blob, ok, L, `rashi-phalalu-${day.date}.png`, `${L.rashiTitle} ${opts.date}\n${STORE_URL}`))
+    .catch((err) => console.error('Rashi card failed:', err));
 }

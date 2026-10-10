@@ -84,9 +84,9 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
-  event.respondWith(
-    caches.match(request, { ignoreSearch: true }).then((hit) => hit || fetch(request).catch(() => caches.match('./'))),
-  );
+  // Offline, a page load falls back to the app shell; a script or image that fails must stay a failure, not become HTML.
+  const network = () => fetch(request).catch((err) => (request.mode === 'navigate' ? caches.match('./') : Promise.reject(err)));
+  event.respondWith(caches.match(request, { ignoreSearch: true }).then((hit) => hit || network()));
 });
 `;
 }

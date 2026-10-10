@@ -22,7 +22,7 @@ const LABELS = {
   te: {
     title: 'దిన పంచాంగం', samvatsara: 'సంవత్సరం', masa: 'మాసం', adhika: 'అధిక', tithi: 'తిథి', nakshatra: 'నక్షత్రం',
     sunrise: 'సూర్యోదయం', sunset: 'సూర్యాస్తమయం', rahu: 'రాహుకాలం', dur: 'దుర్ముహూర్తం',
-    copied: 'చిత్రం కాపీ అయింది', saved: 'చిత్రం భద్రపరచబడింది', save: 'భద్రపరచండి', whatsapp: 'WhatsApp తెరవండి', ready: 'చిత్రం సిద్ధంగా ఉంది', send: 'WhatsApp కు పంపండి',
+    copied: 'చిత్రం కాపీ అయింది', saved: 'చిత్రం భద్రపరచబడింది', save: 'భద్రపరచండి', whatsapp: 'WhatsApp తెరవండి', ready: 'చిత్రం సిద్ధంగా ఉంది', send: 'పంపండి',
     rashiTitle: 'రాశి ఫలాలు', GOOD: 'శుభం', MODERATE: 'మధ్యమం', BAD: 'జాగ్రత్త',
     moon: (h) => `చంద్రుడు ${h}వ ఇంట`, saturn: 'శని హెచ్చరిక',
     note: 'చంద్ర, సూర్య, గురు, శని గోచారం ఆధారంగా'
@@ -30,7 +30,7 @@ const LABELS = {
   en: {
     title: 'Daily Panchangam', samvatsara: 'Samvatsara', masa: 'Masa', adhika: 'Adhika', tithi: 'Tithi', nakshatra: 'Nakshatra',
     sunrise: 'Sunrise', sunset: 'Sunset', rahu: 'Rahu Kalam', dur: 'Durmuhurtham',
-    copied: 'Image copied', saved: 'Image downloaded', save: 'Download', whatsapp: 'Open WhatsApp', ready: 'Image ready', send: 'Send on WhatsApp',
+    copied: 'Image copied', saved: 'Image downloaded', save: 'Download', whatsapp: 'Open WhatsApp', ready: 'Image ready', send: 'Send',
     rashiTitle: 'Rashi Phalalu', GOOD: 'Good', MODERATE: 'Moderate', BAD: 'Careful',
     moon: (h) => `Moon in house ${h}`, saturn: 'Saturn caution',
     note: 'Based on Moon, Sun, Jupiter and Saturn transits'

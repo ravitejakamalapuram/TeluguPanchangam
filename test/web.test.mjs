@@ -66,6 +66,18 @@ test('the service worker precaches only files that exist, and its cache name cha
   assert.notEqual(/const CACHE = '([^']+)'/.exec(fs.readFileSync(path.join(other, 'sw.js'), 'utf8'))[1], name);
 });
 
+test('offline, only page loads fall back to the app shell; a failed script or image stays a failure', () => {
+  const sw = dist('sw.js');
+  assert.match(sw, /request\.mode === 'navigate'/);
+  assert.ok(!/fetch\(request\)\.catch\(\(\) => caches\.match\('\.\/'\)\)/.test(sw), 'no unconditional shell fallback');
+});
+
+test('the share-sheet button is labelled as a general send, not WhatsApp only', () => {
+  const card = read('ui/share-card.js');
+  assert.ok(/send: 'పంపండి'/.test(card) && /send: 'Send'/.test(card));
+  assert.ok(!/send: '[^']*WhatsApp/.test(card));
+});
+
 test('robots.txt, a 404 page and .nojekyll are present', () => {
   assert.match(dist('robots.txt'), /Sitemap: https:\/\/example\.test\/panchangam\/sitemap\.xml/);
   assert.match(dist('sitemap.xml'), /<loc>https:\/\/example\.test\/panchangam\/<\/loc>/);

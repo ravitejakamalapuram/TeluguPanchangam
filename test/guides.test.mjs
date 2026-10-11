@@ -108,6 +108,20 @@ test('a draft never shows, except in the preview that reviewers use', () => {
   assert.equal(isShippable(sample('reviewed')), true);
 });
 
+test('a guide marked reviewed without a named reviewer and a date still does not ship', () => {
+  for (const review of [
+    { status: 'reviewed' },
+    { status: 'reviewed', reviewer: null, date: '2026-10-20' },
+    { status: 'reviewed', reviewer: '  ', date: '2026-10-20' },
+    { status: 'reviewed', reviewer: 'A. Elder', date: null },
+    { status: 'reviewed', reviewer: 'A. Elder', date: 'yesterday' },
+  ]) {
+    const g = sample('reviewed', { review });
+    assert.equal(isShippable(g), false, JSON.stringify(review));
+    assert.equal(isShippable(g, { preview: true }), true, 'the reviewer can still preview it');
+  }
+});
+
 test('the day view picks the guide for any of its observances, and skips drafts', () => {
   const reviewed = sample('reviewed');
   assert.equal(guideForEvents([reviewed], ['FESTIVAL_TEST_EVE', 'VRATA_X']), reviewed);
@@ -176,9 +190,9 @@ test('the web build writes a page only for reviewed guides; reviewers can build 
   const site = 'https://example.test/panchangam/';
   const prod = fs.mkdtempSync(path.join(os.tmpdir(), 'tp-guides-'));
   await buildWeb({ outDir: prod, siteUrl: site, guidesDir: DIR });
-  const draftOnly = guides.every((g) => g.guide.review.status === 'draft');
-  assert.equal(fs.existsSync(path.join(prod, 'festivals/deepavali/index.html')), !draftOnly || false);
-  if (draftOnly) assert.ok(!fs.readFileSync(path.join(prod, 'sitemap.xml'), 'utf8').includes('festivals/'));
+  const deepavaliReviewed = guides.find((g) => g.guide.id === 'FESTIVAL_DEEPAVALI').guide.review.status === 'reviewed';
+  assert.equal(fs.existsSync(path.join(prod, 'festivals/deepavali/index.html')), deepavaliReviewed);
+  assert.equal(fs.readFileSync(path.join(prod, 'sitemap.xml'), 'utf8').includes('festivals/deepavali/'), deepavaliReviewed);
 
   const preview = fs.mkdtempSync(path.join(os.tmpdir(), 'tp-guides-'));
   await buildWeb({ outDir: preview, siteUrl: site, previewGuides: true });
@@ -205,4 +219,14 @@ test('a reviewed guide gets an indexable page and a sitemap entry', async () => 
   assert.ok(!page.includes('noindex') && !page.includes('ముసాయిదా'));
   assert.match(page, /A\. Elder/);
   assert.match(fs.readFileSync(path.join(out, 'sitemap.xml'), 'utf8'), /<loc>https:\/\/example\.test\/panchangam\/festivals\/deepavali\/<\/loc>/);
+});
+
+test('a guide catalog that cannot be read fails the build instead of silently shipping no guides', async () => {
+  const { buildWeb } = await import(path.join(ROOT, 'web/build.mjs'));
+  const out = () => fs.mkdtempSync(path.join(os.tmpdir(), 'tp-guides-out-'));
+  const missing = fs.mkdtempSync(path.join(os.tmpdir(), 'tp-guides-bad-'));
+  await assert.rejects(buildWeb({ outDir: out(), siteUrl: 'https://example.test/panchangam/', guidesDir: missing }));
+  fs.writeFileSync(path.join(missing, 'index.json'), JSON.stringify(['FESTIVAL_BROKEN']));
+  fs.writeFileSync(path.join(missing, 'FESTIVAL_BROKEN.json'), '{ not json');
+  await assert.rejects(buildWeb({ outDir: out(), siteUrl: 'https://example.test/panchangam/', guidesDir: missing }));
 });

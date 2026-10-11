@@ -36,9 +36,12 @@ const LABELS = {
   },
 };
 
-/** A guide ships only after a named reviewer signs it off. `preview` lets the reviewer see a draft. */
+/** A guide ships only after a named reviewer signs it off with a date. `preview` lets the reviewer see a draft. */
 export function isShippable(guide, { preview = false } = {}) {
-  return Boolean(guide) && (guide.review?.status === 'reviewed' || preview === true);
+  if (!guide) return false;
+  const r = guide.review;
+  const signedOff = r?.status === 'reviewed' && typeof r.reviewer === 'string' && r.reviewer.trim() !== '' && /^\d{4}-\d{2}-\d{2}$/.test(r.date ?? '');
+  return signedOff || preview === true;
 }
 
 /** The first shippable guide that applies to any of today's observance ids, or null. */
@@ -67,9 +70,10 @@ export function guideBlocks(guide, lang) {
   const l = lang === 'en' ? 'en' : 'te';
   const t = LABELS[l];
   const head = [];
-  if (guide.review.status !== 'reviewed') head.push({ type: 'draft', text: t.draft });
+  const signedOff = isShippable(guide);
+  if (!signedOff) head.push({ type: 'draft', text: t.draft });
   head.push({ type: 'title', text: guide.title[l] }, { type: 'p', text: guide.summary[l] });
-  if (guide.review.status === 'reviewed') head.push({ type: 'reviewed', text: `${t.reviewedBy}: ${guide.review.reviewer} (${guide.review.date})` });
+  if (signedOff) head.push({ type: 'reviewed', text: `${t.reviewedBy}: ${guide.review.reviewer} (${guide.review.date})` });
 
   const body = [];
   for (const s of guide.sections) {

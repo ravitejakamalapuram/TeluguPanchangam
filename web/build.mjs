@@ -65,13 +65,10 @@ function headTags(site) {
   ].map((t) => `  ${t}\n`).join('');
 }
 
+// A catalog that cannot be read fails the build: shipping the site with no guides, silently, is the worse outcome.
 function readGuides(dir) {
-  try {
-    return JSON.parse(fs.readFileSync(path.join(dir, 'index.json'), 'utf8'))
-      .map((id) => JSON.parse(fs.readFileSync(path.join(dir, `${id}.json`), 'utf8')));
-  } catch {
-    return [];
-  }
+  return JSON.parse(fs.readFileSync(path.join(dir, 'index.json'), 'utf8'))
+    .map((id) => JSON.parse(fs.readFileSync(path.join(dir, `${id}.json`), 'utf8')));
 }
 
 // One static, indexable page per reviewed festival guide: Telugu first, English below. Unreviewed guides are
@@ -79,7 +76,7 @@ function readGuides(dir) {
 function guidePage(guide, site) {
   const slug = guideSlug(guide.id);
   const url = `${site}festivals/${slug}/`;
-  const reviewed = guide.review.status === 'reviewed';
+  const reviewed = isShippable(guide);
   const te = guideBlocks(guide, 'te');
   const en = guideBlocks(guide, 'en');
   const description = `${guide.summary.te} ${guide.summary.en}`;

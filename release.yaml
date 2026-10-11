@@ -43,6 +43,8 @@ targets:
       - ui/onboarding.js
       - ui/share-card.js
       - ui/rating.js
+      - ui/guides.js
+      - content/guides
       - lib/astronomy.js
       - lib/tz.js
       - icons

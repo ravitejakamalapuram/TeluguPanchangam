@@ -1,6 +1,12 @@
-// Mocks chrome.storage.local with localStorage when this page is opened as a
-// plain file:// tab instead of the extension's new tab override, so it can be
-// previewed outside Chrome. Inside the extension chrome.storage.local always
+// Marks the page as the extension's new tab or as the website, so CSS can hide extension-only notes on the
+// web (see `.ext-only` in newtab.css). Runs first: the shim below adds a fake chrome.storage on the web.
+if (typeof document !== 'undefined') {
+  const isExtension = typeof chrome !== 'undefined' && Boolean(chrome.runtime && chrome.runtime.id);
+  document.documentElement.dataset.surface = isExtension ? 'extension' : 'web';
+}
+
+// Mocks chrome.storage.local with localStorage when this page is opened outside the
+// extension (the website, or a plain file:// tab). Inside the extension chrome.storage.local always
 // exists, so this never runs.
 if (typeof chrome === 'undefined' || !chrome.storage || !chrome.storage.local) {
   window.chrome = window.chrome || {};

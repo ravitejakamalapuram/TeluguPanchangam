@@ -14,6 +14,7 @@ import { formatClock } from './ui/time-format.js';
 import { startOnboarding } from './ui/onboarding.js';
 import { shareDay, shareRashi } from './ui/share-card.js';
 import { initRatingPrompt } from './ui/rating.js';
+import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guides.js';
 
 (function () {
   'use strict';
@@ -43,6 +44,8 @@ import { initRatingPrompt } from './ui/rating.js';
   const elPanchangMoon = document.getElementById('panchang-moon');
   const elPanchangSun = document.getElementById('panchang-sun');
   const elUpcomingCard = document.getElementById('upcoming-card');
+  const elGuideCard = document.getElementById('guide-card');
+  const elGuideBody = document.getElementById('guide-body');
   const elUpcomingList = document.getElementById('upcoming-list');
   const elSankalpamTxt = document.getElementById('sankalpam-txt');
   
@@ -543,6 +546,7 @@ import { initRatingPrompt } from './ui/rating.js';
     updateSunPathMarker(activePanchang);
     renderDayTimeline(activePanchang);
     renderUpcoming();
+    await renderGuide(activePanchang);
 
     // 9. Re-render monthly calendar grid
     renderMonthlyCalendar();
@@ -721,6 +725,22 @@ import { initRatingPrompt } from './ui/rating.js';
 
   // A rule trace's reason with canonical IDs (MASA_KARTHIKA, RASI_MAKARA) shown as English names.
   const traceReason = (ev) => (ev.trace.reason || '').replace(/\b[A-Z]+_[A-Z_]+\b/g, (id) => coreName(id, 'en'));
+
+  // Festival guide for the selected day. Drafts stay hidden unless a reviewer opens the app with ?guides=draft.
+  let guidesLoaded = null;
+  async function renderGuide(panchang) {
+    guidesLoaded = guidesLoaded || loadGuides();
+    const preview = new URLSearchParams(window.location.search).get('guides') === 'draft';
+    const guide = guideForEvents(await guidesLoaded, panchang.events.map((e) => e.id), { preview });
+    if (!guide) {
+      elGuideCard.hidden = true;
+      elGuideBody.replaceChildren();
+      return;
+    }
+    const { head, body } = guideBlocks(guide, window.I18N.getLang());
+    elGuideBody.replaceChildren(...blocksToDom([...head, ...body], document));
+    elGuideCard.hidden = false;
+  }
 
   // "Upcoming this week": festivals and vratas from today through the next six days in the selected city.
   // A generic tithi vrata (Ekadashi, Purnima, Amavasya) on the same tithi as a festival that day

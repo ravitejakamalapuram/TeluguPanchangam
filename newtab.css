@@ -1531,3 +1531,15 @@ input:checked + .slider:before {
 
 /* Notes that only make sense inside the Chrome extension (store rating, "keep this new tab"); storage-shim.js sets data-surface. */
 [data-surface="web"] .ext-only { display: none !important; }
+
+/* Festival guide card */
+.guide-card[hidden] { display: none; }
+.guide-card { padding: 20px 24px; line-height: 1.6; }
+.guide-card .guide-title { margin: 0 0 8px; font-size: 1.15rem; }
+.guide-card h4 { margin: 16px 0 6px; font-size: 1rem; }
+.guide-card ol, .guide-card ul { margin: 0; padding-left: 22px; }
+.guide-card li { margin: 4px 0; }
+.guide-card .guide-note { font-style: italic; opacity: 0.85; }
+.guide-card .guide-reviewed, .guide-card .guide-report { font-size: 0.85rem; opacity: 0.85; }
+.guide-card .guide-draft { margin: 0 0 12px; padding: 8px 12px; border-radius: 8px; border: 1px dashed currentColor; font-weight: 600; }
+.guide-card a { color: inherit; text-decoration: underline; }

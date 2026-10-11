@@ -1,0 +1,85 @@
+{
+  "id": "FESTIVAL_DEEPAVALI",
+  "appliesTo": ["FESTIVAL_DEEPAVALI", "FESTIVAL_NARAKA_CHATURDASHI"],
+  "review": { "status": "draft", "reviewer": null, "date": null },
+  "title": { "te": "దీపావళి: పూజా విధానం", "en": "Deepavali: how to celebrate" },
+  "summary": {
+    "te": "నరక చతుర్దశి నాడు తెల్లవారుజామున తైలాభ్యంగన స్నానం, దీపావళి అమావాస్య సాయంత్రం లక్ష్మీపూజ, ఇంటి ముందు దీపాలు: ఆంధ్ర, తెలంగాణ ఇళ్లలో సాధారణంగా చేసుకునే విధానం ఇది.",
+    "en": "An oil bath before sunrise on Naraka Chaturdashi, Lakshmi puja on the evening of the Amavasya, and lamps at the door: the way most Andhra and Telangana homes celebrate."
+  },
+  "variation": {
+    "te": "ఇది సాధారణ విధానం మాత్రమే. కుటుంబ సంప్రదాయం, గురువుల సూచన, ప్రాంతాన్ని బట్టి విధానాలు మారుతాయి; మీ ఇంటి సంప్రదాయం ముందు. కేదార గౌరీ వ్రతం కొన్ని కుటుంబాలలో మాత్రమే ఆచరిస్తారు.",
+    "en": "This is the common way, not the only one. Practice differs by family tradition, by guru and by region, so follow your own family's custom first. The Kedara Gowri vratam is observed only in some families."
+  },
+  "sections": [
+    {
+      "id": "preparation",
+      "title": { "te": "ముందస్తు సన్నాహాలు", "en": "Getting ready" },
+      "steps": [
+        { "te": "ఇల్లు శుభ్రం చేసి, గుమ్మానికి మామిడాకుల తోరణం కట్టండి.", "en": "Clean the house and hang a toranam of mango leaves on the door." },
+        { "te": "వాకిట్లో ముగ్గులు వేయండి.", "en": "Draw muggulu (rangoli) at the entrance." },
+        { "te": "ప్రమిదలను శుభ్రం చేసి, నూనె లేదా నెయ్యి, వత్తులు సిద్ధం చేసుకోండి.", "en": "Wash the clay lamps and keep oil or ghee and wicks ready." },
+        { "te": "పూజకు కావలసిన సామగ్రి, నైవేద్యాలు ముందే సిద్ధం చేసుకోండి.", "en": "Keep the puja items and offerings ready beforehand." }
+      ]
+    },
+    {
+      "id": "naraka-chaturdashi",
+      "title": { "te": "నరక చతుర్దశి: తైలాభ్యంగన స్నానం", "en": "Naraka Chaturdashi: the oil bath" },
+      "steps": [
+        { "te": "సూర్యోదయానికి ముందు, తెల్లవారుజామున నిద్రలేవండి.", "en": "Wake up before sunrise." },
+        { "te": "నువ్వుల నూనెను తలకు, ఒంటికి రాసుకుని కొంతసేపు ఉంచండి.", "en": "Apply sesame oil to the head and body and leave it for a while." },
+        { "te": "శనగపిండి, కుంకుడు లేదా సున్నిపిండితో తలస్నానం చేయండి.", "en": "Bathe with gram flour, soapnut or sunnipindi." },
+        { "te": "కొత్త బట్టలు ధరించి, దేవుడికి దీపం పెట్టి నమస్కరించండి.", "en": "Wear new clothes, light a lamp before the deity and offer your prayers." }
+      ]
+    },
+    {
+      "id": "lakshmi-puja",
+      "title": { "te": "దీపావళి సాయంత్రం: లక్ష్మీపూజ", "en": "Deepavali evening: Lakshmi puja" },
+      "steps": [
+        { "te": "సాయంత్రం ప్రదోష సమయంలో పూజకు కూర్చోండి.", "en": "Sit for the puja in the evening, in the pradosha time." },
+        { "te": "పీటపై శుభ్రమైన వస్త్రం పరచి, లక్ష్మీదేవి, గణపతి చిత్రపటాలు లేదా విగ్రహాలను ఉంచండి.", "en": "Spread a clean cloth on a wooden plank and place the pictures or idols of Lakshmi and Ganesha." },
+        { "te": "కలశం పెట్టి, ముందుగా గణపతి పూజ చేయండి.", "en": "Set up the kalasam and begin with the Ganapati puja." },
+        { "te": "సంకల్పం చెప్పి, లక్ష్మీ అష్టోత్తరం లేదా మీకు తెలిసిన లక్ష్మీ స్తోత్రంతో పసుపు, కుంకుమ, అక్షతలు, పూలతో పూజించండి.", "en": "Take the sankalpam, then worship Lakshmi with turmeric, kumkum, akshata and flowers while chanting the Lakshmi ashtottaram or any Lakshmi stotram you know." },
+        { "te": "నైవేద్యం సమర్పించి, కర్పూర హారతి ఇవ్వండి.", "en": "Offer the naivedyam and show camphor aarti." },
+        { "te": "పూజ అనంతరం ప్రసాదం అందరికీ పంచండి.", "en": "Share the prasadam with everyone after the puja." }
+      ]
+    },
+    {
+      "id": "lamps",
+      "title": { "te": "దీపాలు వెలిగించడం", "en": "Lighting the lamps" },
+      "steps": [
+        { "te": "ప్రమిదలలో నూనె పోసి, వత్తులు వేసి వెలిగించండి.", "en": "Fill the lamps with oil, add wicks and light them." },
+        { "te": "గుమ్మం ముందు, తులసి కోట వద్ద, ఇంటి చుట్టూ దీపాలు ఉంచండి.", "en": "Place lamps at the door, near the tulasi plant and around the house." },
+        { "te": "పటాకులు కాల్చేటప్పుడు పెద్దలు దగ్గర ఉండండి; పిల్లలు, పెంపుడు జంతువుల భద్రతను చూసుకోండి.", "en": "If you burst crackers, keep an adult close by and look after children and pets." }
+      ]
+    }
+  ],
+  "samagri": [
+    { "te": "పసుపు, కుంకుమ, అక్షతలు", "en": "Turmeric, kumkum and akshata (rice)" },
+    { "te": "పూలు, మామిడాకులు", "en": "Flowers and mango leaves" },
+    { "te": "తమలపాకులు, వక్కలు, పండ్లు, కొబ్బరికాయ", "en": "Betel leaves, areca nuts, fruits and a coconut" },
+    { "te": "కలశం, బియ్యం", "en": "A kalasam (pot) and rice" },
+    { "te": "ప్రమిదలు, నూనె లేదా నెయ్యి, వత్తులు", "en": "Clay lamps, oil or ghee and wicks" },
+    { "te": "అగరుబత్తీలు, కర్పూరం", "en": "Incense sticks and camphor" },
+    { "te": "లక్ష్మీదేవి, గణపతి చిత్రపటాలు లేదా విగ్రహాలు", "en": "Pictures or idols of Lakshmi and Ganesha" },
+    { "te": "కొత్త బట్టలు", "en": "New clothes" }
+  ],
+  "naivedyam": [
+    { "te": "పాయసం", "en": "Payasam" },
+    { "te": "బూరెలు", "en": "Boorelu" },
+    { "te": "గారెలు", "en": "Garelu" },
+    { "te": "లడ్డూలు, అరిసెలు వంటి మిఠాయిలు", "en": "Sweets such as laddu and ariselu" }
+  ],
+  "verses": [
+    { "te": "ఓం గం గణపతయే నమః", "en": "Om Gam Ganapataye Namah" },
+    { "te": "ఓం మహాలక్ష్మ్యై చ విద్మహే విష్ణుపత్న్యై చ ధీమహి | తన్నో లక్ష్మీః ప్రచోదయాత్", "en": "Om Mahalakshmyai cha vidmahe Vishnupatnyai cha dhimahi | Tanno Lakshmih prachodayat" },
+    { "te": "శుభం కరోతి కల్యాణం ఆరోగ్యం ధనసంపదా | శత్రుబుద్ధివినాశాయ దీపజ్యోతిర్నమోఽస్తు తే", "en": "Shubham karoti kalyanam arogyam dhanasampada | Shatrubuddhivinashaya deepajyotirnamostu te" }
+  ],
+  "videos": [],
+  "shops": [],
+  "sources": [
+    { "title": "Telugu Deepavali traditions in Andhra and Telangana (HinduTone)", "url": "https://hindutone.com/festivals/telugu-deepavali-2026-traditions-andhra-telangana/" },
+    { "title": "Kedar Gauri Vrat and Deepavali nombu (HinduTone)", "url": "https://hindutone.com/festivals/kedar-gauri-vrat-2026-deepavali-nombu/" },
+    { "title": "Naraka Chaturdashi (Wikipedia)", "url": "https://en.wikipedia.org/wiki/Naraka_Chaturdashi" }
+  ]
+}

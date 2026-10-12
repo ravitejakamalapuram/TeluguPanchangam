@@ -25,7 +25,9 @@ post (ravitejakamalapuram.github.io#7, merged 11 Oct).
 ### Now (this week)
 
 1. **Send the Deepavali association newsletter blurb (Template 3.1) by Thu 15 Oct.**
-   Newsletters need about four weeks' lead time.
+   Newsletters need about four weeks' lead time and 15 Oct leaves under four, so ask each editor
+   whether the Nov issue can still take it; if not, post the same text on their social page and
+   WhatsApp group instead.
 2. **Share the Deepavali dates post** in the Telugu groups by Wed 14 Oct.
 3. **Check the Deepavali (Sun 8 Nov) and Sankranti 2027 (US 14 Jan, Hyderabad 15 Jan) dates on
    Drik** by Fri 16 Oct and report back.

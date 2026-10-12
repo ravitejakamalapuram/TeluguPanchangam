@@ -747,10 +747,10 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
   // (Ekadashi on Vaikunta Ekadashi) is folded into the festival, keeping its Ekadashi parana (next
   // morning's fast-breaking window). Pradosham, Sankashti and Masa Shivaratri always stay listed.
   const GENERIC_VRATA = /^VRATA_(SHUKLA_|KRISHNA_)?(EKADASHI|PURNIMA|AMAVASYA)$/;
-  function renderUpcoming() {
+  function collectUpcoming(days, max) {
     const items = [];
     const today = cityToday();
-    for (let i = 0; i < 7 && items.length < 6; i++) {
+    for (let i = 0; i < days && items.length < max; i++) {
       const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i, 12);
       const events = dayFor(date).events;
       const fests = events.filter((e) => e.id.startsWith('FESTIVAL_'));
@@ -762,24 +762,37 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
         items.push({ date, id: ev.nameId || ev.id, parana: ev.parana || (twin && twin.parana) });
       });
     }
+    return items.slice(0, max);
+  }
 
-    elUpcomingList.replaceChildren(...items.slice(0, 6).map((it) => {
-      const li = document.createElement('li');
-      const when = document.createElement('span');
-      when.className = 'upcoming-date';
-      when.textContent = it.date.toLocaleDateString(window.I18N.getLang() === 'en' ? 'en-US' : 'te-IN', { weekday: 'short', day: 'numeric', month: 'short' });
-      const what = document.createElement('strong');
-      what.textContent = nm(it.id);
-      li.append(when, what);
-      if (it.parana) {
-        const parana = document.createElement('span');
-        parana.className = 'upcoming-parana';
-        parana.textContent = `${window.I18N.t('paranaNextDay')} ${formatTime(it.parana.start)} - ${formatTime(it.parana.end)}`;
-        li.append(parana);
-      }
-      return li;
-    }));
+  function upcomingItem(it) {
+    const li = document.createElement('li');
+    const when = document.createElement('span');
+    when.className = 'upcoming-date';
+    when.textContent = it.date.toLocaleDateString(window.I18N.getLang() === 'en' ? 'en-US' : 'te-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+    const what = document.createElement('strong');
+    what.textContent = nm(it.id);
+    li.append(when, what);
+    if (it.parana) {
+      const parana = document.createElement('span');
+      parana.className = 'upcoming-parana';
+      parana.textContent = `${window.I18N.t('paranaNextDay')} ${formatTime(it.parana.start)} - ${formatTime(it.parana.end)}`;
+      li.append(parana);
+    }
+    return li;
+  }
+
+  function renderUpcoming() {
+    const items = collectUpcoming(7, 6);
+    elUpcomingList.replaceChildren(...items.map(upcomingItem));
     elUpcomingCard.style.display = items.length ? '' : 'none';
+  }
+
+  // "See all": the next 30 days in a popup, opened from the Month zone.
+  function openAllFestivals() {
+    const dlg = document.getElementById('festivals-dialog');
+    document.getElementById('festivals-dialog-list').replaceChildren(...collectUpcoming(30, 40).map(upcomingItem));
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
   }
 
   // Helper: check if same calendar day
@@ -1287,72 +1300,66 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     }
   }
 
-  // Render the daily 24-hour visual timeline of auspicious and inauspicious blocks
+  // "What comes next": today's windows still ahead (or running), soonest first.
+  // For another day it lists the whole day, since "now" has no meaning there.
   function renderDayTimeline(panchang) {
-    const blocksContainer = document.getElementById('timeline-blocks');
-    if (!blocksContainer) return;
-    blocksContainer.innerHTML = '';
-
-    const timelineStart = window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 6, 0, 0, currentCity.timeZone);
-    const startMs = timelineStart.getTime();
-    const totalMs = 24 * 60 * 60 * 1000;
-
-    const blocks = [];
+    const list = document.getElementById('next-list');
+    const status = document.getElementById('now-status');
+    if (!list || !status) return;
+    list.replaceChildren();
 
     const tm = panchang.timings;
-    const add = (label, list, type) => list.forEach((w, i) => blocks.push({
-      label: window.I18N.bi(list.length > 1 ? label.replace(')', ` ${i + 1})`) : label), start: w.start, end: w.end, type
-    }));
+    const items = [];
+    const add = (label, windows, type) => windows.forEach((w) => items.push({ label: window.I18N.bi(label), start: w.start, end: w.end, type }));
     add('రాహుకాలం (Rahu Kalam)', [tm.rahuKalam], 'inauspicious');
     add('యమగండం (Yama Gandam)', [tm.yamagandam], 'inauspicious');
     add('గుళిక కాలం (Gulika Kalam)', [tm.gulikaKalam], 'inauspicious');
     add('దుర్ముహూర్తం (Durmuhurtham)', tm.durmuhurtham, 'inauspicious');
     add('వర్జ్యం (Varjyam)', tm.varjyam, 'inauspicious');
     add('అమృత ఘడియలు (Amrita Kalam)', tm.amritaKalam, 'auspicious');
+    add('బ్రహ్మ ముహూర్తం (Brahma Muhurtham)', [tm.brahmaMuhurta], 'auspicious');
     if (!tm.abhijit.avoided) add('అభిజిత్ ముహూర్తం (Abhijit)', [tm.abhijit], 'auspicious');
+    items.sort((x, y) => x.start - y.start);
 
-    blocks.forEach(b => {
-      const bStartMs = b.start.getTime();
-      const bEndMs = b.end.getTime();
+    const now = new Date();
+    const nowParts = window.TZ.getZonedParts(now, currentCity.timeZone);
+    const isToday = nowParts.year === selectedDate.getFullYear() && nowParts.month === selectedDate.getMonth() && nowParts.day === selectedDate.getDate();
+    const upcoming = isToday ? items.filter((it) => it.end > now) : items;
+    const running = isToday ? upcoming.find((it) => it.type === 'inauspicious' && it.start <= now) : null;
 
-      const visibleStartMs = Math.max(bStartMs, startMs);
-      const visibleEndMs = Math.min(bEndMs, startMs + totalMs);
-
-      if (visibleStartMs < visibleEndMs) {
-        const leftPercent = ((visibleStartMs - startMs) / totalMs) * 100;
-        const widthPercent = ((visibleEndMs - visibleStartMs) / totalMs) * 100;
-
-        const blockEl = document.createElement('div');
-        blockEl.className = `timeline-block ${b.type}`;
-        blockEl.style.left = `${leftPercent}%`;
-        blockEl.style.width = `${widthPercent}%`;
-        
-        const timeStr = `${formatTime(b.start)} - ${formatTime(b.end)}`;
-        blockEl.title = `${b.label}: ${timeStr}`;
-
-        blocksContainer.appendChild(blockEl);
-      }
-    });
-
-    const elCursor = document.getElementById('timeline-cursor');
-    if (elCursor) {
-      const now = new Date();
-      const nowParts = window.TZ.getZonedParts(now, currentCity.timeZone);
-      const skyTime = window.TZ.zonedTimeToUtc(
-        selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(),
-        nowParts.hour, nowParts.minute, nowParts.second, currentCity.timeZone
-      );
-      const skyTimeMs = skyTime.getTime();
-
-      if (skyTimeMs >= startMs && skyTimeMs <= startMs + totalMs) {
-        const cursorPercent = ((skyTimeMs - startMs) / totalMs) * 100;
-        elCursor.style.left = `${cursorPercent}%`;
-        elCursor.style.display = 'block';
-      } else {
-        elCursor.style.display = 'none';
-      }
+    if (!isToday) {
+      status.textContent = '';
+    } else if (running) {
+      status.textContent = window.I18N.teEn('ఇప్పుడు ' + running.label + ' — ' + formatTime(running.end) + ' వరకు', 'Now: ' + running.label + ' until ' + formatTime(running.end));
+    } else {
+      status.textContent = window.I18N.teEn('ప్రస్తుతం ఏ చెడు సమయమూ లేదు', 'No bad time right now');
     }
+    status.className = 'now-status ' + (running ? 'inauspicious' : 'auspicious');
+
+    upcoming.slice(0, 5).forEach((it) => {
+      const li = document.createElement('li');
+      li.className = 'next-item ' + it.type;
+      const name = document.createElement('span');
+      name.className = 'next-name';
+      name.textContent = it.label;
+      const time = document.createElement('span');
+      time.className = 'next-time';
+      time.textContent = formatTime(it.start) + ' - ' + formatTime(it.end);
+      li.append(name, time);
+      list.appendChild(li);
+    });
   }
+
+  const elTimingsDialog = document.getElementById('timings-dialog');
+  document.getElementById('btn-all-timings').addEventListener('click', () => {
+    if (elTimingsDialog.showModal) elTimingsDialog.showModal(); else elTimingsDialog.setAttribute('open', '');
+  });
+  document.getElementById('btn-close-timings').addEventListener('click', () => elTimingsDialog.close());
+  elTimingsDialog.addEventListener('click', (e) => { if (e.target === elTimingsDialog) elTimingsDialog.close(); });
+
+  document.getElementById('btn-all-festivals').addEventListener('click', openAllFestivals);
+  document.getElementById('btn-close-festivals').addEventListener('click', () => document.getElementById('festivals-dialog').close());
+  document.getElementById('festivals-dialog').addEventListener('click', (e) => { if (e.target.id === 'festivals-dialog') e.target.close(); });
 
   // Boot UI on Page Load
   if (document.readyState === 'loading') {

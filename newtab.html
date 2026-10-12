@@ -43,69 +43,28 @@
     <button id="rating-dismiss" type="button" class="rating-dismiss" aria-label="Dismiss">&times;</button>
   </div>
 
-  <!-- Professional Grid Dashboard -->
+  <!-- Three-zone dashboard: Today, Month, Now -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">🪔</span>
+      <span class="brand-name" data-i18n-te="పంచాంగం" data-i18n-en="Panchangam">పంచాంగం</span>
+      <span class="brand-sub"><span id="profile-name">యజమాని</span> · <span id="profile-location">హైదరాబాద్ (Hyderabad)</span></span>
+    </div>
+    <div class="topbar-controls">
+      <label for="select-city" class="visually-hidden" data-i18n-bi="నగరం ఎంచుకోండి (City):">నగరం ఎంచుకోండి (City):</label>
+      <div class="select-wrapper"><select id="select-city"></select></div>
+      <button id="btn-use-location" type="button" class="cyber-btn tiny-btn city-locate-btn" data-i18n="useMyLocationBtn">📍 నా స్థానం వాడు (Use My Location)</button>
+      <label class="switch-inline"><span data-i18n-bi="చంద్ర కాంతి (Night Mode)">చంద్ర కాంతి (Night Mode)</span>
+        <span class="switch"><input type="checkbox" id="theme-toggle"><span class="slider"></span></span></label>
+      <label class="switch-inline"><span>భాష / Language</span>
+        <span class="switch"><input type="checkbox" id="lang-toggle" aria-label="Toggle Telugu/English language"><span class="slider"></span></span></label>
+      <button id="btn-open-settings" class="cyber-btn small-btn" data-i18n="btnBirthDetails">జన్మ వివరాలు</button>
+    </div>
+    <p id="location-status" class="location-status-msg" style="display: none;"></p>
+  </header>
   <div class="dashboard">
-    
-    <!-- Column 1: Control & Birth Profile Dock -->
-    <aside class="sidebar glass-panel" aria-label="Control Panel">
-      <div class="profile-card">
-        <div class="avatar-ring">
-          <div class="profile-avatar">🕉️</div>
-        </div>
-        <h2 id="profile-name">యజమాని</h2>
-        <p id="profile-location">హైదరాబాద్ (Hyderabad)</p>
-        <button id="btn-open-settings" class="cyber-btn small-btn" data-i18n="btnBirthDetails">జన్మ వివరాలు</button>
-      </div>
-
-      <div class="city-selector-card">
-        <label for="select-city" data-i18n-bi="నగరం ఎంచుకోండి (City):">నగరం ఎంచుకోండి (City):</label>
-        <div class="select-wrapper">
-          <select id="select-city"></select>
-        </div>
-        <button id="btn-use-location" type="button" class="cyber-btn tiny-btn city-locate-btn" data-i18n="useMyLocationBtn">📍 నా స్థానం వాడు (Use My Location)</button>
-        <p id="location-status" class="location-status-msg" style="display: none;"></p>
-      </div>
-
-      <div class="rasi-selector-card">
-        <label for="select-rasi" data-i18n-bi="మీ జన్మ రాశి (Birth Rasi):">మీ జన్మ రాశి (Birth Rasi):</label>
-        <div class="select-wrapper">
-          <select id="select-rasi">
-            <option value="0" data-i18n-bi="మేషం (Aries)">మేషం (Aries)</option>
-            <option value="1" data-i18n-bi="వృషభం (Taurus)">వృషభం (Taurus)</option>
-            <option value="2" data-i18n-bi="మిథునం (Gemini)">మిథునం (Gemini)</option>
-            <option value="3" data-i18n-bi="కర్కాటకం (Cancer)">కర్కాటకం (Cancer)</option>
-            <option value="4" data-i18n-bi="సింహం (Leo)">సింహం (Leo)</option>
-            <option value="5" data-i18n-bi="కన్య (Virgo)">కన్య (Virgo)</option>
-            <option value="6" data-i18n-bi="తులా (Libra)">తులా (Libra)</option>
-            <option value="7" data-i18n-bi="వృశ్చికం (Scorpio)">వృశ్చికం (Scorpio)</option>
-            <option value="8" data-i18n-bi="ధనస్సు (Sagittarius)">ధనస్సు (Sagittarius)</option>
-            <option value="9" data-i18n-bi="మకరం (Capricorn)">మకరం (Capricorn)</option>
-            <option value="10" data-i18n-bi="కుంభం (Aquarius)">కుంభం (Aquarius)</option>
-            <option value="11" data-i18n-bi="మీనం (Pisces)">మీనం (Pisces)</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="theme-switch-row">
-        <span data-i18n-bi="చంద్ర కాంతి (Night Mode)">చంద్ర కాంతి (Night Mode)</span>
-        <label class="switch">
-          <input type="checkbox" id="theme-toggle">
-          <span class="slider"></span>
-        </label>
-      </div>
-
-      <div class="theme-switch-row">
-        <span>భాష / Language</span>
-        <label class="switch">
-          <input type="checkbox" id="lang-toggle" aria-label="Toggle Telugu/English language">
-          <span class="slider"></span>
-        </label>
-      </div>
-    </aside>
-
-    <!-- Column 2: Core Dashboard Engine -->
-    <main class="main-content">
-      
+      <section class="zone zone-today" aria-labelledby="z-today">
+        <h2 id="z-today" class="zone-title" data-i18n-te="ఈరోజు" data-i18n-en="Today">ఈరోజు</h2>
       <!-- Hero Chronometer & Sun Path Arc -->
       <section class="hero-card glass-panel">
         <div class="hero-grid">
@@ -136,7 +95,6 @@
           </div>
         </div>
       </section>
-
       <!-- Astronomical Quad (Four Pillars of Panchanga) -->
       <section class="panchang-grid">
         <div class="quad-card glass-panel">
@@ -186,86 +144,10 @@
         </div>
         <p class="source-note" data-i18n="sourceNote">గణన: దృక్ పద్ధతి, లాహిరి అయనాంశ</p>
       </section>
-
-      <!-- Festivals and vratas from today through the next six days -->
-      <section id="upcoming-card" class="upcoming-card glass-panel">
-        <h3 data-i18n-bi="ఈ వారం పర్వదినాలు (Upcoming this week)">ఈ వారం పర్వదినాలు (Upcoming this week)</h3>
-        <ul id="upcoming-list" class="upcoming-list"></ul>
-      </section>
-
       <!-- Festival guide: shown only on the days a reviewed guide applies (content/guides) -->
       <section id="guide-card" class="guide-card glass-panel" hidden aria-live="polite">
         <div id="guide-body" class="guide-body"></div>
       </section>
-
-      <!-- 24-Hour Muhurthams Visual Timeline -->
-      <section class="timeline-card glass-panel">
-        <div class="timeline-header">
-          <h3 data-i18n-bi="దిన ముహూర్త కాల పట్టిక (Daily Muhurthams Timeline)">దిన ముహూర్త కాల పట్టిక (Daily Muhurthams Timeline)</h3>
-          <div class="legend-row">
-            <span class="legend-item auspicious" data-i18n-split-bi="● శుభ కాలములు (Auspicious)">● శుభ కాలములు</span>
-            <span class="legend-item inauspicious" data-i18n-split-bi="● వర్జ్య కాలములు (Inauspicious)">● వర్జ్య కాలములు</span>
-          </div>
-        </div>
-        
-        <!-- Timeline track representation -->
-        <div class="timeline-container">
-          <div class="timeline-hours">
-            <span>06 AM</span>
-            <span>10 AM</span>
-            <span>02 PM</span>
-            <span>06 PM</span>
-            <span>10 PM</span>
-            <span>02 AM</span>
-            <span>06 AM</span>
-          </div>
-          <div class="timeline-track">
-            <!-- Background ticks -->
-            <div class="timeline-grid-ticks"></div>
-            <!-- Colored dynamic timing blocks will be appended here by JS -->
-            <div id="timeline-blocks"></div>
-            <!-- Time cursor indicator -->
-            <div id="timeline-cursor" class="timeline-cursor" style="left: 0%;"></div>
-          </div>
-        </div>
-
-        <!-- Detail Grid of Exact Timings -->
-        <div class="timing-detail-grid">
-          <div class="timing-detail-box inauspicious">
-            <span data-i18n-split-bi="రాహుకాలం (Rahu Kalam):">రాహుకాలం:</span>
-            <span id="time-rahu">--</span>
-          </div>
-          <div class="timing-detail-box inauspicious">
-            <span data-i18n-split-bi="యమగండం (Yama Gandam):">యమగండం:</span>
-            <span id="time-yama">--</span>
-          </div>
-          <div class="timing-detail-box inauspicious">
-            <span data-i18n-split-bi="గుళిక కాలం (Gulika Kalam):">గుళిక కాలం:</span>
-            <span id="time-gulika">--</span>
-          </div>
-          <div class="timing-detail-box inauspicious">
-            <span data-i18n-split-bi="దుర్ముహూర్తం (Durmuhurtham):">దుర్ముహూర్తం:</span>
-            <span id="time-dur">--</span>
-          </div>
-          <div class="timing-detail-box inauspicious">
-            <span data-i18n-split-bi="వర్జ్యం (Varjyam):">వర్జ్యం:</span>
-            <span id="time-varj">--</span>
-          </div>
-          <div class="timing-detail-box auspicious">
-            <span data-i18n-split-bi="అమృత ఘడియలు (Amrita Kalam):">అమృత ఘడియలు:</span>
-            <span id="time-amrita">--</span>
-          </div>
-          <div class="timing-detail-box auspicious">
-            <span data-i18n-split-bi="అభిజిత్ ముహూర్తం (Abhijit Muhurtham):">అభిజిత్ ముహూర్తం:</span>
-            <span id="time-abhijit">--</span>
-          </div>
-          <div class="timing-detail-box auspicious">
-            <span data-i18n-split-bi="బ్రహ్మ ముహూర్తం (Brahma Muhurtham):">బ్రహ్మ ముహూర్తం:</span>
-            <span id="time-brahma">--</span>
-          </div>
-        </div>
-      </section>
-
       <!-- Sacred Scroll Vedic Sankalpam Section -->
       <section class="sankalpam-card glass-panel">
         <div class="sankalpam-scroll-decor">
@@ -278,7 +160,6 @@
         </div>
         <button id="copy-sankalpam-btn" class="cyber-btn tiny-btn" data-i18n-bi="సంకల్పమును నకలు చేయి (Copy Text)">సంకల్పమును నకలు చేయి (Copy Text)</button>
       </section>
-
       <!-- Gita verse of the day (offline; one verse per calendar day) -->
       <section class="gita-card glass-panel" aria-labelledby="gita-card-title">
         <div class="sankalpam-scroll-decor">
@@ -291,7 +172,9 @@
         <p id="gita-translit" class="gita-translit" lang="sa-Latn"></p>
         <p id="gita-english" class="gita-english" lang="en"></p>
       </section>
-
+      </section>
+      <section class="zone zone-month" aria-labelledby="z-month">
+        <h2 id="z-month" class="zone-title" data-i18n-te="నెల" data-i18n-en="Month">నెల</h2>
       <!-- Monthly Calendar Navigation -->
       <section class="calendar-card glass-panel">
         <div class="calendar-nav-bar">
@@ -311,12 +194,49 @@
         </div>
         <button id="btn-print-month" type="button" class="cyber-btn tiny-btn calendar-print-btn" data-i18n-bi="నెల పంచాంగం ముద్రించు (Print Month)">నెల పంచాంగం ముద్రించు (Print Month)</button>
       </section>
+      <!-- Festivals and vratas from today through the next six days -->
+      <section id="upcoming-card" class="upcoming-card glass-panel">
+        <h3 data-i18n-bi="ఈ వారం పర్వదినాలు (Upcoming this week)">ఈ వారం పర్వదినాలు (Upcoming this week)</h3>
+        <ul id="upcoming-list" class="upcoming-list"></ul>
+        <button id="btn-all-festivals" type="button" class="cyber-btn tiny-btn" data-i18n-bi="అన్నీ చూడండి (See all, 30 days)">అన్నీ చూడండి (See all, 30 days)</button>
+      </section>
+      </section>
+      <section class="zone zone-now" aria-labelledby="z-now">
+        <h2 id="z-now" class="zone-title" data-i18n-te="ఇప్పుడు" data-i18n-en="Now">ఇప్పుడు</h2>
+      <!-- 24-Hour Muhurthams Visual Timeline -->
+      <section class="timeline-card glass-panel">
+        <div class="timeline-header">
+          <h3 data-i18n-bi="సమయాలు (Timings)">సమయాలు (Timings)</h3>
+          <div class="legend-row">
+            <span class="legend-item auspicious" data-i18n-split-bi="● శుభ కాలములు (Auspicious)">● శుభ కాలములు</span>
+            <span class="legend-item inauspicious" data-i18n-split-bi="● వర్జ్య కాలములు (Inauspicious)">● వర్జ్య కాలములు</span>
+          </div>
+        </div>
+        
+        <p id="now-status" class="now-status" aria-live="polite"></p>
+        <ul id="next-list" class="next-list"></ul>
+        <button id="btn-all-timings" type="button" class="cyber-btn tiny-btn" data-i18n-bi="అన్ని సమయాలు (All timings)">అన్ని సమయాలు (All timings)</button>
+      </section>
 
-    </main>
-
-    <!-- Column 3: Tabbed Horoscope & Reminders Planner -->
-    <aside class="right-sidebar">
-      
+      <section class="rasi-pick-card">
+        <label for="select-rasi" data-i18n-bi="మీ జన్మ రాశి (Birth Rasi):">మీ జన్మ రాశి (Birth Rasi):</label>
+        <div class="select-wrapper">
+          <select id="select-rasi">
+            <option value="0" data-i18n-bi="మేషం (Aries)">మేషం (Aries)</option>
+            <option value="1" data-i18n-bi="వృషభం (Taurus)">వృషభం (Taurus)</option>
+            <option value="2" data-i18n-bi="మిథునం (Gemini)">మిథునం (Gemini)</option>
+            <option value="3" data-i18n-bi="కర్కాటకం (Cancer)">కర్కాటకం (Cancer)</option>
+            <option value="4" data-i18n-bi="సింహం (Leo)">సింహం (Leo)</option>
+            <option value="5" data-i18n-bi="కన్య (Virgo)">కన్య (Virgo)</option>
+            <option value="6" data-i18n-bi="తులా (Libra)">తులా (Libra)</option>
+            <option value="7" data-i18n-bi="వృశ్చికం (Scorpio)">వృశ్చికం (Scorpio)</option>
+            <option value="8" data-i18n-bi="ధనస్సు (Sagittarius)">ధనస్సు (Sagittarius)</option>
+            <option value="9" data-i18n-bi="మకరం (Capricorn)">మకరం (Capricorn)</option>
+            <option value="10" data-i18n-bi="కుంభం (Aquarius)">కుంభం (Aquarius)</option>
+            <option value="11" data-i18n-bi="మీనం (Pisces)">మీనం (Pisces)</option>
+          </select>
+        </div>
+      </section>
       <!-- Gochara Horoscope with Category Tabs -->
       <section class="horoscope-card glass-panel">
         <div class="horo-header-row">
@@ -333,7 +253,6 @@
 
         <p id="horoscope-txt" class="horo-body-text" data-i18n="horoLoading">రాశి ఫలాలు లోడ్ అవుతున్నాయి...</p>
       </section>
-
       <!-- Tasks and Event Reminders Planner -->
       <section class="reminders-card glass-panel">
         <h3 data-i18n="remindersTitle">నేటి శుభకార్యములు / ఈవెంట్లు</h3>
@@ -408,10 +327,61 @@
           <button type="submit" class="cyber-btn" data-i18n-bi="ఈవెంట్‌ను జోడించు (Add Event)">ఈవెంట్‌ను జోడించు (Add Event)</button>
         </form>
       </section>
-
-    </aside>
-
+      </section>
   </div>
+
+  <!-- Next 30 days of festivals and vratas (opened from the Month zone) -->
+  <dialog id="festivals-dialog" class="timings-dialog" aria-labelledby="festivals-dialog-title">
+    <div class="timings-dialog-head">
+      <h3 id="festivals-dialog-title" data-i18n-bi="రాబోయే పండుగలు (Next 30 days)">రాబోయే పండుగలు (Next 30 days)</h3>
+      <button id="btn-close-festivals" type="button" class="modal-close-btn" aria-label="Close">&times;</button>
+    </div>
+    <ul id="festivals-dialog-list" class="upcoming-list"></ul>
+  </dialog>
+
+  <!-- Full timings list (opened from the Now zone) -->
+  <dialog id="timings-dialog" class="timings-dialog" aria-labelledby="timings-dialog-title">
+    <div class="timings-dialog-head">
+      <h3 id="timings-dialog-title" data-i18n-bi="ఈరోజు సమయాలు (Today's timings)">ఈరోజు సమయాలు (Today's timings)</h3>
+      <button id="btn-close-timings" type="button" class="modal-close-btn" aria-label="Close">&times;</button>
+    </div>
+<!-- Detail Grid of Exact Timings -->
+        <div class="timing-detail-grid">
+          <div class="timing-detail-box inauspicious">
+            <span data-i18n-split-bi="రాహుకాలం (Rahu Kalam):">రాహుకాలం:</span>
+            <span id="time-rahu">--</span>
+          </div>
+          <div class="timing-detail-box inauspicious">
+            <span data-i18n-split-bi="యమగండం (Yama Gandam):">యమగండం:</span>
+            <span id="time-yama">--</span>
+          </div>
+          <div class="timing-detail-box inauspicious">
+            <span data-i18n-split-bi="గుళిక కాలం (Gulika Kalam):">గుళిక కాలం:</span>
+            <span id="time-gulika">--</span>
+          </div>
+          <div class="timing-detail-box inauspicious">
+            <span data-i18n-split-bi="దుర్ముహూర్తం (Durmuhurtham):">దుర్ముహూర్తం:</span>
+            <span id="time-dur">--</span>
+          </div>
+          <div class="timing-detail-box inauspicious">
+            <span data-i18n-split-bi="వర్జ్యం (Varjyam):">వర్జ్యం:</span>
+            <span id="time-varj">--</span>
+          </div>
+          <div class="timing-detail-box auspicious">
+            <span data-i18n-split-bi="అమృత ఘడియలు (Amrita Kalam):">అమృత ఘడియలు:</span>
+            <span id="time-amrita">--</span>
+          </div>
+          <div class="timing-detail-box auspicious">
+            <span data-i18n-split-bi="అభిజిత్ ముహూర్తం (Abhijit Muhurtham):">అభిజిత్ ముహూర్తం:</span>
+            <span id="time-abhijit">--</span>
+          </div>
+          <div class="timing-detail-box auspicious">
+            <span data-i18n-split-bi="బ్రహ్మ ముహూర్తం (Brahma Muhurtham):">బ్రహ్మ ముహూర్తం:</span>
+            <span id="time-brahma">--</span>
+          </div>
+        </div>
+      
+  </dialog>
 
   <!-- Settings Dialog Overlay -->
   <div id="settings-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="settings-title">

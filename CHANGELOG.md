@@ -9,7 +9,12 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 - New look ("Deepam"): a calm cream light theme and a warm dark theme replace the neon dark look, and the page is three coloured zones: Today (saffron), Month (turmeric) and Now (teal, with the rasi panel in purple). The animated sky backdrop is gone.
 - Timings: the 24-hour bar is replaced by a short "what comes next" list with a plain status line ("No bad time right now"), and an "All timings" popup holds the full list.
 - Upcoming festivals: a "See all" popup lists the next 30 days.
-- Controls moved from the left sidebar into a top bar; the birth rasi picker now sits in the Now zone.
+- Today zone: a Moon card (phase drawn from the sky, lit percentage, days to the next full or new moon), a "festival today" strip, big tithi and nakshatra, and sunrise and sunset; yogam, karanam and the Sun and Moon signs sit behind one button.
+- Rasi phalalu: all 12 rasis at a glance as cards (stars and a band label, your own rasi marked); tapping a card shows its health, income or career text below. The Share button now sits here.
+- Settings is a side sheet: language, look (day, night or auto, which follows the system), city, and optional name and birth details. The language and city controls moved out of the top bar.
+- Eclipse and Telugu-birthday alerts are calm banners with a close button. On phones the zones stack as Today, Now, Month, with section and tool shortcuts and a compact calendar.
+- Headings use Noto Serif Telugu, bundled in the extension (SIL Open Font License), so they look the same offline.
+- Controls moved from the left sidebar into a top bar; the birth rasi picker now sits in the rasi panel.
 
 - **Readability** (UI revamp, phase 1): body text is 17px with a taller line for Telugu, and nothing on the new-tab page is set below 14px (before, 35 rules used 10 to 13px, and form controls defaulted to 13px). Type sizes are now CSS variables (`--fs-caption`, `--fs-body`, `--lh-body`). The sun-path labels wrap under the arc so the larger text does not clip. This was the first step of the redesign above.
 

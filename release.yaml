@@ -44,6 +44,7 @@ targets:
       - ui/share-card.js
       - ui/rating.js
       - ui/guides.js
+      - ui/moon.js
       - content/guides
       - lib/astronomy.js
       - lib/tz.js

@@ -14,6 +14,7 @@ import { formatClock } from './ui/time-format.js';
 import { startOnboarding } from './ui/onboarding.js';
 import { shareDay, shareRashi } from './ui/share-card.js';
 import { initRatingPrompt } from './ui/rating.js';
+import { moonInfo, litPath } from './ui/moon.js';
 import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guides.js';
 
 (function () {
@@ -106,7 +107,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
   const DEFAULT_PROFILE_NAME = 'యజమాని'; // placeholder meaning "Owner" until the user sets a real name
   let currentCity = window.CityPresets.getDefault(); // { id, name, lat, lon, timeZone }
   let currentCoordinates = { lat: currentCity.lat, lng: currentCity.lon };
-  let userSettings = { name: DEFAULT_PROFILE_NAME, dob: '', tob: '12:00', rasi: '0', theme: 'light' };
+  let userSettings = { name: DEFAULT_PROFILE_NAME, dob: '', tob: '12:00', rasi: '0', theme: 'auto' };
   let selectedDate = new Date();
   let calendarViewDate = new Date();
   let todayPanchang = null;
@@ -148,6 +149,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
 
   // Initialize Extension
   async function init() {
+    applyTheme(userSettings.theme);
     await window.I18N.loadLang();
     elLangToggle.checked = (window.I18N.getLang() === 'en');
     applyTranslations();
@@ -197,7 +199,25 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       el.placeholder = window.I18N.bi(el.dataset.i18nPlaceholderBi);
     });
 
+    document.querySelectorAll('[data-i18n-aria-te]').forEach((el) => {
+      el.setAttribute('aria-label', window.I18N.teEn(el.dataset.i18nAriaTe, el.dataset.i18nAriaEn));
+    });
+    document.querySelectorAll('.seg [data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === window.I18N.getLang())));
+
     renderProfileName();
+  }
+
+  // Theme: 'light', 'dark' or 'auto' (follows the system). The page always carries the resolved
+  // value in data-theme, which is what the stylesheet reads.
+  const systemDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function applyTheme(choice) {
+    const resolved = choice === 'auto' ? (systemDark && systemDark.matches ? 'dark' : 'light') : choice;
+    document.body.setAttribute('data-theme', resolved);
+    elThemeToggle.checked = (resolved === 'dark');
+    document.querySelectorAll('[data-theme-choice]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.themeChoice === choice)));
+  }
+  if (systemDark && systemDark.addEventListener) {
+    systemDark.addEventListener('change', () => { if ((userSettings.theme || 'auto') === 'auto') applyTheme('auto'); });
   }
 
   // The profile name is free text the user can set via settings, so it can't
@@ -229,8 +249,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
           elSelectRasi.value = userSettings.rasi;
 
           // Apply theme
-          document.body.setAttribute('data-theme', userSettings.theme || 'light');
-          elThemeToggle.checked = (userSettings.theme === 'dark');
+          applyTheme(userSettings.theme || 'auto');
 
           // Populate Settings form. The untouched default is a placeholder,
           // not real text, so the input stays blank and shows its
@@ -401,14 +420,102 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     document.getElementById('gita-english').textContent = verse.translation.en;
   }
 
-  function renderHoroscope(panchang) {
-    const rasiIndex = parseInt(elSelectRasi.value);
-    const h = dailyHoroscope(panchang, engine.astronomy, rasiIndex, { janmaNakshatraIndex: birthNakshatraIndex() });
-    const text = horoscopeText(h, window.I18N.getLang());
+  // The rasi shown in the detail panel; null means the user's own birth rasi.
+  let viewRasi = null;
 
+  function bandFor(score) {
+    const t = window.I18N.t;
+    return score >= 5 ? { key: 'great', label: t('bandGreat') } : score === 4 ? { key: 'good', label: t('bandGood') }
+      : score === 3 ? { key: 'mixed', label: t('bandMixed') } : { key: 'care', label: t('bandCare') };
+  }
+
+  function renderHoroscope(panchang) {
+    const mine = parseInt(elSelectRasi.value, 10);
+    const shown = viewRasi === null ? mine : viewRasi;
+    const janma = birthNakshatraIndex();
+    const grid = document.getElementById('rasi-grid');
+    const all = allRashiPhalalu(panchang, engine.astronomy);
+    grid.replaceChildren(...all.map((row, i) => {
+      // The user's own card includes tara balam when a birth date is saved, so it matches the detail text.
+      const score = i === mine ? dailyHoroscope(panchang, engine.astronomy, i, { janmaNakshatraIndex: janma }).score : row.score;
+      const band = bandFor(score);
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = `rasi-card band-${band.key}${i === mine ? ' mine' : ''}${i === shown ? ' shown' : ''}`;
+      card.setAttribute('aria-pressed', String(i === shown));
+      const name = document.createElement('span');
+      name.className = 'rasi-card-name';
+      name.textContent = nm(row.rasi);
+      card.append(name);
+      if (i === mine) {
+        const badge = document.createElement('span');
+        badge.className = 'rasi-mine-badge';
+        badge.textContent = window.I18N.t('myRasi');
+        card.append(badge);
+      }
+      const stars = document.createElement('span');
+      stars.className = 'rasi-stars';
+      stars.setAttribute('role', 'img');
+      stars.setAttribute('aria-label', `${score} / 5`);
+      stars.textContent = '\u2605'.repeat(score) + '\u2606'.repeat(5 - score);
+      const label = document.createElement('span');
+      label.className = 'rasi-band';
+      label.textContent = band.label;
+      card.append(stars, label);
+      card.addEventListener('click', () => { viewRasi = i; renderHoroscope(panchang); });
+      return card;
+    }));
+
+    const h = dailyHoroscope(panchang, engine.astronomy, shown, { janmaNakshatraIndex: shown === mine ? janma : undefined });
+    const text = horoscopeText(h, window.I18N.getLang());
     elHoroscopeRating.textContent = "⭐".repeat(h.score);
+    document.getElementById('rasi-detail-name').textContent = shown === mine
+      ? `${nm(h.rasi)} \u00b7 ${window.I18N.t('myRasi')}` : nm(h.rasi);
+    document.getElementById('rasi-date').textContent = selectedDate.toLocaleDateString(window.I18N.getLang() === 'en' ? 'en-US' : 'te-IN', { weekday: 'short', day: 'numeric', month: 'long' });
     elHoroscopeTxt.textContent = activeHoroTab === 'health' ? text.health
       : activeHoroTab === 'wealth' ? text.wealth : text.career;
+  }
+
+  // Subtitle (year name, month, paksha), sunrise and sunset, today's festivals and the Moon card.
+  function renderTodayExtras(panchang) {
+    const cal = panchang.calendar;
+    document.getElementById('date-sub').textContent = [nm(cal.samvatsara.id || cal.samvatsara), nm(cal.masa.id), nm(cal.paksha.id)].join(' · ');
+    document.getElementById('sunrise-time').textContent = formatTime(panchang.astronomy.sunrise);
+    document.getElementById('sunset-time').textContent = formatTime(panchang.astronomy.sunset);
+
+    const fests = panchang.events.filter((e) => e.id.startsWith('FESTIVAL_'));
+    const strip = document.getElementById('festival-strip');
+    strip.hidden = fests.length === 0;
+    document.getElementById('festival-strip-names').textContent = fests.map((f) => nm(f.nameId || f.id)).join(' \u00b7 ');
+
+    renderMoon(panchang);
+  }
+
+  function renderMoon(panchang) {
+    const now = new Date();
+    const live = now >= panchang.astronomy.sunrise && now < panchang.astronomy.nextSunrise;
+    const at = live ? now : new Date(panchang.astronomy.sunrise.getTime() + 6 * 3600 * 1000);
+    const m = moonInfo(window.Astronomy, at);
+    const pct = Math.round(m.illumination * 100);
+    const t = window.I18N.t;
+    const title = m.waxing ? t('moonWaxing') : t('moonWaning');
+    document.getElementById('moon-lit').setAttribute('d', litPath(m.illumination, m.waxing));
+    document.getElementById('moon-title').textContent = title;
+    document.getElementById('moon-sub').textContent = `${pct}% ${t('moonLit')} \u00b7 ${tithiLabel(panchang.panchanga.tithi.id, window.I18N.getLang())}`;
+    document.getElementById('moon-next').textContent = m.waxing ? t('moonDaysToFull')(m.daysToFull) : t('moonDaysToNew')(m.daysToNew);
+    document.getElementById('moon-svg').setAttribute('aria-label', `${title}, ${pct}%`);
+    const pos = Math.round(m.progress * 100);
+    document.getElementById('moon-bar-fill').style.width = `${pos}%`;
+    document.getElementById('moon-bar-knob').style.left = `${pos}%`;
+    // The bar runs new moon to full moon while waxing, full moon to new moon while waning.
+    const fmt = (d) => d.toLocaleDateString(window.I18N.getLang() === 'en' ? 'en-US' : 'te-IN', { day: 'numeric', month: 'short', timeZone: currentCity.timeZone });
+    const startLabel = m.waxing ? t('moonNewLabel') : t('moonFullLabel');
+    const endLabel = m.waxing ? t('moonFullLabel') : t('moonNewLabel');
+    document.getElementById('moon-label-start').textContent = `${startLabel} \u00b7 ${fmt(m.waxing ? m.prevNew : m.prevFull)}`;
+    document.getElementById('moon-label-end').textContent = `${endLabel} \u00b7 ${fmt(m.waxing ? m.nextFull : m.nextNew)}`;
+    const lit = (id, fill, stroke) => { const c = document.querySelector(`#${id} circle`); c.setAttribute('fill', fill); if (stroke) c.setAttribute('stroke', stroke); };
+    lit('moon-cap-start', m.waxing ? '#3D3757' : '#F4E9C9', m.waxing ? '#8F86B0' : null);
+    lit('moon-cap-end', m.waxing ? '#F4E9C9' : '#3D3757', m.waxing ? null : '#8F86B0');
   }
 
   // Format transition times for calendar display
@@ -470,7 +577,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     // here would reinterpret that already-city-local day through a second zone
     // shift and could show the wrong date.
     elDateGregorian.textContent = selectedDate.toLocaleDateString(window.I18N.getLang() === 'en' ? 'en-US' : 'te-IN', {
-      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      weekday: 'short', day: 'numeric', month: 'long'
     });
 
     // 3. Render Panchang card values (paksha + tithi, e.g. "బహుళ నవమి")
@@ -486,6 +593,8 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
 
     elPanchangKarana.textContent = nm(p.karana.id);
     elPanchangKaranaTime.textContent = formatTransitionText(p.karana.spans);
+
+    renderTodayExtras(activePanchang);
 
     // Moon sign through the day, and the Sun's sign and karte (its sidereal nakshatra).
     elPanchangMoon.textContent = formatTransitionText(p.chandraRasi.spans, window.I18N.t('rasiNoun'));
@@ -569,7 +678,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
   // at sunrise (else the janma tithi); see core/birth.js.
   function checkBirthday(panchang) {
     const show = !!userSettings.dob && isTeluguBirthday(engine, panchang, birthDetails(engine, birthInstant()));
-    elBirthdayBanner.style.display = show ? 'block' : 'none';
+    elBirthdayBanner.style.display = show ? 'flex' : 'none';
   }
 
   // Eclipses visible from the selected city during the selected day.
@@ -901,18 +1010,34 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     // Rasi change
     elSelectRasi.addEventListener('change', async () => {
       userSettings.rasi = elSelectRasi.value;
+      viewRasi = null;
       userSettings.rasiSource = 'user'; // a hand-picked rasi is never overwritten from the DOB
       await chrome.storage.local.set({ userSettings });
       renderHoroscope(activePanchang);
     });
 
     // Dark/Light Theme toggle
-    elThemeToggle.addEventListener('change', async () => {
-      const theme = elThemeToggle.checked ? 'dark' : 'light';
-      document.body.setAttribute('data-theme', theme);
-      userSettings.theme = theme;
+    document.querySelectorAll('[data-theme-choice]').forEach((btn) => btn.addEventListener('click', async () => {
+      userSettings.theme = btn.dataset.themeChoice;
+      applyTheme(userSettings.theme);
       await chrome.storage.local.set({ userSettings });
+    }));
+
+    // Language buttons (header and settings) drive the same hidden toggle the onboarding uses.
+    document.querySelectorAll('.seg [data-lang]').forEach((btn) => btn.addEventListener('click', () => {
+      const wantEn = btn.dataset.lang === 'en';
+      if (elLangToggle.checked === wantEn) return;
+      elLangToggle.checked = wantEn;
+      elLangToggle.dispatchEvent(new Event('change'));
+    }));
+
+    document.getElementById('btn-city-chip').addEventListener('click', () => elBtnOpenSettings.click());
+    document.getElementById('btn-go-today').addEventListener('click', async () => {
+      selectedDate = cityToday();
+      calendarViewDate = new Date(selectedDate);
+      await refreshDashboard();
     });
+    document.querySelectorAll('.banner-close').forEach((btn) => btn.addEventListener('click', () => { btn.closest('.banner').style.display = 'none'; }));
 
     // Reminder form scheduler
     elRemType.addEventListener('change', () => {
@@ -1345,7 +1470,20 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       const time = document.createElement('span');
       time.className = 'next-time';
       time.textContent = formatWindow(it);
-      li.append(name, time);
+      const chip = document.createElement('span');
+      chip.className = 'next-chip';
+      chip.textContent = it.type === 'auspicious' ? window.I18N.t('goodTime') : window.I18N.t('badTime');
+      const mid = document.createElement('span');
+      mid.className = 'next-mid';
+      mid.append(name, time);
+      if (isToday && it.start > now) {
+        const mins = Math.round((it.start - now) / 60000);
+        const left = document.createElement('span');
+        left.className = 'next-left';
+        left.textContent = window.I18N.t('inTime')(Math.floor(mins / 60), mins % 60);
+        mid.append(left);
+      }
+      li.append(mid, chip);
       list.appendChild(li);
     });
   }

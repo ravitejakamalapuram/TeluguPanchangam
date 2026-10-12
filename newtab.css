@@ -1056,12 +1056,6 @@ input:checked + .slider:before {
   align-items: center;
   margin-bottom: 16px;
 }
-#calendar-month-title {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--accent-secondary);
-  text-transform: uppercase;
-}
 .nav-arrow-btn {
   background: none;
   border: none;
@@ -1810,8 +1804,8 @@ input:checked + .slider:before { background-color: #FFFFFF; }
 
 /* Month */
 .calendar-nav-bar { display: flex; align-items: center; gap: 4px; margin: 0; padding: 0; }
-.calendar-month-title { font-family: var(--font-heading); font-size: 1.3rem; font-weight: 600; padding: 0 10px; min-width: 150px; text-align: center; color: #FFFFFF; text-transform: none; }
-.nav-arrow-btn { width: 44px; height: 44px; border-radius: 999px; background: rgba(255, 255, 255, 0.16); color: #FFFFFF; border: 0; cursor: pointer; }
+.calendar-month-title { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 600; padding: 0 10px; min-width: 150px; text-align: center; color: #FFFFFF; font-weight: 700; text-transform: none; }
+.nav-arrow-btn { width: 44px; height: 44px; border-radius: 999px; background: rgba(255, 255, 255, 0.1); color: #FFFFFF; border: 0; cursor: pointer; }
 .nav-arrow-btn:hover { background: rgba(255, 255, 255, 0.3); color: #FFFFFF; }
 .calendar-grid-container { gap: 6px; }
 .grid-weekday-header { font-weight: 600; }
@@ -1913,7 +1907,7 @@ input:checked + .slider:before { background-color: #FFFFFF; }
 .rasi-card.shown { box-shadow: 0 0 0 3px var(--zone-rasi) inset; }
 .rasi-card-name { font-family: var(--font-heading); font-size: 1.4rem; font-weight: 600; line-height: 1.4; }
 .rasi-mine-badge { align-self: flex-start; font-size: 0.875rem; font-weight: 600; padding: 0 8px; border-radius: 6px; background: var(--zone-rasi); color: #FFFFFF; }
-.rasi-stars { margin-top: auto; color: #C98A12; font-size: 1.2rem; letter-spacing: 2px; }
+.rasi-stars { margin-top: auto; color: var(--band-fg); font-size: 1.2rem; letter-spacing: 2px; }
 .rasi-band { font-size: 0.95rem; font-weight: 700; color: var(--band-fg); }
 .rasi-detail { border-color: var(--zone-rasi); background: var(--panel-bg); }
 .rasi-detail-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 8px; }

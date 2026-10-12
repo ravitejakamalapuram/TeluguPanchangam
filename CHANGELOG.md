@@ -4,6 +4,9 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 
 ## [Unreleased]
 
+### Changed
+- **Readability** (UI revamp, phase 1): body text is 17px with a taller line for Telugu, and nothing on the new-tab page is set below 14px (before, 35 rules used 10 to 13px, and form controls defaulted to 13px). Type sizes are now CSS variables (`--fs-caption`, `--fs-body`, `--lh-body`). The sun-path labels wrap under the arc so the larger text does not clip. No layout or colour changes.
+
 ### Added
 - **Festival guides** (first: Deepavali): on Naraka Chaturdashi and Deepavali the day view shows a step-by-step guide in Telugu or English (preparation, oil bath, Lakshmi puja, lamps, items needed, offerings, verses), with its sources and a link to report a mistake. Guides are data in `content/guides/` and appear only after a named reviewer marks them `reviewed`; the website gets one static page per reviewed guide. Plan: `docs/plans/2026-10-05-festival-guides.md`.
 - **Website** (not part of the extension zip): the same panchangam now builds as an installable, offline-capable web app for GitHub Pages (`npm run build:web`, `web/`). Store and "keep this new tab" notes are hidden on the web, desktop Chrome visitors are offered the extension, and on phones the Share toast has a Send button that opens the share sheet (WhatsApp) with the card image and a link to the site. Plan: `docs/plans/2026-10-05-web-app.md`.

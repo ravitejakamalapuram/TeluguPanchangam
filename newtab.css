@@ -255,6 +255,12 @@
   --color-inauspicious: #EF4444; /* Premium Crimson */
   --blur: blur(20px) saturate(190%);
   --border-radius: 16px;
+
+  /* Type scale (1.25 ratio from a 17px body). Nothing is set below --fs-caption, so
+     Telugu conjuncts stay legible; Telugu runs need a taller line than Latin. */
+  --fs-caption: 0.875rem;   /* 14px */
+  --fs-body: 1.0625rem;     /* 17px */
+  --lh-body: 1.7;
 }
 
 [data-theme="dark"] {
@@ -282,7 +288,13 @@ body {
   min-height: 100vh;
   padding: 24px;
   overflow-x: hidden;
-  line-height: 1.5;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+/* Form controls ignore the inherited size and default to 13.3px; class rules still win. */
+button, input, select, textarea {
+  font-size: var(--fs-caption);
 }
 
 /* Custom Scrollbars */
@@ -505,7 +517,7 @@ body {
   margin-bottom: 4px;
 }
 #profile-location {
-  font-size: 0.8rem;
+  font-size: var(--fs-caption);
   color: var(--text-secondary);
   margin-bottom: 12px;
 }
@@ -517,7 +529,7 @@ body {
   border: none;
   font-family: var(--font-family);
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: var(--fs-caption);
   text-transform: uppercase;
   letter-spacing: 1px;
   padding: 12px;
@@ -535,13 +547,13 @@ body {
 }
 .cyber-btn.small-btn {
   padding: 8px 16px;
-  font-size: 0.75rem;
+  font-size: var(--fs-caption);
   width: auto;
   margin: 0 auto;
 }
 .cyber-btn.tiny-btn {
   padding: 6px 12px;
-  font-size: 0.7rem;
+  font-size: var(--fs-caption);
   width: auto;
   border-radius: 6px;
 }
@@ -554,7 +566,7 @@ body {
 .city-selector-card label,
 .rasi-selector-card label {
   display: block;
-  font-size: 0.8rem;
+  font-size: var(--fs-caption);
   text-transform: uppercase;
   font-weight: 800;
   letter-spacing: 0.8px;
@@ -566,7 +578,7 @@ body {
 }
 .select-wrapper::after {
   content: '▼';
-  font-size: 0.65rem;
+  font-size: var(--fs-caption);
   color: var(--accent-primary);
   position: absolute;
   right: 12px;
@@ -597,7 +609,7 @@ body {
   width: 100%;
 }
 .location-status-msg {
-  font-size: 0.75rem;
+  font-size: var(--fs-caption);
   color: var(--text-secondary);
   text-align: center;
 }
@@ -608,7 +620,7 @@ body {
   align-items: center;
   border-top: 1px dashed rgba(255, 255, 255, 0.08);
   padding-top: 16px;
-  font-size: 0.85rem;
+  font-size: var(--fs-caption);
   font-weight: 700;
   color: var(--text-secondary);
 }
@@ -670,8 +682,8 @@ input:checked + .slider:before {
 }
 .hero-grid {
   display: grid;
-  /* The clock keeps its natural width; the sun path takes what is left and shrinks, never spills */
-  grid-template-columns: auto minmax(0, 1fr);
+  /* The sun path keeps room for its two 14px labels; the clock column wraps its buttons instead of crowding it */
+  grid-template-columns: minmax(0, 1.4fr) minmax(240px, 1fr);
   align-items: center;
   gap: 16px;
 }
@@ -699,10 +711,13 @@ input:checked + .slider:before {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* At 14px the two labels no longer fit beside the arc; the arc takes the first line, the labels share the second */
+  flex-wrap: wrap;
   gap: 8px;
 }
 #sun-path-svg {
-  flex: 1 1 auto;
+  order: -1;
+  flex: 1 1 100%;
   min-width: 60px;
   width: 100%;
   max-width: 180px;
@@ -710,9 +725,11 @@ input:checked + .slider:before {
   overflow: visible;
 }
 .arc-label-left, .arc-label-right {
+  flex: 1 1 45%;
   min-width: 0;
+  overflow-wrap: anywhere;
   text-align: center;
-  font-size: 0.65rem;
+  font-size: var(--fs-caption);
   font-weight: 700;
   text-transform: uppercase;
   color: var(--text-secondary);
@@ -750,7 +767,7 @@ input:checked + .slider:before {
   font-size: 1rem;
 }
 .quad-title {
-  font-size: 0.75rem;
+  font-size: var(--fs-caption);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -763,7 +780,7 @@ input:checked + .slider:before {
   margin-bottom: 4px;
 }
 .quad-details {
-  font-size: 0.75rem;
+  font-size: var(--fs-caption);
   font-weight: 600;
   color: var(--text-secondary);
   font-style: italic;
@@ -777,14 +794,14 @@ input:checked + .slider:before {
   display: flex;
   flex-wrap: wrap;
   gap: 6px 24px;
-  font-size: 0.85rem;
+  font-size: var(--fs-caption);
   font-weight: 600;
 }
 .signs-card .quad-title { margin-right: 4px; }
 .source-note {
   grid-column: 1 / -1;
   margin-top: -8px;
-  font-size: 0.7rem;
+  font-size: var(--fs-caption);
   color: var(--text-secondary);
   opacity: 0.7;
   text-align: right;
@@ -793,7 +810,7 @@ input:checked + .slider:before {
 /* Upcoming this week */
 .upcoming-card { padding: 16px 20px; }
 .upcoming-card h3 {
-  font-size: 0.85rem;
+  font-size: var(--fs-caption);
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -813,10 +830,10 @@ input:checked + .slider:before {
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.25);
   border-left: 3px solid var(--accent-primary);
-  font-size: 0.8rem;
+  font-size: var(--fs-caption);
 }
 .upcoming-date, .upcoming-parana {
-  font-size: 0.7rem;
+  font-size: var(--fs-caption);
   color: var(--text-secondary);
 }
 
@@ -845,7 +862,7 @@ input:checked + .slider:before {
   gap: 12px;
 }
 .legend-item {
-  font-size: 0.72rem;
+  font-size: var(--fs-caption);
   font-weight: 700;
   text-transform: uppercase;
 }
@@ -860,7 +877,7 @@ input:checked + .slider:before {
 .timeline-hours {
   display: flex;
   justify-content: space-between;
-  font-size: 0.65rem;
+  font-size: var(--fs-caption);
   font-weight: 700;
   color: var(--text-secondary);
   margin-bottom: 6px;
@@ -933,7 +950,7 @@ input:checked + .slider:before {
   justify-content: space-between;
   padding: 8px 12px;
   border-radius: 6px;
-  font-size: 0.8rem;
+  font-size: var(--fs-caption);
   font-weight: 700;
   background: rgba(0,0,0,0.2);
 }
@@ -963,7 +980,7 @@ input:checked + .slider:before {
   background: linear-gradient(90deg, transparent, var(--panel-border), transparent);
 }
 .sankalpam-card-title {
-  font-size: 0.85rem;
+  font-size: var(--fs-caption);
   font-weight: 800;
   letter-spacing: 1px;
   color: var(--accent-secondary);
@@ -1028,7 +1045,7 @@ input:checked + .slider:before {
 }
 .grid-weekday-header {
   font-weight: 800;
-  font-size: 0.75rem;
+  font-size: var(--fs-caption);
   color: var(--text-secondary);
   text-align: center;
   padding-bottom: 8px;
@@ -1070,7 +1087,7 @@ input:checked + .slider:before {
   font-size: 0.9rem;
 }
 .day-tithi {
-  font-size: 0.65rem;
+  font-size: var(--fs-caption);
   color: var(--text-secondary);
   font-weight: 600;
   text-align: right;
@@ -1079,7 +1096,7 @@ input:checked + .slider:before {
   white-space: nowrap;
 }
 .day-festivals {
-  font-size: 0.6rem;
+  font-size: var(--fs-caption);
   background: var(--accent-primary);
   color: #fff;
   border-radius: 3px;
@@ -1108,7 +1125,7 @@ input:checked + .slider:before {
 }
 .horo-stars {
   color: var(--accent-secondary);
-  font-size: 0.85rem;
+  font-size: var(--fs-caption);
 }
 
 /* Horoscope Category Tabs */
@@ -1130,7 +1147,7 @@ input:checked + .slider:before {
   border-radius: 6px;
   font-family: var(--font-family);
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: var(--fs-caption);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -1168,12 +1185,12 @@ input:checked + .slider:before {
   align-items: center;
 }
 .reminder-details h4 {
-  font-size: 0.85rem;
+  font-size: var(--fs-caption);
   font-weight: 700;
   color: var(--text-primary);
 }
 .reminder-details p {
-  font-size: 0.75rem;
+  font-size: var(--fs-caption);
   color: var(--text-secondary);
 }
 .reminder-delete {
@@ -1184,7 +1201,7 @@ input:checked + .slider:before {
   font-size: 1rem;
 }
 .no-reminders-msg {
-  font-size: 0.8rem;
+  font-size: var(--fs-caption);
   color: var(--text-secondary);
   text-align: center;
   padding: 20px 0;
@@ -1349,7 +1366,7 @@ input:checked + .slider:before {
   gap: 4px;
 }
 .input-group label {
-  font-size: 0.75rem;
+  font-size: var(--fs-caption);
   font-weight: 800;
   text-transform: uppercase;
   color: var(--text-secondary);
@@ -1371,7 +1388,7 @@ input:checked + .slider:before {
 
 /* Gita verse of the day */
 .gita-card { padding: 18px 20px; }
-.gita-ref { margin: 4px 0 10px; font-size: 0.8rem; letter-spacing: 0.04em; opacity: 0.75; text-align: center; }
+.gita-ref { margin: 4px 0 10px; font-size: var(--fs-caption); letter-spacing: 0.04em; opacity: 0.75; text-align: center; }
 .gita-sanskrit { margin: 0 0 8px; font-size: 1.15rem; line-height: 1.7; text-align: center; white-space: pre-line; }
 .gita-translit { margin: 0 0 10px; font-size: 0.9rem; line-height: 1.5; text-align: center; font-style: italic; opacity: 0.85; white-space: pre-line; }
 .gita-english { margin: 0; font-size: 0.95rem; line-height: 1.6; text-align: center; }
@@ -1379,7 +1396,7 @@ input:checked + .slider:before {
 /* Location note under a Sankalpam recited outside Andhra Pradesh/Telangana */
 .sankalpam-note {
   margin-top: 0.75rem;
-  font-size: 0.8rem;
+  font-size: var(--fs-caption);
   opacity: 0.75;
 }
 
@@ -1404,7 +1421,7 @@ input:checked + .slider:before {
   backdrop-filter: blur(10px);
 }
 .onboarding-progress {
-  font-size: 0.75rem;
+  font-size: var(--fs-caption);
   font-weight: 700;
   color: var(--text-secondary);
 }
@@ -1418,7 +1435,7 @@ input:checked + .slider:before {
   font-size: 1.05rem;
 }
 .onboarding-step > p {
-  font-size: 0.85rem;
+  font-size: var(--fs-caption);
   color: var(--text-secondary);
   margin: 2px 0 14px;
 }
@@ -1460,7 +1477,7 @@ input:checked + .slider:before {
   align-items: center;
   gap: 8px;
   padding: 8px 10px;
-  font-size: 0.85rem;
+  font-size: var(--fs-caption);
 }
 .onboarding-city input {
   accent-color: var(--accent-primary);
@@ -1471,14 +1488,14 @@ input:checked + .slider:before {
   border-radius: 8px;
   color: var(--text-secondary);
   font-family: var(--font-family);
-  font-size: 0.85rem;
+  font-size: var(--fs-caption);
   font-weight: 700;
   padding: 10px 16px;
   cursor: pointer;
 }
 .onboarding-locate-status {
   margin-top: 8px;
-  font-size: 0.8rem;
+  font-size: var(--fs-caption);
   color: var(--text-secondary);
 }
 .onboarding-actions {
@@ -1505,7 +1522,7 @@ input:checked + .slider:before {
   align-items: center;
   gap: 6px;
   margin-top: 6px;
-  font-size: 0.85rem;
+  font-size: var(--fs-caption);
   color: var(--text-secondary);
 }
 .day-one-note[hidden] {
@@ -1540,6 +1557,6 @@ input:checked + .slider:before {
 .guide-card ol, .guide-card ul { margin: 0; padding-left: 22px; }
 .guide-card li { margin: 4px 0; }
 .guide-card .guide-note { font-style: italic; opacity: 0.85; }
-.guide-card .guide-reviewed, .guide-card .guide-report { font-size: 0.85rem; opacity: 0.85; }
+.guide-card .guide-reviewed, .guide-card .guide-report { font-size: var(--fs-caption); opacity: 0.85; }
 .guide-card .guide-draft { margin: 0 0 12px; padding: 8px 12px; border-radius: 8px; border: 1px dashed currentColor; font-weight: 600; }
 .guide-card a { color: inherit; text-decoration: underline; }

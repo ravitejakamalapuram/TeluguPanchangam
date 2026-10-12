@@ -16,30 +16,31 @@ reminded at the right time.
 A reminder that gets no answer is raised again in the next Monday brief until it is done or
 dropped. Nothing is posted publicly in his name.
 
-## Priorities as of 5 Oct 2026
+## Priorities as of 12 Oct 2026
 
-Ranked by how directly each item leads to revenue or installs.
+Ranked by how directly each item leads to revenue or installs. Done since 5 Oct: Bathukamma post,
+festival search pages (ravitejakamalapuram.github.io#5, TeluguPanchangam#34), Deepavali dates blog
+post (ravitejakamalapuram.github.io#7, merged 11 Oct).
 
 ### Now (this week)
 
-1. **Send the Bathukamma post (Tue 6 Oct).** The text is in the calendar reminder.
-2. **Merge the festival search pages:** ravitejakamalapuram.github.io#5 and TeluguPanchangam#34.
-   Check the Sankranti 2027 date on Drik first. Pages need weeks to rank, so they have to be
-   live well before Deepavali.
-3. **Send the Deepavali association newsletter blurbs (Template 3.1) by Thu 15 Oct.**
+1. **Send the Deepavali association newsletter blurb (Template 3.1) by Thu 15 Oct.**
    Newsletters need about four weeks' lead time.
+2. **Share the Deepavali dates post** in the Telugu groups by Wed 14 Oct.
+3. **Check the Deepavali (Sun 8 Nov) and Sankranti 2027 (US 14 Jan, Hyderabad 15 Jan) dates on
+   Drik** by Fri 16 Oct and report back.
 4. **Paste the cors-enabler listing** from its checklist issue into the Chrome Web Store
-   dashboard.
+   dashboard (overdue).
 5. **Record the weekly-users baseline** for TeluguPanchangam, session-transfer and cors-enabler
-   from the Chrome Web Store dashboard (launch kit §6).
+   from the Chrome Web Store dashboard (launch kit §6; overdue).
 
 ### Next (this month)
 
 6. **InvTrack trust fixes.** This is the biggest money lever: Premium can't sell while the home
    screen shows wrong returns. Seven review PRs are ready to merge (#832, #833, #874, #876, #877,
    #878, #879).
-7. **Approve or close the open plan PRs:** TeluguPanchangam#33 (WhatsApp rashi card) and
-   session-transfer#29 (laptop-to-laptop transfer).
+7. **Decide TeluguPanchangam#33 (WhatsApp rashi card):** approve or close. The
+   session-transfer laptop-to-laptop plan (#29) is merged.
 8. **session-transfer QA launch:** run the Show HN, r/QualityAssurance and dev.to drafts in
    `docs/GROWTH_PLAN.md`, one channel a week.
 

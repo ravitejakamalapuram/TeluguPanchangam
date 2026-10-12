@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Foundations: type and color</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;600&amp;family=Noto+Serif+Telugu:wght@600&amp;family=Outfit:wght@400;500;600&amp;display=swap">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 1440px; height: 1000px; box-sizing: border-box; padding: 56px 64px; background: #FBF7F0; color: #2B2118; font-family: 'Outfit', sans-serif; font-size: 16px; line-height: 1.6; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px">
+
+  <div style="display: flex; flex-direction: column; gap: 20px">
+    <h1 style="margin: 0; font-size: 28px; font-weight: 600">Type scale · Telugu first</h1>
+    <p style="margin: 0; color: #5E4E40">Ratio 1.25 from a 17px base. Telugu line-height 1.7 for vowel signs and conjuncts. Nothing below 14px. Headings in Noto Serif Telugu, body in Noto Sans Telugu, numerals and English in Outfit; Noto Sans Telugu and Outfit are already bundled; Noto Serif Telugu would be added as a local file so the page stays offline.</p>
+    <div style="display: flex; align-items: baseline; gap: 24px; border-top: 1px solid #E9E0D2; padding-top: 12px"><span style="width: 120px; flex: none; font-size: 14px; color: #5E4E40">display · 41</span><span style="font-family: 'Noto Serif Telugu', serif; font-weight: 600; font-size: 41px; line-height: 1.35">ఆదివారం, 18 అక్టోబర్</span></div>
+    <div style="display: flex; align-items: baseline; gap: 24px; border-top: 1px solid #E9E0D2; padding-top: 12px"><span style="width: 120px; flex: none; font-size: 14px; color: #5E4E40">value · 33</span><span style="font-family: 'Noto Serif Telugu', serif; font-weight: 600; font-size: 33px; line-height: 1.4">పూర్వాషాఢ</span></div>
+    <div style="display: flex; align-items: baseline; gap: 24px; border-top: 1px solid #E9E0D2; padding-top: 12px"><span style="width: 120px; flex: none; font-size: 14px; color: #5E4E40">title · 26</span><span style="font-family: 'Noto Serif Telugu', serif; font-weight: 600; font-size: 26px; line-height: 1.4">రాబోయే పర్వదినాలు</span></div>
+    <div style="display: flex; align-items: baseline; gap: 24px; border-top: 1px solid #E9E0D2; padding-top: 12px"><span style="width: 120px; flex: none; font-size: 14px; color: #5E4E40">subtitle · 21</span><span style="font-family: 'Noto Sans Telugu', sans-serif; font-weight: 600; font-size: 21px; line-height: 1.6">ఇప్పుడు దుష్ట కాలం లేదు</span></div>
+    <div style="display: flex; align-items: baseline; gap: 24px; border-top: 1px solid #E9E0D2; padding-top: 12px"><span style="width: 120px; flex: none; font-size: 14px; color: #5E4E40">body · 17</span><span style="font-family: 'Noto Sans Telugu', sans-serif; font-size: 17px; line-height: 1.7">తదుపరి శుభ సమయం: అభిజిత్ ముహూర్తం ఉ. 11:37 – మ. 12:24</span></div>
+    <div style="display: flex; align-items: baseline; gap: 24px; border-top: 1px solid #E9E0D2; padding-top: 12px"><span style="width: 120px; flex: none; font-size: 14px; color: #5E4E40">caption · 14</span><span style="font-family: 'Noto Sans Telugu', sans-serif; font-weight: 600; font-size: 14px; line-height: 1.7; color: #5E4E40">తిథి · నక్షత్రం · యోగం · కరణం</span></div>
+
+    <h2 style="margin: 16px 0 0; font-size: 22px; font-weight: 600">Five rules</h2>
+    <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px">
+      <li>The panchangam is the hero; the clock is a detail.</li>
+      <li>Answer "is now a good time?" in one glance, with a word and an icon, never colour alone.</li>
+      <li>One language at a time. No "తిథి (TITHI)".</li>
+      <li>Daily reading first; tools (sankalpam, reminders, calendar) one tap away.</li>
+      <li>Calm, warm, legible. No neon, glow loops or heavy blur.</li>
+    </ol>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 20px">
+    <h2 style="margin: 0; font-size: 28px; font-weight: 600">Colour tokens</h2>
+    <p style="margin: 0; color: #5E4E40">Every text colour passes WCAG AA (4.5:1) on its own background. Ratios measured on the page background.</p>
+
+    <div style="font-size: 14px; font-weight: 600; color: #5E4E40">LIGHT · "Deepam"</div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+      <div style="border: 1px solid #E9E0D2; border-radius: 12px; overflow: hidden; background: #FFFFFF"><div style="height: 56px; background: #FBF7F0"></div><div style="padding: 8px 10px; font-size: 13px"><strong>bg</strong><br>#FBF7F0</div></div>
+      <div style="border: 1px solid #E9E0D2; border-radius: 12px; overflow: hidden; background: #FFFFFF"><div style="height: 56px; background: #2B2118"></div><div style="padding: 8px 10px; font-size: 13px"><strong>ink</strong> 14.8:1<br>#2B2118</div></div>
+      <div style="border: 1px solid #E9E0D2; border-radius: 12px; overflow: hidden; background: #FFFFFF"><div style="height: 56px; background: #5E4E40"></div><div style="padding: 8px 10px; font-size: 13px"><strong>ink-2</strong> 7.5:1<br>#5E4E40</div></div>
+      <div style="border: 1px solid #E9E0D2; border-radius: 12px; overflow: hidden; background: #FFFFFF"><div style="height: 56px; background: #A63A12"></div><div style="padding: 8px 10px; font-size: 13px"><strong>kumkum</strong> 6.1:1<br>#A63A12</div></div>
+      <div style="border: 1px solid #E9E0D2; border-radius: 12px; overflow: hidden; background: #FFFFFF"><div style="height: 56px; background: #1E6B45"></div><div style="padding: 8px 10px; font-size: 13px"><strong>shubha</strong> 6.1:1<br>#1E6B45</div></div>
+      <div style="border: 1px solid #E9E0D2; border-radius: 12px; overflow: hidden; background: #FFFFFF"><div style="height: 56px; background: #A3261B"></div><div style="padding: 8px 10px; font-size: 13px"><strong>ashubha</strong> 6.9:1<br>#A3261B</div></div>
+      <div style="border: 1px solid #E9E0D2; border-radius: 12px; overflow: hidden; background: #FFFFFF"><div style="height: 56px; background: #7A5A12"></div><div style="padding: 8px 10px; font-size: 13px"><strong>pasupu</strong> 6.0:1<br>#7A5A12</div></div>
+      <div style="border: 1px solid #E9E0D2; border-radius: 12px; overflow: hidden; background: #FFFFFF"><div style="height: 56px; background: #F5ECD6"></div><div style="padding: 8px 10px; font-size: 13px"><strong>festival bg</strong><br>#F5ECD6</div></div>
+    </div>
+
+    <div style="font-size: 14px; font-weight: 600; color: #5E4E40; margin-top: 8px">DARK · "Raatri"</div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+      <div style="border: 1px solid #E9E0D2; border-radius: 12px; overflow: hidden; background: #FFFFFF"><div style="height: 56px; background: #15131A"></div><div style="padding: 8px 10px; font-size: 13px"><strong>bg</strong><br>#15131A</div></div>
+      <div style="border: 1px solid #E9E0D2; border-radius: 12px; overflow: hidden; background: #FFFFFF"><div style="height: 56px; background: #F3ECE1"></div><div style="padding: 8px 10px; font-size: 13px"><strong>ink</strong> 15.7:1<br>#F3ECE1</div></div>
+      <div style="border: 1px solid #E9E0D2; border-radius: 12px; overflow: hidden; background: #FFFFFF"><div style="height: 56px; background: #BDB2A3"></div><div style="padding: 8px 10px; font-size: 13px"><strong>ink-2</strong> 8.8:1<br>#BDB2A3</div></div>
+      <div style="border: 1px solid #E9E0D2; border-radius: 12px; overflow: hidden; background: #FFFFFF"><div style="height: 56px; background: #F0A25A"></div><div style="padding: 8px 10px; font-size: 13px"><strong>deepam</strong> 8.8:1<br>#F0A25A</div></div>
+      <div style="border: 1px solid #E9E0D2; border-radius: 12px; overflow: hidden; background: #FFFFFF"><div style="height: 56px; background: #6FCF97"></div><div style="padding: 8px 10px; font-size: 13px"><strong>shubha</strong> 9.7:1<br>#6FCF97</div></div>
+      <div style="border: 1px solid #E9E0D2; border-radius: 12px; overflow: hidden; background: #FFFFFF"><div style="height: 56px; background: #FF8A7A"></div><div style="padding: 8px 10px; font-size: 13px"><strong>ashubha</strong> 8.0:1<br>#FF8A7A</div></div>
+      <div style="border: 1px solid #E9E0D2; border-radius: 12px; overflow: hidden; background: #FFFFFF"><div style="height: 56px; background: #E2C27A"></div><div style="padding: 8px 10px; font-size: 13px"><strong>pasupu</strong> 10.7:1<br>#E2C27A</div></div>
+      <div style="border: 1px solid #E9E0D2; border-radius: 12px; overflow: hidden; background: #FFFFFF"><div style="height: 56px; background: #211D28"></div><div style="padding: 8px 10px; font-size: 13px"><strong>surface</strong><br>#211D28</div></div>
+    </div>
+
+    <div style="margin-top: 8px; background: #FFFFFF; border: 1px solid #E9E0D2; border-radius: 12px; padding: 16px 20px; font-size: 15px; color: #5E4E40">
+      <strong style="color: #2B2118">Today's theme for comparison:</strong> white text on the #FF5E00 buttons is 3.1:1 and fails AA. Most other text passes, so the problem is mostly size, density and tone rather than contrast.
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

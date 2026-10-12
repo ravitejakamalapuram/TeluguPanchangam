@@ -1322,8 +1322,8 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     items.sort((x, y) => x.start - y.start);
 
     const now = new Date();
-    const nowParts = window.TZ.getZonedParts(now, currentCity.timeZone);
-    const isToday = nowParts.year === selectedDate.getFullYear() && nowParts.month === selectedDate.getMonth() && nowParts.day === selectedDate.getDate();
+    // "Today" is the panchang day running now: sunrise to next sunrise, so after midnight it still counts.
+    const isToday = now >= panchang.astronomy.sunrise && now < panchang.astronomy.nextSunrise;
     const upcoming = isToday ? items.filter((it) => it.end > now) : items;
     const running = isToday ? upcoming.find((it) => it.type === 'inauspicious' && it.start <= now) : null;
 
@@ -1344,7 +1344,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       name.textContent = it.label;
       const time = document.createElement('span');
       time.className = 'next-time';
-      time.textContent = formatTime(it.start) + ' - ' + formatTime(it.end);
+      time.textContent = formatWindow(it);
       li.append(name, time);
       list.appendChild(li);
     });
@@ -1354,12 +1354,13 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
   document.getElementById('btn-all-timings').addEventListener('click', () => {
     if (elTimingsDialog.showModal) elTimingsDialog.showModal(); else elTimingsDialog.setAttribute('open', '');
   });
-  document.getElementById('btn-close-timings').addEventListener('click', () => elTimingsDialog.close());
-  elTimingsDialog.addEventListener('click', (e) => { if (e.target === elTimingsDialog) elTimingsDialog.close(); });
+  const closeDialog = (dlg) => { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); };
+  document.getElementById('btn-close-timings').addEventListener('click', () => closeDialog(elTimingsDialog));
+  elTimingsDialog.addEventListener('click', (e) => { if (e.target === elTimingsDialog) closeDialog(elTimingsDialog); });
 
   document.getElementById('btn-all-festivals').addEventListener('click', openAllFestivals);
-  document.getElementById('btn-close-festivals').addEventListener('click', () => document.getElementById('festivals-dialog').close());
-  document.getElementById('festivals-dialog').addEventListener('click', (e) => { if (e.target.id === 'festivals-dialog') e.target.close(); });
+  document.getElementById('btn-close-festivals').addEventListener('click', () => closeDialog(document.getElementById('festivals-dialog')));
+  document.getElementById('festivals-dialog').addEventListener('click', (e) => { if (e.target.id === 'festivals-dialog') closeDialog(e.target); });
 
   // Boot UI on Page Load
   if (document.readyState === 'loading') {

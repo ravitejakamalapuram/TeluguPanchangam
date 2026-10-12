@@ -1443,7 +1443,7 @@ input:checked + .slider:before {
   font-family: var(--font-family);
 }
 .onboarding::backdrop {
-  background: var(--tint);
+  background: rgba(23, 18, 13, 0.55);
   backdrop-filter: blur(10px);
 }
 .onboarding-progress {

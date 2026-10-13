@@ -7,9 +7,15 @@
 /* Vendored Noto Sans Telugu and Outfit (SIL Open Font License) so the
    extension makes no network requests. Subset boundaries and unicode-range
    values mirror what Google Fonts serves. */
+/* Noto Telugu faces reserve far more room below the baseline than above (Telugu conjuncts stack downwards),
+   so Latin text sat about 3px high in centred pills and chips. The overrides rebalance the line box only;
+   glyphs are not clipped. */
 /* telugu */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 400;
   font-stretch: 100%;
@@ -20,6 +26,9 @@
 /* latin-ext */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 400;
   font-stretch: 100%;
@@ -30,6 +39,9 @@
 /* latin */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 400;
   font-stretch: 100%;
@@ -40,6 +52,9 @@
 /* telugu */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 500;
   font-stretch: 100%;
@@ -50,6 +65,9 @@
 /* latin-ext */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 500;
   font-stretch: 100%;
@@ -60,6 +78,9 @@
 /* latin */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 500;
   font-stretch: 100%;
@@ -70,6 +91,9 @@
 /* telugu */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 600;
   font-stretch: 100%;
@@ -80,6 +104,9 @@
 /* latin-ext */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 600;
   font-stretch: 100%;
@@ -90,6 +117,9 @@
 /* latin */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 600;
   font-stretch: 100%;
@@ -100,6 +130,9 @@
 /* telugu */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 700;
   font-stretch: 100%;
@@ -110,6 +143,9 @@
 /* latin-ext */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 700;
   font-stretch: 100%;
@@ -120,6 +156,9 @@
 /* latin */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 700;
   font-stretch: 100%;
@@ -240,6 +279,9 @@
 /* telugu */
 @font-face {
   font-family: 'Noto Serif Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 500 700;
   font-display: swap;
@@ -249,6 +291,9 @@
 /* latin */
 @font-face {
   font-family: 'Noto Serif Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 500 700;
   font-display: swap;
@@ -554,18 +599,6 @@ button, input, select, textarea {
   align-items: center;
   justify-content: center;
   font-size: 2.2rem;
-}
-#profile-name {
-  font-weight: 800;
-  font-size: 1.25rem;
-  letter-spacing: 0.5px;
-  color: var(--text-primary);
-  margin-bottom: 4px;
-}
-#profile-location {
-  font-size: var(--fs-caption);
-  color: var(--text-secondary);
-  margin-bottom: 12px;
 }
 
 /* Custom Controls */
@@ -1671,6 +1704,7 @@ h1, h2, h3, .quad-value, .date-display { font-family: var(--font-heading); }
   font-family: var(--font-family); font-size: 0.95rem; cursor: pointer;
 }
 .seg button.latin { font-family: 'Outfit', sans-serif; }
+.seg button:not(.latin) { font-size: 1.1rem; }
 .seg button[aria-pressed="true"] { background: var(--text-primary); color: var(--panel-bg); }
 .section-nav, .tools-nav { display: none; }
 
@@ -1690,7 +1724,7 @@ h1, h2, h3, .quad-value, .date-display { font-family: var(--font-heading); }
 [data-theme="dark"] .cyber-btn { color: #1B1208; }
 .cyber-btn:hover { transform: none; box-shadow: none; background: var(--accent-hover); border-color: transparent; }
 .cyber-btn.small-btn, .cyber-btn.tiny-btn {
-  min-height: 44px; padding: 0 16px; border-radius: 999px;
+  min-height: 44px; padding: 6px 16px; line-height: 1.4; border-radius: 999px;
   background: var(--panel-bg); color: var(--text-primary);
   border: 1px solid var(--panel-border); margin: 0;
 }
@@ -1854,7 +1888,7 @@ input:checked + .slider:before { background-color: #FFFFFF; }
 .next-name { font-weight: 600; }
 .next-item.auspicious .next-name { color: var(--color-auspicious); }
 .next-item.inauspicious .next-name { color: var(--color-inauspicious); }
-.next-time { font-family: 'Outfit', sans-serif; color: var(--text-secondary); }
+.next-time { font-family: 'Outfit', sans-serif; color: var(--text-secondary); font-size: 0.95rem; white-space: nowrap; }
 .next-left { font-size: 0.875rem; color: var(--text-secondary); }
 .next-chip { flex: none; font-size: 0.875rem; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
 .next-item.auspicious .next-chip { background: rgba(30, 107, 69, 0.14); color: var(--color-auspicious); }

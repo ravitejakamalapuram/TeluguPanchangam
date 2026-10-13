@@ -4,6 +4,12 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 
 ## [Unreleased]
 
+### Fixed
+
+- Share cards: the Rasi card is redesigned in the Deepam look (purple heading band, a coloured tile per rasi with stars and a band label, your own rasi marked) and the shared image now follows the app's language and light or dark look. The day card uses the same palette.
+- The location chip in the top bar no longer sits higher than its pin, and Latin text in pills and buttons is centred in Telugu fonts too.
+- Now timings no longer break "AM" onto its own line, and two-line buttons have room to breathe.
+
 ### Changed
 
 - New look ("Deepam"): a calm cream light theme and a warm dark theme replace the neon dark look, and the page is three coloured zones: Today (saffron), Month (turmeric) and Now (teal, with the rasi panel in purple). The animated sky backdrop is gone.

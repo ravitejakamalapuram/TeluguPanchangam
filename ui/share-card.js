@@ -4,11 +4,29 @@ import { name, tithiLabel } from '../core/i18n.js';
 
 const W = 1080;
 const H = 1350;
-const GOLD = '#FFD700';
-const TEXT = '#FFF0EB';
-const MUTED = '#FFA380';
-const FOOTER = 'తెలుగు పంచాంగం – Telugu New Tab Calendar';
 const STORE_URL = 'https://chromewebstore.google.com/detail/obgpdlhkahmdiepklldjnnmfmbhmgenn?utm_source=whatsapp';
+
+// The Deepam theme tokens from newtab.css, so a shared card looks like the page it came from.
+// `band` mirrors the rasi cards: bg, border and text colour per band.
+const THEMES = {
+  light: {
+    page: '#F6EFE3', panel: '#FFFFFF', border: '#E4D6B0', text: '#2B2118', muted: '#5E4E40', accent: '#A63A12',
+    rasi: '#4B2E83', rasiText: '#FFFFFF', rasiSub: '#F3DFA0', mine: '#4B2E83', festBg: '#FBE4D8', festFg: '#7E2B0D',
+    band: {
+      great: ['#E3F1E8', '#A9D3BA', '#1E6B45'], good: ['#E3F1E8', '#A9D3BA', '#1E6B45'],
+      mixed: ['#F5ECD6', '#D9C48E', '#6B4E0E'], care: ['#FBE3E0', '#E7B3AB', '#A3261B']
+    }
+  },
+  dark: {
+    page: '#17120D', panel: '#231B14', border: '#4A3C2C', text: '#F3ECE1', muted: '#CDBFAE', accent: '#F0A36E',
+    rasi: '#5B3C9C', rasiText: '#FFFFFF', rasiSub: '#F3DFA0', mine: '#C9B3F2', festBg: '#4A2214', festFg: '#FFD2BC',
+    band: {
+      great: ['#17301F', '#2F6B47', '#7FE0A6'], good: ['#17301F', '#2F6B47', '#7FE0A6'],
+      mixed: ['#3A3014', '#6E5A1F', '#F3DFA0'], care: ['#3B1A17', '#7A3029', '#FFA79A']
+    }
+  }
+};
+const STRIPE = ['#A63A12', '#E2B23A', '#1E6B45', '#1F5F6B'];
 
 // The link that goes out with a shared card: this website when running as the site (phones can't install the
 // extension), the Chrome Web Store page when running as the extension.
@@ -16,33 +34,37 @@ function shareLink() {
   if (document.documentElement.dataset.surface !== 'web') return STORE_URL;
   return `${location.origin}${location.pathname.replace(/index\.html$/, '')}?utm_source=whatsapp`;
 }
-const BAND_COLOR = { GOOD: '#7CE08A', MODERATE: '#FFD27A', BAD: '#FF7A6B' };
 
 const LABELS = {
   te: {
     title: 'దిన పంచాంగం', samvatsara: 'సంవత్సరం', masa: 'మాసం', adhika: 'అధిక', tithi: 'తిథి', nakshatra: 'నక్షత్రం',
     sunrise: 'సూర్యోదయం', sunset: 'సూర్యాస్తమయం', rahu: 'రాహుకాలం', dur: 'దుర్ముహూర్తం',
     copied: 'చిత్రం కాపీ అయింది', saved: 'చిత్రం భద్రపరచబడింది', save: 'భద్రపరచండి', whatsapp: 'WhatsApp తెరవండి', ready: 'చిత్రం సిద్ధంగా ఉంది', send: 'పంపండి',
-    rashiTitle: 'రాశి ఫలాలు', GOOD: 'శుభం', MODERATE: 'మధ్యమం', BAD: 'జాగ్రత్త',
-    moon: (h) => `చంద్రుడు ${h}వ ఇంట`, saturn: 'శని హెచ్చరిక',
-    note: 'చంద్ర, సూర్య, గురు, శని గోచారం ఆధారంగా'
+    rashiTitle: 'గోచార రాశి ఫలాలు', myRasi: 'మీ రాశి',
+    bands: { 5: 'అత్యంత అనుకూలం', 4: 'అనుకూలం', 3: 'మిశ్రమం', 2: 'జాగ్రత్త', 1: 'జాగ్రత్త' },
+    note: 'చంద్ర, సూర్య, గురు, శని గోచారం ఆధారంగా',
+    footer: 'తెలుగు పంచాంగం · Chrome కొత్త ట్యాబ్ క్యాలెండర్'
   },
   en: {
     title: 'Daily Panchangam', samvatsara: 'Samvatsara', masa: 'Masa', adhika: 'Adhika', tithi: 'Tithi', nakshatra: 'Nakshatra',
     sunrise: 'Sunrise', sunset: 'Sunset', rahu: 'Rahu Kalam', dur: 'Durmuhurtham',
     copied: 'Image copied', saved: 'Image downloaded', save: 'Download', whatsapp: 'Open WhatsApp', ready: 'Image ready', send: 'Send',
-    rashiTitle: 'Rashi Phalalu', GOOD: 'Good', MODERATE: 'Moderate', BAD: 'Careful',
-    moon: (h) => `Moon in house ${h}`, saturn: 'Saturn caution',
-    note: 'Based on Moon, Sun, Jupiter and Saturn transits'
+    rashiTitle: 'Gochara Rasi Phalalu', myRasi: 'Your rasi',
+    bands: { 5: 'Very favourable', 4: 'Favourable', 3: 'Mixed', 2: 'Be careful', 1: 'Be careful' },
+    note: 'Based on Moon, Sun, Jupiter and Saturn transits',
+    footer: 'Telugu Panchangam · New Tab Calendar for Chrome'
   }
 };
 
-const font = (weight, size) => `${weight} ${size}px Outfit, 'Noto Sans Telugu', sans-serif`;
+const font = (weight, size) => `${weight} ${size}px 'Noto Sans Telugu', Outfit, sans-serif`;
+const serif = (weight, size) => `${weight} ${size}px 'Noto Serif Telugu', 'Noto Sans Telugu', serif`;
 
 // The page fetches a font subset only once something uses it, so load every face the card draws with.
 const fontsReady = () => Promise.all([400, 600, 700].flatMap((w) => [
   document.fonts.load(font(w, 40), 'Aa1'),
-  document.fonts.load(`${w} 40px 'Noto Sans Telugu'`, 'తెలుగు')
+  document.fonts.load(`${w} 40px 'Noto Sans Telugu'`, 'తెలుగు'),
+  document.fonts.load(serif(w, 40), 'Aa1'),
+  document.fonts.load(`${w} 40px 'Noto Serif Telugu'`, 'తెలుగు')
 ])).then(() => document.fonts.ready);
 
 // Joins names with " · ", starting a new line instead of splitting a name.
@@ -56,48 +78,78 @@ function wrapNames(ctx, names, width) {
   return lines;
 }
 
-// The page's dark saffron card: gradient, glow behind the title and a thin gold frame, plus a text helper.
-function newCard() {
+// The page's Deepam card: a cream (or charcoal) sheet under the festive stripe, with text and shape helpers.
+function newCard(themeName) {
+  const T = THEMES[themeName] || THEMES.light;
   const canvas = document.createElement('canvas');
   canvas.width = W;
   canvas.height = H;
   const ctx = canvas.getContext('2d');
-  const text = (str, x, y, { size, weight = 400, color = TEXT, align = 'left', max = W - 160 }) => {
-    ctx.font = font(weight, size);
+  const text = (str, x, y, { size, weight = 400, color = T.text, align = 'left', max = W - 160, face = font }) => {
+    ctx.font = face(weight, size);
     ctx.fillStyle = color;
     ctx.textAlign = align;
     ctx.fillText(str, x, y, max);
   };
+  ctx.fillStyle = T.page;
+  ctx.fillRect(0, 0, W, H);
+  for (let x = 0, i = 0; x < W; x += 30, i++) {
+    ctx.fillStyle = STRIPE[i % STRIPE.length];
+    ctx.fillRect(x, 0, 30, 14);
+  }
+  ctx.fillStyle = T.panel;
+  ctx.strokeStyle = T.border;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.roundRect(48, 56, W - 96, H - 104, 36);
+  ctx.fill();
+  ctx.stroke();
+  return { canvas, ctx, text, T };
+}
 
-  // The page's dark saffron theme: a glow behind the title and a thin gold frame.
-  const bg = ctx.createLinearGradient(0, 0, 0, H);
-  bg.addColorStop(0, '#2B0E02');
-  bg.addColorStop(1, '#070303');
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, W, H);
-  const glow = ctx.createRadialGradient(W / 2, 120, 0, W / 2, 120, 560);
-  glow.addColorStop(0, 'rgba(255, 94, 0, 0.35)');
-  glow.addColorStop(1, 'rgba(255, 94, 0, 0)');
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, W, H);
-  ctx.strokeStyle = 'rgba(255, 215, 0, 0.55)';
+// The lamp from the page header (flame and bowl), `size` px square at x, y.
+function drawDiya(ctx, x, y, size, bowl) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(size / 24, size / 24);
+  ctx.fillStyle = '#E2B23A';
+  ctx.fill(new Path2D('M12 3c1.6 2.4 2.4 3.9 2.4 5.4A2.4 2.4 0 0 1 12 10.8a2.4 2.4 0 0 1-2.4-2.4C9.6 6.9 10.4 5.4 12 3z'));
+  ctx.fillStyle = bowl;
+  ctx.fill(new Path2D('M4 14h16c0 3.3-3.6 6-8 6s-8-2.7-8-6z'));
+  ctx.restore();
+}
+
+// A five-point star of outer radius r centred on cx, cy; filled for a point of the score, outlined otherwise.
+function drawStar(ctx, cx, cy, r, color, filled) {
+  ctx.beginPath();
+  for (let i = 0; i < 10; i++) {
+    const rad = i % 2 ? r * 0.42 : r;
+    const ang = -Math.PI / 2 + (i * Math.PI) / 5;
+    ctx.lineTo(cx + rad * Math.cos(ang), cy + rad * Math.sin(ang));
+  }
+  ctx.closePath();
+  ctx.lineJoin = 'round';
   ctx.lineWidth = 3;
-  ctx.strokeRect(36, 36, W - 72, H - 72);
-  return { canvas, ctx, text };
+  ctx.strokeStyle = color;
+  ctx.stroke();
+  if (filled) {
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
 }
 
 // `time`/`timeWindow` are the page's own formatters, so the card reads exactly like the dashboard.
-async function drawCard(day, { lang, city, date, time, timeWindow }, L) {
+async function drawCard(day, { lang, city, date, time, timeWindow, theme }, L) {
   await fontsReady();
   const nm = (id) => name(id, lang);
   const { calendar: cal, panchanga: p, timings: tm, astronomy: sky } = day;
 
-  const { canvas, ctx, text } = newCard();
+  const { canvas, ctx, text, T } = newCard(theme);
 
-  let y = 150;
-  text(L.title, W / 2, y, { size: 76, weight: 700, color: GOLD, align: 'center' });
+  let y = 170;
+  text(L.title, W / 2, y, { size: 72, weight: 700, color: T.accent, align: 'center', face: serif });
   text(date, W / 2, y += 72, { size: 40, weight: 600, align: 'center' });
-  text(city, W / 2, y += 56, { size: 34, color: MUTED, align: 'center' });
+  text(city, W / 2, y += 56, { size: 34, color: T.muted, align: 'center' });
 
   // The day's festivals; on a day without one, its vratas (Ekadashi, Pradosham, ...).
   const festivals = day.events.filter((e) => e.id.startsWith('FESTIVAL_'));
@@ -106,16 +158,16 @@ async function drawCard(day, { lang, city, date, time, timeWindow }, L) {
     ctx.font = font(700, 44);
     const lines = wrapNames(ctx, events, W - 240);
     y += 40;
-    ctx.fillStyle = 'rgba(255, 94, 0, 0.18)';
+    ctx.fillStyle = T.festBg;
     ctx.beginPath();
     ctx.roundRect(100, y, W - 200, lines.length * 60 + 36, 20);
     ctx.fill();
-    lines.forEach((line) => text(line, W / 2, y += 60, { size: 44, weight: 700, color: GOLD, align: 'center', max: W - 240 }));
+    lines.forEach((line) => text(line, W / 2, y += 60, { size: 44, weight: 700, color: T.festFg, align: 'center', max: W - 240, face: serif }));
     y += 36;
   }
 
   y += 44;
-  ctx.strokeStyle = 'rgba(255, 215, 0, 0.4)';
+  ctx.strokeStyle = T.border;
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(140, y);
@@ -134,15 +186,15 @@ async function drawCard(day, { lang, city, date, time, timeWindow }, L) {
   ];
   // Spread the rows over whatever height the festival box left, up to 90px a line, centred in it.
   const lineCount = rows.reduce((n, [, values]) => n + values.length, 0);
-  const room = H - 170 - y;
+  const room = H - 200 - y;
   const pitch = Math.min(90, room / lineCount);
   y += (room - pitch * lineCount) / 2;
   for (const [label, values] of rows) {
-    text(label, 130, y + pitch, { size: 34, color: MUTED, max: 340 });
+    text(label, 130, y + pitch, { size: 34, color: T.muted, max: 340 });
     values.forEach((v) => text(v, 500, y += pitch, { size: 38, weight: 600, max: 450 }));
   }
 
-  text(FOOTER, W / 2, H - 80, { size: 30, color: MUTED, align: 'center' });
+  text(L.footer, W / 2, H - 92, { size: 30, weight: 600, color: T.accent, align: 'center' });
 
   return new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('PNG encoding failed'))), 'image/png'));
 }
@@ -193,32 +245,62 @@ function showToast(blob, copied, L, fileName, waText) {
   }, canShareFile ? 15000 : 6000);
 }
 
-// The "Rashi Phalalu" card: `rows` is allRashiPhalalu() for the day; each rasi is good, moderate or careful,
-// with the Moon house (and a Saturn caution) as the one-line reason.
-async function drawRashiCard(rows, { lang, city, date }, L) {
+// The "Gochara Rasi Phalalu" card, drawn like the page's own 12-rasi grid: a purple heading, then one tile per
+// rasi in its band colour with the name, the stars and the band label, in the language the page is set to.
+// `rows` is allRashiPhalalu() for the day; `mine` is the user's own rasi index (given a purple frame).
+async function drawRashiCard(day, rows, { lang, city, date, theme, mine }, L) {
   await fontsReady();
-  const { canvas, ctx, text } = newCard();
-  let y = 140;
-  text(L.rashiTitle, W / 2, y, { size: 76, weight: 700, color: GOLD, align: 'center' });
-  text(date, W / 2, y += 68, { size: 40, weight: 600, align: 'center' });
-  text(city, W / 2, y += 50, { size: 32, color: MUTED, align: 'center' });
-  y += 24;
-  rows.forEach((row) => {
-    y += 70;
-    ctx.fillStyle = 'rgba(255, 94, 0, 0.12)';
+  const { canvas, ctx, text, T } = newCard(theme);
+
+  // Heading band, clipped to the panel's rounded top.
+  ctx.save();
+  ctx.beginPath();
+  ctx.roundRect(48, 56, W - 96, 232, [36, 36, 0, 0]);
+  ctx.clip();
+  ctx.fillStyle = T.rasi;
+  ctx.fillRect(48, 56, W - 96, 232);
+  ctx.restore();
+  drawDiya(ctx, 92, 96, 64, '#FBE4D8');
+  text(L.rashiTitle, 176, 150, { size: 60, weight: 700, color: T.rasiText, face: serif, max: W - 176 - 92 });
+  text(`${date} · ${city}`, 176, 202, { size: 32, weight: 600, color: T.rasiText, max: W - 176 - 92 });
+  const p = day.panchanga;
+  text(`${tithiLabel(p.tithi.id, lang)} · ${name(p.nakshatra.id, lang)}`, 176, 250, { size: 30, color: T.rasiSub, max: W - 176 - 92 });
+
+  // The 12 tiles: 3 columns by 4 rows.
+  const GAP = 22;
+  const left = 92;
+  const tileW = (W - 184 - 2 * GAP) / 3;
+  const tileH = 192;
+  const top = 316;
+  rows.forEach((row, i) => {
+    const x = left + (i % 3) * (tileW + GAP);
+    const y = top + Math.floor(i / 3) * (tileH + GAP);
+    const key = row.score >= 5 ? 'great' : row.score === 4 ? 'good' : row.score === 3 ? 'mixed' : 'care';
+    const [bg, bd, fg] = T.band[key];
+    ctx.fillStyle = bg;
+    ctx.strokeStyle = i === mine ? T.mine : bd;
+    ctx.lineWidth = i === mine ? 5 : 2;
     ctx.beginPath();
-    ctx.roundRect(90, y - 48, W - 180, 62, 16);
+    ctx.roundRect(x, y, tileW, tileH, 22);
     ctx.fill();
-    ctx.fillStyle = BAND_COLOR[row.band];
-    ctx.beginPath();
-    ctx.arc(130, y - 17, 14, 0, Math.PI * 2);
-    ctx.fill();
-    text(name(row.rasi, lang), 165, y, { size: 36, weight: 700, max: 260 });
-    text(L[row.band], 440, y, { size: 36, weight: 700, color: BAND_COLOR[row.band], max: 190 });
-    text(L.moon(row.moonHouse) + (row.saturnWarning ? ` · ${L.saturn}` : ''), W - 110, y, { size: 28, color: MUTED, align: 'right', max: 400 });
+    ctx.stroke();
+    text(name(row.rasi, lang), x + 24, y + 62, { size: 42, weight: 600, color: T.text, face: serif, max: tileW - 48 });
+    if (i === mine) {
+      ctx.font = font(700, 22);
+      const bw = Math.min(ctx.measureText(L.myRasi).width + 28, tileW - 48);
+      ctx.fillStyle = T.mine;
+      ctx.beginPath();
+      ctx.roundRect(x + 24, y + 78, bw, 32, 16);
+      ctx.fill();
+      text(L.myRasi, x + 24 + bw / 2, y + 101, { size: 22, weight: 700, color: T.panel, align: 'center', max: bw - 12 });
+    }
+    for (let s = 0; s < 5; s++) drawStar(ctx, x + 38 + s * 40, y + 134, 16, fg, s < row.score);
+    text(L.bands[row.score], x + 24, y + 176, { size: 28, weight: 700, color: fg, max: tileW - 48 });
   });
-  text(L.note, W / 2, H - 112, { size: 26, color: MUTED, align: 'center' });
-  text(FOOTER, W / 2, H - 70, { size: 30, color: MUTED, align: 'center' });
+
+  text(L.note, W / 2, H - 150, { size: 26, color: T.muted, align: 'center' });
+  drawDiya(ctx, W / 2 - 24, H - 138, 48, T.festBg);
+  text(L.footer, W / 2, H - 70, { size: 30, weight: 600, color: T.accent, align: 'center' });
   return new Promise((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('PNG encoding failed'))), 'image/png'));
 }
 
@@ -235,7 +317,7 @@ export function shareDay(day, opts) {
 // Same as shareDay for the Rashi Phalalu card; the toast also offers WhatsApp with the store link.
 export function shareRashi(day, rows, opts) {
   const L = LABELS[opts.lang] || LABELS.te;
-  const png = drawRashiCard(rows, opts, L);
+  const png = drawRashiCard(day, rows, opts, L);
   const copied = (async () => navigator.clipboard.write([new ClipboardItem({ 'image/png': png })]))().then(() => true, () => false);
   return Promise.all([png, copied])
     .then(([blob, ok]) => showToast(blob, ok, L, `rashi-phalalu-${day.date}.png`, `${L.rashiTitle} ${opts.date}\n${shareLink()}`))

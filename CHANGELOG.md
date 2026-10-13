@@ -4,6 +4,10 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 
 ## [Unreleased]
 
+### Added
+
+- Share any card: each shareable card has a small share icon in its header: Today, Rasi phalalu, the sankalpam, the Gita verse and upcoming festivals. They all use one exporter, so the image follows the page's language and light or dark look. The day card now shows yoga, karana, good times and times to avoid, and each rasi tile shows the Moon's house and a Saturn caution mark. The share button under the Rasi panel and the one under Today moved into the card headers.
+
 ### Fixed
 
 - Share cards: the Rasi card is redesigned in the Deepam look (purple heading band, a coloured tile per rasi with stars and a band label, your own rasi marked) and the shared image now follows the app's language and light or dark look. The day card uses the same palette.

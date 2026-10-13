@@ -1365,6 +1365,9 @@ input:checked + .slider:before {
 .zone-head .share-icon:hover { background: rgba(255, 255, 255, 0.25); }
 .zone-head-split .share-icon { margin-left: 0; }
 .sankalpam-card .share-icon, .gita-card .share-icon, .upcoming-card .share-icon { position: absolute; top: 6px; right: 8px; z-index: 1; }
+/* Keep a heading clear of the icon in the card's corner */
+.sankalpam-card .sankalpam-scroll-decor, .gita-card .sankalpam-scroll-decor { padding: 0 36px; }
+.upcoming-card h3 { padding-right: 36px; }
 .share-toast {
   position: fixed;
   bottom: 24px;

@@ -278,7 +278,7 @@ def ui_bg():
     f = f32(b) * np.array([0.55, 0.30, 0.14], np.float32)
     return f + radial(W / 2, H / 2 + 60, 900, (0.10, 0.04, 0.0))
 
-UI_FOCUS = (0.48, 0.377)  # between the tithi and nakshatra cards, as fractions of the screenshot
+UI_FOCUS = (0.15, 0.80)  # on the tithi and nakshatra cards (left column of the 3-zone layout), as fractions of the screenshot
 def ui_transform(t):
     """Return UI corner points, scale, center x/y, and tilt in radians at time t in seconds."""
     a = ease_out(ramp(t, 33.0, 35.8))
@@ -308,7 +308,7 @@ def shot_ui(t):
     ui = f32(UI.transform((W, H), Image.PERSPECTIVE, coeffs, resample=Image.BICUBIC, fillcolor=(0, 0, 0, 0)))
     over(f, ui, smooth(ramp(t, 33.15, 33.9)))
     # the payoff: ring the very tithi and nakshatra the dials just showed
-    for (u0, v0, u1, v1), (a0, a1) in (((0.2648, 0.3038, 0.4734, 0.45), (37.4, 41.2)), ((0.4867, 0.3038, 0.6961, 0.45), (38.3, 41.2))):
+    for (u0, v0, u1, v1), (a0, a1) in (((0.034, 0.758, 0.268, 0.872), (37.4, 41.2)), ((0.034, 0.888, 0.268, 0.992), (38.3, 41.2))):
         k = window(t, a0, a1, 0.5, 0.6) * (0.8 + 0.2 * math.sin(6 * t))
         if k <= 0: continue
         X0, Y0 = cx + (u0 - 0.5) * W * sc, cy + (v0 - 0.5) * W * UI_ASPECT * sc

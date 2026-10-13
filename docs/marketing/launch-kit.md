@@ -314,18 +314,17 @@ The manifest description no longer says "Premium" (it read as a paid tier); `_lo
 `node docs/marketing/tools/screenshots.mjs` loads the unpacked extension in headless Chromium, sets each
 scene's state in `chrome.storage.local`, freezes the page clock at the city's local time (so "today" is
 the scene's date), and writes `docs/marketing/screenshots/`. It refuses to write a shot whose month
-grid is clipped or whose clock card overflows, and exits non-zero on any page or console error. One
+grid is clipped, and exits non-zero on any page or console error. One
 capture-only override: the city and rasi `<select>`s get the page's Telugu font, because headless Linux
-has no system Telugu font (see §7). Festivals show only in the month grid, so of these shots only 3
-(the month) and 4 (the new samvatsara on Ugadi) show one; don't caption the others as festival scenes.
+has no system Telugu font (see §7). Festivals show in the month grid and in the Today zone's festival strip; don't caption shots 2, 4 and 5 as festival scenes.
 
 | # | File | State (language, city, local time, theme, view) | Shows | Caption (en / te) | Status |
 |---|---|---|---|---|---|
-| 1 | `01-today-telugu-hyderabad.png` | te, Hyderabad, Sun 18 Oct 2026 07:30, light, top | Clock, శుద్ధ సప్తమి then అష్టమి, nakshatra pada, timings | Today's panchangam, in Telugu / ఈరోజు పంచాంగం, తెలుగులో | **Blocked**: the Telugu clock card overflows (§7) |
+| 1 | `01-today-telugu-hyderabad.png` | te, Hyderabad, Sun 18 Oct 2026 07:30, light, top | Clock, శుద్ధ సప్తమి then అష్టమి, nakshatra pada, timings | Today's panchangam, in Telugu / ఈరోజు పంచాంగం, తెలుగులో | Committed (the clock card was replaced by the Now zone in the new design) |
 | 2 | `02-dallas-rahu-kalam.png` | en, Dallas, Sun 8 Nov 2026 17:11, light, top | Rahu Kalam 4:10–5:30 PM (matches Drik), cursor inside it | Built for US cities: Rahu Kalam for Dallas, daylight saving included / అమెరికా నగరాలకూ: డల్లాసు రాహుకాలం, డేలైట్ సేవింగ్ మార్పులతో సహా | Committed; 17:11 keeps the clock clear of the sunrise label (§7) |
-| 3 | `03-festival-month.png` | te, Hyderabad, Tue 20 Oct 2026 10:00 (Vijayadashami), light, month grid | October: Navaratri, Durgashtami, Dasara, Atla Tadde | The month at a glance, with festivals and vratas / పండుగలు, వ్రతాలతో నెల పట్టిక | **Blocked**: the month grid is clipped (§7) |
-| 4 | `04-sankalpam-dallas-ugadi.png` | te, Dallas, Wed 7 Apr 2027 07:45 (Ugadi), light, sankalpam card at the bottom | The new year (ప్లవంగ నామ సంవత్సరే, చైత్ర మాసే) and the US place line | A daily sankalpam with a place line for the US, here on Ugadi / అమెరికాకు తగిన దేశ వర్ణనతో రోజువారీ సంకల్పం, ఉగాది నాడు | Committed |
-| 5 | `05-gita-verse.png` | en, New York / Edison NJ, Sun 20 Dec 2026 06:30, dark, Gita card at the bottom | Gita 12.10 in Sanskrit, transliteration and English; dark theme | A Bhagavad Gita verse every day / ప్రతిరోజూ ఒక భగవద్గీత శ్లోకం | Committed |
+| 3 | `03-festival-month.png` | te, Hyderabad, Tue 20 Oct 2026 10:00 (Vijayadashami), light, month grid | October: Navaratri, Durgashtami, Dasara, Atla Tadde | The month at a glance, with festivals and vratas / పండుగలు, వ్రతాలతో నెల పట్టిక | Committed (new design) |
+| 4 | `04-rasi-phalalu.png` | te, Hyderabad, Sun 18 Oct 2026 10:00, light, rasi panel at the top | All 12 rasis with stars and a text label, your own rasi marked, the reading below | Daily rasi phalalu for all 12 rasis / పన్నెండు రాశులకూ రోజువారీ రాశి ఫలాలు | Committed (new design) |
+| 5 | `05-dark-mode-today.png` | en, New York / Edison NJ, Sun 20 Dec 2026 06:30, dark, top | Dark theme, Moon card, festival today, what comes next | A calm dark theme for evenings / సాయంత్రాలకు ప్రశాంతమైన డార్క్ థీమ్ | Committed (new design) |
 
 The five shots are in `chrome-store/assets/screenshots/` and `store.config.json`; re-run the script
 and copy them again after any UI change.

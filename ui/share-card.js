@@ -258,6 +258,7 @@ function drawDayDetail(c, day, { lang, time, timeWindow }, L, top) {
     const rows = panels[i][2];
     const x = 100 + i * (tw + 20);
     const pitch = Math.min(70, (room - 138) / Math.max(rows.length - 1, 1));
+    const tight = pitch < 60; // festival days leave less room: label and window share a line
     ctx.fillStyle = bg;
     ctx.strokeStyle = bd;
     ctx.lineWidth = 2;
@@ -268,8 +269,13 @@ function drawDayDetail(c, day, { lang, time, timeWindow }, L, top) {
     text(title, x + 22, panelTop + 44, { size: 30, weight: 700, color: fg, max: tw - 44 });
     let y = panelTop + 70;
     rows.forEach(([label, win]) => {
-      if (label) text(label, x + 22, y + 22, { size: 22, color: T.muted, max: tw - 44 });
-      text(win, x + 22, y + 54, { size: 28, weight: 600, color: T.text, max: tw - 44 });
+      if (tight) {
+        if (label) text(label, x + 22, y + 30, { size: 20, color: T.muted, max: (tw - 44) * 0.4 });
+        text(win, x + tw - 22, y + 30, { size: 23, weight: 600, color: T.text, align: 'right', max: (tw - 44) * 0.6 });
+      } else {
+        if (label) text(label, x + 22, y + 22, { size: 22, color: T.muted, max: tw - 44 });
+        text(win, x + 22, y + 54, { size: 28, weight: 600, color: T.text, max: tw - 44 });
+      }
       y += pitch;
     });
   });

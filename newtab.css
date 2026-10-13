@@ -1749,7 +1749,7 @@ input:checked + .slider:before { background-color: #FFFFFF; }
   scroll-margin-top: 12px;
 }
 .zone-today { --zone-color: var(--zone-today); --zone-bg: var(--zone-today-bg); flex: 1 1 340px; max-width: 440px; }
-.zone-month { --zone-color: var(--zone-month); --zone-bg: var(--zone-month-bg); flex: 999 1 560px; }
+.zone-month { --zone-color: var(--zone-month); --zone-bg: var(--zone-month-bg); flex: 999 1 420px; }
 .zone-now   { --zone-color: var(--zone-now);   --zone-bg: var(--zone-now-bg);   flex: 1 1 340px; max-width: 440px; }
 .zone-rasi  { --zone-color: var(--zone-rasi);  --zone-bg: var(--zone-rasi-bg); }
 .zone-head {
@@ -1793,8 +1793,9 @@ input:checked + .slider:before { background-color: #FFFFFF; }
 .more-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; padding: 0 16px; }
 .more-details .signs-card, .more-details .sun-arc-container, .more-details .source-note { margin: 0; padding: 10px 16px; border: 0; background: transparent; text-align: left; }
 .sun-arc-container { color: var(--zone-today); }
-.sun-times { display: flex; justify-content: space-between; gap: 8px; color: var(--text-secondary); border-top: 1px solid var(--panel-border); padding-top: 12px; }
-.sun-times strong { color: var(--text-primary); font-weight: 600; }
+.sun-times { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; color: var(--text-secondary); border-top: 1px solid var(--panel-border); padding-top: 12px; }
+.sun-times strong { color: var(--text-primary); font-weight: 600; white-space: nowrap; }
+.sun-times span { white-space: nowrap; }
 .share-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .share-btn { margin: 0; }
 .sankalpam-card-title { color: var(--zone-today); text-transform: none; letter-spacing: 0; font-family: var(--font-heading); font-size: 1.1rem; }

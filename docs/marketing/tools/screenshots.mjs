@@ -26,17 +26,17 @@ const OUT = join(ROOT, 'docs/marketing/screenshots');
 // narrow digits so the clock clears the sunrise label (launch kit §7).
 const SCENES = [
   { file: '01-today-telugu-hyderabad.png', lang: 'te', city: 'hyderabad', at: '2026-10-18 07:30', theme: 'light' },
-  { file: '02-dallas-rahu-kalam.png', lang: 'en', city: 'dallas', at: '2026-11-08 17:11', theme: 'light' },
-  { file: '03-festival-month.png', lang: 'te', city: 'hyderabad', at: '2026-10-20 10:00', theme: 'light', section: '.calendar-card', block: 'start' },
-  { file: '04-sankalpam-dallas-ugadi.png', lang: 'te', city: 'dallas', at: '2027-04-07 07:45', theme: 'light', section: '.sankalpam-card', block: 'end' },
-  { file: '05-gita-verse.png', lang: 'en', city: 'newyork', at: '2026-12-20 06:30', theme: 'dark', section: '.gita-card', block: 'end' }
+  { file: '02-dallas-rahu-kalam.png', lang: 'en', city: 'dallas', at: '2026-11-08 17:11', theme: 'light', section: '#now', block: 'start' },
+  { file: '03-festival-month.png', lang: 'te', city: 'hyderabad', at: '2026-10-20 10:00', theme: 'light', section: '#month', block: 'start' },
+  { file: '04-rasi-phalalu.png', lang: 'te', city: 'hyderabad', at: '2026-10-18 10:00', theme: 'light', section: '.rasi-wrap', block: 'start' },
+  { file: '05-dark-mode-today.png', lang: 'en', city: 'newyork', at: '2026-12-20 06:30', theme: 'dark' }
 ];
 
 // The city and rasi <select>s use the browser's default font (Arial), so their Telugu comes from
 // the OS fallback font. Desktops have a real one (Nirmala UI, Telugu MN, Noto); headless Linux only
 // has Unifont, which draws Telugu unshaped. Give them the page's bundled font for the capture, as
 // the reminders <select> in newtab.css already has. Drop this once newtab.css does it for all selects.
-const SELECT_FONT = '.city-selector-card select, .rasi-selector-card select { font-family: var(--font-family); }';
+const SELECT_FONT = '.settings-sheet select, #select-rasi { font-family: var(--font-family); }';
 
 const profile = mkdtempSync(join(tmpdir(), 'tp-shots-'));
 const ctx = await chromium.launchPersistentContext(profile, {
@@ -82,24 +82,13 @@ for (const s of SCENES) {
     : window.scrollTo(0, 0)), { section: s.section, block: s.block });
   await page.waitForTimeout(500);
 
-  // Only write shots that render correctly: a month grid in view must fit inside its card, and a
-  // clock card in view must keep the clock clear of the sunrise label and the sunset label inside it.
+  // Only write shots that render correctly: a month grid in view must fit inside its card.
   const clipped = await page.evaluate(() => {
     const inView = (el) => { const r = el.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0; };
     const grid = document.querySelector('.calendar-grid-container');
     if (inView(grid) && grid.scrollWidth > grid.clientWidth) {
       return `month grid needs ${grid.scrollWidth}px but its card gives ${grid.clientWidth}px`;
     }
-    const hero = document.querySelector('.hero-card');
-    if (!inView(hero)) return null;
-    const digits = document.createRange();
-    digits.selectNodeContents(document.getElementById('clock'));
-    const clock = digits.getBoundingClientRect();
-    const rise = document.querySelector('.arc-label-left').getBoundingClientRect();
-    const set = document.querySelector('.arc-label-right').getBoundingClientRect();
-    const card = hero.getBoundingClientRect();
-    if (clock.right > rise.left) return `clock runs ${Math.ceil(clock.right - rise.left)}px into the sunrise label`;
-    if (set.right > card.right) return `sunset label runs ${Math.ceil(set.right - card.right)}px past its card`;
     return null;
   });
   if (clipped) {

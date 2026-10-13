@@ -4,6 +4,16 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 
 ## [Unreleased]
 
+### Added
+
+- Share any card: each shareable card has a small share icon in its header: Today, Rasi phalalu, the sankalpam, the Gita verse and upcoming festivals. They all use one exporter, so the image follows the page's language and light or dark look. The day card now shows yoga, karana, good times and times to avoid, and each rasi tile shows the Moon's house and a Saturn caution mark. The share button under the Rasi panel and the one under Today moved into the card headers.
+
+### Fixed
+
+- Share cards: the Rasi card is redesigned in the Deepam look (purple heading band, a coloured tile per rasi with stars and a band label, your own rasi marked) and the shared image now follows the app's language and light or dark look. The day card uses the same palette.
+- The location chip in the top bar no longer sits higher than its pin, and Latin text in pills and buttons is centred in Telugu fonts too.
+- Now timings no longer break "AM" onto its own line, and two-line buttons have room to breathe.
+
 ### Changed
 
 - Accessibility: buttons, inputs, selects and tab controls now have a 3:1 border, and the sun path in the dark Today zone reads clearly. Colours the design system names (focus ring, rasi purple, rasi bands, eclipse banner, zone text colours) are now tokens in `newtab.css`, and the old neon-era code is removed: the hidden sky backdrop (its canvas animation kept running in the background), rules for classes the page no longer uses, and the `cyber-btn` and `glass-panel` class names, now `btn` and `panel`.

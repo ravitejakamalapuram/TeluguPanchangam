@@ -7,9 +7,15 @@
 /* Vendored Noto Sans Telugu and Outfit (SIL Open Font License) so the
    extension makes no network requests. Subset boundaries and unicode-range
    values mirror what Google Fonts serves. */
+/* Noto Telugu faces reserve far more room below the baseline than above (Telugu conjuncts stack downwards),
+   so Latin text sat about 3px high in centred pills and chips. The overrides rebalance the line box only;
+   glyphs are not clipped. */
 /* telugu */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 400;
   font-stretch: 100%;
@@ -20,6 +26,9 @@
 /* latin-ext */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 400;
   font-stretch: 100%;
@@ -30,6 +39,9 @@
 /* latin */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 400;
   font-stretch: 100%;
@@ -40,6 +52,9 @@
 /* telugu */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 500;
   font-stretch: 100%;
@@ -50,6 +65,9 @@
 /* latin-ext */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 500;
   font-stretch: 100%;
@@ -60,6 +78,9 @@
 /* latin */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 500;
   font-stretch: 100%;
@@ -70,6 +91,9 @@
 /* telugu */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 600;
   font-stretch: 100%;
@@ -80,6 +104,9 @@
 /* latin-ext */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 600;
   font-stretch: 100%;
@@ -90,6 +117,9 @@
 /* latin */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 600;
   font-stretch: 100%;
@@ -100,6 +130,9 @@
 /* telugu */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 700;
   font-stretch: 100%;
@@ -110,6 +143,9 @@
 /* latin-ext */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 700;
   font-stretch: 100%;
@@ -120,6 +156,9 @@
 /* latin */
 @font-face {
   font-family: 'Noto Sans Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 700;
   font-stretch: 100%;
@@ -240,6 +279,9 @@
 /* telugu */
 @font-face {
   font-family: 'Noto Serif Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 500 700;
   font-display: swap;
@@ -249,6 +291,9 @@
 /* latin */
 @font-face {
   font-family: 'Noto Serif Telugu';
+  ascent-override: 95%;
+  descent-override: 35%;
+  line-gap-override: 0%;
   font-style: normal;
   font-weight: 500 700;
   font-display: swap;
@@ -426,19 +471,6 @@ button, input, select, textarea {
      can force this fixed-width track wider than 290px and push the row past
      the viewport at narrow widths (e.g. 1280px). Let it shrink to its track. */
   min-width: 0;
-}
-
-#profile-name {
-  font-weight: 800;
-  font-size: 1.25rem;
-  letter-spacing: 0.5px;
-  color: var(--text-primary);
-  margin-bottom: 4px;
-}
-#profile-location {
-  font-size: var(--fs-caption);
-  color: var(--text-secondary);
-  margin-bottom: 12px;
 }
 
 /* Custom Controls */
@@ -942,10 +974,21 @@ button, input, select, textarea {
 }
 
 /* Share card (ui/share-card.js) */
-.share-btn {
-  margin-top: 10px;
-  margin-right: 8px;
+/* The share icon in a card's header (data-share names the card) */
+.share-icon {
+  width: 44px; height: 44px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 0; border-radius: 999px; background: transparent; color: var(--text-secondary); cursor: pointer;
 }
+.share-icon:hover { background: rgba(127, 127, 127, 0.18); }
+.share-icon:focus-visible { outline: 2px solid var(--accent-secondary); outline-offset: 2px; }
+.zone-head .share-icon { color: #FFFFFF; margin-left: auto; }
+.zone-head .share-icon:hover { background: rgba(255, 255, 255, 0.25); }
+.zone-head-split .share-icon { margin-left: 0; }
+.sankalpam-card .share-icon, .gita-card .share-icon, .upcoming-card .share-icon { position: absolute; top: 6px; right: 8px; z-index: 1; }
+/* Keep a heading clear of the icon in the card's corner */
+.sankalpam-card .sankalpam-scroll-decor, .gita-card .sankalpam-scroll-decor { padding: 0 36px; }
+.upcoming-card h3 { padding-right: 36px; }
 .share-toast {
   position: fixed;
   bottom: 24px;
@@ -1277,6 +1320,7 @@ h1, h2, h3, .quad-value, .date-display { font-family: var(--font-heading); }
   font-family: var(--font-family); font-size: 0.95rem; cursor: pointer;
 }
 .seg button.latin { font-family: 'Outfit', sans-serif; }
+.seg button:not(.latin) { font-size: 1.1rem; }
 .seg button[aria-pressed="true"] { background: var(--text-primary); color: var(--panel-bg); }
 .section-nav, .tools-nav { display: none; }
 
@@ -1294,8 +1338,8 @@ h1, h2, h3, .quad-value, .date-display { font-family: var(--font-heading); }
   border: 1px solid transparent;
 }
 .btn:hover { transform: none; box-shadow: none; background: var(--accent-hover); border-color: transparent; }
-.btn.tiny-btn {
-  min-height: 44px; padding: 0 16px; border-radius: var(--radius-pill);
+.btn.small-btn, .btn.tiny-btn {
+  min-height: 44px; padding: 6px 16px; line-height: 1.4; border-radius: var(--radius-pill);
   background: var(--panel-bg); color: var(--text-primary);
   border: 1px solid var(--control-border); margin: 0;
 }
@@ -1397,8 +1441,6 @@ h1, h2, h3, .quad-value, .date-display { font-family: var(--font-heading); }
 .sun-times { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; color: var(--text-secondary); border-top: 1px solid var(--panel-border); padding-top: 12px; }
 .sun-times strong { color: var(--text-primary); font-weight: 600; white-space: nowrap; }
 .sun-times span { white-space: nowrap; }
-.share-row { display: flex; flex-wrap: wrap; gap: 8px; }
-.share-btn { margin: 0; }
 .sankalpam-card-title { color: var(--zone-today-ink); text-transform: none; letter-spacing: 0; font-family: var(--font-heading); font-size: 1.1rem; }
 .sankalpam-card { text-align: left; }
 .scroll-content { background: var(--panel-soft); border: 1px solid var(--panel-border); }
@@ -1453,7 +1495,7 @@ h1, h2, h3, .quad-value, .date-display { font-family: var(--font-heading); }
 .next-name { font-weight: 600; }
 .next-item.auspicious .next-name { color: var(--color-auspicious); }
 .next-item.inauspicious .next-name { color: var(--color-inauspicious); }
-.next-time { font-family: 'Outfit', sans-serif; color: var(--text-secondary); }
+.next-time { font-family: 'Outfit', sans-serif; color: var(--text-secondary); font-size: 0.95rem; white-space: nowrap; }
 .next-left { font-size: 0.875rem; color: var(--text-secondary); }
 .next-chip { flex: none; font-size: 0.875rem; font-weight: 700; padding: 2px 10px; border-radius: var(--radius-pill); }
 .next-item.auspicious .next-chip { background: rgba(30, 107, 69, 0.14); color: var(--color-auspicious); }
@@ -1584,4 +1626,3 @@ input[type="text"], input[type="date"], input[type="time"], .cyber-form-panel se
   .timing-detail-grid { grid-template-columns: 1fr; }
   .settings-sheet { width: 100%; }
 }
-.rasi-foot .share-btn { width: auto; }

@@ -12,7 +12,7 @@ import { horoscopeText } from './core/horoscope-text.js';
 import { birthDetails, isTeluguBirthday } from './core/birth.js';
 import { formatClock } from './ui/time-format.js';
 import { startOnboarding } from './ui/onboarding.js';
-import { shareDay, shareRashi } from './ui/share-card.js';
+import { shareCard } from './ui/share-card.js';
 import { initRatingPrompt } from './ui/rating.js';
 import { moonInfo, litPath } from './ui/moon.js';
 import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guides.js';
@@ -415,15 +415,24 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       : score === 3 ? { key: 'mixed', label: t('bandMixed') } : { key: 'care', label: t('bandCare') };
   }
 
+  // The 12 rows for the day. The user's own row includes tara balam when a birth date is saved, so the grid, the
+  // detail text and the shared card all agree.
+  function rashiRows(panchang) {
+    const mine = parseInt(elSelectRasi.value, 10);
+    const janma = birthNakshatraIndex();
+    return allRashiPhalalu(panchang, engine.astronomy).map((row, i) => (i === mine
+      ? { ...row, score: dailyHoroscope(panchang, engine.astronomy, i, { janmaNakshatraIndex: janma }).score }
+      : row));
+  }
+
   function renderHoroscope(panchang) {
     const mine = parseInt(elSelectRasi.value, 10);
     const shown = viewRasi === null ? mine : viewRasi;
     const janma = birthNakshatraIndex();
     const grid = document.getElementById('rasi-grid');
-    const all = allRashiPhalalu(panchang, engine.astronomy);
+    const all = rashiRows(panchang);
     grid.replaceChildren(...all.map((row, i) => {
-      // The user's own card includes tara balam when a birth date is saved, so it matches the detail text.
-      const score = i === mine ? dailyHoroscope(panchang, engine.astronomy, i, { janmaNakshatraIndex: janma }).score : row.score;
+      const score = row.score;
       const band = bandFor(score);
       const card = document.createElement('button');
       card.type = 'button';
@@ -964,14 +973,31 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     // so a shared image never carries the user's coordinates.
     const shareOpts = () => ({
       lang: window.I18N.getLang(),
-      city: currentCity.id === 'custom' ? currentCity.timeZone : cityDisplayName(currentCity),
+      city: currentCity.id === 'custom' ? currentCity.timeZone : window.I18N.splitBi(cityDisplayName(currentCity)),
       date: elDateGregorian.textContent,
       time: formatTime,
-      timeWindow: formatWindow
+      timeWindow: formatWindow,
+      theme: document.body.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
+      mine: parseInt(elSelectRasi.value, 10)
     });
-    document.getElementById('btn-share').addEventListener('click', () => shareDay(activePanchang, shareOpts()));
-    document.getElementById('btn-share-rashi').addEventListener('click',
-      () => shareRashi(activePanchang, allRashiPhalalu(activePanchang, engine.astronomy), shareOpts()));
+    // One share icon per card (data-share names the card): each builds its card's data and hands it to the same exporter.
+    const shareData = {
+      day: () => ({ kind: 'day', data: activePanchang, opts: {} }),
+      rasi: () => ({ kind: 'rasi', data: { day: activePanchang, rows: rashiRows(activePanchang) }, opts: {} }),
+      gita: () => ({ kind: 'gita', data: window.GitaVerse.verseForDate(selectedDate), opts: {} }),
+      sankalpam: () => {
+        const p = activePanchang.panchanga;
+        const lang = window.I18N.getLang();
+        return { kind: 'sankalpam', data: sankalpamFor(activePanchang), opts: { fileDate: activePanchang.date, tithiLine: `${tithiLabel(p.tithi.id, lang)} · ${nm(p.nakshatra.id)}` } };
+      },
+      festivals: () => ({ kind: 'festivals', data: { items: collectUpcoming(7, 6) }, opts: { fileDate: activePanchang.date } })
+    };
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-share]');
+      if (!btn || !shareData[btn.dataset.share]) return;
+      const { kind, data, opts } = shareData[btn.dataset.share]();
+      if (data) shareCard(kind, data, { ...shareOpts(), ...opts });
+    });
 
     // Month navigation
     elBtnPrevMonth.addEventListener('click', () => {

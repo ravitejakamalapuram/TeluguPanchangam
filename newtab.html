@@ -67,6 +67,7 @@
         <div class="zone-head">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"></path></svg>
           <h2 id="z-today" class="zone-title" data-i18n-te="ఈరోజు" data-i18n-en="Today">ఈరోజు</h2>
+          <button type="button" class="share-icon" data-share="day" data-i18n-aria-te="ఈరోజు పంచాంగం పంచుకోండి" data-i18n-aria-en="Share today's panchangam" aria-label="ఈరోజు పంచాంగం పంచుకోండి"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"></path></svg></button>
         </div>
         <div class="zone-body">
           <div class="date-block">
@@ -156,14 +157,11 @@
             <span><span data-i18n-te="అస్తమయం" data-i18n-en="Sunset">అస్తమయం</span> <strong id="sunset-time">--</strong></span>
           </div>
 
-          <div class="share-row">
-            <button id="btn-share" type="button" class="btn tiny-btn share-btn" data-i18n-bi="పంచుకోండి (Share)">పంచుకోండి (Share)</button>
-          </div>
-
           <section id="guide-card" class="guide-card panel" hidden aria-live="polite">
         <div id="guide-body" class="guide-body"></div>
       </section>
           <section id="sankalpam" class="sankalpam-card panel">
+        <button type="button" class="share-icon" data-share="sankalpam" data-i18n-aria-te="సంకల్పం పంచుకోండి" data-i18n-aria-en="Share the sankalpam" aria-label="సంకల్పం పంచుకోండి"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"></path></svg></button>
         <div class="sankalpam-scroll-decor">
           <div class="decor-line"></div>
           <h3 class="sankalpam-card-title" data-i18n-bi="దిన సంకల్ప పత్రం (Daily Vedic Sankalpam)">దిన సంకల్ప పత్రం (Daily Vedic Sankalpam)</h3>
@@ -175,6 +173,7 @@
         <button id="copy-sankalpam-btn" class="btn tiny-btn" data-i18n-bi="సంకల్పమును నకలు చేయి (Copy Text)">సంకల్పమును నకలు చేయి (Copy Text)</button>
       </section>
           <section id="gita" class="gita-card panel" aria-labelledby="gita-card-title">
+        <button type="button" class="share-icon" data-share="gita" data-i18n-aria-te="గీతా శ్లోకం పంచుకోండి" data-i18n-aria-en="Share the Gita verse" aria-label="గీతా శ్లోకం పంచుకోండి"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"></path></svg></button>
         <div class="sankalpam-scroll-decor">
           <div class="decor-line"></div>
           <h3 id="gita-card-title" class="sankalpam-card-title" data-i18n-bi="నేటి గీతా శ్లోకం (Gita Verse of the Day)">నేటి గీతా శ్లోకం (Gita Verse of the Day)</h3>
@@ -219,6 +218,7 @@
             <button id="btn-print-month" type="button" class="btn tiny-btn calendar-print-btn" data-i18n-bi="నెల పంచాంగం ముద్రించు (Print Month)">నెల పంచాంగం ముద్రించు (Print Month)</button>
           </section>
           <section id="upcoming-card" class="upcoming-card panel">
+        <button type="button" class="share-icon" data-share="festivals" data-i18n-aria-te="పర్వదినాలు పంచుకోండి" data-i18n-aria-en="Share the upcoming festivals" aria-label="పర్వదినాలు పంచుకోండి"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"></path></svg></button>
         <h3 data-i18n-bi="ఈ వారం పర్వదినాలు (Upcoming this week)">ఈ వారం పర్వదినాలు (Upcoming this week)</h3>
         <ul id="upcoming-list" class="upcoming-list"></ul>
         <button id="btn-all-festivals" type="button" class="btn tiny-btn" data-i18n-bi="అన్నీ చూడండి (See all, 30 days)">అన్నీ చూడండి (See all, 30 days)</button>
@@ -324,6 +324,7 @@
           <h2 id="z-rasi" class="zone-title" data-i18n="horoTitle">గోచార రాశి ఫలాలు</h2>
         </div>
         <span id="rasi-date" class="rasi-date"></span>
+        <button type="button" class="share-icon" data-share="rasi" data-i18n-aria-te="12 రాశి ఫలాలు పంచుకోండి" data-i18n-aria-en="Share all 12 rasis" aria-label="12 రాశి ఫలాలు పంచుకోండి"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"></path></svg></button>
       </div>
       <div class="zone-body">
         <div id="rasi-grid" class="rasi-grid" role="group" aria-label="Rasi"></div>
@@ -360,7 +361,6 @@
         </section>
         <div class="rasi-foot">
           <div class="rasi-legend"><span data-i18n-te="★ ఎక్కువ నక్షత్రాలు = అనుకూలం" data-i18n-en="★ More stars = more favourable">★ ఎక్కువ నక్షత్రాలు = అనుకూలం</span><span data-i18n-te="కార్డ్ తాకితే వివరాలు" data-i18n-en="Tap a card for details">కార్డ్ తాకితే వివరాలు</span></div>
-          <button id="btn-share-rashi" type="button" class="btn share-btn" data-i18n-te="12 రాశులు ఒకే కార్డ్‌గా పంచుకోండి" data-i18n-en="Share all 12 rasis as one card">12 రాశులు ఒకే కార్డ్‌గా పంచుకోండి</button>
         </div>
       </div>
     </section>

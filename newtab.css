@@ -385,97 +385,8 @@ button, input, select, textarea {
 }
 
 /* 2. Dynamic Ambient Sky Backdrop Layer */
-.sky-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -10;
-  overflow: hidden;
-  transition: background 3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.sky-backdrop.sky-day {
-  background: linear-gradient(180deg, #180802 0%, #080200 100%);
-}
-.sky-backdrop.sky-sunset {
-  background: linear-gradient(180deg, #2A0101 0%, #100018 100%);
-}
-.sky-backdrop.sky-sunrise {
-  background: linear-gradient(180deg, #14001E 0%, #2A0902 100%);
-}
-.sky-backdrop.sky-night {
-  background: linear-gradient(180deg, #030102 0%, #08030B 100%);
-}
-
-#stars-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 2s ease-in-out;
-}
-.sky-night #stars-canvas, .sky-sunset #stars-canvas, .sky-sunrise #stars-canvas {
-  opacity: 0.85;
-}
 
 /* Celestial container */
-#celestial-container {
-  position: absolute;
-  top: 6%;
-  right: 8%;
-  width: 180px;
-  height: 180px;
-  pointer-events: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.sun-body {
-  position: relative;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #FFFFF5 0%, #FFB700 60%, #FF3C00 100%);
-  box-shadow: 0 0 40px #FFA500, 0 0 80px #FF3C00;
-  animation: pulse-sun 4s infinite ease-in-out;
-}
-.sun-flare {
-  position: absolute;
-  top: -12px;
-  left: -12px;
-  right: -12px;
-  bottom: -12px;
-  border-radius: 50%;
-  border: 2px dashed rgba(255, 165, 0, 0.35);
-  animation: rotate-flare 30s infinite linear;
-}
-@keyframes rotate-flare {
-  to { transform: rotate(360deg); }
-}
-@keyframes pulse-sun {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.06); }
-}
-#moon-canvas {
-  filter: drop-shadow(0 0 25px rgba(255, 240, 210, 0.45));
-}
-
-.sky-glow {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at top right, rgba(255, 110, 0, 0.05) 0%, transparent 60%);
-  pointer-events: none;
-}
-[data-theme="dark"] .sky-glow {
-  background: radial-gradient(circle at top right, rgba(0, 229, 255, 0.04) 0%, transparent 60%);
-}
 
 /* 3. Professional Page Grid Layout */
 .dashboard {
@@ -495,7 +406,7 @@ button, input, select, textarea {
 }
 
 /* 4. Panels: paper cards, one quiet shadow, no hover lift or glow. */
-.glass-panel {
+.panel {
   background: var(--panel-bg);
   border: 1px solid var(--panel-border);
   border-radius: var(--radius-lg);
@@ -530,7 +441,7 @@ button, input, select, textarea {
 }
 
 /* Custom Controls */
-.cyber-btn {
+.btn {
   background: linear-gradient(90deg, var(--accent-primary) 0%, #D44200 100%);
   color: #fff;
   border: none;
@@ -547,13 +458,13 @@ button, input, select, textarea {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid var(--hairline);
 }
-.cyber-btn:hover {
+.btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(255, 94, 0, 0.35), 0 0 10px var(--accent-secondary);
   border-color: var(--accent-secondary);
 }
 
-.cyber-btn.tiny-btn {
+.btn.tiny-btn {
   padding: 6px 12px;
   font-size: var(--fs-caption);
   width: auto;
@@ -1250,7 +1161,7 @@ button, input, select, textarea {
   gap: 10px;
   margin-top: 20px;
 }
-.onboarding-actions .cyber-btn {
+.onboarding-actions .btn {
   width: auto;
   padding: 10px 22px;
 }
@@ -1317,13 +1228,12 @@ body::before {
   height: 8px;
   background: repeating-linear-gradient(90deg, #A63A12 0 28px, #E2B23A 28px 40px, #1E6B45 40px 52px, #E2B23A 52px 64px);
 }
-/* The animated sky belongs to the old neon look; the calm theme keeps the page plain. */
-.sky-backdrop, #stars-canvas, #celestial-container, .sky-glow { display: none; }
+
 a { color: var(--accent-primary); }
 :focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
 
 /* Placed after the per-card rules so every card gets the same padding. */
-.glass-panel { padding: 16px 18px; }
+.panel { padding: 16px 18px; }
 h1, h2, h3, .quad-value, .date-display { font-family: var(--font-heading); }
 
 /* Header */
@@ -1370,7 +1280,7 @@ h1, h2, h3, .quad-value, .date-display { font-family: var(--font-heading); }
 .section-nav, .tools-nav { display: none; }
 
 /* Buttons: the saffron fill is kept for the main action only. */
-.cyber-btn {
+.btn {
   background: var(--accent-primary);
   color: var(--on-accent);
   text-transform: none;
@@ -1382,13 +1292,13 @@ h1, h2, h3, .quad-value, .date-display { font-family: var(--font-heading); }
   box-shadow: none;
   border: 1px solid transparent;
 }
-.cyber-btn:hover { transform: none; box-shadow: none; background: var(--accent-hover); border-color: transparent; }
-.cyber-btn.tiny-btn {
+.btn:hover { transform: none; box-shadow: none; background: var(--accent-hover); border-color: transparent; }
+.btn.tiny-btn {
   min-height: 44px; padding: 0 16px; border-radius: var(--radius-pill);
   background: var(--panel-bg); color: var(--text-primary);
   border: 1px solid var(--control-border); margin: 0;
 }
-.cyber-btn.tiny-btn:hover { background: var(--panel-soft); border-color: var(--accent-primary); color: var(--text-primary); }
+.btn.tiny-btn:hover { background: var(--panel-soft); border-color: var(--accent-primary); color: var(--text-primary); }
 .outline-btn {
   min-height: 48px; border-radius: var(--radius-md); cursor: pointer;
   border: 1px solid var(--accent-primary); background: var(--panel-bg); color: var(--accent-primary);
@@ -1452,7 +1362,7 @@ h1, h2, h3, .quad-value, .date-display { font-family: var(--font-heading); }
 .zone-head-title { display: flex; align-items: center; gap: 10px; }
 .zone-title { margin: 0; font-size: 1.45rem; font-weight: 600; line-height: 1.4; color: #FFFFFF; }
 .zone-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; flex-grow: 1; min-width: 0; }
-.zone .glass-panel { background: var(--panel-bg); }
+.zone .panel { background: var(--panel-bg); }
 
 /* Today */
 .date-display { margin: 0; font-size: 1.9rem; font-weight: 600; line-height: 1.35; }

@@ -339,6 +339,7 @@
   --zone-today-ink: #F0A36E;
   --zone-month-ink: #E2B23A;
   --zone-now-ink: #7CC4D0;
+  --focus-ring: var(--zone-now-ink); /* re-declared: a var() set on :root would keep the light value under body[data-theme] */
   --zone-rasi-ink: #C9B3F2;
   --band-good-bg: #17301F;  --band-good-bd: #2F6B47;  --band-good-fg: #7FE0A6;
   --band-mixed-bg: #3A3014; --band-mixed-bd: #6E5A1F; --band-mixed-fg: #F3DFA0;

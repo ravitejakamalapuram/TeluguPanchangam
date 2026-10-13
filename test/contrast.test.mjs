@@ -42,3 +42,7 @@ for (const [name, t] of Object.entries(themes)) {
     for (const b of ['good', 'mixed', 'care']) assert.ok(ratio(t[`band-${b}-fg`], t[`band-${b}-bg`]) >= 4.5, `band-${b}`);
   });
 }
+
+test('the focus ring is re-declared in the dark block, since a :root var() would keep the light colour', () => {
+  assert.match(css.match(/\[data-theme="dark"\] \{([^}]*)\}/)[1], /--focus-ring:\s*var\(--zone-now-ink\)/);
+});

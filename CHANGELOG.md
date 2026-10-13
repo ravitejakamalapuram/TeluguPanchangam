@@ -6,6 +6,7 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 
 ### Changed
 
+- Accessibility: buttons, inputs, selects and tab controls now have a 3:1 border, and the sun path in the dark Today zone reads clearly. Colours the design system names (focus ring, rasi purple, rasi bands, eclipse banner, zone text colours) are now tokens in `newtab.css`, and old neon-era rules for classes the page no longer uses are removed.
 - New look ("Deepam"): a calm cream light theme and a warm dark theme replace the neon dark look, and the page is three coloured zones: Today (saffron), Month (turmeric) and Now (teal, with the rasi panel in purple). The animated sky backdrop is gone.
 - Timings: the 24-hour bar is replaced by a short "what comes next" list with a plain status line ("No bad time right now"), and an "All timings" popup holds the full list.
 - Upcoming festivals: a "See all" popup lists the next 30 days.

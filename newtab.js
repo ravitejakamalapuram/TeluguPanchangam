@@ -984,7 +984,9 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       city: currentCity.id === 'custom' ? currentCity.timeZone : cityDisplayName(currentCity),
       date: elDateGregorian.textContent,
       time: formatTime,
-      timeWindow: formatWindow
+      timeWindow: formatWindow,
+      theme: document.body.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
+      mine: parseInt(elSelectRasi.value, 10)
     });
     document.getElementById('btn-share').addEventListener('click', () => shareDay(activePanchang, shareOpts()));
     document.getElementById('btn-share-rashi').addEventListener('click',

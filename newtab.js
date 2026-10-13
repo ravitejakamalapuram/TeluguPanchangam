@@ -429,15 +429,24 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       : score === 3 ? { key: 'mixed', label: t('bandMixed') } : { key: 'care', label: t('bandCare') };
   }
 
+  // The 12 rows for the day. The user's own row includes tara balam when a birth date is saved, so the grid, the
+  // detail text and the shared card all agree.
+  function rashiRows(panchang) {
+    const mine = parseInt(elSelectRasi.value, 10);
+    const janma = birthNakshatraIndex();
+    return allRashiPhalalu(panchang, engine.astronomy).map((row, i) => (i === mine
+      ? { ...row, score: dailyHoroscope(panchang, engine.astronomy, i, { janmaNakshatraIndex: janma }).score }
+      : row));
+  }
+
   function renderHoroscope(panchang) {
     const mine = parseInt(elSelectRasi.value, 10);
     const shown = viewRasi === null ? mine : viewRasi;
     const janma = birthNakshatraIndex();
     const grid = document.getElementById('rasi-grid');
-    const all = allRashiPhalalu(panchang, engine.astronomy);
+    const all = rashiRows(panchang);
     grid.replaceChildren(...all.map((row, i) => {
-      // The user's own card includes tara balam when a birth date is saved, so it matches the detail text.
-      const score = i === mine ? dailyHoroscope(panchang, engine.astronomy, i, { janmaNakshatraIndex: janma }).score : row.score;
+      const score = row.score;
       const band = bandFor(score);
       const card = document.createElement('button');
       card.type = 'button';
@@ -990,7 +999,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     });
     document.getElementById('btn-share').addEventListener('click', () => shareDay(activePanchang, shareOpts()));
     document.getElementById('btn-share-rashi').addEventListener('click',
-      () => shareRashi(activePanchang, allRashiPhalalu(activePanchang, engine.astronomy), shareOpts()));
+      () => shareRashi(activePanchang, rashiRows(activePanchang), shareOpts()));
 
     // Month navigation
     elBtnPrevMonth.addEventListener('click', () => {

@@ -10,19 +10,6 @@
 </head>
 <body>
 
-  <!-- Dynamic Animated Ambient Backdrop Layer -->
-  <div id="sky-backdrop" class="sky-backdrop">
-    <canvas id="stars-canvas"></canvas>
-    <div id="celestial-container">
-      <canvas id="moon-canvas" width="160" height="160" style="display: none;"></canvas>
-      <div id="sun-body" class="sun-body" style="display: none;">
-        <div class="sun-flare"></div>
-        <div class="sun-core"></div>
-      </div>
-    </div>
-    <div class="sky-glow"></div>
-  </div>
-
   <!-- One-time rating prompt (ui/rating.js) -->
   <div id="rating-banner" class="rating-banner ext-only" style="display: none;">
     <a id="rating-link" href="https://chromewebstore.google.com/detail/obgpdlhkahmdiepklldjnnmfmbhmgenn/reviews" target="_blank" rel="noopener" data-i18n-te="మీకు నచ్చిందా? ఒక్క నిమిషంలో రేటింగ్ ఇవ్వండి" data-i18n-en="Enjoying it? Rate us in a minute">మీకు నచ్చిందా? ఒక్క నిమిషంలో రేటింగ్ ఇవ్వండి</a>
@@ -170,10 +157,10 @@
             <span><span data-i18n-te="అస్తమయం" data-i18n-en="Sunset">అస్తమయం</span> <strong id="sunset-time">--</strong></span>
           </div>
 
-          <section id="guide-card" class="guide-card glass-panel" hidden aria-live="polite">
+          <section id="guide-card" class="guide-card panel" hidden aria-live="polite">
         <div id="guide-body" class="guide-body"></div>
       </section>
-          <section id="sankalpam" class="sankalpam-card glass-panel">
+          <section id="sankalpam" class="sankalpam-card panel">
         <button type="button" class="share-icon" data-share="sankalpam" data-i18n-aria-te="సంకల్పం పంచుకోండి" data-i18n-aria-en="Share the sankalpam" aria-label="సంకల్పం పంచుకోండి"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"></path></svg></button>
         <div class="sankalpam-scroll-decor">
           <div class="decor-line"></div>
@@ -183,9 +170,9 @@
         <div class="scroll-content">
           <p id="sankalpam-txt" class="sankalpam-body-text" data-i18n="sankalpamLoading">సంకల్పం గణించబడుతోంది...</p>
         </div>
-        <button id="copy-sankalpam-btn" class="cyber-btn tiny-btn" data-i18n-bi="సంకల్పమును నకలు చేయి (Copy Text)">సంకల్పమును నకలు చేయి (Copy Text)</button>
+        <button id="copy-sankalpam-btn" class="btn tiny-btn" data-i18n-bi="సంకల్పమును నకలు చేయి (Copy Text)">సంకల్పమును నకలు చేయి (Copy Text)</button>
       </section>
-          <section id="gita" class="gita-card glass-panel" aria-labelledby="gita-card-title">
+          <section id="gita" class="gita-card panel" aria-labelledby="gita-card-title">
         <button type="button" class="share-icon" data-share="gita" data-i18n-aria-te="గీతా శ్లోకం పంచుకోండి" data-i18n-aria-en="Share the Gita verse" aria-label="గీతా శ్లోకం పంచుకోండి"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"></path></svg></button>
         <div class="sankalpam-scroll-decor">
           <div class="decor-line"></div>
@@ -212,7 +199,7 @@
           </div>
         </div>
         <div class="zone-body">
-          <section class="calendar-card glass-panel">
+          <section class="calendar-card panel">
             <div class="calendar-grid-container">
           <div class="grid-weekday-header" data-i18n="weekdaySun">ఆది</div>
           <div class="grid-weekday-header" data-i18n="weekdayMon">సోమ</div>
@@ -228,13 +215,13 @@
               <span><span class="legend-swatch vrat"></span><span data-i18n-te="వ్రతం" data-i18n-en="Vrata">వ్రతం</span></span>
               <span><span class="legend-swatch today"></span><span data-i18n-te="ఈరోజు" data-i18n-en="Today">ఈరోజు</span></span>
             </div>
-            <button id="btn-print-month" type="button" class="cyber-btn tiny-btn calendar-print-btn" data-i18n-bi="నెల పంచాంగం ముద్రించు (Print Month)">నెల పంచాంగం ముద్రించు (Print Month)</button>
+            <button id="btn-print-month" type="button" class="btn tiny-btn calendar-print-btn" data-i18n-bi="నెల పంచాంగం ముద్రించు (Print Month)">నెల పంచాంగం ముద్రించు (Print Month)</button>
           </section>
-          <section id="upcoming-card" class="upcoming-card glass-panel">
+          <section id="upcoming-card" class="upcoming-card panel">
         <button type="button" class="share-icon" data-share="festivals" data-i18n-aria-te="పర్వదినాలు పంచుకోండి" data-i18n-aria-en="Share the upcoming festivals" aria-label="పర్వదినాలు పంచుకోండి"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"></path></svg></button>
         <h3 data-i18n-bi="ఈ వారం పర్వదినాలు (Upcoming this week)">ఈ వారం పర్వదినాలు (Upcoming this week)</h3>
         <ul id="upcoming-list" class="upcoming-list"></ul>
-        <button id="btn-all-festivals" type="button" class="cyber-btn tiny-btn" data-i18n-bi="అన్నీ చూడండి (See all, 30 days)">అన్నీ చూడండి (See all, 30 days)</button>
+        <button id="btn-all-festivals" type="button" class="btn tiny-btn" data-i18n-bi="అన్నీ చూడండి (See all, 30 days)">అన్నీ చూడండి (See all, 30 days)</button>
       </section>
         </div>
       </section>
@@ -247,13 +234,13 @@
           <span id="clock" class="clock-display">00:00:00</span>
         </div>
         <div class="zone-body">
-          <section class="timeline-card glass-panel">
+          <section class="timeline-card panel">
             <p id="now-status" class="now-status" aria-live="polite"></p>
             <h3 class="next-heading" data-i18n-te="ఇక ముందు ఈరోజు" data-i18n-en="Coming up today">ఇక ముందు ఈరోజు</h3>
             <ul id="next-list" class="next-list"></ul>
-            <button id="btn-all-timings" type="button" class="cyber-btn tiny-btn" data-i18n-bi="అన్ని సమయాలు (All timings)">అన్ని సమయాలు (All timings)</button>
+            <button id="btn-all-timings" type="button" class="btn tiny-btn" data-i18n-bi="అన్ని సమయాలు (All timings)">అన్ని సమయాలు (All timings)</button>
           </section>
-          <section id="reminders" class="reminders-card glass-panel">
+          <section id="reminders" class="reminders-card panel">
         <h3 data-i18n="remindersTitle">నేటి శుభకార్యములు / ఈవెంట్లు</h3>
 
         <div id="reminders-list" class="reminders-scroller">
@@ -323,7 +310,7 @@
             </select>
           </div>
 
-          <button type="submit" class="cyber-btn" data-i18n-bi="ఈవెంట్‌ను జోడించు (Add Event)">ఈవెంట్‌ను జోడించు (Add Event)</button>
+          <button type="submit" class="btn" data-i18n-bi="ఈవెంట్‌ను జోడించు (Add Event)">ఈవెంట్‌ను జోడించు (Add Event)</button>
         </form>
       </section>
         </div>
@@ -341,7 +328,7 @@
       </div>
       <div class="zone-body">
         <div id="rasi-grid" class="rasi-grid" role="group" aria-label="Rasi"></div>
-        <section class="rasi-detail glass-panel horoscope-card">
+        <section class="rasi-detail panel horoscope-card">
           <div class="rasi-detail-head">
             <h3 id="rasi-detail-name" class="rasi-detail-name"></h3>
             <div class="rasi-pick">
@@ -499,7 +486,7 @@
           </div>
         </section>
         <p class="settings-hint" data-i18n-te="ఈ వివరాలు మీ పరికరంలోనే ఉంటాయి. ఎక్కడికీ పంపబడవు." data-i18n-en="These details stay on your device. They are never sent anywhere.">ఈ వివరాలు మీ పరికరంలోనే ఉంటాయి. ఎక్కడికీ పంపబడవు.</p>
-        <button type="submit" class="cyber-btn save-btn" data-i18n-te="భద్రపరచు" data-i18n-en="Save">భద్రపరచు</button>
+        <button type="submit" class="btn save-btn" data-i18n-te="భద్రపరచు" data-i18n-en="Save">భద్రపరచు</button>
       </form>
     </div>
   </div>
@@ -548,8 +535,8 @@
     <div class="onboarding-actions">
       <button id="onboarding-skip" type="button" class="onboarding-secondary onboarding-skip" data-i18n-te="దాటవేయి" data-i18n-en="Skip">దాటవేయి</button>
       <button id="onboarding-back" type="button" class="onboarding-secondary" data-i18n-te="వెనుకకు" data-i18n-en="Back" hidden>వెనుకకు</button>
-      <button id="onboarding-next" type="button" class="cyber-btn" data-i18n-te="తదుపరి" data-i18n-en="Next">తదుపరి</button>
-      <button id="onboarding-finish" type="submit" form="onboarding-birth" class="cyber-btn" data-i18n-te="పూర్తి చేయి" data-i18n-en="Finish" hidden>పూర్తి చేయి</button>
+      <button id="onboarding-next" type="button" class="btn" data-i18n-te="తదుపరి" data-i18n-en="Next">తదుపరి</button>
+      <button id="onboarding-finish" type="submit" form="onboarding-birth" class="btn" data-i18n-te="పూర్తి చేయి" data-i18n-en="Finish" hidden>పూర్తి చేయి</button>
     </div>
   </dialog>
 

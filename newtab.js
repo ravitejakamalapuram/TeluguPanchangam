@@ -66,12 +66,6 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
   const elEclipseDesc = document.getElementById('eclipse-desc');
   const elBirthdayBanner = document.getElementById('birthday-banner');
   
-  // Sky Backdrop Elements
-  const elSkyBackdrop = document.getElementById('sky-backdrop');
-  const elStarsCanvas = document.getElementById('stars-canvas');
-  const elMoonCanvas = document.getElementById('moon-canvas');
-  const elSunBody = document.getElementById('sun-body');
-  
   // Horoscope
   const elHoroscopeRating = document.getElementById('horoscope-rating');
   const elHoroscopeTxt = document.getElementById('horoscope-txt');
@@ -113,14 +107,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
   let todayPanchang = null;
   let activePanchang = null;
   
-  // Sky Particle Animation State
-  let starsAnimationId = null;
-  let starsCtx = null;
-  let stars = [];
-
-  // Dynamic UI & Nebula Animation State
   let activeHoroTab = 'health';
-  let nebulaClouds = [];
 
   // The selected city's current calendar day, as a Date whose system-local
   // Y/M/D match the city's — so every place that reads selectedDate via
@@ -161,7 +148,6 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     selectedDate = cityToday();
     calendarViewDate = new Date(selectedDate);
     setupEventListeners();
-    initStars();
     await refreshDashboard();
     // First-run onboarding drives the page's own controls, so its choices take the same save/refresh paths.
     startOnboarding({
@@ -575,9 +561,6 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     if (isSameDay(selectedDate, cityToday())) {
       todayPanchang = activePanchang;
     }
-
-    // Update ambient sky backdrop colors and celestial shapes
-    updateSkyBackdrop(activePanchang);
 
     // 2. Render Hero Clock header
     // No timeZone here deliberately: selectedDate's system-local Y/M/D already
@@ -1145,270 +1128,6 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
 
       await refreshDashboard();
     });
-  }
-
-  // Draw the exact moon phase on canvas based on Tithi index
-  function drawMoon(canvas, tithiIndex) {
-    const ctx = canvas.getContext('2d');
-    const w = canvas.width;
-    const h = canvas.height;
-    const cx = w / 2;
-    const cy = h / 2;
-    const r = Math.min(w, h) / 2 - 8;
-
-    ctx.clearRect(0, 0, w, h);
-
-    // Glow shadow
-    ctx.shadowBlur = 20;
-    ctx.shadowColor = "rgba(255, 235, 170, 0.45)";
-
-    // Draw dark base (shadow/unlit part)
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, 2 * Math.PI);
-    ctx.fillStyle = 'rgba(20, 10, 10, 0.95)';
-    ctx.fill();
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-    ctx.stroke();
-
-    // Reset shadow for inner drawing
-    ctx.shadowBlur = 0;
-
-    const D = (tithiIndex !== undefined && tithiIndex !== null) ? tithiIndex : 15;
-    
-    if (D === 0 || D >= 30) {
-      // New Moon: only show dark base
-      return;
-    }
-
-    ctx.fillStyle = '#FFFEE6';
-
-    if (D === 15) {
-      // Full Moon
-      ctx.shadowBlur = 25;
-      ctx.shadowColor = "rgba(255, 254, 230, 0.7)";
-      ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, 2 * Math.PI);
-      ctx.fill();
-
-      // Add craters
-      ctx.globalCompositeOperation = 'source-atop';
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
-      const craters = [
-        { cx: -0.3, cy: -0.2, r: 0.12 },
-        { cx: 0.2, cy: 0.3, r: 0.15 },
-        { cx: -0.1, cy: 0.4, r: 0.08 },
-        { cx: 0.4, cy: -0.3, r: 0.1 },
-        { cx: 0.0, cy: 0.0, r: 0.18 }
-      ];
-      craters.forEach(c => {
-        ctx.beginPath();
-        ctx.arc(cx + c.cx * r, cy + c.cy * r, c.r * r, 0, 2 * Math.PI);
-        ctx.fill();
-      });
-      ctx.globalCompositeOperation = 'source-over';
-      return;
-    }
-
-    // Draw lit hemisphere
-    ctx.beginPath();
-    if (D < 15) {
-      // Waxing: right side illuminated
-      ctx.arc(cx, cy, r, -Math.PI / 2, Math.PI / 2, false);
-    } else {
-      // Waning: left side illuminated
-      ctx.arc(cx, cy, r, Math.PI / 2, -Math.PI / 2, false);
-    }
-    ctx.fill();
-
-    // Corrective ellipse to shape crescent/gibbous
-    ctx.beginPath();
-    if (D < 15) {
-      // Waxing
-      if (D < 7.5) {
-        // Crescent: overlay dark ellipse on right
-        const width = r * (1 - D / 7.5);
-        ctx.ellipse(cx, cy, width, r, 0, -Math.PI / 2, Math.PI / 2, false);
-        ctx.fillStyle = 'rgba(20, 10, 10, 0.95)';
-        ctx.fill();
-      } else {
-        // Gibbous: overlay light ellipse on left
-        const width = r * ((D - 7.5) / 7.5);
-        ctx.ellipse(cx, cy, width, r, 0, Math.PI / 2, -Math.PI / 2, false);
-        ctx.fillStyle = '#FFFEE6';
-        ctx.fill();
-      }
-    } else {
-      // Waning (D from 15 to 30)
-      if (D < 22.5) {
-        // Gibbous: overlay light ellipse on right
-        const width = r * ((22.5 - D) / 7.5);
-        ctx.ellipse(cx, cy, width, r, 0, -Math.PI / 2, Math.PI / 2, false);
-        ctx.fillStyle = '#FFFEE6';
-        ctx.fill();
-      } else {
-        // Crescent: overlay dark ellipse on left
-        const width = r * (1 - (30 - D) / 7.5);
-        ctx.ellipse(cx, cy, width, r, 0, Math.PI / 2, -Math.PI / 2, false);
-        ctx.fillStyle = 'rgba(20, 10, 10, 0.95)';
-        ctx.fill();
-      }
-    }
-
-    // Add craters on illuminated portion
-    ctx.globalCompositeOperation = 'source-atop';
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
-    const craters = [
-      { cx: -0.3, cy: -0.2, r: 0.12 },
-      { cx: 0.2, cy: 0.3, r: 0.15 },
-      { cx: -0.1, cy: 0.4, r: 0.08 },
-      { cx: 0.4, cy: -0.3, r: 0.1 },
-      { cx: 0.0, cy: 0.0, r: 0.18 }
-    ];
-    craters.forEach(c => {
-      ctx.beginPath();
-      ctx.arc(cx + c.cx * r, cy + c.cy * r, c.r * r, 0, 2 * Math.PI);
-      ctx.fill();
-    });
-    ctx.globalCompositeOperation = 'source-over';
-  }
-
-  // Update sky class and celestial bodies visibility based on sunrise/sunset
-  function updateSkyBackdrop(panchang) {
-    if (!elSkyBackdrop) return;
-
-    const now = new Date();
-    // Simulate the current wall-clock time (in the selected city) on the selected date
-    const nowParts = window.TZ.getZonedParts(now, currentCity.timeZone);
-    const skyTime = window.TZ.zonedTimeToUtc(
-      selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(),
-      nowParts.hour, nowParts.minute, nowParts.second, currentCity.timeZone
-    );
-    const timeMs = skyTime.getTime();
-
-    // Default to 6:00 AM / 6:30 PM if sunrise/sunset is not loaded
-    const sunriseTime = panchang.astronomy.sunrise ? panchang.astronomy.sunrise.getTime() : window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 6, 0, 0, currentCity.timeZone).getTime();
-    const sunsetTime = panchang.astronomy.sunset ? panchang.astronomy.sunset.getTime() : window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 18, 30, 0, currentCity.timeZone).getTime();
-
-    let skyState = 'day';
-    const transitionMs = 30 * 60 * 1000; // 30 minutes golden-hour window
-
-    if (Math.abs(timeMs - sunriseTime) <= transitionMs) {
-      skyState = 'sunrise';
-    } else if (Math.abs(timeMs - sunsetTime) <= transitionMs) {
-      skyState = 'sunset';
-    } else if (timeMs > sunriseTime && timeMs < sunsetTime) {
-      skyState = 'day';
-    } else {
-      skyState = 'night';
-    }
-
-    elSkyBackdrop.classList.remove('sky-day', 'sky-night', 'sky-sunset', 'sky-sunrise');
-    elSkyBackdrop.classList.add(`sky-${skyState}`);
-
-    if (skyState === 'day' || skyState === 'sunrise' || skyState === 'sunset') {
-      if (elSunBody) elSunBody.style.display = 'block';
-      if (elMoonCanvas) elMoonCanvas.style.display = 'none';
-    } else {
-      if (elSunBody) elSunBody.style.display = 'none';
-      if (elMoonCanvas) {
-        elMoonCanvas.style.display = 'block';
-        drawMoon(elMoonCanvas, tithiIndexOf(panchang));
-      }
-    }
-  }
-
-  // Initialize background starfield canvas
-  function initStars() {
-    if (!elStarsCanvas) return;
-    starsCtx = elStarsCanvas.getContext('2d');
-
-    function resize() {
-      elStarsCanvas.width = window.innerWidth;
-      elStarsCanvas.height = window.innerHeight;
-
-      // Stars configuration
-      stars = [];
-      const starsCount = Math.floor((window.innerWidth * window.innerHeight) / 10000);
-      for (let i = 0; i < starsCount; i++) {
-        stars.push({
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * window.innerHeight,
-          size: Math.random() * 1.4 + 0.4,
-          alpha: Math.random(),
-          speed: Math.random() * 0.015 + 0.005
-        });
-      }
-    }
-
-    window.addEventListener('resize', resize);
-    resize();
-
-    if (starsAnimationId) cancelAnimationFrame(starsAnimationId);
-    loopParticles();
-  }
-
-  // Render loop running at 60fps for stars and rain animations
-  function loopParticles() {
-    if (!elStarsCanvas || !starsCtx) return;
-    const w = elStarsCanvas.width;
-    const h = elStarsCanvas.height;
-    starsCtx.clearRect(0, 0, w, h);
-
-    if (!elSkyBackdrop) {
-      starsAnimationId = requestAnimationFrame(loopParticles);
-      return;
-    }
-
-    const isNight = elSkyBackdrop.classList.contains('sky-night') ||
-                    elSkyBackdrop.classList.contains('sky-sunset') ||
-                    elSkyBackdrop.classList.contains('sky-sunrise');
-
-    // 1. Draw Twinkling Stars
-    if (isNight) {
-      stars.forEach(star => {
-        star.alpha += star.speed;
-        if (star.alpha > 1 || star.alpha < 0) {
-          star.speed = -star.speed;
-        }
-        starsCtx.fillStyle = `rgba(255, 255, 255, ${Math.max(0, Math.min(1, star.alpha))})`;
-        starsCtx.beginPath();
-        starsCtx.arc(star.x, star.y, star.size, 0, 2 * Math.PI);
-        starsCtx.fill();
-      });
-
-      // Spawn Shooting Star
-      if (Math.random() < 0.0006) {
-        stars.shooting = {
-          x: Math.random() * w,
-          y: Math.random() * (h * 0.4),
-          len: Math.random() * 70 + 40,
-          dx: Math.random() * 12 + 10,
-          dy: Math.random() * 3 + 2,
-          life: 1.0,
-          decay: Math.random() * 0.05 + 0.02
-        };
-      }
-
-      if (stars.shooting) {
-        const s = stars.shooting;
-        starsCtx.strokeStyle = `rgba(255, 235, 170, ${s.life})`;
-        starsCtx.lineWidth = 1.5;
-        starsCtx.beginPath();
-        starsCtx.moveTo(s.x, s.y);
-        starsCtx.lineTo(s.x - s.len, s.y - s.len * (s.dy / s.dx));
-        starsCtx.stroke();
-
-        s.x += s.dx;
-        s.y += s.dy;
-        s.life -= s.decay;
-        if (s.life <= 0 || s.x > w || s.y > h) {
-          stars.shooting = null;
-        }
-      }
-    }
-
-    starsAnimationId = requestAnimationFrame(loopParticles);
   }
 
   // Position the golden sun marker along the SVG path line dynamically

@@ -60,7 +60,7 @@ Google review requires specific plain-English justification for each declared pe
 ## 5. Store Assets Checklist
 
 - [x] Store Icon (128×128 PNG, 24-bit, no alpha): `chrome-store/assets/icon-128.png` — flattened from `icons/icon-128.png` (which keeps its alpha; that copy is the *extension* icon, not the store listing icon). Referenced via `store.config.json`'s `icon` key. **Note:** release-platform's Chrome rules do not read an `icon` key yet (POR-39/POR-34) — this asset is validated locally (`chrome-store/validate-listing.mjs`) and ready for the moment the upstream rule lands.
-- [x] Screenshots (1280×800 PNG, 24-bit, no alpha, 3-5 required): `chrome-store/assets/screenshots/01-hyderabad-full.png`, `02-dallas-full.png`, `03-timeline-rahu-yama-gulika.png`, `04-rasi-phalalu.png`, `05-sankalpam.png`
+- [x] Screenshots (1280×800 PNG, 24-bit, no alpha, 3-5 required): `chrome-store/assets/screenshots/01-today-telugu-hyderabad.png`, `02-dallas-rahu-kalam.png`, `03-festival-month.png`, `04-rasi-phalalu.png`, `05-dark-mode-today.png` (regenerate with `node docs/marketing/tools/screenshots.mjs`, then copy into `chrome-store/assets/screenshots/`)
 - [x] Promotional Tile (440×280 PNG): `chrome-store/assets/promo/small-tile.png`
 - [x] Marquee Promo (1400×560 PNG): `chrome-store/assets/promo/marquee.png`
 - Large tile (920×680) is no longer accepted by the Chrome Web Store (confirmed against release-platform's `CHROME_RULES.promo`, which has no `largeTile` entry) — deliberately not produced, and removed from `store.config.json`.

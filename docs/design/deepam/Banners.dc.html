@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="te">
+<head>
+<meta charset="utf-8">
+<title>హెచ్చరిక బ్యానర్లు</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;500;600;700&amp;family=Noto+Serif+Telugu:wght@600;700&amp;family=Outfit:wght@400;500;600&amp;display=swap">
+<style>body{margin:0;background:#F6EFE3}button{font:inherit}</style>
+</helmet>
+<div style="width: 1240px; height: 720px; box-sizing: border-box; padding: 32px; background: #F6EFE3; color: #2B2118; font-family: 'Noto Sans Telugu', 'Outfit', sans-serif; font-size: 17px; line-height: 1.7; display: flex; flex-direction: column; gap: 20px">
+
+  <p style="margin: 0; font-size: 15px; color: #5E4E40">బ్యానర్లు హెడర్ కింద, మూడు జోన్ల పైన కనిపిస్తాయి. జోన్ల స్థానాలు మారవు, కింద జరుగుతాయి. ఒకేసారి గరిష్టంగా రెండు, ప్రతిదీ మూసివేయవచ్చు. (గ్రహణ సమయం ఉదాహరణ మాత్రమే.)</p>
+
+  <section aria-label="గ్రహణ హెచ్చరిక" style="display: flex; align-items: center; gap: 16px; background: #2A2540; color: #F3ECE1; border-radius: 16px; padding: 14px 16px 14px 20px">
+    <svg width="48" height="48" viewBox="0 0 120 120" aria-hidden="true" style="flex: none"><circle cx="60" cy="60" r="50" fill="#3D3757"></circle><path d="M60 10 A50 50 0 0 1 60 110 A30 50 0 0 0 60 10 Z" fill="#E2C27A"></path><circle cx="60" cy="60" r="50" fill="none" stroke="#8F86B0" stroke-width="4"></circle></svg>
+    <div style="flex-grow: 1; min-width: 0">
+      <h2 style="margin: 0; font-family: 'Noto Serif Telugu', serif; font-size: 21px; font-weight: 600; line-height: 1.5; color: #E2C27A">ఈరోజు చంద్ర గ్రహణం</h2>
+      <p style="margin: 0; font-size: 17px; line-height: 1.7">మీ నగరం నుండి కనిపిస్తుంది. గ్రహణ మధ్య కాలం: రా. 11:47. గ్రహణ నియమ నిబంధనలు పాటించవలెను.</p>
+    </div>
+    <button aria-label="మూసివేయి" style="flex: none; width: 44px; height: 44px; border: 0; border-radius: 999px; background: rgba(255,255,255,0.14); color: #F3ECE1; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+  </section>
+
+  <section aria-label="పుట్టినరోజు" style="display: flex; align-items: center; gap: 16px; background: #FBE4D8; color: #7E2B0D; border: 2px solid #A63A12; border-radius: 16px; padding: 14px 16px 14px 20px">
+    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#A63A12" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M12 3c1.6 2.4 2.4 3.9 2.4 5.4A2.4 2.4 0 0 1 12 10.8a2.4 2.4 0 0 1-2.4-2.4C9.6 6.9 10.4 5.4 12 3z" fill="#E2B23A"></path><path d="M4 14h16c0 3.3-3.6 6-8 6s-8-2.7-8-6z" fill="#FFFFFF"></path></svg>
+    <div style="flex-grow: 1; min-width: 0">
+      <h2 style="margin: 0; font-family: 'Noto Serif Telugu', serif; font-size: 21px; font-weight: 600; line-height: 1.5">జన్మదిన శుభాకాంక్షలు!</h2>
+      <p style="margin: 0; font-size: 17px; line-height: 1.7">ఈ రోజు మీ తెలుగు పుట్టినరోజు (జన్మ నక్షత్రం లేదా తిథి ప్రకారం). సకల శుభాలు కలుగుగాక!</p>
+    </div>
+    <button aria-label="మూసివేయి" style="flex: none; width: 44px; height: 44px; border: 0; border-radius: 999px; background: rgba(166,58,18,0.12); color: #7E2B0D; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+  </section>
+
+  <div aria-hidden="true" style="display: grid; grid-template-columns: 1fr 1.6fr 1fr; gap: 16px; flex-grow: 1; opacity: 0.55">
+    <div style="border: 2px solid #A63A12; border-radius: 18px; background: #FFF6EE"></div>
+    <div style="border: 2px solid #7A5A12; border-radius: 18px; background: #FFFBF1"></div>
+    <div style="border: 2px solid #1F5F6B; border-radius: 18px; background: #F0F7F8"></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1240,"height":720}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

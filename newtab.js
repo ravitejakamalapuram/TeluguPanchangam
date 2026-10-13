@@ -14,6 +14,7 @@ import { formatClock } from './ui/time-format.js';
 import { startOnboarding } from './ui/onboarding.js';
 import { shareDay, shareRashi } from './ui/share-card.js';
 import { initRatingPrompt } from './ui/rating.js';
+import { moonInfo, litPath } from './ui/moon.js';
 import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guides.js';
 
 (function () {
@@ -106,7 +107,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
   const DEFAULT_PROFILE_NAME = 'యజమాని'; // placeholder meaning "Owner" until the user sets a real name
   let currentCity = window.CityPresets.getDefault(); // { id, name, lat, lon, timeZone }
   let currentCoordinates = { lat: currentCity.lat, lng: currentCity.lon };
-  let userSettings = { name: DEFAULT_PROFILE_NAME, dob: '', tob: '12:00', rasi: '0', theme: 'light' };
+  let userSettings = { name: DEFAULT_PROFILE_NAME, dob: '', tob: '12:00', rasi: '0', theme: 'auto' };
   let selectedDate = new Date();
   let calendarViewDate = new Date();
   let todayPanchang = null;
@@ -148,6 +149,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
 
   // Initialize Extension
   async function init() {
+    applyTheme(userSettings.theme);
     await window.I18N.loadLang();
     elLangToggle.checked = (window.I18N.getLang() === 'en');
     applyTranslations();
@@ -197,7 +199,25 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       el.placeholder = window.I18N.bi(el.dataset.i18nPlaceholderBi);
     });
 
+    document.querySelectorAll('[data-i18n-aria-te]').forEach((el) => {
+      el.setAttribute('aria-label', window.I18N.teEn(el.dataset.i18nAriaTe, el.dataset.i18nAriaEn));
+    });
+    document.querySelectorAll('.seg [data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === window.I18N.getLang())));
+
     renderProfileName();
+  }
+
+  // Theme: 'light', 'dark' or 'auto' (follows the system). The page always carries the resolved
+  // value in data-theme, which is what the stylesheet reads.
+  const systemDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  function applyTheme(choice) {
+    const resolved = choice === 'auto' ? (systemDark && systemDark.matches ? 'dark' : 'light') : choice;
+    document.body.setAttribute('data-theme', resolved);
+    elThemeToggle.checked = (resolved === 'dark');
+    document.querySelectorAll('[data-theme-choice]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.themeChoice === choice)));
+  }
+  if (systemDark && systemDark.addEventListener) {
+    systemDark.addEventListener('change', () => { if ((userSettings.theme || 'auto') === 'auto') applyTheme('auto'); });
   }
 
   // The profile name is free text the user can set via settings, so it can't
@@ -229,8 +249,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
           elSelectRasi.value = userSettings.rasi;
 
           // Apply theme
-          document.body.setAttribute('data-theme', userSettings.theme || 'light');
-          elThemeToggle.checked = (userSettings.theme === 'dark');
+          applyTheme(userSettings.theme || 'auto');
 
           // Populate Settings form. The untouched default is a placeholder,
           // not real text, so the input stays blank and shows its
@@ -401,14 +420,102 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     document.getElementById('gita-english').textContent = verse.translation.en;
   }
 
-  function renderHoroscope(panchang) {
-    const rasiIndex = parseInt(elSelectRasi.value);
-    const h = dailyHoroscope(panchang, engine.astronomy, rasiIndex, { janmaNakshatraIndex: birthNakshatraIndex() });
-    const text = horoscopeText(h, window.I18N.getLang());
+  // The rasi shown in the detail panel; null means the user's own birth rasi.
+  let viewRasi = null;
 
+  function bandFor(score) {
+    const t = window.I18N.t;
+    return score >= 5 ? { key: 'great', label: t('bandGreat') } : score === 4 ? { key: 'good', label: t('bandGood') }
+      : score === 3 ? { key: 'mixed', label: t('bandMixed') } : { key: 'care', label: t('bandCare') };
+  }
+
+  function renderHoroscope(panchang) {
+    const mine = parseInt(elSelectRasi.value, 10);
+    const shown = viewRasi === null ? mine : viewRasi;
+    const janma = birthNakshatraIndex();
+    const grid = document.getElementById('rasi-grid');
+    const all = allRashiPhalalu(panchang, engine.astronomy);
+    grid.replaceChildren(...all.map((row, i) => {
+      // The user's own card includes tara balam when a birth date is saved, so it matches the detail text.
+      const score = i === mine ? dailyHoroscope(panchang, engine.astronomy, i, { janmaNakshatraIndex: janma }).score : row.score;
+      const band = bandFor(score);
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = `rasi-card band-${band.key}${i === mine ? ' mine' : ''}${i === shown ? ' shown' : ''}`;
+      card.setAttribute('aria-pressed', String(i === shown));
+      const name = document.createElement('span');
+      name.className = 'rasi-card-name';
+      name.textContent = nm(row.rasi);
+      card.append(name);
+      if (i === mine) {
+        const badge = document.createElement('span');
+        badge.className = 'rasi-mine-badge';
+        badge.textContent = window.I18N.t('myRasi');
+        card.append(badge);
+      }
+      const stars = document.createElement('span');
+      stars.className = 'rasi-stars';
+      stars.setAttribute('role', 'img');
+      stars.setAttribute('aria-label', `${score} / 5`);
+      stars.textContent = '\u2605'.repeat(score) + '\u2606'.repeat(5 - score);
+      const label = document.createElement('span');
+      label.className = 'rasi-band';
+      label.textContent = band.label;
+      card.append(stars, label);
+      card.addEventListener('click', () => { viewRasi = i; renderHoroscope(panchang); });
+      return card;
+    }));
+
+    const h = dailyHoroscope(panchang, engine.astronomy, shown, { janmaNakshatraIndex: shown === mine ? janma : undefined });
+    const text = horoscopeText(h, window.I18N.getLang());
     elHoroscopeRating.textContent = "⭐".repeat(h.score);
+    document.getElementById('rasi-detail-name').textContent = shown === mine
+      ? `${nm(h.rasi)} \u00b7 ${window.I18N.t('myRasi')}` : nm(h.rasi);
+    document.getElementById('rasi-date').textContent = selectedDate.toLocaleDateString(window.I18N.getLang() === 'en' ? 'en-US' : 'te-IN', { weekday: 'short', day: 'numeric', month: 'long' });
     elHoroscopeTxt.textContent = activeHoroTab === 'health' ? text.health
       : activeHoroTab === 'wealth' ? text.wealth : text.career;
+  }
+
+  // Subtitle (year name, month, paksha), sunrise and sunset, today's festivals and the Moon card.
+  function renderTodayExtras(panchang) {
+    const cal = panchang.calendar;
+    document.getElementById('date-sub').textContent = [nm(cal.samvatsara.id || cal.samvatsara), nm(cal.masa.id), nm(cal.paksha.id)].join(' · ');
+    document.getElementById('sunrise-time').textContent = formatTime(panchang.astronomy.sunrise);
+    document.getElementById('sunset-time').textContent = formatTime(panchang.astronomy.sunset);
+
+    const fests = panchang.events.filter((e) => e.id.startsWith('FESTIVAL_'));
+    const strip = document.getElementById('festival-strip');
+    strip.hidden = fests.length === 0;
+    document.getElementById('festival-strip-names').textContent = fests.map((f) => nm(f.nameId || f.id)).join(' \u00b7 ');
+
+    renderMoon(panchang);
+  }
+
+  function renderMoon(panchang) {
+    const now = new Date();
+    const live = now >= panchang.astronomy.sunrise && now < panchang.astronomy.nextSunrise;
+    const at = live ? now : new Date(panchang.astronomy.sunrise.getTime() + 6 * 3600 * 1000);
+    const m = moonInfo(window.Astronomy, at);
+    const pct = Math.round(m.illumination * 100);
+    const t = window.I18N.t;
+    const title = m.waxing ? t('moonWaxing') : t('moonWaning');
+    document.getElementById('moon-lit').setAttribute('d', litPath(m.illumination, m.waxing));
+    document.getElementById('moon-title').textContent = title;
+    document.getElementById('moon-sub').textContent = `${pct}% ${t('moonLit')} \u00b7 ${tithiLabel(panchang.panchanga.tithi.id, window.I18N.getLang())}`;
+    document.getElementById('moon-next').textContent = m.waxing ? t('moonDaysToFull')(m.daysToFull) : t('moonDaysToNew')(m.daysToNew);
+    document.getElementById('moon-svg').setAttribute('aria-label', `${title}, ${pct}%`);
+    const pos = Math.round(m.progress * 100);
+    document.getElementById('moon-bar-fill').style.width = `${pos}%`;
+    document.getElementById('moon-bar-knob').style.left = `${pos}%`;
+    // The bar runs new moon to full moon while waxing, full moon to new moon while waning.
+    const fmt = (d) => d.toLocaleDateString(window.I18N.getLang() === 'en' ? 'en-US' : 'te-IN', { day: 'numeric', month: 'short', timeZone: currentCity.timeZone });
+    const startLabel = m.waxing ? t('moonNewLabel') : t('moonFullLabel');
+    const endLabel = m.waxing ? t('moonFullLabel') : t('moonNewLabel');
+    document.getElementById('moon-label-start').textContent = `${startLabel} \u00b7 ${fmt(m.waxing ? m.prevNew : m.prevFull)}`;
+    document.getElementById('moon-label-end').textContent = `${endLabel} \u00b7 ${fmt(m.waxing ? m.nextFull : m.nextNew)}`;
+    const lit = (id, fill, stroke) => { const c = document.querySelector(`#${id} circle`); c.setAttribute('fill', fill); if (stroke) c.setAttribute('stroke', stroke); };
+    lit('moon-cap-start', m.waxing ? '#3D3757' : '#F4E9C9', m.waxing ? '#8F86B0' : null);
+    lit('moon-cap-end', m.waxing ? '#F4E9C9' : '#3D3757', m.waxing ? null : '#8F86B0');
   }
 
   // Format transition times for calendar display
@@ -470,7 +577,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     // here would reinterpret that already-city-local day through a second zone
     // shift and could show the wrong date.
     elDateGregorian.textContent = selectedDate.toLocaleDateString(window.I18N.getLang() === 'en' ? 'en-US' : 'te-IN', {
-      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      weekday: 'short', day: 'numeric', month: 'long'
     });
 
     // 3. Render Panchang card values (paksha + tithi, e.g. "బహుళ నవమి")
@@ -486,6 +593,8 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
 
     elPanchangKarana.textContent = nm(p.karana.id);
     elPanchangKaranaTime.textContent = formatTransitionText(p.karana.spans);
+
+    renderTodayExtras(activePanchang);
 
     // Moon sign through the day, and the Sun's sign and karte (its sidereal nakshatra).
     elPanchangMoon.textContent = formatTransitionText(p.chandraRasi.spans, window.I18N.t('rasiNoun'));
@@ -569,7 +678,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
   // at sunrise (else the janma tithi); see core/birth.js.
   function checkBirthday(panchang) {
     const show = !!userSettings.dob && isTeluguBirthday(engine, panchang, birthDetails(engine, birthInstant()));
-    elBirthdayBanner.style.display = show ? 'block' : 'none';
+    elBirthdayBanner.style.display = show ? 'flex' : 'none';
   }
 
   // Eclipses visible from the selected city during the selected day.
@@ -747,10 +856,10 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
   // (Ekadashi on Vaikunta Ekadashi) is folded into the festival, keeping its Ekadashi parana (next
   // morning's fast-breaking window). Pradosham, Sankashti and Masa Shivaratri always stay listed.
   const GENERIC_VRATA = /^VRATA_(SHUKLA_|KRISHNA_)?(EKADASHI|PURNIMA|AMAVASYA)$/;
-  function renderUpcoming() {
+  function collectUpcoming(days, max) {
     const items = [];
     const today = cityToday();
-    for (let i = 0; i < 7 && items.length < 6; i++) {
+    for (let i = 0; i < days && items.length < max; i++) {
       const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i, 12);
       const events = dayFor(date).events;
       const fests = events.filter((e) => e.id.startsWith('FESTIVAL_'));
@@ -762,24 +871,37 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
         items.push({ date, id: ev.nameId || ev.id, parana: ev.parana || (twin && twin.parana) });
       });
     }
+    return items.slice(0, max);
+  }
 
-    elUpcomingList.replaceChildren(...items.slice(0, 6).map((it) => {
-      const li = document.createElement('li');
-      const when = document.createElement('span');
-      when.className = 'upcoming-date';
-      when.textContent = it.date.toLocaleDateString(window.I18N.getLang() === 'en' ? 'en-US' : 'te-IN', { weekday: 'short', day: 'numeric', month: 'short' });
-      const what = document.createElement('strong');
-      what.textContent = nm(it.id);
-      li.append(when, what);
-      if (it.parana) {
-        const parana = document.createElement('span');
-        parana.className = 'upcoming-parana';
-        parana.textContent = `${window.I18N.t('paranaNextDay')} ${formatTime(it.parana.start)} - ${formatTime(it.parana.end)}`;
-        li.append(parana);
-      }
-      return li;
-    }));
+  function upcomingItem(it) {
+    const li = document.createElement('li');
+    const when = document.createElement('span');
+    when.className = 'upcoming-date';
+    when.textContent = it.date.toLocaleDateString(window.I18N.getLang() === 'en' ? 'en-US' : 'te-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+    const what = document.createElement('strong');
+    what.textContent = nm(it.id);
+    li.append(when, what);
+    if (it.parana) {
+      const parana = document.createElement('span');
+      parana.className = 'upcoming-parana';
+      parana.textContent = `${window.I18N.t('paranaNextDay')} ${formatTime(it.parana.start)} - ${formatTime(it.parana.end)}`;
+      li.append(parana);
+    }
+    return li;
+  }
+
+  function renderUpcoming() {
+    const items = collectUpcoming(7, 6);
+    elUpcomingList.replaceChildren(...items.map(upcomingItem));
     elUpcomingCard.style.display = items.length ? '' : 'none';
+  }
+
+  // "See all": the next 30 days in a popup, opened from the Month zone.
+  function openAllFestivals() {
+    const dlg = document.getElementById('festivals-dialog');
+    document.getElementById('festivals-dialog-list').replaceChildren(...collectUpcoming(30, 40).map(upcomingItem));
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
   }
 
   // Helper: check if same calendar day
@@ -888,18 +1010,34 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     // Rasi change
     elSelectRasi.addEventListener('change', async () => {
       userSettings.rasi = elSelectRasi.value;
+      viewRasi = null;
       userSettings.rasiSource = 'user'; // a hand-picked rasi is never overwritten from the DOB
       await chrome.storage.local.set({ userSettings });
       renderHoroscope(activePanchang);
     });
 
     // Dark/Light Theme toggle
-    elThemeToggle.addEventListener('change', async () => {
-      const theme = elThemeToggle.checked ? 'dark' : 'light';
-      document.body.setAttribute('data-theme', theme);
-      userSettings.theme = theme;
+    document.querySelectorAll('[data-theme-choice]').forEach((btn) => btn.addEventListener('click', async () => {
+      userSettings.theme = btn.dataset.themeChoice;
+      applyTheme(userSettings.theme);
       await chrome.storage.local.set({ userSettings });
+    }));
+
+    // Language buttons (header and settings) drive the same hidden toggle the onboarding uses.
+    document.querySelectorAll('.seg [data-lang]').forEach((btn) => btn.addEventListener('click', () => {
+      const wantEn = btn.dataset.lang === 'en';
+      if (elLangToggle.checked === wantEn) return;
+      elLangToggle.checked = wantEn;
+      elLangToggle.dispatchEvent(new Event('change'));
+    }));
+
+    document.getElementById('btn-city-chip').addEventListener('click', () => elBtnOpenSettings.click());
+    document.getElementById('btn-go-today').addEventListener('click', async () => {
+      selectedDate = cityToday();
+      calendarViewDate = new Date(selectedDate);
+      await refreshDashboard();
     });
+    document.querySelectorAll('.banner-close').forEach((btn) => btn.addEventListener('click', () => { btn.closest('.banner').style.display = 'none'; }));
 
     // Reminder form scheduler
     elRemType.addEventListener('change', () => {
@@ -1287,72 +1425,80 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     }
   }
 
-  // Render the daily 24-hour visual timeline of auspicious and inauspicious blocks
+  // "What comes next": today's windows still ahead (or running), soonest first.
+  // For another day it lists the whole day, since "now" has no meaning there.
   function renderDayTimeline(panchang) {
-    const blocksContainer = document.getElementById('timeline-blocks');
-    if (!blocksContainer) return;
-    blocksContainer.innerHTML = '';
-
-    const timelineStart = window.TZ.zonedTimeToUtc(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 6, 0, 0, currentCity.timeZone);
-    const startMs = timelineStart.getTime();
-    const totalMs = 24 * 60 * 60 * 1000;
-
-    const blocks = [];
+    const list = document.getElementById('next-list');
+    const status = document.getElementById('now-status');
+    if (!list || !status) return;
+    list.replaceChildren();
 
     const tm = panchang.timings;
-    const add = (label, list, type) => list.forEach((w, i) => blocks.push({
-      label: window.I18N.bi(list.length > 1 ? label.replace(')', ` ${i + 1})`) : label), start: w.start, end: w.end, type
-    }));
+    const items = [];
+    const add = (label, windows, type) => windows.forEach((w) => items.push({ label: window.I18N.bi(label), start: w.start, end: w.end, type }));
     add('రాహుకాలం (Rahu Kalam)', [tm.rahuKalam], 'inauspicious');
     add('యమగండం (Yama Gandam)', [tm.yamagandam], 'inauspicious');
     add('గుళిక కాలం (Gulika Kalam)', [tm.gulikaKalam], 'inauspicious');
     add('దుర్ముహూర్తం (Durmuhurtham)', tm.durmuhurtham, 'inauspicious');
     add('వర్జ్యం (Varjyam)', tm.varjyam, 'inauspicious');
     add('అమృత ఘడియలు (Amrita Kalam)', tm.amritaKalam, 'auspicious');
+    add('బ్రహ్మ ముహూర్తం (Brahma Muhurtham)', [tm.brahmaMuhurta], 'auspicious');
     if (!tm.abhijit.avoided) add('అభిజిత్ ముహూర్తం (Abhijit)', [tm.abhijit], 'auspicious');
+    items.sort((x, y) => x.start - y.start);
 
-    blocks.forEach(b => {
-      const bStartMs = b.start.getTime();
-      const bEndMs = b.end.getTime();
+    const now = new Date();
+    // "Today" is the panchang day running now: sunrise to next sunrise, so after midnight it still counts.
+    const isToday = now >= panchang.astronomy.sunrise && now < panchang.astronomy.nextSunrise;
+    const upcoming = isToday ? items.filter((it) => it.end > now) : items;
+    const running = isToday ? upcoming.find((it) => it.type === 'inauspicious' && it.start <= now) : null;
 
-      const visibleStartMs = Math.max(bStartMs, startMs);
-      const visibleEndMs = Math.min(bEndMs, startMs + totalMs);
-
-      if (visibleStartMs < visibleEndMs) {
-        const leftPercent = ((visibleStartMs - startMs) / totalMs) * 100;
-        const widthPercent = ((visibleEndMs - visibleStartMs) / totalMs) * 100;
-
-        const blockEl = document.createElement('div');
-        blockEl.className = `timeline-block ${b.type}`;
-        blockEl.style.left = `${leftPercent}%`;
-        blockEl.style.width = `${widthPercent}%`;
-        
-        const timeStr = `${formatTime(b.start)} - ${formatTime(b.end)}`;
-        blockEl.title = `${b.label}: ${timeStr}`;
-
-        blocksContainer.appendChild(blockEl);
-      }
-    });
-
-    const elCursor = document.getElementById('timeline-cursor');
-    if (elCursor) {
-      const now = new Date();
-      const nowParts = window.TZ.getZonedParts(now, currentCity.timeZone);
-      const skyTime = window.TZ.zonedTimeToUtc(
-        selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(),
-        nowParts.hour, nowParts.minute, nowParts.second, currentCity.timeZone
-      );
-      const skyTimeMs = skyTime.getTime();
-
-      if (skyTimeMs >= startMs && skyTimeMs <= startMs + totalMs) {
-        const cursorPercent = ((skyTimeMs - startMs) / totalMs) * 100;
-        elCursor.style.left = `${cursorPercent}%`;
-        elCursor.style.display = 'block';
-      } else {
-        elCursor.style.display = 'none';
-      }
+    if (!isToday) {
+      status.textContent = '';
+    } else if (running) {
+      status.textContent = window.I18N.teEn('ఇప్పుడు ' + running.label + ' — ' + formatTime(running.end) + ' వరకు', 'Now: ' + running.label + ' until ' + formatTime(running.end));
+    } else {
+      status.textContent = window.I18N.teEn('ప్రస్తుతం ఏ చెడు సమయమూ లేదు', 'No bad time right now');
     }
+    status.className = 'now-status ' + (running ? 'inauspicious' : 'auspicious');
+
+    upcoming.slice(0, 5).forEach((it) => {
+      const li = document.createElement('li');
+      li.className = 'next-item ' + it.type;
+      const name = document.createElement('span');
+      name.className = 'next-name';
+      name.textContent = it.label;
+      const time = document.createElement('span');
+      time.className = 'next-time';
+      time.textContent = formatWindow(it);
+      const chip = document.createElement('span');
+      chip.className = 'next-chip';
+      chip.textContent = it.type === 'auspicious' ? window.I18N.t('goodTime') : window.I18N.t('badTime');
+      const mid = document.createElement('span');
+      mid.className = 'next-mid';
+      mid.append(name, time);
+      if (isToday && it.start > now) {
+        const mins = Math.round((it.start - now) / 60000);
+        const left = document.createElement('span');
+        left.className = 'next-left';
+        left.textContent = window.I18N.t('inTime')(Math.floor(mins / 60), mins % 60);
+        mid.append(left);
+      }
+      li.append(mid, chip);
+      list.appendChild(li);
+    });
   }
+
+  const elTimingsDialog = document.getElementById('timings-dialog');
+  document.getElementById('btn-all-timings').addEventListener('click', () => {
+    if (elTimingsDialog.showModal) elTimingsDialog.showModal(); else elTimingsDialog.setAttribute('open', '');
+  });
+  const closeDialog = (dlg) => { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); };
+  document.getElementById('btn-close-timings').addEventListener('click', () => closeDialog(elTimingsDialog));
+  elTimingsDialog.addEventListener('click', (e) => { if (e.target === elTimingsDialog) closeDialog(elTimingsDialog); });
+
+  document.getElementById('btn-all-festivals').addEventListener('click', openAllFestivals);
+  document.getElementById('btn-close-festivals').addEventListener('click', () => closeDialog(document.getElementById('festivals-dialog')));
+  document.getElementById('festivals-dialog').addEventListener('click', (e) => { if (e.target.id === 'festivals-dialog') closeDialog(e.target); });
 
   // Boot UI on Page Load
   if (document.readyState === 'loading') {

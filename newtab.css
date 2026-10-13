@@ -1353,10 +1353,18 @@ input:checked + .slider:before {
 }
 
 /* Share card (ui/share-card.js) */
-.share-btn {
-  margin-top: 10px;
-  margin-right: 8px;
+/* The share icon in a card's header (data-share names the card) */
+.share-icon {
+  width: 44px; height: 44px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 0; border-radius: 999px; background: transparent; color: var(--text-secondary); cursor: pointer;
 }
+.share-icon:hover { background: rgba(127, 127, 127, 0.18); }
+.share-icon:focus-visible { outline: 2px solid var(--accent-secondary); outline-offset: 2px; }
+.zone-head .share-icon { color: #FFFFFF; margin-left: auto; }
+.zone-head .share-icon:hover { background: rgba(255, 255, 255, 0.25); }
+.zone-head-split .share-icon { margin-left: 0; }
+.sankalpam-card .share-icon, .gita-card .share-icon, .upcoming-card .share-icon { position: absolute; top: 6px; right: 8px; z-index: 1; }
 .share-toast {
   position: fixed;
   bottom: 24px;
@@ -1830,8 +1838,6 @@ input:checked + .slider:before { background-color: #FFFFFF; }
 .sun-times { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; color: var(--text-secondary); border-top: 1px solid var(--panel-border); padding-top: 12px; }
 .sun-times strong { color: var(--text-primary); font-weight: 600; white-space: nowrap; }
 .sun-times span { white-space: nowrap; }
-.share-row { display: flex; flex-wrap: wrap; gap: 8px; }
-.share-btn { margin: 0; }
 .sankalpam-card-title { color: var(--zone-today); text-transform: none; letter-spacing: 0; font-family: var(--font-heading); font-size: 1.1rem; }
 [data-theme="dark"] .sankalpam-card-title { color: #F0A36E; }
 .sankalpam-card { text-align: left; }
@@ -2027,4 +2033,3 @@ input[type="text"], input[type="date"], input[type="time"], .cyber-form-panel se
   .timing-detail-grid { grid-template-columns: 1fr; }
   .settings-sheet { width: 100%; }
 }
-.rasi-foot .share-btn { width: auto; }

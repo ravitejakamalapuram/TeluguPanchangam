@@ -12,7 +12,7 @@ import { horoscopeText } from './core/horoscope-text.js';
 import { birthDetails, isTeluguBirthday } from './core/birth.js';
 import { formatClock } from './ui/time-format.js';
 import { startOnboarding } from './ui/onboarding.js';
-import { shareDay, shareRashi } from './ui/share-card.js';
+import { shareCard } from './ui/share-card.js';
 import { initRatingPrompt } from './ui/rating.js';
 import { moonInfo, litPath } from './ui/moon.js';
 import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guides.js';
@@ -990,16 +990,31 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     // so a shared image never carries the user's coordinates.
     const shareOpts = () => ({
       lang: window.I18N.getLang(),
-      city: currentCity.id === 'custom' ? currentCity.timeZone : cityDisplayName(currentCity),
+      city: currentCity.id === 'custom' ? currentCity.timeZone : window.I18N.splitBi(cityDisplayName(currentCity)),
       date: elDateGregorian.textContent,
       time: formatTime,
       timeWindow: formatWindow,
       theme: document.body.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
       mine: parseInt(elSelectRasi.value, 10)
     });
-    document.getElementById('btn-share').addEventListener('click', () => shareDay(activePanchang, shareOpts()));
-    document.getElementById('btn-share-rashi').addEventListener('click',
-      () => shareRashi(activePanchang, rashiRows(activePanchang), shareOpts()));
+    // One share icon per card (data-share names the card): each builds its card's data and hands it to the same exporter.
+    const shareData = {
+      day: () => ({ kind: 'day', data: activePanchang, opts: {} }),
+      rasi: () => ({ kind: 'rasi', data: { day: activePanchang, rows: rashiRows(activePanchang) }, opts: {} }),
+      gita: () => ({ kind: 'gita', data: window.GitaVerse.verseForDate(selectedDate), opts: {} }),
+      sankalpam: () => {
+        const p = activePanchang.panchanga;
+        const lang = window.I18N.getLang();
+        return { kind: 'sankalpam', data: sankalpamFor(activePanchang), opts: { fileDate: activePanchang.date, tithiLine: `${tithiLabel(p.tithi.id, lang)} · ${nm(p.nakshatra.id)}` } };
+      },
+      festivals: () => ({ kind: 'festivals', data: { items: collectUpcoming(7, 6) }, opts: { fileDate: activePanchang.date } })
+    };
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-share]');
+      if (!btn || !shareData[btn.dataset.share]) return;
+      const { kind, data, opts } = shareData[btn.dataset.share]();
+      if (data) shareCard(kind, data, { ...shareOpts(), ...opts });
+    });
 
     // Month navigation
     elBtnPrevMonth.addEventListener('click', () => {

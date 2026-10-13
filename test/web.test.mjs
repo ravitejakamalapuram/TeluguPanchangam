@@ -37,7 +37,7 @@ test('index.html is newtab.html plus web-only head tags and scripts', () => {
   assert.match(html, /<meta name="description" content="[^"]{20,}">/);
   assert.match(html, /<script src="web\/extras\.js"><\/script>/);
   // The app markup itself is untouched.
-  assert.ok(html.includes('id="btn-share-rashi"'));
+  assert.ok(html.includes('data-share="rasi"'));
   assert.ok(html.includes('<script type="module" src="newtab.js"></script>'));
 });
 

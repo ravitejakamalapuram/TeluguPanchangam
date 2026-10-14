@@ -425,6 +425,16 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       : row));
   }
 
+  // Zodiac glyphs in Mesha..Meena order (the Western signs match one for one); \uFE0E keeps them as text, not emoji.
+  const RASI_GLYPH = [...'♈♉♊♋♌♍♎♏♐♑♒♓'].map((g) => g + '\uFE0E');
+  const rasiGlyph = (i) => {
+    const el = document.createElement('span');
+    el.className = 'rasi-glyph';
+    el.setAttribute('aria-hidden', 'true');
+    el.textContent = RASI_GLYPH[i];
+    return el;
+  };
+
   function renderHoroscope(panchang) {
     const mine = parseInt(elSelectRasi.value, 10);
     const shown = viewRasi === null ? mine : viewRasi;
@@ -441,7 +451,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       const name = document.createElement('span');
       name.className = 'rasi-card-name';
       name.textContent = nm(row.rasi);
-      card.append(name);
+      card.append(rasiGlyph(i), name);
       if (i === mine) {
         const badge = document.createElement('span');
         badge.className = 'rasi-mine-badge';
@@ -464,8 +474,8 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     const h = dailyHoroscope(panchang, engine.astronomy, shown, { janmaNakshatraIndex: shown === mine ? janma : undefined });
     const text = horoscopeText(h, window.I18N.getLang());
     elHoroscopeRating.textContent = "⭐".repeat(h.score);
-    document.getElementById('rasi-detail-name').textContent = shown === mine
-      ? `${nm(h.rasi)} \u00b7 ${window.I18N.t('myRasi')}` : nm(h.rasi);
+    document.getElementById('rasi-detail-name').replaceChildren(rasiGlyph(shown), shown === mine
+      ? `${nm(h.rasi)} \u00b7 ${window.I18N.t('myRasi')}` : nm(h.rasi));
     document.getElementById('rasi-date').textContent = selectedDate.toLocaleDateString(window.I18N.getLang() === 'en' ? 'en-US' : 'te-IN', { weekday: 'short', day: 'numeric', month: 'long' });
     elHoroscopeTxt.textContent = activeHoroTab === 'health' ? text.health
       : activeHoroTab === 'wealth' ? text.wealth : text.career;
@@ -550,6 +560,19 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     return generateSankalpam(day, { lang, tithiId: at('tithi'), nakshatraId: at('nakshatra'), yogaId: at('yoga'), karanaId: at('karana') });
   }
 
+  // The left zone says "Today" only when today is selected; otherwise it names the selected day.
+  function renderZoneTitle() {
+    const lang = window.I18N.getLang();
+    const isToday = isSameDay(selectedDate, cityToday());
+    const title = isToday
+      ? window.I18N.teEn('ఈరోజు', 'Today')
+      : selectedDate.toLocaleDateString(lang === 'en' ? 'en-US' : 'te-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+    document.getElementById('z-today').textContent = title;
+    document.querySelector('#today [data-share="day"]').setAttribute('aria-label', isToday
+      ? window.I18N.teEn('ఈరోజు పంచాంగం పంచుకోండి', "Share today's panchangam")
+      : window.I18N.teEn(`${title} పంచాంగం పంచుకోండి`, `Share panchangam for ${title}`));
+  }
+
   // Update Main Dashboard UI Cards
   async function refreshDashboard() {
     // 1. Calculate Panchang for selectedDate
@@ -587,6 +610,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     elPanchangKaranaTime.textContent = formatTransitionText(p.karana.spans);
 
     renderTodayExtras(activePanchang);
+    renderZoneTitle();
 
     // Moon sign through the day, and the Sun's sign and karte (its sidereal nakshatra).
     elPanchangMoon.textContent = formatTransitionText(p.chandraRasi.spans, window.I18N.t('rasiNoun'));
@@ -802,6 +826,17 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
 
     cell.appendChild(elNum);
     cell.appendChild(elTithi);
+
+    const tithiId = panchang.panchanga.tithi.id;
+    if (tithiId === 'TITHI_PURNIMA' || tithiId === 'TITHI_AMAVASYA') {
+      const full = tithiId === 'TITHI_PURNIMA';
+      const mark = document.createElement('span');
+      mark.className = `day-moon ${full ? 'full' : 'new'}`;
+      mark.setAttribute('role', 'img');
+      mark.setAttribute('aria-label', `${nm(tithiId)} - ${window.I18N.teEn(full ? 'పౌర్ణమి' : 'అమావాస్య', full ? 'Full moon' : 'New moon')}`);
+      mark.title = mark.getAttribute('aria-label');
+      cell.appendChild(mark);
+    }
 
     // Festival badge if exists
     if (festivals.length > 0) {

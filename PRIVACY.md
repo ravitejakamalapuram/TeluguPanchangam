@@ -23,5 +23,8 @@ The extension additionally offers an opt-in "Use My Location" button so that sun
 ## Third-Party Services
 This extension does not use any third-party analytics, advertising, or tracking services of its own, and it does not call any API you did not ask it to. The only exception is Chrome's built-in geolocation service, described above, which is invoked solely when you press "Use My Location."
 
+## The Website (TeluguPanchangam on GitHub Pages)
+The same panchangam is also offered as a website. The site's pages load one cookieless analytics script (Cloudflare Web Analytics) that measures aggregate page views — which pages are opened, the referring site, country and device type. It sets no cookies and no local identifiers, collects nothing you type (your city, birth details and reminders stay on your device, exactly as in the extension), and no individual visitor records are kept. The browser extension described above never loads this script and reports nothing.
+
 ## Contact
 If you have any questions or feedback regarding this policy, please open a GitHub Issue in the project repository.

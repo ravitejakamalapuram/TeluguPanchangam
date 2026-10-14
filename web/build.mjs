@@ -15,6 +15,17 @@ const THEME = '#120808';
 const DESCRIPTION = 'ఈ రోజు తెలుగు పంచాంగం: తిథి, నక్షత్రం, రాహుకాలం, పండుగలు, రాశి ఫలాలు. ఉచితం, సైన్-అప్ అవసరం లేదు. '
   + "Today's Telugu panchangam, festivals and rasi phalalu for your city. Free, works offline.";
 
+// Cookieless page-view analytics (ticket #50, ADR 0003): the Cloudflare Web Analytics beacon goes
+// into the site when CF_ANALYTICS_TOKEN is set at build time. No token (local builds, PR preview
+// builds) means no script: offline and privacy rules are unaffected, and the extension never
+// carries it because this file is web-only.
+function analyticsTag() {
+  const token = process.env.CF_ANALYTICS_TOKEN;
+  if (!token) return '';
+  return `  <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+    data-cf-beacon='${JSON.stringify({ token: esc(token), spa: false })}'></script>\n`;
+}
+
 // release.yaml's `include` allowlist is the single list of files the UI needs.
 export function releaseIncludes() {
   const lines = fs.readFileSync(path.join(ROOT, 'release.yaml'), 'utf8').split('\n');
@@ -62,7 +73,7 @@ function headTags(site) {
     `<meta property="og:image" content="${esc(site)}web/icons/icon-512.png">`,
     '<meta name="twitter:card" content="summary">',
     '<link rel="stylesheet" href="web/extras.css">',
-  ].map((t) => `  ${t}\n`).join('');
+  ].map((t) => `  ${t}\n`).join('') + analyticsTag();
 }
 
 // A catalog that cannot be read fails the build: shipping the site with no guides, silently, is the worse outcome.
@@ -107,6 +118,7 @@ ${reviewed ? '' : '  <meta name="robots" content="noindex">\n'}  <meta name="the
     .guide-draft { border: 1px dashed currentColor; padding: 8px 12px; border-radius: 8px; }
     section[lang="en"] { margin-top: 48px; border-top: 1px solid #5a3a3a; padding-top: 24px; }
   </style>
+  ${analyticsTag()}
 </head>
 <body>
   <main>

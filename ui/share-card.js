@@ -33,10 +33,17 @@ const STRIPE = ['#A63A12', '#E2B23A', '#1E6B45', '#1F5F6B'];
 const SUB = '#F3DFA0'; // the soft gold line under a heading
 
 // The link that goes out with a shared card: this website when running as the site (phones can't install the
-// extension), the Chrome Web Store page when running as the extension.
+// extension), the Chrome Web Store page when running as the extension. On the web the URL's own date/city/lang
+// params travel along, so a shared link opens the day the card shows (ticket #48); plus a utm_source tag.
 function shareLink() {
   if (document.documentElement.dataset.surface !== 'web') return STORE_URL;
-  return `${location.origin}${location.pathname.replace(/index\.html$/, '')}?utm_source=whatsapp`;
+  try {
+    const params = new URLSearchParams(location.search);
+    params.set('utm_source', 'whatsapp');
+    return `${location.origin}${location.pathname.replace(/index\.html$/, '')}?${params}`;
+  } catch (err) {
+    return `${location.origin}${location.pathname.replace(/index\.html$/, '')}?utm_source=whatsapp`;
+  }
 }
 
 const LABELS = {

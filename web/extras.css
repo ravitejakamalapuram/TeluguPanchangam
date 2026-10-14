@@ -1,4 +1,5 @@
-.web-extension-banner {
+.web-extension-banner,
+.web-install-banner {
   position: fixed;
   left: 50%;
   bottom: 16px;
@@ -16,11 +17,24 @@
   font-size: 14px;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
 }
+.web-install-banner { border-color: rgba(255, 183, 77, 0.45); }
 .web-extension-banner a {
   color: #ffd700;
   font-weight: 600;
   white-space: nowrap;
 }
+.web-install-banner button {
+  border: 1px solid rgba(255, 215, 0, 0.35);
+  border-radius: 8px;
+  background: rgba(255, 215, 0, 0.12);
+  color: #ffd700;
+  font-weight: 600;
+  padding: 4px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.web-install-banner button:last-child,
 .web-extension-banner button {
   border: 0;
   background: none;

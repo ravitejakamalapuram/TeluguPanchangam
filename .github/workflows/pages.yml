@@ -33,6 +33,9 @@ jobs:
       - run: npm test
 
       - run: npm run build:web
+        env:
+          # Cookieless page-view analytics (ADR 0003); set as a repo secret. Empty = no beacon.
+          CF_ANALYTICS_TOKEN: ${{ secrets.CF_ANALYTICS_TOKEN }}
 
       - uses: actions/upload-pages-artifact@v3
         with:

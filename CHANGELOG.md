@@ -6,6 +6,13 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 
 ### Added
 
+- **Website: shareable links for a day and city** (web app epic #51, ticket #48): the web app reads `?date=YYYY-MM-DD&city=hyderabad&lang=en` on load and writes the viewed day, city and language back to the URL, so a shared or bookmarked link opens exactly that view; the share cards' link carries the same state. A geolocated custom city cannot be linked, and the extension's new tab stays a plain URL.
+- **Website: .ics export** (ticket #49, phase 1): "Add to calendar" buttons export the next 30 days of festivals and vratas (with parana times) and the user's own reminders (solar dates exactly; the next occurrence of a lunar masa + tithi reminder) as one .ics file importable into any calendar app. Built entirely on the device: no accounts, no servers.
+- **Website: install prompt after onboarding** (ticket #47): the PWA install banner appears only after the user has set a city, not on first load, offered once per visit until installed or dismissed.
+- **Website analytics** (ticket #50, ADR 0003): cookieless Cloudflare Web Analytics page views are built into the site only when `CF_ANALYTICS_TOKEN` is set; local and preview builds ship no tracking, and the extension reports nothing.
+
+### Changed
+
 - Share any card: each shareable card has a small share icon in its header: Today, Rasi phalalu, the sankalpam, the Gita verse and upcoming festivals. They all use one exporter, so the image follows the page's language and light or dark look. The day card now shows yoga, karana, good times and times to avoid, and each rasi tile shows the Moon's house and a Saturn caution mark. The share button under the Rasi panel and the one under Today moved into the card headers.
 
 ### Fixed

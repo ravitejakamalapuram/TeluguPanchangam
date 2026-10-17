@@ -568,9 +568,10 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       ? window.I18N.teEn('ఈరోజు', 'Today')
       : selectedDate.toLocaleDateString(lang === 'en' ? 'en-US' : 'te-IN', { weekday: 'short', day: 'numeric', month: 'short' });
     document.getElementById('z-today').textContent = title;
-    const btnToday = document.getElementById('btn-zone-today');
-    btnToday.hidden = isToday;
-    btnToday.textContent = window.I18N.teEn('ఈ రోజు', 'Today');
+    document.querySelectorAll('.zone-today-btn').forEach((btn) => {
+      btn.hidden = isToday;
+      btn.textContent = window.I18N.teEn('ఈ రోజు', 'Today');
+    });
     document.querySelector('#today [data-share="day"]').setAttribute('aria-label', isToday
       ? window.I18N.teEn('ఈరోజు పంచాంగం పంచుకోండి', "Share today's panchangam")
       : window.I18N.teEn(`${title} పంచాంగం పంచుకోండి`, `Share panchangam for ${title}`));
@@ -1085,7 +1086,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       await refreshDashboard();
     };
     document.getElementById('btn-go-today').addEventListener('click', goToday);
-    document.getElementById('btn-zone-today').addEventListener('click', goToday);
+    document.querySelectorAll('.zone-today-btn').forEach((btn) => btn.addEventListener('click', goToday));
     document.querySelectorAll('.banner-close').forEach((btn) => btn.addEventListener('click', () => { btn.closest('.banner').style.display = 'none'; }));
 
     // Reminder form scheduler

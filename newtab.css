@@ -995,6 +995,9 @@ button, input, select, textarea {
 .zone-today-btn:hover { background: rgba(255, 255, 255, 0.25); }
 .zone-today-btn:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 2px; }
 .zone-today-btn + .share-icon { margin-left: 0; }
+/* The Month card repeats it on phones, where the cards stack and the day card is off-screen */
+.month-today { margin-left: 4px; display: none; }
+@media (max-width: 900px) { .month-today:not([hidden]) { display: inline-flex; align-items: center; } }
 .sankalpam-card .share-icon, .gita-card .share-icon, .upcoming-card .share-icon { position: absolute; top: 6px; right: 8px; z-index: 1; }
 /* Keep a heading clear of the icon in the card's corner */
 .sankalpam-card .sankalpam-scroll-decor, .gita-card .sankalpam-scroll-decor { padding: 0 36px; }

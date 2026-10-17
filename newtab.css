@@ -985,6 +985,16 @@ button, input, select, textarea {
 .zone-head .share-icon { color: #FFFFFF; margin-left: auto; }
 .zone-head .share-icon:hover { background: rgba(255, 255, 255, 0.25); }
 .zone-head-split .share-icon { margin-left: 0; }
+/* "Today" shortcut in the left card's header, shown only while another day is selected */
+.zone-today-btn {
+  margin-left: auto; min-height: 44px; padding: 0 14px; flex: none;
+  border: 1px solid rgba(255, 255, 255, 0.7); border-radius: var(--radius-pill);
+  background: transparent; color: #FFFFFF; font-family: var(--font-family); font-size: 1rem; font-weight: 600; cursor: pointer;
+}
+.zone-today-btn[hidden] { display: none; }
+.zone-today-btn:hover { background: rgba(255, 255, 255, 0.25); }
+.zone-today-btn:focus-visible { outline: 2px solid #FFFFFF; outline-offset: 2px; }
+.zone-today-btn + .share-icon { margin-left: 0; }
 .sankalpam-card .share-icon, .gita-card .share-icon, .upcoming-card .share-icon { position: absolute; top: 6px; right: 8px; z-index: 1; }
 /* Keep a heading clear of the icon in the card's corner */
 .sankalpam-card .sankalpam-scroll-decor, .gita-card .sankalpam-scroll-decor { padding: 0 36px; }

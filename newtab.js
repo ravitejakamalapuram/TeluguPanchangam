@@ -568,9 +568,16 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       ? window.I18N.teEn('ఈరోజు', 'Today')
       : selectedDate.toLocaleDateString(lang === 'en' ? 'en-US' : 'te-IN', { weekday: 'short', day: 'numeric', month: 'short' });
     document.getElementById('z-today').textContent = title;
+    const todayLabel = window.I18N.teEn('ఈ రోజు', 'Today');
+    const todayDate = cityToday().toLocaleDateString(lang === 'en' ? 'en-US' : 'te-IN', { day: 'numeric', month: 'short' });
     document.querySelectorAll('.zone-today-btn').forEach((btn) => {
       btn.hidden = isToday;
-      btn.textContent = window.I18N.teEn('ఈ రోజు', 'Today');
+      btn.querySelector('.today-label').textContent = '';
+      const sep = document.createElement('span'); sep.className = 'today-sep'; sep.textContent = ' · ';
+      btn.querySelector('.today-label').append(todayLabel, sep);
+      const d = document.createElement('span'); d.className = 'today-date'; d.textContent = todayDate;
+      btn.querySelector('.today-label').append(d);
+      btn.setAttribute('aria-label', window.I18N.teEn(`ఈ రోజుకు వెళ్ళు, ${todayDate}`, `Go to today, ${todayDate}`));
     });
     document.querySelector('#today [data-share="day"]').setAttribute('aria-label', isToday
       ? window.I18N.teEn('ఈరోజు పంచాంగం పంచుకోండి', "Share today's panchangam")

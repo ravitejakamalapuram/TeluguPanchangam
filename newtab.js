@@ -1087,7 +1087,10 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     }));
 
     document.getElementById('btn-city-chip').addEventListener('click', () => elBtnOpenSettings.click());
-    const goToday = async () => {
+    const goToday = async (event) => {
+      // A zone button hides itself after the jump, so keep keyboard focus on its card's heading.
+      const zoneBtn = event.currentTarget.classList.contains('zone-today-btn') ? event.currentTarget : null;
+      if (zoneBtn) zoneBtn.closest('.zone').querySelector('.zone-title').focus();
       selectedDate = cityToday();
       calendarViewDate = new Date(selectedDate);
       await refreshDashboard();

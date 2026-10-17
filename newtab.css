@@ -1626,3 +1626,27 @@ input[type="text"], input[type="date"], input[type="time"], .cyber-form-panel se
   .timing-detail-grid { grid-template-columns: 1fr; }
   .settings-sheet { width: 100%; }
 }
+
+/* Rasi glyphs and moon marks */
+.rasi-glyph { font-family: "Noto Sans Symbols", "Segoe UI Symbol", "Apple Symbols", sans-serif; font-size: 1.3rem; line-height: 1; color: var(--zone-rasi-ink); margin-right: 6px; }
+.rasi-card { position: relative; }
+.rasi-card .rasi-glyph { margin: 0 0 2px; font-size: 1.9rem; }
+#rasi-detail-name .rasi-glyph { margin-right: 8px; }
+.calendar-day { position: relative; }
+.day-moon, .legend-swatch.moon { display: inline-block; width: 14px; height: 14px; border-radius: 50%; box-sizing: border-box; }
+.day-moon { position: absolute; top: 6px; right: 6px; }
+.day-moon.full, .legend-swatch.moon.full { background: #F4E9C9; border: 1.5px solid #7A5A12; }
+.day-moon.new, .legend-swatch.moon.new { background: #3D3757; border: 1.5px solid #3D3757; }
+[data-theme="dark"] .day-moon.new, [data-theme="dark"] .legend-swatch.moon.new { border-color: #CDBFAE; }
+
+/* Laptop screens: a calmer type scale. Phone, tablet and the popup keep the base sizes. */
+@media (min-width: 1201px) {
+  :root { --fs-body: 1rem; }
+  .date-display { font-size: 1.6rem; }
+  .zone-title { font-size: 1.3rem; }
+  .quad-value { font-size: 1.4rem; }
+  .moon-title { font-size: 1.15rem; }
+  .festival-strip-names { font-size: 1.1rem; }
+  .rasi-card-name { font-size: 1.2rem; }
+  .horo-body-text { font-size: 1.05rem; line-height: 1.8; }
+}

@@ -568,6 +568,17 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       ? window.I18N.teEn('ఈరోజు', 'Today')
       : selectedDate.toLocaleDateString(lang === 'en' ? 'en-US' : 'te-IN', { weekday: 'short', day: 'numeric', month: 'short' });
     document.getElementById('z-today').textContent = title;
+    const todayLabel = window.I18N.teEn('ఈ రోజు', 'Today');
+    const todayDate = cityToday().toLocaleDateString(lang === 'en' ? 'en-US' : 'te-IN', { day: 'numeric', month: 'short' });
+    document.querySelectorAll('.zone-today-btn').forEach((btn) => {
+      btn.hidden = isToday;
+      btn.querySelector('.today-label').textContent = '';
+      const sep = document.createElement('span'); sep.className = 'today-sep'; sep.textContent = ' · ';
+      btn.querySelector('.today-label').append(todayLabel, sep);
+      const d = document.createElement('span'); d.className = 'today-date'; d.textContent = todayDate;
+      btn.querySelector('.today-label').append(d);
+      btn.setAttribute('aria-label', window.I18N.teEn(`ఈ రోజుకు వెళ్ళు, ${todayDate}`, `Go to today, ${todayDate}`));
+    });
     document.querySelector('#today [data-share="day"]').setAttribute('aria-label', isToday
       ? window.I18N.teEn('ఈరోజు పంచాంగం పంచుకోండి', "Share today's panchangam")
       : window.I18N.teEn(`${title} పంచాంగం పంచుకోండి`, `Share panchangam for ${title}`));
@@ -1076,11 +1087,16 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     }));
 
     document.getElementById('btn-city-chip').addEventListener('click', () => elBtnOpenSettings.click());
-    document.getElementById('btn-go-today').addEventListener('click', async () => {
+    const goToday = async (event) => {
+      // A zone button hides itself after the jump, so keep keyboard focus on its card's heading.
+      const zoneBtn = event.currentTarget.classList.contains('zone-today-btn') ? event.currentTarget : null;
+      if (zoneBtn) zoneBtn.closest('.zone').querySelector('.zone-title').focus();
       selectedDate = cityToday();
       calendarViewDate = new Date(selectedDate);
       await refreshDashboard();
-    });
+    };
+    document.getElementById('btn-go-today').addEventListener('click', goToday);
+    document.querySelectorAll('.zone-today-btn').forEach((btn) => btn.addEventListener('click', goToday));
     document.querySelectorAll('.banner-close').forEach((btn) => btn.addEventListener('click', () => { btn.closest('.banner').style.display = 'none'; }));
 
     // Reminder form scheduler

@@ -90,6 +90,8 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
   // Settings Modal
   const elSettingsModal = document.getElementById('settings-modal');
   const elBtnOpenSettings = document.getElementById('btn-open-settings');
+  window.ReportProblem.configure({ strings: { message: 'Something went wrong · ఏదో పొరపాటు జరిగింది', report: 'Report · నివేదించండి', dismiss: 'OK' } });
+  document.getElementById('btn-report-problem').addEventListener('click', () => window.ReportProblem.open());
   const elBtnCloseSettings = document.getElementById('btn-close-settings');
   const elSettingsForm = document.getElementById('settings-form');
   const elSetName = document.getElementById('set-name');

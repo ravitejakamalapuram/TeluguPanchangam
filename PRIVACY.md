@@ -7,7 +7,7 @@ We take your privacy seriously. This extension is designed to operate securely a
 
 ## What Data We Collect
 **Telugu New Tab Calendar (పంచాంగం) does not transmit any personal data anywhere, and does not collect telemetry or browsing history.**
-The settings screen asks you to optionally enter a name, birth date and birth time so the extension can personalize your daily Sankalpam text and horoscope, and lets you save your own reminders and a selected city. All of that information is typed in by you, is used entirely on your own device to render those features, and never leaves it. The extension's own code makes no network requests and uses no analytics platform, so we never receive, see, or transmit any of it ourselves.
+The settings screen asks you to optionally enter a name, birth date and birth time so the extension can personalize your daily Sankalpam text and horoscope, and lets you save your own reminders and a selected city. All of that information is typed in by you, is used entirely on your own device to render those features, and never leaves it. If the extension hits an error, it keeps a short description on your device only; it is shared only if you tap "Report a problem", which opens a GitHub issue you can read and edit first. The extension's own code makes no network requests and uses no analytics platform, so we never receive, see, or transmit any of it ourselves.
 
 ## How Data Is Stored
 All data is stored locally on the device using standard API methods:

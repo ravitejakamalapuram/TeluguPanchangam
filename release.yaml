@@ -19,6 +19,7 @@ targets:
       - print.css
       - print.js
       - storage-shim.js
+      - report-problem.js
       - i18n.js
       - cities.js
       - reminders.js

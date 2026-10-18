@@ -490,6 +490,7 @@
           </div>
         </section>
         <p class="settings-hint" data-i18n-te="ఈ వివరాలు మీ పరికరంలోనే ఉంటాయి. ఎక్కడికీ పంపబడవు." data-i18n-en="These details stay on your device. They are never sent anywhere.">ఈ వివరాలు మీ పరికరంలోనే ఉంటాయి. ఎక్కడికీ పంపబడవు.</p>
+        <button type="button" id="btn-report-problem" class="btn" data-i18n-te="సమస్యను నివేదించండి" data-i18n-en="Report a problem">సమస్యను నివేదించండి</button>
         <button type="submit" class="btn save-btn" data-i18n-te="భద్రపరచు" data-i18n-en="Save">భద్రపరచు</button>
       </form>
     </div>
@@ -545,6 +546,8 @@
   </dialog>
 
   <!-- Mock Chrome Extension APIs if running in standard browser tab -->
+  <!-- Opt-in error capture (release-platform/modules/report-problem): nothing is sent unless the user taps Report a problem -->
+  <script src="report-problem.js" data-repo="ravitejakamalapuram/TeluguPanchangam"></script>
   <script src="storage-shim.js"></script>
 
   <!-- Telugu/English UI language lookup (must load before newtab.js) -->

@@ -25,6 +25,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
 
   // DOM Elements
   const elClock = document.getElementById('clock');
+  const elTopbarTime = document.getElementById('topbar-time');
   const elDateGregorian = document.getElementById('date-gregorian');
   const elProfileName = document.getElementById('profile-name');
   const elProfileLocation = document.getElementById('profile-location');
@@ -220,6 +221,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     function updateClock() {
       const now = new Date();
       elClock.textContent = now.toLocaleTimeString('en-US', { hour12: false, timeZone: currentCity.timeZone });
+      elTopbarTime.textContent = formatClock(now, currentCity.timeZone, window.I18N.getLang());
     }
     updateClock();
     setInterval(updateClock, 1000);
@@ -603,7 +605,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     // here would reinterpret that already-city-local day through a second zone
     // shift and could show the wrong date.
     elDateGregorian.textContent = selectedDate.toLocaleDateString(window.I18N.getLang() === 'en' ? 'en-US' : 'te-IN', {
-      weekday: 'short', day: 'numeric', month: 'long'
+      weekday: 'short', day: 'numeric', month: 'long', year: 'numeric'
     });
 
     // 3. Render Panchang card values (paksha + tithi, e.g. "బహుళ నవమి")
@@ -800,13 +802,30 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       createDayCell(cellDate, false);
     }
 
+    // Rahu and Yama once per weekday label, as on a printed calendar (times drift a few minutes across the month).
+    const weekdayTimes = document.querySelectorAll('.grid-weekday-header .wd-times');
+    for (let i = 0; i < 7; i++) {
+      const { timings } = dayFor(new Date(year, month, 1 - firstDayIndex + i));
+      const span = (w) => `${formatTime(w.start)}–${formatTime(w.end)}`;
+      weekdayTimes[i].textContent = `${window.I18N.teEn('రా', 'R')} ${span(timings.rahuKalam)}\n${window.I18N.teEn('య', 'Y')} ${span(timings.yamagandam)}`;
+    }
+
     // 3. Next month days (grayed out)
     const totalRendered = firstDayIndex + totalDays;
-    const remainingCells = 42 - totalRendered; // Maintain standard 6-row grid
+    const remainingCells = (7 - (totalRendered % 7)) % 7; // finish the last week only
     for (let i = 1; i <= remainingCells; i++) {
       const cellDate = new Date(year, month + 1, i);
       createDayCell(cellDate, true);
     }
+  }
+
+  // Weeks are columns, so a month change slides sideways; skipped for reduced motion.
+  function slideMonth(dir) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.querySelector('.calendar-grid-container').animate(
+      [{ transform: `translateX(${dir * 40}px)`, opacity: 0 }, { transform: 'none', opacity: 1 }],
+      { duration: 250, easing: 'ease-out' }
+    );
   }
 
   // Helper: Create a single day cell card in the calendar grid
@@ -1049,11 +1068,13 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     elBtnPrevMonth.addEventListener('click', () => {
       calendarViewDate.setMonth(calendarViewDate.getMonth() - 1);
       renderMonthlyCalendar();
+      slideMonth(-1);
     });
 
     elBtnNextMonth.addEventListener('click', () => {
       calendarViewDate.setMonth(calendarViewDate.getMonth() + 1);
       renderMonthlyCalendar();
+      slideMonth(1);
     });
 
     // Printable panchangam for the month the calendar shows, in a new tab (no "tabs" permission needed).

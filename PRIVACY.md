@@ -7,13 +7,14 @@ We take your privacy seriously. This extension is designed to operate securely a
 
 ## What Data We Collect
 **Telugu New Tab Calendar (పంచాంగం) does not transmit any personal data anywhere, and does not collect telemetry or browsing history.**
-The settings screen asks you to optionally enter a name, birth date and birth time so the extension can personalize your daily Sankalpam text and horoscope, and lets you save your own reminders and a selected city. All of that information is typed in by you, is used entirely on your own device to render those features, and never leaves it. The extension's own code makes no network requests and uses no analytics platform, so we never receive, see, or transmit any of it ourselves.
+The settings screen asks you to optionally enter a name, birth date and birth time so the extension can personalize your daily Sankalpam text and horoscope, and lets you save your own reminders and a selected city. All of that information is typed in by you, is used entirely on your own device to render those features, and never leaves it. If the extension hits an error, it keeps a short description on your device only; it is shared only if you tap "Report a problem", which opens a GitHub issue you can read and edit first. The extension's own code makes no network requests and uses no analytics platform, so we never receive, see, or transmit any of it ourselves.
 
 ## How Data Is Stored
 All data is stored locally on the device using standard API methods:
+- `localStorage`: Holds the last few error descriptions (message, file and line, app version) if the extension hits an error, so you can choose to report them. Nothing else.
 - `chrome.storage.local`: Used to save configuration preferences (including your selected city), the name/birth date/birth time you enter for Sankalpam and horoscope personalization, and any reminders you create.
 
-This on-device storage never leaves your device: no data is uploaded or synced to any external server by the extension. The only action that ever sends anything off your device is the optional "Use My Location" button described below, which hands the request to Chrome's own built-in geolocation service rather than to us.
+This on-device storage never leaves your device: no data is uploaded or synced to any external server by the extension. The only two actions that ever send anything off your device are the optional "Use My Location" button described below, which hands the request to Chrome's own built-in geolocation service rather than to us, and the optional "Report a problem" button, which opens a GitHub issue page pre-filled with the saved error descriptions so you can read and edit them before submitting; opening that page sends the pre-filled text to GitHub.
 
 ## Optional: "Use My Location"
 The extension defaults to Hyderabad and never requests your location automatically. If you choose to pick a city from the built-in list, nothing about your location leaves your device.

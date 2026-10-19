@@ -1392,9 +1392,17 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
   let arcTimer = null; // keeps the marker current while the popup stays open
   elTimingsDialog.addEventListener('close', () => clearInterval(arcTimer));
   document.getElementById('btn-all-timings').addEventListener('click', () => {
+    const followsToday = isSameDay(selectedDate, cityToday());
     renderTimingArc(activePanchang);
     clearInterval(arcTimer);
-    arcTimer = setInterval(() => renderTimingArc(activePanchang), 60000);
+    arcTimer = setInterval(async () => {
+      // A popup left open past the city's midnight rolls over to the new day, but only if it opened on today.
+      if (followsToday && !isSameDay(selectedDate, cityToday())) {
+        selectedDate = cityToday();
+        await refreshDashboard();
+      }
+      renderTimingArc(activePanchang);
+    }, 60000);
     if (elTimingsDialog.showModal) elTimingsDialog.showModal(); else elTimingsDialog.setAttribute('open', '');
   });
   const closeDialog = (dlg) => { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); };

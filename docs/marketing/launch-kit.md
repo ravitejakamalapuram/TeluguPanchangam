@@ -6,8 +6,8 @@ the owner and board to approve; nothing in `chrome-store/` is changed here.
 
 ## 0. Before posting anything
 
-- **Live on the Chrome Web Store: 1.2.0.** Version 2.0.0 is not published yet; publishing waits for the
-  owner to run the release workflow. 2.0.0 adds Bathukamma, Atla Tadde, Karthika Somavaram, every
+- **Live on the Chrome Web Store: 2.0.0 (since 5 Oct 2026).** Check the store page for a newer version
+  before a post depends on one. 2.0.0 added Bathukamma, Atla Tadde, Karthika Somavaram, every
   Ekadashi with its parana time, Gulika Kalam, Moon-based Rasi Phalalu and the sankalpam place line for
   US cities. A post may only mention or show what the published version does. The §5 screenshots are
   of 2.0.0 (they show Gulika Kalam, for one), so until 2.0.0 is live a post uses a 1.2.0 store

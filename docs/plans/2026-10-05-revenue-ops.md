@@ -28,7 +28,8 @@ post (ravitejakamalapuram.github.io#7, merged 11 Oct), priorities refresh (#38).
    (Template 3.1, due 15 Oct), the Deepavali dates post share and the Dasara week post. No answer
    has come since 14 Oct, so all three count as unsent until Raviteja says otherwise.
 2. **Send the Atla Tadde post on Sat 24 Oct, 9:00 AM IST** (Dallas 27 Oct, Hyderabad 28 Oct).
-   The text arrives the evening before.
+   The text arrives the evening before. It needs 2.0.0 (live since 5 Oct); check that the store
+   page shows 2.0.0 or later before sending, and skip the post if it does not.
 3. **Check the Deepavali (Sun 8 Nov) and Sankranti 2027 (US 14 Jan, Hyderabad 15 Jan) dates on
    Drik** by Fri 23 Oct and report back. The 4 Nov post depends on it.
 4. **Paste the cors-enabler listing** from its checklist issue into the Chrome Web Store

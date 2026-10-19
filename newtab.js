@@ -817,8 +817,10 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     document.getElementById('wd-times-note').textContent = '';
     document.querySelectorAll('.grid-weekday-header').forEach((h) => {
       h.tabIndex = 0;
+      h.setAttribute('role', 'button');
       h.onclick = h.onkeydown = (e) => {
         if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
         const note = document.getElementById('wd-times-note');
         note.textContent = `${h.firstElementChild.textContent}: ${h.querySelector('.wd-times').textContent.replace('\n', ' · ')}`;
       };

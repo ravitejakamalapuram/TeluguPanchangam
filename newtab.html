@@ -23,6 +23,7 @@
       <span id="profile-name" class="visually-hidden">యజమాని</span>
     </div>
     <div class="topbar-controls">
+      <span id="topbar-time" class="topbar-time" aria-hidden="true"></span>
       <button type="button" id="btn-city-chip" class="pill-btn city-chip">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>
         <span id="profile-location">హైదరాబాద్ (Hyderabad)</span>
@@ -203,13 +204,13 @@
         <div class="zone-body">
           <section class="calendar-card panel">
             <div class="calendar-grid-container">
-          <div class="grid-weekday-header" data-i18n="weekdaySun">ఆది</div>
-          <div class="grid-weekday-header" data-i18n="weekdayMon">సోమ</div>
-          <div class="grid-weekday-header" data-i18n="weekdayTue">మంగళ</div>
-          <div class="grid-weekday-header" data-i18n="weekdayWed">బుధ</div>
-          <div class="grid-weekday-header" data-i18n="weekdayThu">గురు</div>
-          <div class="grid-weekday-header" data-i18n="weekdayFri">శుక్ర</div>
-          <div class="grid-weekday-header" data-i18n="weekdaySat">శని</div>
+          <div class="grid-weekday-header"><span data-i18n="weekdaySun">ఆది</span><span class="wd-times" aria-hidden="true"></span></div>
+          <div class="grid-weekday-header"><span data-i18n="weekdayMon">సోమ</span><span class="wd-times" aria-hidden="true"></span></div>
+          <div class="grid-weekday-header"><span data-i18n="weekdayTue">మంగళ</span><span class="wd-times" aria-hidden="true"></span></div>
+          <div class="grid-weekday-header"><span data-i18n="weekdayWed">బుధ</span><span class="wd-times" aria-hidden="true"></span></div>
+          <div class="grid-weekday-header"><span data-i18n="weekdayThu">గురు</span><span class="wd-times" aria-hidden="true"></span></div>
+          <div class="grid-weekday-header"><span data-i18n="weekdayFri">శుక్ర</span><span class="wd-times" aria-hidden="true"></span></div>
+          <div class="grid-weekday-header"><span data-i18n="weekdaySat">శని</span><span class="wd-times" aria-hidden="true"></span></div>
           <div id="calendar-days-container" style="display: contents;"></div>
         </div>
             <div class="calendar-legend" aria-hidden="true">

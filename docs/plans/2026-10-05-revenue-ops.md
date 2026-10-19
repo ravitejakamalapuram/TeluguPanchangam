@@ -16,25 +16,26 @@ reminded at the right time.
 A reminder that gets no answer is raised again in the next Monday brief until it is done or
 dropped. Nothing is posted publicly in his name.
 
-## Priorities as of 12 Oct 2026
+## Priorities as of 19 Oct 2026
 
 Ranked by how directly each item leads to revenue or installs. Done since 5 Oct: Bathukamma post,
 festival search pages (ravitejakamalapuram.github.io#5, TeluguPanchangam#34), Deepavali dates blog
-post (ravitejakamalapuram.github.io#7, merged 11 Oct).
+post (ravitejakamalapuram.github.io#7, merged 11 Oct), priorities refresh (#38).
 
 ### Now (this week)
 
-1. **Send the Deepavali association newsletter blurb (Template 3.1) by Thu 15 Oct.**
-   Newsletters need about four weeks' lead time and 15 Oct leaves under four, so ask each editor
-   whether the Nov issue can still take it; if not, post the same text on their social page and
-   WhatsApp group instead.
-2. **Share the Deepavali dates post** in the Telugu groups by Wed 14 Oct.
+1. **Confirm what was sent** (by Tue 20 Oct): the Deepavali association newsletter blurb
+   (Template 3.1, due 15 Oct), the Deepavali dates post share and the Dasara week post. No answer
+   has come since 14 Oct, so all three count as unsent until Raviteja says otherwise.
+2. **Send the Atla Tadde post on Sat 24 Oct, 9:00 AM IST** (Dallas 27 Oct, Hyderabad 28 Oct).
+   The text arrives the evening before. It needs 2.0.0 (live since 5 Oct); check that the store
+   page shows 2.0.0 or later before sending, and skip the post if it does not.
 3. **Check the Deepavali (Sun 8 Nov) and Sankranti 2027 (US 14 Jan, Hyderabad 15 Jan) dates on
-   Drik** by Fri 16 Oct and report back.
+   Drik** by Fri 23 Oct and report back. The 4 Nov post depends on it.
 4. **Paste the cors-enabler listing** from its checklist issue into the Chrome Web Store
-   dashboard (overdue).
+   dashboard (overdue since 12 Oct).
 5. **Record the weekly-users baseline** for TeluguPanchangam, session-transfer and cors-enabler
-   from the Chrome Web Store dashboard (launch kit §6; overdue).
+   from the Chrome Web Store dashboard (launch kit §6; overdue since 12 Oct).
 
 ### Next (this month)
 

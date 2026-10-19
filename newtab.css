@@ -1684,8 +1684,10 @@ input[type="text"], input[type="date"], input[type="time"], .cyber-form-panel se
 .topbar-time { font-variant-numeric: tabular-nums; color: var(--text-secondary); font-size: 0.9rem; }
 @media (max-width: 720px) {
   .wd-times { display: none; }
-  .grid-weekday-header { padding-right: 4px; }
+  .grid-weekday-header { padding-right: 4px; cursor: pointer; }
 }
+.wd-times-note { display: none; margin: 6px 0 0; font-size: 0.875rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+@media (max-width: 720px) { .wd-times-note:not(:empty) { display: block; } }
 
 /* Timings popup arc */
 .timing-arc { max-width: 420px; margin: 0 auto 4px; }
@@ -1705,3 +1707,9 @@ input[type="text"], input[type="date"], input[type="time"], .cyber-form-panel se
 .arc-now { font-size: 26px; font-weight: 800; }
 .timing-moon { text-align: center; color: var(--text-secondary); margin: 0 0 12px; }
 .timing-ends { margin-bottom: 12px; }
+
+/* Bigger arc labels on phones, where the 350-wide viewBox scales down */
+@media (max-width: 600px) {
+  .arc-end, .arc-now-label, .arc-end-time { font-size: 18px; }
+  .arc-now { font-size: 32px; }
+}

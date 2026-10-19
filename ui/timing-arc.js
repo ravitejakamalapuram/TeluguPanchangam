@@ -25,12 +25,12 @@ export function arcPath(f0, f1, geom = ARC) {
 
 /**
  * Windows clipped to the span and turned into arc bands; windows outside the span are dropped.
- * @param {{ type: string, start: Date, end: Date }[]} windows
- * @returns {{ type: string, f0: number, f1: number }[]}
+ * @param {{ type: string, label?: string, start: Date, end: Date }[]} windows
+ * @returns {{ type: string, label?: string, start: Date, end: Date, f0: number, f1: number }[]}
  */
 export function bands(windows, start, end) {
   return windows
     .filter((w) => w.end > start && w.start < end)
-    .map((w) => ({ type: w.type, f0: fraction(w.start, start, end), f1: fraction(w.end, start, end) }))
+    .map((w) => ({ type: w.type, label: w.label, start: w.start, end: w.end, f0: fraction(w.start, start, end), f1: fraction(w.end, start, end) }))
     .filter((b) => b.f1 > b.f0);
 }

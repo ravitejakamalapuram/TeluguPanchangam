@@ -27,9 +27,10 @@ test('arcPath goes clockwise over the top', () => {
 
 test('bands clip to the span and drop windows outside it', () => {
   const out = bands([
-    { type: 'bad', start: at(4), end: at(8) },
+    { type: 'bad', label: 'Rahu', start: at(4), end: at(8) },
     { type: 'good', start: at(11), end: at(13) },
     { type: 'bad', start: at(19), end: at(20) }
   ], at(6), at(18));
-  assert.deepEqual(out, [{ type: 'bad', f0: 0, f1: 2 / 12 }, { type: 'good', f0: 5 / 12, f1: 7 / 12 }]);
+  assert.deepEqual(out.map(({ type, f0, f1 }) => ({ type, f0, f1 })), [{ type: 'bad', f0: 0, f1: 2 / 12 }, { type: 'good', f0: 5 / 12, f1: 7 / 12 }]);
+  assert.equal(out[0].label, 'Rahu');
 });

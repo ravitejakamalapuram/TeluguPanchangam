@@ -1686,3 +1686,22 @@ input[type="text"], input[type="date"], input[type="time"], .cyber-form-panel se
   .wd-times { display: none; }
   .grid-weekday-header { padding-right: 4px; }
 }
+
+/* Timings popup arc */
+.timing-arc { max-width: 420px; margin: 0 auto 4px; }
+.timing-arc svg { display: block; width: 100%; height: auto; }
+.arc-track { fill: none; stroke: var(--hairline); stroke-width: 10; stroke-linecap: round; }
+.arc-track.night { stroke: var(--zone-now); opacity: 0.35; }
+.arc-band { fill: none; stroke-width: 10; }
+.arc-band.bad { stroke: var(--color-inauspicious); opacity: 0.85; }
+.arc-band.good { stroke: var(--color-auspicious); opacity: 0.85; }
+.arc-sun { fill: var(--accent-secondary); stroke: var(--accent-primary); stroke-width: 2.5; }
+.arc-moon-dark { fill: #3D3757; }
+.arc-moon-lit { fill: #F4E9C9; }
+.arc-moon circle { stroke: var(--zone-now); stroke-width: 6; }
+.arc-end, .arc-end-time, .arc-now, .arc-now-label { fill: var(--text-primary); }
+.arc-end, .arc-now-label { font-size: 14px; fill: var(--text-secondary); }
+.arc-end-time { font-size: 14px; font-weight: 700; }
+.arc-now { font-size: 26px; font-weight: 800; }
+.timing-moon { text-align: center; color: var(--text-secondary); margin: 0 0 12px; }
+.timing-ends { margin-bottom: 12px; }

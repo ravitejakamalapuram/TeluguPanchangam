@@ -13,6 +13,7 @@ import { birthDetails, isTeluguBirthday } from './core/birth.js';
 import { formatClock } from './ui/time-format.js';
 import { startOnboarding } from './ui/onboarding.js';
 import { shareCard } from './ui/share-card.js';
+import { ARC, fraction, arcPoint, arcPath, bands } from './ui/timing-arc.js';
 import { initRatingPrompt } from './ui/rating.js';
 import { moonInfo, litPath } from './ui/moon.js';
 import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guides.js';
@@ -1307,8 +1308,101 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     });
   }
 
+  // The popup's arc: the sun from sunrise to sunset by day, the moon from sunset to the next sunrise at night.
+  // Red bands are the bad windows, green the good ones; the marker is where the day is now (today only).
+  function renderTimingArc(panchang) {
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg');
+    const el = (tag, attrs, parent = svg) => {
+      const node = document.createElementNS(NS, tag);
+      Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+      parent.appendChild(node);
+      return node;
+    };
+    const text = (str, x, y, cls) => { const t = el('text', { x, y, class: cls, 'text-anchor': 'middle' }); t.textContent = str; return t; };
+
+    const a = panchang.astronomy;
+    const tm = panchang.timings;
+    const now = new Date();
+    // Before sunrise on today's date the running span is last night: yesterday's sunset to this sunrise.
+    const beforeSunrise = now < a.sunrise && isSameDay(selectedDate, cityToday());
+    const isToday = (now >= a.sunrise && now < a.nextSunrise) || beforeSunrise;
+    const night = beforeSunrise || (isToday && now >= a.sunset);
+    const prevDay = new Date(selectedDate);
+    prevDay.setDate(prevDay.getDate() - 1);
+    const start = beforeSunrise ? dayFor(prevDay).astronomy.sunset : night ? a.sunset : a.sunrise;
+    const end = beforeSunrise ? a.sunrise : night ? a.nextSunrise : a.sunset;
+
+    svg.setAttribute('viewBox', '-25 0 350 175');
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', window.I18N.teEn(night ? 'రాత్రి చంద్ర మార్గం' : 'సూర్యోదయం నుండి సూర్యాస్తమయం వరకు', night ? 'Moon path through the night' : 'Sun path from sunrise to sunset'));
+    el('path', { d: arcPath(0, 1), class: 'arc-track' + (night ? ' night' : '') });
+
+    // Bad and good windows by day; Brahma Muhurtham is the one that can fall in the night span.
+    const windows = [
+      { type: 'bad', label: 'Rahu Kalam', start: tm.rahuKalam.start, end: tm.rahuKalam.end },
+      { type: 'bad', label: 'Yamagandam', start: tm.yamagandam.start, end: tm.yamagandam.end },
+      { type: 'bad', label: 'Gulika Kalam', start: tm.gulikaKalam.start, end: tm.gulikaKalam.end },
+      ...tm.durmuhurtham.map((w) => ({ type: 'bad', label: 'Durmuhurtham', start: w.start, end: w.end })),
+      ...tm.varjyam.map((w) => ({ type: 'bad', label: 'Varjyam', start: w.start, end: w.end })),
+      ...tm.amritaKalam.map((w) => ({ type: 'good', label: 'Amrita Kalam', start: w.start, end: w.end })),
+      { type: 'good', label: 'Brahma Muhurtham', start: tm.brahmaMuhurta.start, end: tm.brahmaMuhurta.end }
+    ];
+    if (!tm.abhijit.avoided) windows.push({ type: 'good', label: 'Abhijit', start: tm.abhijit.start, end: tm.abhijit.end });
+    // Good bands first so a bad window that overlaps one stays visible on top, as in the list.
+    bands(windows, start, end).sort((x, y) => (x.type === 'bad') - (y.type === 'bad')).forEach((b) => {
+      const path = el('path', { d: arcPath(b.f0, b.f1), class: 'arc-band ' + b.type });
+      el('title', {}, path).textContent = `${b.label} ${formatTime(b.start)}–${formatTime(b.end)}`;
+    });
+
+    // Ends of the span, under the arc.
+    const endLabel = (x, te, en, when) => { text(window.I18N.teEn(te, en), x, 152, 'arc-end'); text(formatTime(when), x, 168, 'arc-end-time'); };
+    endLabel(ARC.cx - ARC.r, night ? 'సూర్యాస్తమయం' : 'సూర్యోదయం', night ? 'Sunset' : 'Sunrise', start);
+    endLabel(ARC.cx + ARC.r, night ? 'సూర్యోదయం' : 'సూర్యాస్తమయం', night ? 'Sunrise' : 'Sunset', end);
+
+    if (isToday) {
+      const p = arcPoint(fraction(now, start, end));
+      if (night) {
+        const m = moonInfo(window.Astronomy, now);
+        const g = el('g', { transform: `translate(${(p.x - 14).toFixed(1)} ${(p.y - 14).toFixed(1)}) scale(0.233)`, class: 'arc-moon' });
+        el('circle', { cx: 60, cy: 60, r: 50, class: 'arc-moon-dark' }, g);
+        el('path', { d: litPath(m.illumination, m.waxing), class: 'arc-moon-lit' }, g);
+      } else {
+        el('circle', { cx: p.x.toFixed(1), cy: p.y.toFixed(1), r: 9, class: 'arc-sun' });
+      }
+      text(formatTime(now), ARC.cx, ARC.cy - 38, 'arc-now');
+      const badNow = windows.some((w) => w.type === 'bad' && w.start <= now && now < w.end);
+      text(badNow ? window.I18N.teEn('నివారించండి', 'Avoid now') : window.I18N.teEn('శుభ సమయం', 'Fine now'), ARC.cx, ARC.cy - 14, 'arc-now-label');
+    } else {
+      const mins = Math.round((a.sunset - a.sunrise) / 60000);
+      text(`${Math.floor(mins / 60)}${window.I18N.teEn(' గం ', ' h ')}${mins % 60}${window.I18N.teEn(' ని', ' m')}`, ARC.cx, ARC.cy - 38, 'arc-now');
+      text(window.I18N.teEn('పగటి సమయం', 'Daylight'), ARC.cx, ARC.cy - 14, 'arc-now-label');
+    }
+    document.getElementById('timing-arc').replaceChildren(svg);
+
+    const moonBits = [];
+    if (a.moonrise) moonBits.push(window.I18N.teEn('చంద్రోదయం ', 'Moonrise ') + formatTime(a.moonrise));
+    if (a.moonset) moonBits.push(window.I18N.teEn('చంద్రాస్తమయం ', 'Moonset ') + formatTime(a.moonset));
+    document.getElementById('timing-moon').textContent = moonBits.join(' · ');
+    document.getElementById('arc-tithi').textContent = formatTransitionText(panchang.panchanga.tithi.spans);
+    document.getElementById('arc-naks').textContent = formatTransitionText(panchang.panchanga.nakshatra.spans);
+  }
+
   const elTimingsDialog = document.getElementById('timings-dialog');
+  let arcTimer = null; // keeps the marker current while the popup stays open
+  elTimingsDialog.addEventListener('close', () => clearInterval(arcTimer));
   document.getElementById('btn-all-timings').addEventListener('click', () => {
+    const followsToday = isSameDay(selectedDate, cityToday());
+    renderTimingArc(activePanchang);
+    clearInterval(arcTimer);
+    arcTimer = setInterval(async () => {
+      // A popup left open past the city's midnight rolls over to the new day, but only if it opened on today.
+      if (followsToday && !isSameDay(selectedDate, cityToday())) {
+        selectedDate = cityToday();
+        await refreshDashboard();
+      }
+      renderTimingArc(activePanchang);
+    }, 60000);
     if (elTimingsDialog.showModal) elTimingsDialog.showModal(); else elTimingsDialog.setAttribute('open', '');
   });
   const closeDialog = (dlg) => { if (dlg.close) dlg.close(); else dlg.removeAttribute('open'); };

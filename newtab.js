@@ -813,6 +813,19 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       weekdayTimes[i].textContent = `${window.I18N.teEn('రా', 'R')} ${span(timings.rahuKalam)}\n${window.I18N.teEn('య', 'Y')} ${span(timings.yamagandam)}`;
     }
 
+    // Phones hide those times, so tapping a weekday label shows its two windows in a line under the grid.
+    document.getElementById('wd-times-note').textContent = '';
+    document.querySelectorAll('.grid-weekday-header').forEach((h) => {
+      h.tabIndex = 0;
+      h.setAttribute('role', 'button');
+      h.onclick = h.onkeydown = (e) => {
+        if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        const note = document.getElementById('wd-times-note');
+        note.textContent = `${h.firstElementChild.textContent}: ${h.querySelector('.wd-times').textContent.replace('\n', ' · ')}`;
+      };
+    });
+
     // 3. Next month days (grayed out)
     const totalRendered = firstDayIndex + totalDays;
     const remainingCells = (7 - (totalRendered % 7)) % 7; // finish the last week only
@@ -1115,9 +1128,17 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       // A zone button hides itself after the jump, so keep keyboard focus on its card's heading.
       const zoneBtn = event.currentTarget.classList.contains('zone-today-btn') ? event.currentTarget : null;
       if (zoneBtn) zoneBtn.closest('.zone').querySelector('.zone-title').focus();
+      const sheet = document.getElementById('today');
+      const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // The day sheet tears off like a calendar page, then the new day settles in.
+      if (!calm) await sheet.animate(
+        [{ transform: 'none', opacity: 1, transformOrigin: 'top left' }, { transform: 'translateY(-24px) rotate(-5deg)', opacity: 0, transformOrigin: 'top left' }],
+        { duration: 200, easing: 'ease-in' }
+      ).finished.catch(() => {});
       selectedDate = cityToday();
       calendarViewDate = new Date(selectedDate);
       await refreshDashboard();
+      if (!calm) sheet.animate([{ transform: 'translateY(16px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 220, easing: 'ease-out' });
     };
     document.getElementById('btn-go-today').addEventListener('click', goToday);
     document.querySelectorAll('.zone-today-btn').forEach((btn) => btn.addEventListener('click', goToday));

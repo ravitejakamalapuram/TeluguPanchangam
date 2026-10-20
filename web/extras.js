@@ -94,6 +94,7 @@
       attempt();
     });
     document.addEventListener('visibilitychange', attempt);
+    window.addEventListener('tp-city-selected', attempt);
     window.addEventListener('appinstalled', function () {
       pending = null;
       try { localStorage.setItem(INSTALL_DISMISS_KEY, '1'); } catch (e) { /* ignore */ }

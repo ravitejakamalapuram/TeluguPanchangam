@@ -1444,6 +1444,8 @@ h1, h2, h3, .quad-value, .date-display { font-family: var(--font-heading); }
 .moon-bar-labels { display: flex; justify-content: space-between; gap: 8px; font-size: 0.875rem; color: #BDB2A3; }
 .festival-strip { background: var(--chip-fest-bg); border-radius: var(--radius-md); padding: 10px 14px; }
 .festival-strip-label { font-size: 0.875rem; font-weight: 600; color: var(--chip-fest-fg); }
+.festival-strip-note { margin-top: 4px; font-size: 0.875rem; color: var(--chip-fest-fg); }
+.festival-strip-note summary { cursor: pointer; }
 .festival-strip-names { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 600; color: var(--chip-fest-fg); line-height: 1.5; }
 .today-rows { display: flex; flex-direction: column; }
 .today-row { border-top: 1px solid var(--panel-border); padding: 10px 0; }

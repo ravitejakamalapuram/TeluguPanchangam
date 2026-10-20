@@ -24,5 +24,8 @@ The extension additionally offers an opt-in "Use My Location" button so that sun
 ## Third-Party Services
 This extension does not use any third-party analytics, advertising, or tracking services of its own, and it does not call any API you did not ask it to. The only exception is Chrome's built-in geolocation service, described above, which is invoked solely when you press "Use My Location."
 
+## The Web App
+The website version (ravitejakamalapuram.github.io/TeluguPanchangam) counts page views, so we can tell whether anyone uses it. Each visit sends the page path and, if you arrived from another site, that site's address to a privacy-friendly counter (GoatCounter). It sets no cookies, stores nothing in your browser, and sends no name, birth details, city or reminders. It is skipped when your browser sends Do Not Track or Global Privacy Control. **The Chrome extension is unaffected: it contains no counter and makes no such request.**
+
 ## Contact
 If you have any questions or feedback regarding this policy, please open a GitHub Issue in the project repository.

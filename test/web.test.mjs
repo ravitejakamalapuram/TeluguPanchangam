@@ -136,3 +136,19 @@ test('the install offer waits for a chosen city', () => {
   assert.equal(hasChosenCity(), true);
   delete global.localStorage;
 });
+
+test('the page-view counter is web-only, opt-in by build setting, and respects Do Not Track', async () => {
+  assert.doesNotMatch(dist('index.html'), /analytics/);
+  assert.ok(!fs.existsSync(path.join(out, 'web/analytics.js')));
+  const on = fs.mkdtempSync(path.join(os.tmpdir(), 'tp-web-a-'));
+  await buildWeb({ outDir: on, siteUrl: SITE, analyticsUrl: 'https://x.goatcounter.com/count' });
+  assert.match(fs.readFileSync(path.join(on, 'index.html'), 'utf8'), /<script src="web\/analytics\.js" data-endpoint="https:\/\/x\.goatcounter\.com\/count">/);
+  const { countUrl } = require(path.join(ROOT, 'web/analytics.js'));
+  const env = { dnt: null, gpc: false, host: 'a.github.io', origin: 'https://a.github.io', path: '/p/', referrer: 'https://b.test/' };
+  assert.equal(countUrl('https://x/count', env), 'https://x/count?p=%2Fp%2F&r=https%3A%2F%2Fb.test%2F');
+  assert.equal(countUrl('https://x/count', { ...env, dnt: '1' }), null);
+  assert.equal(countUrl('https://x/count', { ...env, gpc: true }), null);
+  assert.equal(countUrl('https://x/count', { ...env, host: 'localhost' }), null);
+  assert.equal(countUrl('', env), null);
+  assert.ok(!releaseIncludes().includes('web/analytics.js') && !read('manifest.json').includes('analytics'));
+});

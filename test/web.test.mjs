@@ -79,7 +79,7 @@ test('the share-sheet button is labelled as a general send, not WhatsApp only', 
 });
 
 test('shared links keep the viewed day, city and language, and only preset cities are linked', () => {
-  assert.match(read('ui/share-card.js'), /\['date', 'city', 'lang'\]\.forEach/);
+  assert.match(read('ui/share-card.js'), /shareLink\(opts\.linkParams\)/);
   const app = read('newtab.js');
   assert.match(app, /syncUrlState\(\);/);
   assert.match(app, /getById\(currentCity\.id\)\) params\.set\('city'/);

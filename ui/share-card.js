@@ -33,13 +33,12 @@ const STRIPE = ['#A63A12', '#E2B23A', '#1E6B45', '#1F5F6B'];
 const SUB = '#F3DFA0'; // the soft gold line under a heading
 
 // The link that goes out with a shared card: this website when running as the site (phones can't install the
-// extension), the Chrome Web Store page when running as the extension. On the web the URL's own date/city/lang
-// params travel along, so a shared link opens the day the card shows (ticket #48); plus a utm_source tag.
-function shareLink() {
+// extension), the Chrome Web Store page when running as the extension. On the web, linkParams (date, city, lang of
+// the card) are written out in full so the link opens the day the card shows (ticket #48); plus a utm_source tag.
+function shareLink(linkParams = {}) {
   if (document.documentElement.dataset.surface !== 'web') return STORE_URL;
-  const own = new URLSearchParams(location.search);
   const params = new URLSearchParams();
-  ['date', 'city', 'lang'].forEach((k) => { if (own.has(k)) params.set(k, own.get(k)); });
+  Object.entries(linkParams).forEach(([k, v]) => { if (v) params.set(k, v); });
   params.set('utm_source', 'whatsapp');
   return `${location.origin}${location.pathname.replace(/index\.html$/, '')}?${params}`;
 }
@@ -501,6 +500,6 @@ export function shareCard(kind, data, opts) {
   const png = drawCard(kind, data, opts, L);
   const copied = (async () => navigator.clipboard.write([new ClipboardItem({ 'image/png': png })]))().then(() => true, () => false);
   return Promise.all([png, copied])
-    .then(([blob, ok]) => showToast(blob, ok, L, `${card.file(data, opts)}.png`, `${card.title(L)} ${opts.date}\n${shareLink()}`))
+    .then(([blob, ok]) => showToast(blob, ok, L, `${card.file(data, opts)}.png`, `${card.title(L)} ${opts.date}\n${shareLink(opts.linkParams)}`))
     .catch((err) => console.error('Share card failed:', err));
 }

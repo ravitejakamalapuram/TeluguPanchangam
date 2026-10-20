@@ -1121,7 +1121,9 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       time: formatTime,
       timeWindow: formatWindow,
       theme: document.body.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
-      mine: parseInt(elSelectRasi.value, 10)
+      mine: parseInt(elSelectRasi.value, 10),
+      // Explicit, so the link opens the card's day, city and language whatever the recipient has saved.
+      linkParams: { date: activePanchang.date, city: window.CityPresets.getById(currentCity.id) ? currentCity.id : '', lang: window.I18N.getLang() }
     });
     // One share icon per card (data-share names the card): each builds its card's data and hands it to the same exporter.
     const shareData = {

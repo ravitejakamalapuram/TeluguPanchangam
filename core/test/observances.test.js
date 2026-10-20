@@ -110,3 +110,7 @@ test('Mahalaya paksham, sankrantis, Dhanurmasam and Karthika masam start on thei
   assert.ok(!engine.profiles.observance.rules.some((r) => r.id === 'SANKRANTI_MAKARA'), 'Makara is FESTIVAL_MAKARA_SANKRANTI');
   assert.ok(!engine.profiles.observance.rules.some((r) => r.id === 'SANKRANTI_DHANUS'), 'Dhanus is FESTIVAL_DHANURMASA_START');
 });
+
+test('trace.twoDay is set only when the tithi touches the kaal on both days', () => {
+  assert.equal(synthetic(DASHAMI, []).eventsOn(day(1))[0].trace.twoDay, true);
+});

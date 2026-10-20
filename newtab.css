@@ -1663,7 +1663,7 @@ input[type="text"], input[type="date"], input[type="time"], .cyber-form-panel se
 .fest-icon .bg { fill: var(--panel-soft); }
 .day-moon:has(~ .fest-icon) { right: 28px; }
 .icon-legend .fest-icon { position: static; }
-@media (max-width: 600px) { .fest-icon { width: 14px; height: 14px; top: 3px; right: 3px; } .day-moon:has(~ .fest-icon) { right: 20px; } }
+@media (max-width: 600px) { .fest-icon { width: 14px; height: 14px; top: 3px; right: 3px; } .day-moon:has(~ .fest-icon) { right: 20px; } .fest-icon ~ .day-festivals { display: none; } }
 
 /* Laptop screens: a calmer type scale. Phone, tablet and the popup keep the base sizes. */
 @media (min-width: 1201px) {

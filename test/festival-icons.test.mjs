@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { SYMBOLS, symbolForEvent, symbolForDay } from '../ui/festival-icons.js';
 
 function engineIds() {
@@ -14,7 +15,7 @@ function engineIds() {
       else if (/\.(js|json)$/.test(f.name)) for (const m of fs.readFileSync(p, 'utf8').matchAll(/\b(FESTIVAL|VRATA)_[A-Z0-9_]+/g)) ids.add(m[0]);
     }
   };
-  walk(new URL('../core/profiles', import.meta.url).pathname);
+  walk(fileURLToPath(new URL('../core/profiles', import.meta.url)));
   return ids;
 }
 

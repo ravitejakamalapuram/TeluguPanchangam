@@ -845,7 +845,9 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     const legend = document.getElementById('icon-legend');
     legend.replaceChildren(...Object.keys(SYMBOLS).filter((k) => monthIcons.has(k)).map((k) => {
       const item = document.createElement('span');
-      item.append(iconElement(document, k, 16), SYMBOLS[k][lang === 'en' ? 'en' : 'te']);
+      const svg = iconElement(document, k, 16);
+      svg.setAttribute('aria-hidden', 'true');
+      item.append(svg, SYMBOLS[k][lang === 'en' ? 'en' : 'te']);
       return item;
     }));
   }

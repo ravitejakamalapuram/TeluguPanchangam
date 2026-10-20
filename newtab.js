@@ -150,7 +150,10 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     await loadSettings();
     loadReference();
     await loadCityPreference();
-    selectedDate = cityToday();
+    // A shared link (web only) may carry the day, the city and the language; apply it over the
+    // saved state before the first render. The saved city itself is never overwritten.
+    const urlState = applyUrlState();
+    selectedDate = urlState.date || cityToday();
     calendarViewDate = new Date(selectedDate);
     setupEventListeners();
     await refreshDashboard();
@@ -323,6 +326,62 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     const wasToday = isSameDay(selectedDate, cityToday());
     applyCity(city, persist);
     if (wasToday) selectedDate = cityToday();
+  }
+
+  // --- Shareable links (ticket #48) ---
+  // On the web the viewed day, city and language live in the URL, so a link like
+  // ?date=2026-10-20&city=hyderabad&lang=en opens exactly that view and can be bookmarked or
+  // shared in WhatsApp. The extension's new-tab page stays a plain URL: it is re-opened fresh.
+  // A geolocated "custom" city deliberately cannot be linked; only preset cities can.
+  const IS_WEB = document.documentElement.dataset.surface === 'web';
+
+  function readUrlState() {
+    if (!IS_WEB) return {};
+    const params = new URLSearchParams(location.search);
+    const out = {};
+    const lang = params.get('lang');
+    if (lang === 'en' || lang === 'te') out.lang = lang;
+    if (params.get('city')) {
+      const city = window.CityPresets.getById(params.get('city'));
+      if (city) out.city = city;
+    }
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(params.get('date') || '');
+    if (m) {
+      // Built in selectedDate style: the city day carried in system-local Y/M/D (see cityToday).
+      // The round-trip check rejects rolled-over dates like 2026-02-30.
+      const [y, mo, d] = [Number(m[1]), Number(m[2]), Number(m[3])];
+      const date = new Date(y, mo - 1, d, 12, 0, 0);
+      if (date.getFullYear() === y && date.getMonth() === mo - 1 && date.getDate() === d) out.date = date;
+    }
+    return out;
+  }
+
+  function applyUrlState() {
+    const state = readUrlState();
+    if (state.lang) {
+      window.I18N.saveLang(state.lang);
+      elLangToggle.checked = (state.lang === 'en');
+      applyTranslations();
+      populateCitySelect();
+      applyCity(currentCity, false); // populateCitySelect resets the select and the location label
+    }
+    if (state.city) switchCity(state.city, false);
+    return state;
+  }
+
+  function syncUrlState() {
+    if (!IS_WEB || !window.history || !window.history.replaceState) return;
+    try {
+      const params = new URLSearchParams(location.search);
+      ['date', 'city', 'lang'].forEach((k) => params.delete(k));
+      if (activePanchang && !isSameDay(selectedDate, cityToday())) params.set('date', activePanchang.date);
+      if (currentCity.id !== window.CityPresets.getDefault().id && window.CityPresets.getById(currentCity.id)) params.set('city', currentCity.id);
+      if (window.I18N.getLang() !== 'te') params.set('lang', window.I18N.getLang());
+      const query = String(params);
+      window.history.replaceState(null, '', `${location.pathname}${query ? `?${query}` : ''}${location.hash}`);
+    } catch (err) {
+      // A surface may refuse history writes; the page works fine without them.
+    }
   }
 
   // Load the persisted city choice, defaulting to Hyderabad on first run.
@@ -709,6 +768,9 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
 
     // 9. Re-render monthly calendar grid
     renderMonthlyCalendar();
+
+    // 10. Keep the shareable URL in step with the view (web only).
+    syncUrlState();
   }
 
   // The saved date/time of birth as an instant. Parsed as wall-clock time in the selected city
@@ -1077,7 +1139,9 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       time: formatTime,
       timeWindow: formatWindow,
       theme: document.body.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
-      mine: parseInt(elSelectRasi.value, 10)
+      mine: parseInt(elSelectRasi.value, 10),
+      // Explicit, so the link opens the card's day, city and language whatever the recipient has saved.
+      linkParams: { date: activePanchang.date, city: window.CityPresets.getById(currentCity.id) ? currentCity.id : '', lang: window.I18N.getLang() }
     });
     // One share icon per card (data-share names the card): each builds its card's data and hands it to the same exporter.
     const shareData = {

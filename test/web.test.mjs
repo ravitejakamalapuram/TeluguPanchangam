@@ -119,3 +119,13 @@ test('the "get it on every new tab" banner shows only on desktop Chrome', () => 
   assert.equal(isDesktopChrome('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 CriOS/130.0 Mobile/15E148'), false);
   assert.equal(isDesktopChrome('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15'), false);
 });
+
+test('the install offer waits for a chosen city', () => {
+  const { hasChosenCity } = require(path.join(ROOT, 'web/extras.js'));
+  const store = {};
+  global.localStorage = { getItem: (k) => (k in store ? store[k] : null) };
+  assert.equal(hasChosenCity(), false);
+  store.chrome_storage_selectedCity = JSON.stringify({ id: 'hyderabad', timeZone: 'Asia/Kolkata' });
+  assert.equal(hasChosenCity(), true);
+  delete global.localStorage;
+});

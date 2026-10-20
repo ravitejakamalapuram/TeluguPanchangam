@@ -6,6 +6,7 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 
 ### Added
 
+- Web app only: once a city is set, desktop and Android browsers that support it offer to install the panchangam as an app (shown once, never on first load). The extension is unchanged.
 - Share any card: each shareable card has a small share icon in its header: Today, Rasi phalalu, the sankalpam, the Gita verse and upcoming festivals. They all use one exporter, so the image follows the page's language and light or dark look. The day card now shows yoga, karana, good times and times to avoid, and each rasi tile shows the Moon's house and a Saturn caution mark. The share button under the Rasi panel and the one under Today moved into the card headers.
 
 ### Fixed

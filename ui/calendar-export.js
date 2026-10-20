@@ -15,7 +15,7 @@ function escapeText(text) {
     .replace(/\\/g, '\\\\')
     .replace(/;/g, '\\;')
     .replace(/,/g, '\\,')
-    .replace(/\r?\n/g, '\\n');
+    .replace(/\r\n|\r|\n/g, '\\n');
 }
 
 // A short stable UID so a re-import of the same events updates instead of duplicating: djb2 over

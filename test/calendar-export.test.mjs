@@ -68,3 +68,9 @@ test('folds long lines at 75 octets without splitting a character', () => {
   for (const l of ics.split('\r\n')) assert.ok(enc.encode(l).length <= 75, l);
   assert.equal(ics.replace(/\r\n /g, '').match(/SUMMARY:(.*)\r\n/)[1], 'పండుగ'.repeat(20));
 });
+
+test('a lone carriage return in a title is escaped, not written raw', () => {
+  const ics = eventsToIcs([{ date: FEST, title: 'a\rb' }], { now: NOW });
+  assert.match(ics, /SUMMARY:a\\nb\r\n/);
+  assert.equal(ics.split('\r\n').filter((l) => l.startsWith('b')).length, 0);
+});

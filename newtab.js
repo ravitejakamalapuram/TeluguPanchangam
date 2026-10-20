@@ -317,6 +317,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
 
     if (persist) {
       chrome.storage.local.set({ selectedCity: city });
+      window.dispatchEvent(new Event('tp-city-selected')); // lets the web install offer re-check
     }
   }
 

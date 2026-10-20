@@ -1,6 +1,7 @@
 // Builds the website: the extension's own UI (the files release.yaml ships) plus a web shell, written to dist/.
 // One codebase serves both, so a fix lands in the extension and on the web together.
 //   node web/build.mjs [outDir]      SITE_URL overrides the public address (default: the GitHub Pages project URL)
+//   ANALYTICS_URL=<GoatCounter /count URL>  adds the cookieless page-view counter (web/analytics.js); unset = no network call
 //   PREVIEW_GUIDES=1                 also builds unreviewed guides, as noindex pages kept out of the sitemap (for the reviewer)
 import fs from 'node:fs';
 import path from 'node:path';
@@ -73,7 +74,7 @@ function readGuides(dir) {
 
 // One static, indexable page per reviewed festival guide: Telugu first, English below. Unreviewed guides are
 // built only in preview mode, as noindex pages that stay out of the sitemap.
-function guidePage(guide, site) {
+function guidePage(guide, site, analyticsUrl) {
   const slug = guideSlug(guide.id);
   const url = `${site}festivals/${slug}/`;
   const reviewed = isShippable(guide);
@@ -107,7 +108,7 @@ ${reviewed ? '' : '  <meta name="robots" content="noindex">\n'}  <meta name="the
     .guide-draft { border: 1px dashed currentColor; padding: 8px 12px; border-radius: 8px; }
     section[lang="en"] { margin-top: 48px; border-top: 1px solid #5a3a3a; padding-top: 24px; }
   </style>
-</head>
+${analyticsUrl ? `  <script src="${esc(site)}web/analytics.js" data-endpoint="${esc(analyticsUrl)}"></script>\n` : ''}</head>
 <body>
   <main>
     <h1><a href="${esc(site)}">శ్రీ తెలుగు పంచాంగం (Telugu Panchangam)</a></h1>
@@ -155,19 +156,21 @@ self.addEventListener('fetch', (event) => {
 `;
 }
 
-export async function buildWeb({ outDir = path.join(ROOT, 'dist'), siteUrl = process.env.SITE_URL || DEFAULT_SITE, extraFiles = {}, guidesDir = path.join(ROOT, 'content/guides'), previewGuides = process.env.PREVIEW_GUIDES === '1' } = {}) {
+export async function buildWeb({ outDir = path.join(ROOT, 'dist'), siteUrl = process.env.SITE_URL || DEFAULT_SITE, extraFiles = {}, guidesDir = path.join(ROOT, 'content/guides'), previewGuides = process.env.PREVIEW_GUIDES === '1', analyticsUrl = process.env.ANALYTICS_URL } = {}) {
   const site = siteUrl.endsWith('/') ? siteUrl : `${siteUrl}/`;
   fs.rmSync(outDir, { recursive: true, force: true });
   fs.mkdirSync(outDir, { recursive: true });
 
   for (const rel of releaseIncludes().filter((p) => !EXTENSION_ONLY.has(p))) copyRecursive(path.join(ROOT, rel), path.join(outDir, rel));
   copyRecursive(path.join(ROOT, 'web/icons'), path.join(outDir, 'web/icons'));
+  const analyticsTag = analyticsUrl ? `  <script src="web/analytics.js" data-endpoint="${esc(analyticsUrl)}"></script>\n` : '';
+  if (analyticsUrl) copyRecursive(path.join(ROOT, 'web/analytics.js'), path.join(outDir, 'web/analytics.js'));
   for (const f of ['extras.js', 'extras.css']) copyRecursive(path.join(ROOT, 'web', f), path.join(outDir, 'web', f));
   for (const [rel, body] of Object.entries(extraFiles)) fs.writeFileSync(path.join(outDir, rel), body);
 
   const page = fs.readFileSync(path.join(ROOT, 'newtab.html'), 'utf8')
     .replace('</head>', `${headTags(site)}</head>`)
-    .replace('</body>', '  <script src="web/extras.js"></script>\n</body>');
+    .replace('</body>', `${analyticsTag}  <script src="web/extras.js"></script>\n</body>`);
   fs.writeFileSync(path.join(outDir, 'index.html'), page);
 
   fs.writeFileSync(path.join(outDir, 'manifest.webmanifest'), `${JSON.stringify({
@@ -189,7 +192,7 @@ export async function buildWeb({ outDir = path.join(ROOT, 'dist'), siteUrl = pro
   fs.writeFileSync(path.join(outDir, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${site}sitemap.xml\n`);
   const urls = [site];
   for (const guide of readGuides(guidesDir).filter((g) => isShippable(g, { preview: previewGuides }))) {
-    const built = guidePage(guide, site);
+    const built = guidePage(guide, site, analyticsUrl);
     fs.mkdirSync(path.join(outDir, 'festivals', built.slug), { recursive: true });
     fs.writeFileSync(path.join(outDir, 'festivals', built.slug, 'index.html'), built.html);
     if (built.reviewed) urls.push(built.url);

@@ -33,6 +33,8 @@ jobs:
       - run: npm test
 
       - run: npm run build:web
+        env:
+          ANALYTICS_URL: ${{ vars.ANALYTICS_URL }}
 
       - uses: actions/upload-pages-artifact@v3
         with:

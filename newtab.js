@@ -13,6 +13,7 @@ import { birthDetails, isTeluguBirthday } from './core/birth.js';
 import { formatClock } from './ui/time-format.js';
 import { startOnboarding } from './ui/onboarding.js';
 import { shareCard } from './ui/share-card.js';
+import { eventsToIcs, downloadIcs } from './ui/calendar-export.js';
 import { ARC, fraction, arcPoint, arcPath, bands } from './ui/timing-arc.js';
 import { initRatingPrompt } from './ui/rating.js';
 import { moonInfo, litPath } from './ui/moon.js';
@@ -1090,6 +1091,45 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       },
       festivals: () => ({ kind: 'festivals', data: { items: collectUpcoming(7, 6) }, opts: { fileDate: activePanchang.date } })
     };
+    // "Add to calendar": the next 30 days of festivals, or the user's own reminders, as an .ics file.
+    // Built on the device; nothing is sent anywhere (PRIVACY.md).
+    const exporters = {
+      festivals: async () => collectUpcoming(30, 40).map((it) => ({
+        date: it.date,
+        title: nm(it.id),
+        description: it.parana
+          ? `${window.I18N.t('paranaNextDay')} ${formatTime(it.parana.start)} - ${formatTime(it.parana.end)}`
+          : ''
+      })),
+      reminders: async () => {
+        const out = [];
+        for (const r of await window.Reminders.getReminders()) {
+          if (r.type === 'solar' && /^\d{4}-\d{2}-\d{2}$/.test(r.date || '')) {
+            const [y, m, d] = r.date.split('-').map(Number);
+            out.push({ date: new Date(y, m - 1, d, 12), title: r.title, description: r.desc || '' });
+          } else if (r.type === 'lunar' && Number.isInteger(r.lunarMonth) && Number.isInteger(r.lunarTithi)) {
+            // A lunar reminder repeats on one masa + tithi each year: export its next occurrence.
+            const from = cityToday();
+            for (let i = 0; i < 400; i++) {
+              const date = new Date(from.getFullYear(), from.getMonth(), from.getDate() + i, 12);
+              const day = dayFor(date);
+              if (MASA.indexOf(day.calendar.masa.id) === r.lunarMonth && tithiIndexOf(day) === r.lunarTithi) {
+                out.push({ date, title: r.title, description: r.desc || '' });
+                break;
+              }
+            }
+          }
+        }
+        return out;
+      }
+    };
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-export]');
+      if (!btn || !exporters[btn.dataset.export]) return;
+      exporters[btn.dataset.export]()
+        .then((events) => downloadIcs(eventsToIcs(events)))
+        .catch((err) => console.error('Calendar export failed:', err));
+    });
     document.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-share]');
       if (!btn || !shareData[btn.dataset.share]) return;

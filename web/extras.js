@@ -53,7 +53,8 @@
     add.type = 'button';
     add.textContent = t.add;
     add.addEventListener('click', function () {
-      deferred.prompt();
+      add.disabled = true;
+      Promise.resolve().then(function () { return deferred.prompt(); }).catch(function () { bar.remove(); });
       deferred.userChoice.then(function (choice) {
         if (choice && choice.outcome === 'accepted') {
           try { localStorage.setItem(INSTALL_DISMISS_KEY, '1'); } catch (e) { /* ignore */ }
@@ -93,6 +94,12 @@
       attempt();
     });
     document.addEventListener('visibilitychange', attempt);
+    window.addEventListener('appinstalled', function () {
+      pending = null;
+      try { localStorage.setItem(INSTALL_DISMISS_KEY, '1'); } catch (e) { /* ignore */ }
+      var bar = document.querySelector('.web-install-banner');
+      if (bar) bar.remove();
+    });
     var checks = 0;
     var timer = setInterval(function () {
       attempt();

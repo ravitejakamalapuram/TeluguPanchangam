@@ -74,7 +74,7 @@ function readGuides(dir) {
 
 // One static, indexable page per reviewed festival guide: Telugu first, English below. Unreviewed guides are
 // built only in preview mode, as noindex pages that stay out of the sitemap.
-function guidePage(guide, site) {
+function guidePage(guide, site, analyticsUrl) {
   const slug = guideSlug(guide.id);
   const url = `${site}festivals/${slug}/`;
   const reviewed = isShippable(guide);
@@ -108,7 +108,7 @@ ${reviewed ? '' : '  <meta name="robots" content="noindex">\n'}  <meta name="the
     .guide-draft { border: 1px dashed currentColor; padding: 8px 12px; border-radius: 8px; }
     section[lang="en"] { margin-top: 48px; border-top: 1px solid #5a3a3a; padding-top: 24px; }
   </style>
-</head>
+${analyticsUrl ? `  <script src="${esc(site)}web/analytics.js" data-endpoint="${esc(analyticsUrl)}"></script>\n` : ''}</head>
 <body>
   <main>
     <h1><a href="${esc(site)}">శ్రీ తెలుగు పంచాంగం (Telugu Panchangam)</a></h1>
@@ -192,7 +192,7 @@ export async function buildWeb({ outDir = path.join(ROOT, 'dist'), siteUrl = pro
   fs.writeFileSync(path.join(outDir, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${site}sitemap.xml\n`);
   const urls = [site];
   for (const guide of readGuides(guidesDir).filter((g) => isShippable(g, { preview: previewGuides }))) {
-    const built = guidePage(guide, site);
+    const built = guidePage(guide, site, analyticsUrl);
     fs.mkdirSync(path.join(outDir, 'festivals', built.slug), { recursive: true });
     fs.writeFileSync(path.join(outDir, 'festivals', built.slug, 'index.html'), built.html);
     if (built.reviewed) urls.push(built.url);

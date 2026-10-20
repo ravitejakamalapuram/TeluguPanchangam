@@ -4,7 +4,9 @@
   function countUrl(endpoint, env) {
     if (!endpoint || env.dnt === '1' || env.dnt === 'yes' || env.gpc || /^(localhost|127\.|\[::1\])/.test(env.host)) return null;
     const q = new URLSearchParams({ p: env.path });
-    if (env.referrer && !env.referrer.startsWith(env.origin)) q.set('r', env.referrer);
+    let ref = '';
+    try { ref = new URL(env.referrer).origin; } catch {}
+    if (ref && ref !== env.origin) q.set('r', ref);
     return `${endpoint}?${q}`;
   }
   if (typeof document === 'undefined') { module.exports = { countUrl }; return; }

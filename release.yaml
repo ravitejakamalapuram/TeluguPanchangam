@@ -47,6 +47,7 @@ targets:
       - ui/rating.js
       - ui/guides.js
       - ui/moon.js
+      - ui/festival-icons.js
       - ui/timing-arc.js
       - content/guides
       - lib/astronomy.js

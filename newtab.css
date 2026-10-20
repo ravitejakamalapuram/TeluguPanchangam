@@ -1659,6 +1659,14 @@ input[type="text"], input[type="date"], input[type="time"], .cyber-form-panel se
 .day-moon.new, .legend-swatch.moon.new { background: #3D3757; border: 1.5px solid #3D3757; }
 [data-theme="dark"] .day-moon.new, [data-theme="dark"] .legend-swatch.moon.new { border-color: #CDBFAE; }
 
+/* Festival pictograms: one per day cell, beside the moon mark, never colour alone */
+.fest-icon { position: absolute; top: 6px; right: 6px; width: 18px; height: 18px; fill: none; stroke: var(--chip-fest-fg); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.fest-icon .f { fill: var(--chip-fest-fg); }
+.fest-icon .bg { fill: var(--panel-soft); }
+.day-moon:has(~ .fest-icon) { right: 28px; }
+.icon-legend .fest-icon { position: static; }
+@media (max-width: 600px) { .fest-icon { width: 14px; height: 14px; top: 3px; right: 3px; } .day-moon:has(~ .fest-icon) { right: 20px; } .fest-icon ~ .day-festivals { display: none; } }
+
 /* Laptop screens: a calmer type scale. Phone, tablet and the popup keep the base sizes. */
 @media (min-width: 1201px) {
   :root { --fs-body: 1rem; }

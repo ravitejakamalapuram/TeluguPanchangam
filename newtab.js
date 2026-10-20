@@ -17,6 +17,7 @@ import { eventsToIcs, downloadIcs } from './ui/calendar-export.js';
 import { ARC, fraction, arcPoint, arcPath, bands } from './ui/timing-arc.js';
 import { initRatingPrompt } from './ui/rating.js';
 import { moonInfo, litPath } from './ui/moon.js';
+import { symbolForDay, iconElement, SYMBOLS } from './ui/festival-icons.js';
 import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guides.js';
 
 (function () {
@@ -553,7 +554,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     document.getElementById('sunrise-time').textContent = formatTime(panchang.astronomy.sunrise);
     document.getElementById('sunset-time').textContent = formatTime(panchang.astronomy.sunset);
 
-    const fests = panchang.events.filter((e) => e.id.startsWith('FESTIVAL_'));
+    const fests = panchang.events.filter((e) => e.id.startsWith('FESTIVAL_') || e.id.startsWith('VRATA_'));
     const strip = document.getElementById('festival-strip');
     strip.hidden = fests.length === 0;
     document.getElementById('festival-strip-names').textContent = fests.map((f) => nm(f.nameId || f.id)).join(' \u00b7 ');
@@ -855,8 +856,10 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
   }
 
   // Render 7-column Monthly Calendar Grid
+  const monthIcons = new Set();
   function renderMonthlyCalendar() {
     elCalendarDaysContainer.innerHTML = '';
+    monthIcons.clear();
     
     const year = calendarViewDate.getFullYear();
     const month = calendarViewDate.getMonth(); // 0 = Jan, 1 = Feb, ...
@@ -913,6 +916,20 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       const cellDate = new Date(year, month + 1, i);
       createDayCell(cellDate, true);
     }
+    renderIconLegend();
+  }
+
+  // Legend of the pictograms used in the shown month, named in the selected language.
+  function renderIconLegend() {
+    const lang = window.I18N.getLang();
+    const legend = document.getElementById('icon-legend');
+    legend.replaceChildren(...Object.keys(SYMBOLS).filter((k) => monthIcons.has(k)).map((k) => {
+      const item = document.createElement('span');
+      const svg = iconElement(document, k, 16);
+      svg.setAttribute('aria-hidden', 'true');
+      item.append(svg, SYMBOLS[k][lang === 'en' ? 'en' : 'te']);
+      return item;
+    }));
   }
 
   // Weeks are columns, so a month change slides sideways; skipped for reduced motion.
@@ -962,6 +979,20 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       mark.setAttribute('aria-label', `${nm(tithiId)} - ${window.I18N.teEn(full ? 'పౌర్ణమి' : 'అమావాస్య', full ? 'Full moon' : 'New moon')}`);
       mark.title = mark.getAttribute('aria-label');
       cell.appendChild(mark);
+    }
+
+    // One pictogram per day (festival over vrata), named on hover and to screen readers.
+    const iconKey = symbolForDay(festivals);
+    if (iconKey && !isOtherMonth) {
+      monthIcons.add(iconKey);
+      const icon = iconElement(document, iconKey);
+      const label = nm(festivals[0].nameId || festivals[0].id);
+      icon.setAttribute('role', 'img');
+      icon.setAttribute('aria-label', label);
+      const tip = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+      tip.textContent = label;
+      icon.prepend(tip);
+      cell.appendChild(icon);
     }
 
     // Festival badge if exists

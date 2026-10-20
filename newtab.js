@@ -497,8 +497,25 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     const strip = document.getElementById('festival-strip');
     strip.hidden = fests.length === 0;
     document.getElementById('festival-strip-names').textContent = fests.map((f) => nm(f.nameId || f.id)).join(' \u00b7 ');
+    renderTraditionNote(fests);
 
     renderMoon(panchang);
+  }
+
+  // Festivals whose tithi touches the kaal on two days: other traditions may pick the other day.
+  // Traces are English, so the engine's reason stays English in both languages (one tap away). Telugu wording needs a Telugu reader's check.
+  function renderTraditionNote(fests) {
+    const note = document.getElementById('festival-strip-note');
+    const two = fests.filter((f) => f.trace && f.trace.twoDay);
+    note.hidden = two.length === 0;
+    note.replaceChildren();
+    if (!two.length) return;
+    const text = window.I18N.teEn('సంప్రదాయాన్ని బట్టి తేదీ మారవచ్చు', 'Date may differ by tradition');
+    const d = document.createElement('details');
+    const sum = document.createElement('summary');
+    sum.textContent = text;
+    d.append(sum, ...two.map((f) => Object.assign(document.createElement('div'), { textContent: `${coreName(f.nameId || f.id, 'en')}: ${traceReason(f)}` })));
+    note.appendChild(d);
   }
 
   function renderMoon(panchang) {

@@ -108,6 +108,7 @@ export function createRuleEngine(ctx) {
       trace: {
         tithi: rule.tithi, tithiStart: occ.start, tithiEnd: occ.end, masa: masa.id, adhika: masa.adhika,
         kaal: rule.kaal,
+        twoDay: touching.length > 1,
         candidates: candidates.map((c) => ({ date: formatLocalDate(c.date), window: c.window, inKaalMs: c.inKaal })),
         ...(preferNakshatra && { preferNakshatra }),
         reason

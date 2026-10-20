@@ -37,7 +37,9 @@ const SUB = '#F3DFA0'; // the soft gold line under a heading
 // params travel along, so a shared link opens the day the card shows (ticket #48); plus a utm_source tag.
 function shareLink() {
   if (document.documentElement.dataset.surface !== 'web') return STORE_URL;
-  const params = new URLSearchParams(location.search);
+  const own = new URLSearchParams(location.search);
+  const params = new URLSearchParams();
+  ['date', 'city', 'lang'].forEach((k) => { if (own.has(k)) params.set(k, own.get(k)); });
   params.set('utm_source', 'whatsapp');
   return `${location.origin}${location.pathname.replace(/index\.html$/, '')}?${params}`;
 }

@@ -362,6 +362,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       elLangToggle.checked = (state.lang === 'en');
       applyTranslations();
       populateCitySelect();
+      applyCity(currentCity, false); // populateCitySelect resets the select and the location label
     }
     if (state.city) switchCity(state.city, false);
     return state;
@@ -370,12 +371,13 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
   function syncUrlState() {
     if (!IS_WEB || !window.history || !window.history.replaceState) return;
     try {
-      const params = new URLSearchParams();
+      const params = new URLSearchParams(location.search);
+      ['date', 'city', 'lang'].forEach((k) => params.delete(k));
       if (activePanchang && !isSameDay(selectedDate, cityToday())) params.set('date', activePanchang.date);
       if (currentCity.id !== window.CityPresets.getDefault().id && window.CityPresets.getById(currentCity.id)) params.set('city', currentCity.id);
       if (window.I18N.getLang() !== 'te') params.set('lang', window.I18N.getLang());
       const query = String(params);
-      window.history.replaceState(null, '', query ? `${location.pathname}?${query}` : location.pathname);
+      window.history.replaceState(null, '', `${location.pathname}${query ? `?${query}` : ''}${location.hash}`);
     } catch (err) {
       // A surface may refuse history writes; the page works fine without them.
     }

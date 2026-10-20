@@ -494,7 +494,7 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     document.getElementById('sunrise-time').textContent = formatTime(panchang.astronomy.sunrise);
     document.getElementById('sunset-time').textContent = formatTime(panchang.astronomy.sunset);
 
-    const fests = panchang.events.filter((e) => e.id.startsWith('FESTIVAL_'));
+    const fests = panchang.events.filter((e) => e.id.startsWith('FESTIVAL_') || e.id.startsWith('VRATA_'));
     const strip = document.getElementById('festival-strip');
     strip.hidden = fests.length === 0;
     document.getElementById('festival-strip-names').textContent = fests.map((f) => nm(f.nameId || f.id)).join(' \u00b7 ');

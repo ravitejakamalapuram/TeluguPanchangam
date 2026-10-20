@@ -78,6 +78,13 @@ test('the share-sheet button is labelled as a general send, not WhatsApp only', 
   assert.ok(!/send: '[^']*WhatsApp/.test(card));
 });
 
+test('shared links keep the viewed day, city and language, and only preset cities are linked', () => {
+  assert.match(read('ui/share-card.js'), /new URLSearchParams\(location\.search\)/);
+  const app = read('newtab.js');
+  assert.match(app, /syncUrlState\(\);/);
+  assert.match(app, /getById\(currentCity\.id\)\) params\.set\('city'/);
+});
+
 test('robots.txt, a 404 page and .nojekyll are present', () => {
   assert.match(dist('robots.txt'), /Sitemap: https:\/\/example\.test\/panchangam\/sitemap\.xml/);
   assert.match(dist('sitemap.xml'), /<loc>https:\/\/example\.test\/panchangam\/<\/loc>/);

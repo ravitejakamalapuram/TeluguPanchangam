@@ -1,0 +1,145 @@
+{
+  "id": "FESTIVAL_SRI_RAMA_NAVAMI",
+  "appliesTo": [
+    "FESTIVAL_SRI_RAMA_NAVAMI"
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": null,
+    "date": null
+  },
+  "title": {
+    "te": "శ్రీ రామ నవమి: సీతారామ కల్యాణం",
+    "en": "Sri Rama Navami: Sita Rama Kalyanam"
+  },
+  "summary": {
+    "te": "శ్రీరాముని జన్మదినం నాడు మధ్యాహ్నం సీతారాముల కల్యాణం, పానకం, వడపప్పు నివేదన: ఆంధ్ర, తెలంగాణ ఇళ్లలో, ఆలయాలలో సాధారణంగా చేసుకునే విధానం ఇది.",
+    "en": "On Lord Rama's birthday, the Sita Rama wedding at midday with panakam and vadapappu as offerings: the way most Andhra and Telangana homes and temples celebrate."
+  },
+  "variation": {
+    "te": "ఇది సాధారణ విధానం మాత్రమే. కుటుంబ సంప్రదాయం, గురువుల సూచన, ప్రాంతాన్ని బట్టి విధానాలు మారుతాయి; మీ ఇంటి సంప్రదాయం ముందు. తిథి రెండు రోజులకు విస్తరించే సంవత్సరాలలో తేదీ సంప్రదాయాన్ని బట్టి మారవచ్చు; అలాంటి రోజుల్లో యాప్ ఆ విషయం తెలియజేస్తుంది.",
+    "en": "This is the common way, not the only one. Practice differs by family tradition, by guru and by region, so follow your own family's custom first. When the tithi spans two days, the date can differ by tradition; the app shows a note on such days."
+  },
+  "sections": [
+    {
+      "id": "preparation",
+      "title": {
+        "te": "ముందస్తు సన్నాహాలు",
+        "en": "Getting ready"
+      },
+      "steps": [
+        {
+          "te": "ఇల్లు శుభ్రం చేసి, తలస్నానం చేసి, కొత్త లేదా శుభ్రమైన బట్టలు ధరించండి.",
+          "en": "Clean the house, take a head bath and wear new or clean clothes."
+        },
+        {
+          "te": "పూజా స్థలంలో సీతారామ లక్ష్మణ హనుమత్ చిత్రపటాన్ని లేదా విగ్రహాలను అలంకరించండి.",
+          "en": "Decorate the puja space with a picture or idols of Sita, Rama, Lakshmana and Hanuman."
+        },
+        {
+          "te": "చాలామంది ఉదయం నుంచి మధ్యాహ్నం పూజ వరకు ఉపవాసం ఉంటారు; ఇది ఐచ్ఛికం.",
+          "en": "Many keep a fast until the midday puja; this is optional."
+        }
+      ]
+    },
+    {
+      "id": "kalyanam",
+      "title": {
+        "te": "కల్యాణం, పూజ",
+        "en": "The kalyanam and puja"
+      },
+      "steps": [
+        {
+          "te": "మధ్యాహ్న సమయంలో దీపారాధన చేసి గణపతి పూజతో ప్రారంభించండి.",
+          "en": "At midday, light the lamp and begin with a short puja to Ganesha."
+        },
+        {
+          "te": "సీతారాములకు పసుపు, కుంకుమ, అక్షతలు, తులసి, పూలతో పూజ చేయండి; తలంబ్రాలు పోసే సంప్రదాయం ఉంది.",
+          "en": "Worship Sita and Rama with turmeric, kumkum, akshata, tulasi and flowers; many families pour talambralu (rice mixed with turmeric) in the wedding ritual."
+        },
+        {
+          "te": "శ్రీరామ నామం జపించండి; రామాయణంలోని బాలకాండ లేదా సుందరకాండ పఠనం చేయవచ్చు.",
+          "en": "Chant Rama's name; you may read from the Bala Kanda or Sundara Kanda of the Ramayana."
+        },
+        {
+          "te": "కర్పూర హారతి ఇచ్చి, పానకం, వడపప్పు నివేదన చేసి ప్రసాదంగా పంచండి.",
+          "en": "Offer camphor aarti, then offer panakam and vadapappu and share them as prasadam."
+        }
+      ]
+    }
+  ],
+  "samagri": [
+    {
+      "te": "పసుపు, కుంకుమ, అక్షతలు",
+      "en": "Turmeric, kumkum and akshata (rice)"
+    },
+    {
+      "te": "పూలు, మామిడాకులు",
+      "en": "Flowers and mango leaves"
+    },
+    {
+      "te": "తమలపాకులు, వక్కలు, పండ్లు, కొబ్బరికాయ",
+      "en": "Betel leaves, areca nuts, fruits and a coconut"
+    },
+    {
+      "te": "ప్రమిదలు, నూనె లేదా నెయ్యి, వత్తులు",
+      "en": "Clay lamps, oil or ghee and wicks"
+    },
+    {
+      "te": "అగరుబత్తీలు, కర్పూరం",
+      "en": "Incense sticks and camphor"
+    },
+    {
+      "te": "తులసి దళాలు",
+      "en": "Tulasi leaves"
+    },
+    {
+      "te": "తలంబ్రాలకు బియ్యం, పసుపు",
+      "en": "Rice and turmeric for talambralu"
+    },
+    {
+      "te": "కొత్త బట్టలు",
+      "en": "New clothes"
+    }
+  ],
+  "naivedyam": [
+    {
+      "te": "పానకం (బెల్లం, మిరియాలు, యాలకులు)",
+      "en": "Panakam (jaggery, pepper and cardamom drink)"
+    },
+    {
+      "te": "వడపప్పు (నానబెట్టిన పెసరపప్పు)",
+      "en": "Vadapappu (soaked moong dal)"
+    },
+    {
+      "te": "చలిమిడి",
+      "en": "Chalimidi"
+    },
+    {
+      "te": "పాయసం",
+      "en": "Payasam"
+    }
+  ],
+  "verses": [
+    {
+      "te": "శ్రీరామ రామ రామేతి రమే రామే మనోరమే | సహస్రనామ తత్తుల్యం రామనామ వరాననే",
+      "en": "Sri Rama Rama Rameti Rame Rame Manorame | Sahasranama tattulyam Rama-nama varanane"
+    },
+    {
+      "te": "ఓం శ్రీ రామాయ నమః",
+      "en": "Om Sri Ramaya Namah"
+    }
+  ],
+  "videos": [],
+  "shops": [],
+  "sources": [
+    {
+      "title": "Rama Navami (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Rama_Navami"
+    },
+    {
+      "title": "Rama (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Rama"
+    }
+  ]
+}

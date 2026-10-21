@@ -1,0 +1,166 @@
+{
+  "id": "FESTIVAL_VINAYAKA_CHAVITHI",
+  "appliesTo": [
+    "FESTIVAL_VINAYAKA_CHAVITHI"
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": null,
+    "date": null
+  },
+  "title": {
+    "te": "వినాయక చవితి: పూజా విధానం",
+    "en": "Vinayaka Chavithi: how to celebrate"
+  },
+  "summary": {
+    "te": "మట్టి గణపతి ప్రతిష్ఠ, ఇరవై ఒక్క పత్రాలతో పూజ, కథ, ఉండ్రాళ్ల నైవేద్యం: ఆంధ్ర, తెలంగాణ ఇళ్లలో సాధారణంగా చేసుకునే విధానం ఇది.",
+    "en": "Installing a clay Ganesha, worship with twenty-one leaves, the story and an offering of undrallu: the way most Andhra and Telangana homes celebrate."
+  },
+  "variation": {
+    "te": "ఇది సాధారణ విధానం మాత్రమే. కుటుంబ సంప్రదాయం, గురువుల సూచన, ప్రాంతాన్ని బట్టి విధానాలు మారుతాయి; మీ ఇంటి సంప్రదాయం ముందు. తిథి రెండు రోజులకు విస్తరించే సంవత్సరాలలో తేదీ సంప్రదాయాన్ని బట్టి మారవచ్చు; అలాంటి రోజుల్లో యాప్ ఆ విషయం తెలియజేస్తుంది.",
+    "en": "This is the common way, not the only one. Practice differs by family tradition, by guru and by region, so follow your own family's custom first. When the tithi spans two days, the date can differ by tradition; the app shows a note on such days."
+  },
+  "sections": [
+    {
+      "id": "preparation",
+      "title": {
+        "te": "ముందస్తు సన్నాహాలు",
+        "en": "Getting ready"
+      },
+      "steps": [
+        {
+          "te": "తలస్నానం చేసి, ఇంటిని శుభ్రం చేసి, గుమ్మానికి మామిడాకుల తోరణం కట్టండి.",
+          "en": "Take a head bath, clean the house and hang a mango-leaf toranam on the door."
+        },
+        {
+          "te": "మట్టి వినాయకుడి ప్రతిమను తెచ్చుకోండి; పర్యావరణానికి మంచిది.",
+          "en": "Bring home a clay Ganesha idol; it is kinder to the environment."
+        },
+        {
+          "te": "ఇరవై ఒక్క రకాల పత్రాలు, గరిక, పూలు సిద్ధం చేసుకోండి.",
+          "en": "Collect twenty-one kinds of leaves, durva grass and flowers."
+        }
+      ]
+    },
+    {
+      "id": "puja",
+      "title": {
+        "te": "పూజ",
+        "en": "The puja"
+      },
+      "steps": [
+        {
+          "te": "పీటపై బియ్యం పోసి, అలంకరించిన మండపంలో వినాయకుడిని ప్రతిష్ఠించండి.",
+          "en": "Place the idol on a bed of rice in a decorated mandapam."
+        },
+        {
+          "te": "దీపారాధన చేసి, సంకల్పం చెప్పుకుని, షోడశోపచార పూజ చేయండి.",
+          "en": "Light the lamp, say the sankalpam and perform the puja with the sixteen offerings."
+        },
+        {
+          "te": "పత్రి పూజ చేసి, గరికతో అర్చన చేయండి.",
+          "en": "Offer the leaves, then worship with durva grass."
+        },
+        {
+          "te": "వినాయక వ్రత కథ చదివి, అక్షతలు తల మీద వేసుకోండి.",
+          "en": "Read the Vinayaka vratam story and place the akshata on your head."
+        },
+        {
+          "te": "ఉండ్రాళ్లు, కుడుములు, పాయసం నివేదన చేసి, కర్పూర హారతి ఇవ్వండి.",
+          "en": "Offer undrallu, kudumulu and payasam, then offer camphor aarti."
+        }
+      ]
+    },
+    {
+      "id": "after",
+      "title": {
+        "te": "ఆ తర్వాత",
+        "en": "Afterwards"
+      },
+      "steps": [
+        {
+          "te": "ఈ రోజు రాత్రి చంద్రుని చూడవద్దని సంప్రదాయం; పొరపాటున చూస్తే కథలోని శ్యమంతక మణి కథ చదువుతారు.",
+          "en": "By tradition, avoid looking at the moon tonight; if you do by mistake, many families read the Syamantaka story."
+        },
+        {
+          "te": "మూడు, ఐదు, తొమ్మిది లేదా పదకొండు రోజుల తర్వాత నిమజ్జనం చేయండి; మట్టి ప్రతిమను ఇంట్లోనే నీటి తొట్టెలో కూడా నిమజ్జనం చేయవచ్చు.",
+          "en": "Immerse the idol after three, five, nine or eleven days; a clay idol can also be immersed in a tub at home."
+        }
+      ]
+    }
+  ],
+  "samagri": [
+    {
+      "te": "పసుపు, కుంకుమ, అక్షతలు",
+      "en": "Turmeric, kumkum and akshata (rice)"
+    },
+    {
+      "te": "పూలు, మామిడాకులు",
+      "en": "Flowers and mango leaves"
+    },
+    {
+      "te": "తమలపాకులు, వక్కలు, పండ్లు, కొబ్బరికాయ",
+      "en": "Betel leaves, areca nuts, fruits and a coconut"
+    },
+    {
+      "te": "ఇరవై ఒక్క రకాల పత్రాలు, గరిక",
+      "en": "Twenty-one kinds of leaves and durva grass"
+    },
+    {
+      "te": "పీట, బియ్యం, కలశం",
+      "en": "A wooden plank, rice and a kalasam"
+    },
+    {
+      "te": "జంధ్యం, కొత్త వస్త్రం",
+      "en": "A sacred thread and a new cloth for the idol"
+    },
+    {
+      "te": "అగరుబత్తీలు, కర్పూరం, ప్రమిదలు",
+      "en": "Incense, camphor and lamps"
+    }
+  ],
+  "naivedyam": [
+    {
+      "te": "ఉండ్రాళ్లు",
+      "en": "Undrallu (steamed rice dumplings)"
+    },
+    {
+      "te": "కుడుములు",
+      "en": "Kudumulu"
+    },
+    {
+      "te": "పాయసం",
+      "en": "Payasam"
+    },
+    {
+      "te": "పులిహోర",
+      "en": "Pulihora"
+    },
+    {
+      "te": "వడపప్పు, పానకం",
+      "en": "Vadapappu and panakam"
+    }
+  ],
+  "verses": [
+    {
+      "te": "శుక్లాంబరధరం విష్ణుం శశివర్ణం చతుర్భుజమ్ | ప్రసన్నవదనం ధ్యాయేత్ సర్వవిఘ్నోపశాంతయే",
+      "en": "Shuklambaradharam Vishnum shashivarnam chaturbhujam | Prasannavadanam dhyayet sarvavighnopashantaye"
+    },
+    {
+      "te": "వక్రతుండ మహాకాయ సూర్యకోటి సమప్రభ | నిర్విఘ్నం కురు మే దేవ సర్వకార్యేషు సర్వదా",
+      "en": "Vakratunda mahakaya suryakoti samaprabha | Nirvighnam kuru me deva sarvakaryeshu sarvada"
+    }
+  ],
+  "videos": [],
+  "shops": [],
+  "sources": [
+    {
+      "title": "Ganesh Chaturthi (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Ganesh_Chaturthi"
+    },
+    {
+      "title": "Ganesha (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Ganesha"
+    }
+  ]
+}

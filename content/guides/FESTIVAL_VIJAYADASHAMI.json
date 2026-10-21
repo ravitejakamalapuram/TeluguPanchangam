@@ -1,0 +1,164 @@
+{
+  "id": "FESTIVAL_VIJAYADASHAMI",
+  "appliesTo": [
+    "FESTIVAL_VIJAYADASHAMI",
+    "FESTIVAL_MAHANAVAMI",
+    "FESTIVAL_DURGASHTAMI"
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": null,
+    "date": null
+  },
+  "title": {
+    "te": "దసరా: దుర్గాష్టమి నుంచి విజయదశమి వరకు",
+    "en": "Dasara: Durgashtami to Vijayadashami"
+  },
+  "summary": {
+    "te": "నవరాత్రుల చివరి మూడు రోజులు: అష్టమి నాడు దుర్గాపూజ, నవమి నాడు ఆయుధ పూజ, దశమి నాడు జమ్మి పూజ: ఆంధ్ర, తెలంగాణ ఇళ్లలో సాధారణంగా చేసుకునే విధానం ఇది.",
+    "en": "The last three days of Navaratri: Durga puja on Ashtami, Ayudha puja on Navami and Shami puja on Dashami: the way most Andhra and Telangana homes celebrate."
+  },
+  "variation": {
+    "te": "ఇది సాధారణ విధానం మాత్రమే. కుటుంబ సంప్రదాయం, గురువుల సూచన, ప్రాంతాన్ని బట్టి విధానాలు మారుతాయి; మీ ఇంటి సంప్రదాయం ముందు. తిథి రెండు రోజులకు విస్తరించే సంవత్సరాలలో తేదీ సంప్రదాయాన్ని బట్టి మారవచ్చు; అలాంటి రోజుల్లో యాప్ ఆ విషయం తెలియజేస్తుంది.",
+    "en": "This is the common way, not the only one. Practice differs by family tradition, by guru and by region, so follow your own family's custom first. When the tithi spans two days, the date can differ by tradition; the app shows a note on such days."
+  },
+  "sections": [
+    {
+      "id": "ashtami",
+      "title": {
+        "te": "దుర్గాష్టమి",
+        "en": "Durgashtami"
+      },
+      "steps": [
+        {
+          "te": "తలస్నానం చేసి, దుర్గాదేవి చిత్రపటాన్ని లేదా విగ్రహాన్ని పూలతో అలంకరించండి.",
+          "en": "Take a head bath and decorate a picture or idol of Goddess Durga with flowers."
+        },
+        {
+          "te": "పసుపు, కుంకుమ, పూలతో అర్చన చేసి, దుర్గా నామాలు చదవండి.",
+          "en": "Worship with turmeric, kumkum and flowers and chant the names of Durga."
+        },
+        {
+          "te": "చాలా కుటుంబాలు ఈ రోజు పుస్తకాలు, సరస్వతి పూజ కూడా చేస్తాయి.",
+          "en": "Many families also do Saraswati puja with their books around this time."
+        }
+      ]
+    },
+    {
+      "id": "navami",
+      "title": {
+        "te": "మహార్నవమి: ఆయుధ పూజ",
+        "en": "Mahanavami: Ayudha puja"
+      },
+      "steps": [
+        {
+          "te": "పనిముట్లు, పుస్తకాలు, వాహనాలను శుభ్రం చేసి, పసుపు కుంకుమ పెట్టి పూలతో అలంకరించండి.",
+          "en": "Clean your tools, books and vehicles, mark them with turmeric and kumkum and decorate them with flowers."
+        },
+        {
+          "te": "వాటికి పూజ చేసి, నైవేద్యం పెట్టి, ఆ రోజు వాటితో పని చేయకుండా విశ్రాంతి ఇవ్వండి.",
+          "en": "Worship them, offer naivedyam and let them rest for the day."
+        }
+      ]
+    },
+    {
+      "id": "dashami",
+      "title": {
+        "te": "విజయదశమి: జమ్మి పూజ",
+        "en": "Vijayadashami: Shami puja"
+      },
+      "steps": [
+        {
+          "te": "సాయంత్రం జమ్మి చెట్టు వద్దకు వెళ్లి పూజ చేయండి; శమీ శ్లోకం చదవండి.",
+          "en": "In the evening, go to a shami (jammi) tree, worship it and recite the shami verse."
+        },
+        {
+          "te": "జమ్మి ఆకులను 'బంగారం'గా పెద్దలకు ఇచ్చి నమస్కరించి ఆశీస్సులు తీసుకోండి.",
+          "en": "Give the shami leaves as 'bangaram' to elders, bow and take their blessings."
+        },
+        {
+          "te": "ఈ రోజు కొత్త విద్య లేదా కొత్త పని మొదలుపెట్టడం శుభమని భావిస్తారు.",
+          "en": "Starting a new study or new work on this day is considered auspicious."
+        }
+      ]
+    }
+  ],
+  "samagri": [
+    {
+      "te": "పసుపు, కుంకుమ, అక్షతలు",
+      "en": "Turmeric, kumkum and akshata (rice)"
+    },
+    {
+      "te": "పూలు, మామిడాకులు",
+      "en": "Flowers and mango leaves"
+    },
+    {
+      "te": "తమలపాకులు, వక్కలు, పండ్లు, కొబ్బరికాయ",
+      "en": "Betel leaves, areca nuts, fruits and a coconut"
+    },
+    {
+      "te": "ప్రమిదలు, నూనె లేదా నెయ్యి, వత్తులు",
+      "en": "Clay lamps, oil or ghee and wicks"
+    },
+    {
+      "te": "అగరుబత్తీలు, కర్పూరం",
+      "en": "Incense sticks and camphor"
+    },
+    {
+      "te": "దుర్గాదేవి చిత్రపటం లేదా విగ్రహం",
+      "en": "A picture or idol of Goddess Durga"
+    },
+    {
+      "te": "పుస్తకాలు, పనిముట్లు (ఆయుధ పూజకు)",
+      "en": "Books and tools (for Ayudha puja)"
+    },
+    {
+      "te": "జమ్మి ఆకులు",
+      "en": "Shami (jammi) leaves"
+    }
+  ],
+  "naivedyam": [
+    {
+      "te": "పులిహోర",
+      "en": "Pulihora"
+    },
+    {
+      "te": "దద్దోజనం (పెరుగన్నం)",
+      "en": "Daddojanam (curd rice)"
+    },
+    {
+      "te": "చక్కెర పొంగలి",
+      "en": "Chakkara pongali"
+    },
+    {
+      "te": "గారెలు",
+      "en": "Garelu"
+    },
+    {
+      "te": "శనగల సుండల్",
+      "en": "Chickpea sundal"
+    }
+  ],
+  "verses": [
+    {
+      "te": "యా దేవీ సర్వభూతేషు శక్తిరూపేణ సంస్థితా | నమస్తస్యై నమస్తస్యై నమస్తస్యై నమో నమః",
+      "en": "Ya Devi sarvabhuteshu shaktirupena samsthita | Namastasyai namastasyai namastasyai namo namah"
+    },
+    {
+      "te": "శమీ శమయతే పాపం శమీ శత్రువినాశినీ | అర్జునస్య ధనుర్ధారీ రామస్య ప్రియదర్శినీ",
+      "en": "Shami shamayate papam shami shatruvinashini | Arjunasya dhanurdhari Ramasya priyadarshini"
+    }
+  ],
+  "videos": [],
+  "shops": [],
+  "sources": [
+    {
+      "title": "Vijayadashami (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Vijayadashami"
+    },
+    {
+      "title": "Navaratri (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Navaratri"
+    }
+  ]
+}

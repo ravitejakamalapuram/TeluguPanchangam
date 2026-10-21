@@ -34,7 +34,7 @@ jobs:
 
       - run: npm run build:web
         env:
-          ANALYTICS_URL: ${{ vars.ANALYTICS_URL }}
+          ANALYTICS_URL: ${{ vars.ANALYTICS_URL || 'https://telugupanchangam.goatcounter.com/count' }}
 
       - uses: actions/upload-pages-artifact@v3
         with:

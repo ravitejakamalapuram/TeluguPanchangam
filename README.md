@@ -47,7 +47,7 @@ Both run the same Panchangam engine, so the numbers match.
 
 - **The Chrome extension makes no network requests of its own.** No analytics, no ads, no servers. Your city, name, birth details and reminders stay on your device.
 - **The web app** uses only a cookieless page-view counter ([GoatCounter](https://www.goatcounter.com/)). It sets no cookies, stores nothing in your browser, sends no personal details, and is skipped when your browser sends Do Not Track or Global Privacy Control.
-- The optional "Use My Location" button hands off to Chrome's built-in location service, and only if you press it.
+- The optional "Use My Location" button requests your location through your browser's built-in geolocation service, and only if you press it.
 
 Full details are in [PRIVACY.md](PRIVACY.md).
 

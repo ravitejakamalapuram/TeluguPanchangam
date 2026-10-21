@@ -1,0 +1,170 @@
+{
+  "id": "FESTIVAL_VARALAKSHMI_VRATAM",
+  "appliesTo": [
+    "FESTIVAL_VARALAKSHMI_VRATAM"
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": null,
+    "date": null
+  },
+  "title": {
+    "te": "వరలక్ష్మీ వ్రతం: పూజా విధానం",
+    "en": "Varalakshmi Vratam: how to celebrate"
+  },
+  "summary": {
+    "te": "శ్రావణ మాసంలో పౌర్ణమికి ముందు శుక్రవారం నాడు కలశంలో వరలక్ష్మీ దేవి పూజ, తొమ్మిది ముడుల తోరం, ముత్తైదువులకు తాంబూలం: ఆంధ్ర, తెలంగాణ ఇళ్లలో సాధారణంగా చేసుకునే విధానం ఇది.",
+    "en": "On the Friday before the full moon in Shravana, worship of Goddess Varalakshmi on a kalasam, a nine-knot thread and tambulam for married women: the way most Andhra and Telangana homes celebrate."
+  },
+  "variation": {
+    "te": "ఇది సాధారణ విధానం మాత్రమే. కుటుంబ సంప్రదాయం, గురువుల సూచన, ప్రాంతాన్ని బట్టి విధానాలు మారుతాయి; మీ ఇంటి సంప్రదాయం ముందు. తిథి రెండు రోజులకు విస్తరించే సంవత్సరాలలో తేదీ సంప్రదాయాన్ని బట్టి మారవచ్చు; అలాంటి రోజుల్లో యాప్ ఆ విషయం తెలియజేస్తుంది.",
+    "en": "This is the common way, not the only one. Practice differs by family tradition, by guru and by region, so follow your own family's custom first. When the tithi spans two days, the date can differ by tradition; the app shows a note on such days."
+  },
+  "sections": [
+    {
+      "id": "preparation",
+      "title": {
+        "te": "ముందస్తు సన్నాహాలు",
+        "en": "Getting ready"
+      },
+      "steps": [
+        {
+          "te": "ఇల్లు శుభ్రం చేసి, పూజా స్థలంలో ముగ్గు వేసి, మండపం అలంకరించండి.",
+          "en": "Clean the house, draw muggu at the puja space and decorate a mandapam."
+        },
+        {
+          "te": "కలశంలో బియ్యం లేదా నీరు పోసి, మామిడాకులు పెట్టి, పైన కొబ్బరికాయ ఉంచి, అమ్మవారి ముఖాన్ని అలంకరించండి.",
+          "en": "Fill a kalasam with rice or water, place mango leaves and a coconut on top and decorate it with the goddess's face."
+        },
+        {
+          "te": "తొమ్మిది పోగుల దారానికి తొమ్మిది ముడులు వేసి, పూలు కట్టి తోరం సిద్ధం చేయండి.",
+          "en": "Prepare the toram: a thread of nine strands with nine knots and flowers tied to it."
+        }
+      ]
+    },
+    {
+      "id": "puja",
+      "title": {
+        "te": "పూజ",
+        "en": "The puja"
+      },
+      "steps": [
+        {
+          "te": "గణపతి పూజతో మొదలుపెట్టి, కలశ పూజ చేయండి.",
+          "en": "Begin with Ganesha puja, then worship the kalasam."
+        },
+        {
+          "te": "అమ్మవారిని ఆవాహన చేసి, అష్టోత్తర నామాలతో పూజ చేసి, తోరాన్ని పూజించండి.",
+          "en": "Invoke the goddess, worship her with the 108 names and worship the toram."
+        },
+        {
+          "te": "వరలక్ష్మీ వ్రత కథ చదివి లేదా విని, అక్షతలు వేసుకోండి.",
+          "en": "Read or listen to the Varalakshmi vratam story and place akshata on your head."
+        },
+        {
+          "te": "తోరాన్ని కుడి చేతికి కట్టుకుని, నైవేద్యం పెట్టి హారతి ఇవ్వండి.",
+          "en": "Tie the toram on the right wrist, offer naivedyam and show aarti."
+        }
+      ]
+    },
+    {
+      "id": "after",
+      "title": {
+        "te": "తాంబూలం",
+        "en": "Tambulam"
+      },
+      "steps": [
+        {
+          "te": "ముత్తైదువులను పిలిచి పసుపు, కుంకుమ, పండ్లు, తాంబూలం ఇవ్వండి.",
+          "en": "Invite married women and give them turmeric, kumkum, fruits and tambulam."
+        },
+        {
+          "te": "మరుసటి రోజు కలశాన్ని తీసి, బియ్యం వాడి ఉంటే ఇంట్లో వాడుకోండి; నీరు వాడి ఉంటే మొక్కలకు పోయండి.",
+          "en": "Next day, lift the kalasam: use the rice at home if rice was used, or pour the water on plants if water was used."
+        }
+      ]
+    }
+  ],
+  "samagri": [
+    {
+      "te": "పసుపు, కుంకుమ, అక్షతలు",
+      "en": "Turmeric, kumkum and akshata (rice)"
+    },
+    {
+      "te": "పూలు, మామిడాకులు",
+      "en": "Flowers and mango leaves"
+    },
+    {
+      "te": "తమలపాకులు, వక్కలు, పండ్లు, కొబ్బరికాయ",
+      "en": "Betel leaves, areca nuts, fruits and a coconut"
+    },
+    {
+      "te": "ప్రమిదలు, నూనె లేదా నెయ్యి, వత్తులు",
+      "en": "Clay lamps, oil or ghee and wicks"
+    },
+    {
+      "te": "అగరుబత్తీలు, కర్పూరం",
+      "en": "Incense sticks and camphor"
+    },
+    {
+      "te": "కలశం, మామిడాకులు",
+      "en": "A kalasam and mango leaves"
+    },
+    {
+      "te": "తొమ్మిది పోగుల దారం (తోరం), పూలు",
+      "en": "A nine-strand thread (toram) and flowers"
+    },
+    {
+      "te": "రవికె బట్ట, పసుపు, కుంకుమ (వాయనానికి)",
+      "en": "A blouse piece, turmeric and kumkum (for the vayanam)"
+    },
+    {
+      "te": "లక్ష్మీదేవి చిత్రపటం, అలంకరణ నగలు",
+      "en": "A picture of Lakshmi and ornaments for decoration"
+    }
+  ],
+  "naivedyam": [
+    {
+      "te": "పులిహోర",
+      "en": "Pulihora"
+    },
+    {
+      "te": "పాయసం",
+      "en": "Payasam"
+    },
+    {
+      "te": "బొబ్బట్లు",
+      "en": "Bobbatlu"
+    },
+    {
+      "te": "కుడుములు, గారెలు",
+      "en": "Kudumulu and garelu"
+    },
+    {
+      "te": "చలిమిడి",
+      "en": "Chalimidi"
+    }
+  ],
+  "verses": [
+    {
+      "te": "పద్మాసనే పద్మకరే సర్వలోకైక పూజితే | నారాయణప్రియే దేవి సుప్రీతా భవ సర్వదా",
+      "en": "Padmasane padmakare sarvaloka-ika pujite | Narayanapriye devi supreeta bhava sarvada"
+    },
+    {
+      "te": "ఓం శ్రీ మహాలక్ష్మ్యై నమః",
+      "en": "Om Sri Mahalakshmyai Namah"
+    }
+  ],
+  "videos": [],
+  "shops": [],
+  "sources": [
+    {
+      "title": "Varalakshmi Vratam (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Varalakshmi_Vratam"
+    },
+    {
+      "title": "Lakshmi (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Lakshmi"
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "id": "FESTIVAL_MAHA_SHIVARATRI",
+  "appliesTo": [
+    "FESTIVAL_MAHA_SHIVARATRI"
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": null,
+    "date": null
+  },
+  "title": {
+    "te": "మహా శివరాత్రి: ఉపవాసం, జాగరణ, అభిషేకం",
+    "en": "Maha Shivaratri: fast, vigil and abhishekam"
+  },
+  "summary": {
+    "te": "శివరాత్రి నాడు ఉపవాసం, రాత్రి జాగరణ, శివలింగానికి అభిషేకం, బిల్వ పత్రాలతో పూజ: ఆంధ్ర, తెలంగాణ ఇళ్లలో సాధారణంగా చేసుకునే విధానం ఇది.",
+    "en": "A fast on Shivaratri, a night-long vigil, abhishekam of the Shiva lingam and worship with bilva leaves: the way most Andhra and Telangana homes celebrate."
+  },
+  "variation": {
+    "te": "ఇది సాధారణ విధానం మాత్రమే. కుటుంబ సంప్రదాయం, గురువుల సూచన, ప్రాంతాన్ని బట్టి విధానాలు మారుతాయి; మీ ఇంటి సంప్రదాయం ముందు. తిథి రెండు రోజులకు విస్తరించే సంవత్సరాలలో తేదీ సంప్రదాయాన్ని బట్టి మారవచ్చు; అలాంటి రోజుల్లో యాప్ ఆ విషయం తెలియజేస్తుంది.",
+    "en": "This is the common way, not the only one. Practice differs by family tradition, by guru and by region, so follow your own family's custom first. When the tithi spans two days, the date can differ by tradition; the app shows a note on such days."
+  },
+  "sections": [
+    {
+      "id": "day",
+      "title": {
+        "te": "పగలు",
+        "en": "During the day"
+      },
+      "steps": [
+        {
+          "te": "తెల్లవారుజామున స్నానం చేసి, శివుడికి నమస్కరించి ఉపవాసం సంకల్పం చేసుకోండి.",
+          "en": "Bathe early, bow to Shiva and take the resolve to fast."
+        },
+        {
+          "te": "చాలామంది నీరు, పండ్లు, పాలు మాత్రమే తీసుకుంటారు; ఆరోగ్యం బాగాలేనివారు తమకు తగినట్లు చేసుకోండి.",
+          "en": "Many take only water, fruits and milk; those unwell should do what suits their health."
+        },
+        {
+          "te": "దగ్గరలోని శివాలయాన్ని దర్శించండి.",
+          "en": "Visit a nearby Shiva temple."
+        }
+      ]
+    },
+    {
+      "id": "night",
+      "title": {
+        "te": "రాత్రి: పూజ, జాగరణ",
+        "en": "At night: puja and vigil"
+      },
+      "steps": [
+        {
+          "te": "శివలింగానికి నీరు, పాలు, పెరుగు, తేనె, నెయ్యితో అభిషేకం చేయండి.",
+          "en": "Perform abhishekam of the Shiva lingam with water, milk, curd, honey and ghee."
+        },
+        {
+          "te": "బిల్వ పత్రాలు, తెల్లని పూలతో పూజ చేయండి; తులసి, కేతకి పూలు శివపూజకు వాడరు.",
+          "en": "Worship with bilva leaves and white flowers; tulasi and ketaki flowers are not used for Shiva."
+        },
+        {
+          "te": "'ఓం నమః శివాయ' జపిస్తూ రాత్రంతా జాగరణ చేయండి; రాత్రిని నాలుగు జాములుగా విభజించి ప్రతి జాములో పూజ చేసే సంప్రదాయం ఉంది.",
+          "en": "Keep vigil through the night chanting 'Om Namah Shivaya'; some families divide the night into four praharas and worship in each."
+        },
+        {
+          "te": "మరుసటి ఉదయం స్నానం చేసి, శివుడికి నివేదన చేసి ఉపవాసం విరమించండి.",
+          "en": "Next morning, bathe, make an offering and break the fast."
+        }
+      ]
+    }
+  ],
+  "samagri": [
+    {
+      "te": "శివలింగం లేదా శివుని చిత్రపటం",
+      "en": "A Shiva lingam or a picture of Shiva"
+    },
+    {
+      "te": "బిల్వ పత్రాలు, తెల్లని పూలు",
+      "en": "Bilva leaves and white flowers"
+    },
+    {
+      "te": "నీరు, పాలు, పెరుగు, తేనె, నెయ్యి",
+      "en": "Water, milk, curd, honey and ghee"
+    },
+    {
+      "te": "విభూతి (భస్మం)",
+      "en": "Vibhuti (sacred ash)"
+    },
+    {
+      "te": "అగరుబత్తీలు, కర్పూరం, ప్రమిదలు, నూనె",
+      "en": "Incense, camphor, lamps and oil"
+    },
+    {
+      "te": "పండ్లు, కొబ్బరికాయ",
+      "en": "Fruits and a coconut"
+    }
+  ],
+  "naivedyam": [
+    {
+      "te": "పండ్లు",
+      "en": "Fruits"
+    },
+    {
+      "te": "పాలు",
+      "en": "Milk"
+    },
+    {
+      "te": "సగ్గుబియ్యం కిచిడీ లేదా పాయసం",
+      "en": "Sabudana (sago) kichdi or payasam"
+    },
+    {
+      "te": "బెల్లం, కొబ్బరి",
+      "en": "Jaggery and coconut"
+    }
+  ],
+  "verses": [
+    {
+      "te": "ఓం నమః శివాయ",
+      "en": "Om Namah Shivaya"
+    },
+    {
+      "te": "త్ర్యంబకం యజామహే సుగంధిం పుష్టివర్ధనమ్ | ఉర్వారుకమివ బంధనాన్ మృత్యోర్ముక్షీయ మామృతాత్",
+      "en": "Tryambakam yajamahe sugandhim pushtivardhanam | Urvarukamiva bandhanan mrityor mukshiya mamritat"
+    }
+  ],
+  "videos": [],
+  "shops": [],
+  "sources": [
+    {
+      "title": "Maha Shivaratri (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Maha_Shivaratri"
+    },
+    {
+      "title": "Shiva (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Shiva"
+    }
+  ]
+}

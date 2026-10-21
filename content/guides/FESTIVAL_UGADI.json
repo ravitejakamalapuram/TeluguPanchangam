@@ -1,0 +1,158 @@
+{
+  "id": "FESTIVAL_UGADI",
+  "appliesTo": [
+    "FESTIVAL_UGADI"
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": null,
+    "date": null
+  },
+  "title": {
+    "te": "ఉగాది: పచ్చడి, పంచాంగ శ్రవణం",
+    "en": "Ugadi: the pachadi and the panchangam"
+  },
+  "summary": {
+    "te": "తెలుగు నూతన సంవత్సరం నాడు తలస్నానం, ఇంటికి తోరణాలు, షడ్రుచుల ఉగాది పచ్చడి, పంచాంగ శ్రవణం: ఆంధ్ర, తెలంగాణ ఇళ్లలో సాధారణంగా చేసుకునే విధానం ఇది.",
+    "en": "A head bath, mango-leaf toranam, the six-taste Ugadi pachadi and listening to the year's panchangam on the Telugu new year: the way most Andhra and Telangana homes celebrate."
+  },
+  "variation": {
+    "te": "ఇది సాధారణ విధానం మాత్రమే. కుటుంబ సంప్రదాయం, గురువుల సూచన, ప్రాంతాన్ని బట్టి విధానాలు మారుతాయి; మీ ఇంటి సంప్రదాయం ముందు. తిథి రెండు రోజులకు విస్తరించే సంవత్సరాలలో తేదీ సంప్రదాయాన్ని బట్టి మారవచ్చు; అలాంటి రోజుల్లో యాప్ ఆ విషయం తెలియజేస్తుంది.",
+    "en": "This is the common way, not the only one. Practice differs by family tradition, by guru and by region, so follow your own family's custom first. When the tithi spans two days, the date can differ by tradition; the app shows a note on such days."
+  },
+  "sections": [
+    {
+      "id": "morning",
+      "title": {
+        "te": "ఉదయం సన్నాహాలు",
+        "en": "Morning preparations"
+      },
+      "steps": [
+        {
+          "te": "తెల్లవారుజామున లేచి ఇంటిని శుభ్రం చేయండి; గుమ్మానికి మామిడాకుల తోరణం కట్టి, వాకిట్లో ముగ్గు వేయండి.",
+          "en": "Wake early, clean the house, hang a mango-leaf toranam on the door and draw muggu at the entrance."
+        },
+        {
+          "te": "నువ్వుల నూనె రాసుకుని తలస్నానం చేయండి.",
+          "en": "Apply sesame oil and take a head bath."
+        },
+        {
+          "te": "కొత్త బట్టలు ధరించి, ఇష్టదేవతకు దీపం వెలిగించి పూజ చేయండి.",
+          "en": "Put on new clothes, light a lamp and do a short puja to your family deity."
+        }
+      ]
+    },
+    {
+      "id": "pachadi",
+      "title": {
+        "te": "ఉగాది పచ్చడి",
+        "en": "Ugadi pachadi"
+      },
+      "steps": [
+        {
+          "te": "బెల్లం (తీపి), వేప పువ్వు (చేదు), చింతపండు (పులుపు), ఉప్పు (ఉప్పదనం), పచ్చి మిరప లేదా మిరియాలు (కారం), పచ్చి మామిడి ముక్కలు (వగరు) కలిపి పచ్చడి చేయండి.",
+          "en": "Mix jaggery (sweet), neem flowers (bitter), tamarind (sour), salt, green chilli or pepper (hot) and raw mango pieces (tangy) into a pachadi."
+        },
+        {
+          "te": "దేవునికి నైవేద్యం పెట్టి, ముందుగా ఈ పచ్చడిని ప్రసాదంగా తీసుకోండి.",
+          "en": "Offer it to the deity and take it first, as prasadam."
+        },
+        {
+          "te": "జీవితంలోని సుఖదుఃఖాలను సమంగా స్వీకరించాలని ఇది గుర్తు చేస్తుంది.",
+          "en": "It is a reminder to accept the joys and sorrows of life alike."
+        }
+      ]
+    },
+    {
+      "id": "panchangam",
+      "title": {
+        "te": "పంచాంగ శ్రవణం",
+        "en": "Hearing the panchangam"
+      },
+      "steps": [
+        {
+          "te": "సాయంత్రం గుడిలో లేదా ఇంట్లో పెద్దల ద్వారా కొత్త సంవత్సర పంచాంగం వినండి.",
+          "en": "In the evening, listen to the new year's panchangam reading at the temple or from an elder at home."
+        },
+        {
+          "te": "ఆదాయ వ్యయాలు, రాజపూజ్యం, అవమానం వంటి ఫలితాలను శ్రద్ధగా వినండి.",
+          "en": "Listen to the year's outlook, such as income and expenses and standing in society."
+        }
+      ]
+    }
+  ],
+  "samagri": [
+    {
+      "te": "పసుపు, కుంకుమ, అక్షతలు",
+      "en": "Turmeric, kumkum and akshata (rice)"
+    },
+    {
+      "te": "పూలు, మామిడాకులు",
+      "en": "Flowers and mango leaves"
+    },
+    {
+      "te": "తమలపాకులు, వక్కలు, పండ్లు, కొబ్బరికాయ",
+      "en": "Betel leaves, areca nuts, fruits and a coconut"
+    },
+    {
+      "te": "ప్రమిదలు, నూనె లేదా నెయ్యి, వత్తులు",
+      "en": "Clay lamps, oil or ghee and wicks"
+    },
+    {
+      "te": "అగరుబత్తీలు, కర్పూరం",
+      "en": "Incense sticks and camphor"
+    },
+    {
+      "te": "వేప పువ్వు, బెల్లం, చింతపండు, ఉప్పు",
+      "en": "Neem flowers, jaggery, tamarind and salt"
+    },
+    {
+      "te": "పచ్చి మామిడికాయ, పచ్చి మిరపకాయ లేదా మిరియాలు",
+      "en": "Raw mango and green chilli or pepper"
+    },
+    {
+      "te": "కొత్త బట్టలు",
+      "en": "New clothes"
+    }
+  ],
+  "naivedyam": [
+    {
+      "te": "ఉగాది పచ్చడి",
+      "en": "Ugadi pachadi"
+    },
+    {
+      "te": "బొబ్బట్లు (పోలెలు)",
+      "en": "Bobbatlu (pooran poli)"
+    },
+    {
+      "te": "పులిహోర",
+      "en": "Pulihora"
+    },
+    {
+      "te": "పాయసం",
+      "en": "Payasam"
+    }
+  ],
+  "verses": [
+    {
+      "te": "ఓం గం గణపతయే నమః",
+      "en": "Om Gam Ganapataye Namah"
+    },
+    {
+      "te": "శతాయుర్వజ్రదేహాయ సర్వసంపత్కరాయ చ | సర్వారిష్టవినాశాయ నింబకందళభక్షణమ్",
+      "en": "Shatayur vajradehaya sarvasampatkaraya cha | Sarvarishtavinashaya nimbakandalabhakshanam"
+    }
+  ],
+  "videos": [],
+  "shops": [],
+  "sources": [
+    {
+      "title": "Ugadi (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Ugadi"
+    },
+    {
+      "title": "Panchangam (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Panchangam"
+    }
+  ]
+}

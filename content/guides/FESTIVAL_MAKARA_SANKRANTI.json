@@ -1,0 +1,168 @@
+{
+  "id": "FESTIVAL_MAKARA_SANKRANTI",
+  "appliesTo": [
+    "FESTIVAL_BHOGI",
+    "FESTIVAL_MAKARA_SANKRANTI",
+    "FESTIVAL_KANUMA"
+  ],
+  "review": {
+    "status": "draft",
+    "reviewer": null,
+    "date": null
+  },
+  "title": {
+    "te": "సంక్రాంతి: భోగి, సంక్రాంతి, కనుమ",
+    "en": "Sankranti: Bhogi, Sankranti and Kanuma"
+  },
+  "summary": {
+    "te": "మూడు రోజుల పండుగ: భోగి నాడు భోగి మంటలు, సంక్రాంతి నాడు పొంగలి, కనుమ నాడు పశువుల పూజ: ఆంధ్ర, తెలంగాణ ఇళ్లలో సాధారణంగా చేసుకునే విధానం ఇది.",
+    "en": "A three-day festival: bonfire on Bhogi, pongali on Sankranti and cattle worship on Kanuma: the way most Andhra and Telangana homes celebrate."
+  },
+  "variation": {
+    "te": "ఇది సాధారణ విధానం మాత్రమే. కుటుంబ సంప్రదాయం, గురువుల సూచన, ప్రాంతాన్ని బట్టి విధానాలు మారుతాయి; మీ ఇంటి సంప్రదాయం ముందు. తిథి రెండు రోజులకు విస్తరించే సంవత్సరాలలో తేదీ సంప్రదాయాన్ని బట్టి మారవచ్చు; అలాంటి రోజుల్లో యాప్ ఆ విషయం తెలియజేస్తుంది.",
+    "en": "This is the common way, not the only one. Practice differs by family tradition, by guru and by region, so follow your own family's custom first. When the tithi spans two days, the date can differ by tradition; the app shows a note on such days."
+  },
+  "sections": [
+    {
+      "id": "bhogi",
+      "title": {
+        "te": "భోగి",
+        "en": "Bhogi"
+      },
+      "steps": [
+        {
+          "te": "తెల్లవారుజామున ఇంట్లోని పాత, పనికిరాని కర్రసామాను వేసి భోగి మంట వెలిగించండి.",
+          "en": "Before sunrise, light the Bhogi fire with old, unwanted wooden things from the house."
+        },
+        {
+          "te": "నువ్వుల నూనెతో తలస్నానం చేసి, వాకిట్లో ముగ్గులు వేయండి.",
+          "en": "Take an oil bath and draw muggulu at the entrance."
+        },
+        {
+          "te": "సాయంత్రం పిల్లల తలపై రేగిపండ్లు, చెరకు ముక్కలు, పూలు, నాణేలు కలిపి భోగి పళ్లు పోసి ఆశీర్వదించండి.",
+          "en": "In the evening, pour bhogi pallu (regi fruits, sugarcane pieces, flowers and coins) over children's heads to bless them."
+        }
+      ]
+    },
+    {
+      "id": "sankranti",
+      "title": {
+        "te": "మకర సంక్రాంతి",
+        "en": "Makara Sankranti"
+      },
+      "steps": [
+        {
+          "te": "కొత్త బట్టలు ధరించి, సూర్యుడికి నమస్కరించి పూజ చేయండి.",
+          "en": "Wear new clothes and offer worship to the Sun."
+        },
+        {
+          "te": "కొత్త బియ్యం, పాలు, బెల్లంతో పొంగలి వండి సూర్యునికి నివేదన చేయండి.",
+          "en": "Cook pongali with new rice, milk and jaggery and offer it to the Sun."
+        },
+        {
+          "te": "పెద్దలకు తిలతర్పణం ఇవ్వడం, దానం చేయడం ఈ రోజు సంప్రదాయం.",
+          "en": "Offering sesame tarpanam to ancestors and giving daanam are customary on this day."
+        },
+        {
+          "te": "ఇంటి ముందు రంగవల్లులు, గొబ్బెమ్మలు పెట్టండి.",
+          "en": "Decorate the front of the house with rangoli and gobbemmalu."
+        }
+      ]
+    },
+    {
+      "id": "kanuma",
+      "title": {
+        "te": "కనుమ",
+        "en": "Kanuma"
+      },
+      "steps": [
+        {
+          "te": "పశువులకు స్నానం చేయించి, కొమ్ములకు రంగులు వేసి, పసుపు కుంకుమ పెట్టి అలంకరించండి.",
+          "en": "Bathe the cattle, colour their horns and decorate them with turmeric and kumkum."
+        },
+        {
+          "te": "వాటికి పొంగలి, పండ్లు తినిపించి పూజ చేయండి.",
+          "en": "Worship them and feed them pongali and fruits."
+        },
+        {
+          "te": "బంధువులను, స్నేహితులను కలిసి శుభాకాంక్షలు చెప్పుకోండి.",
+          "en": "Visit relatives and friends and exchange greetings."
+        }
+      ]
+    }
+  ],
+  "samagri": [
+    {
+      "te": "పసుపు, కుంకుమ, అక్షతలు",
+      "en": "Turmeric, kumkum and akshata (rice)"
+    },
+    {
+      "te": "పూలు, మామిడాకులు",
+      "en": "Flowers and mango leaves"
+    },
+    {
+      "te": "తమలపాకులు, వక్కలు, పండ్లు, కొబ్బరికాయ",
+      "en": "Betel leaves, areca nuts, fruits and a coconut"
+    },
+    {
+      "te": "కొత్త బియ్యం, పాలు, బెల్లం, నెయ్యి, పెసరపప్పు",
+      "en": "New rice, milk, jaggery, ghee and moong dal"
+    },
+    {
+      "te": "నువ్వులు, చెరకు",
+      "en": "Sesame seeds and sugarcane"
+    },
+    {
+      "te": "రేగిపండ్లు, పూలు, నాణేలు (భోగి పళ్లకు)",
+      "en": "Regi fruits, flowers and coins (for bhogi pallu)"
+    },
+    {
+      "te": "ఆవు పేడ గొబ్బెమ్మలు, ముగ్గు పిండి",
+      "en": "Cow dung gobbemmalu and rangoli powder"
+    }
+  ],
+  "naivedyam": [
+    {
+      "te": "పొంగలి",
+      "en": "Pongali"
+    },
+    {
+      "te": "అరిసెలు",
+      "en": "Ariselu"
+    },
+    {
+      "te": "సున్నుండలు, నువ్వుల లడ్డూలు",
+      "en": "Sunnundalu and sesame laddu"
+    },
+    {
+      "te": "గారెలు",
+      "en": "Garelu"
+    }
+  ],
+  "verses": [
+    {
+      "te": "ఓం సూర్యాయ నమః",
+      "en": "Om Suryaya Namah"
+    },
+    {
+      "te": "ఓం ఆదిత్యాయ నమః",
+      "en": "Om Adityaya Namah"
+    }
+  ],
+  "videos": [],
+  "shops": [],
+  "sources": [
+    {
+      "title": "Makar Sankranti (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Makar_Sankranti"
+    },
+    {
+      "title": "Bhogi (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Bhogi"
+    },
+    {
+      "title": "Kanuma (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Kanuma"
+    }
+  ]
+}

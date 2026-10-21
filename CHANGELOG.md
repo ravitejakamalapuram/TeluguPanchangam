@@ -6,6 +6,7 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 
 ### Added
 
+- Festival guides, first eight (#57): Ugadi, Sri Rama Navami, Vinayaka Chavithi, Dasara (Durgashtami to Vijayadashami), Sankranti (Bhogi, Sankranti, Kanuma), Maha Shivaratri and Varalakshmi Vratam join Deepavali. All are drafts: nothing shows in the app or on the website until a named person reviews a guide and signs it off. The extension bundles the files but shows no change until then.
 - Web app only: once a city is set, desktop and Android browsers that support it offer to install the panchangam as an app (shown once, never on first load). The extension is unchanged.
 - Web app only: links remember the viewed day, city and language (`?date=2026-10-20&city=hyderabad&lang=en`), and a shared card's link opens that same day. The extension is unchanged.
 - **Add to calendar** (web app epic #51, ticket #49 phase 1): buttons under "Upcoming this week" and in the Events card export the next 30 days of festivals and vratas (with parana times) or your own reminders as one .ics file for any calendar app. Solar reminders use their exact date; a lunar reminder exports its next occurrence. Built on the device: no accounts, no servers, no network calls.

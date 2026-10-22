@@ -1754,10 +1754,16 @@ input[type="text"], input[type="date"], input[type="time"], .cyber-form-panel se
    block, so a later base rule can never undo a phone or tablet layout.
    Spacing 4/8/12/16/24; radii --radius-sm/md/lg; type 14/16/18/20/24/30/36px.
    ========================================================================== */
-body { padding: 0 0 32px; background:
-  radial-gradient(circle at 12px 12px, rgba(200, 144, 46, 0.10) 2px, transparent 2.5px) 0 0 / 24px 24px,
-  var(--page-bg); }
-body::before { display: none; }
+/* A faint gold kolam flower on the page, and marigold garlands hanging down both edges */
+body { padding: 0 0 32px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23C8962E' stroke-opacity='.12'%3E%3Cpath d='M40 8c8 10 8 22 0 32-8-10-8-22 0-32zM40 72c-8-10-8-22 0-32 8 10 8 22 0 32zM8 40c10-8 22-8 32 0-10 8-22 8-32 0zM72 40c-10 8-22 8-32 0 10-8 22-8 32 0z'/%3E%3Ccircle cx='40' cy='40' r='3'/%3E%3C/g%3E%3C/svg%3E"), var(--page-bg); }
+body::before, body::after {
+  content: ""; display: block; position: fixed; top: 0; bottom: 0; width: 18px; height: auto; z-index: 0; pointer-events: none;
+  background: radial-gradient(circle at 9px 9px, #F59E1B 0 6px, transparent 6.5px) 0 0 / 18px 16px,
+              radial-gradient(circle at 9px 9px, #FFC93C 0 6px, transparent 6.5px) 0 8px / 18px 16px;
+  -webkit-mask: linear-gradient(#000 60%, transparent); mask: linear-gradient(#000 60%, transparent);
+}
+body::before { left: 6px; }
+body::after { right: 6px; }
 .v2, .temple, .temple-nav, .banner-stack, .v2-foot { width: min(1240px, 100% - 32px); margin-inline: auto; }
 .rating-banner { max-width: 1240px; }
 .v2 [hidden], .temple-nav [hidden] { display: none !important; }
@@ -1776,14 +1782,15 @@ body::before { display: none; }
 .temple-niche {
   position: absolute; left: 34.5%; top: 36.8%; width: 13.6%; height: 46.9%;
   border-radius: 50% 50% 0 0 / 28% 28% 0 0; overflow: hidden; display: grid; place-items: end center;
-  background: radial-gradient(ellipse at 50% 60%, #FFE3A0 0%, #E89A3A 40%, #6B2A0C 85%);
+  background: radial-gradient(circle at 50% 34%, #FFF4C2 0 10%, #F6C35A 24%, #C9663A 42%, #7A2C5E 64%, #2E1030 92%);
+  box-shadow: 0 0 30px 6px rgba(255, 200, 90, 0.45);
 }
 .niche-deity { width: 100%; height: 98%; object-fit: contain; object-position: 50% 100%; filter: drop-shadow(0 4px 10px rgba(60, 10, 0, 0.55)); }
 .temple-title { position: absolute; right: 4%; top: 26%; max-width: 40%; text-align: center; color: #FFF4D6; }
 .temple-title h1 {
   margin: 0; font-family: var(--font-display); font-weight: 400; line-height: 1.25;
-  font-size: clamp(1.5rem, 3.4vw, 3rem); color: #FFE9A8;
-  -webkit-text-stroke: 1px #6A160C; paint-order: stroke fill; text-shadow: 0 2px 0 #6A160C, 0 4px 14px rgba(70, 10, 0, 0.6);
+  font-size: clamp(1.5rem, 3.4vw, 3rem); color: #FFD866;
+  -webkit-text-stroke: 1.5px #6A1010; paint-order: stroke fill; text-shadow: 0 2px 0 #6A160C, 0 4px 14px rgba(70, 10, 0, 0.6);
 }
 .temple-title p { margin: 4px 0 0; font-size: clamp(0.875rem, 1.4vw, 1.125rem); font-weight: 600; color: #FFF4D6; text-shadow: 0 1px 6px rgba(70, 10, 0, 0.8); }
 
@@ -1821,13 +1828,14 @@ body::before { display: none; }
 .card, .v2 .zone {
   display: flex; flex-direction: column; min-width: 0; max-width: none; flex: initial; overflow: hidden;
   background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: var(--radius-lg);
-  box-shadow: 0 2px 8px rgba(78, 15, 8, 0.08);
+  box-shadow: 0 6px 18px -10px rgba(120, 70, 10, 0.35), inset 0 0 0 3px var(--panel-bg), inset 0 0 0 4px rgba(227, 199, 138, 0.55);
 }
 .v2-head, .v2 .zone-head, .v2-col > .panel > h3, .v2-row-more .sankalpam-scroll-decor {
   display: flex; align-items: center; gap: 10px; min-height: 48px; margin: 0; padding: 4px 16px;
   background: linear-gradient(180deg, #8E2414, var(--maroon-deep)); color: #FFF1D6; border-bottom: 2px solid var(--gold);
 }
 .zone-now .v2-head { background: linear-gradient(180deg, #8C6414, #5E420A); }
+.v2-col > #upcoming-card > h3 { background: linear-gradient(180deg, #2E7D3A, #1A4F24); }
 .v2-head-split { justify-content: space-between; flex-wrap: wrap; }
 .v2-head-icon { color: var(--gold-hi); font-size: 1.125rem; line-height: 1; }
 .v2-title, .v2 .zone-title, .v2-col > .panel > h3, .v2-row-more .sankalpam-card-title {
@@ -1894,8 +1902,9 @@ body::before { display: none; }
 .deity-frame {
   aspect-ratio: 4 / 5; overflow: hidden; display: grid; place-items: end center;
   border-radius: 48% 48% var(--radius-md) var(--radius-md) / 32% 32% var(--radius-md) var(--radius-md);
-  border: 4px solid var(--gold); box-shadow: 0 0 0 2px var(--gold-hi) inset, 0 6px 16px rgba(78, 15, 8, 0.25);
-  background: radial-gradient(ellipse at 50% 35%, #FFE7A8 0%, #F0B04C 45%, #8A3A12 100%);
+  border: 8px solid transparent; box-shadow: 0 10px 24px -10px rgba(90, 40, 0, 0.7);
+  background: radial-gradient(circle at 50% 34%, #FFF4C2 0 10%, #F6C35A 24%, #C9663A 42%, #7A2C5E 64%, #2E1030 92%) padding-box,
+              linear-gradient(135deg, #FFF0B8, #D9A23B 30%, #8A5A16 55%, #F1D27A 75%, #B07A22) border-box;
 }
 .deity-art { width: 94%; height: 96%; object-fit: contain; object-position: 50% 100%; }
 .deity-info { min-width: 0; }
@@ -2061,6 +2070,7 @@ html[lang="en"] { --font-display: 'Noto Serif Telugu', 'Noto Sans Telugu', serif
 .pj-tools .pj-ghost { border-color: rgba(243, 210, 122, 0.55); }
 
 /* ==== Width-specific rules: keep these last ==== */
+@media (max-width: 1319px) { body::before, body::after { display: none; } } /* only where the side margin has room */
 
 /* Tablet and small laptop */
 @media (max-width: 1100px) {

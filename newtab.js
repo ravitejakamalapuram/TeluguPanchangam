@@ -109,7 +109,7 @@ import { openPooja, halfVerses } from './ui/pooja.js';
   const DEFAULT_PROFILE_NAME = 'యజమాని'; // placeholder meaning "Owner" until the user sets a real name
   let currentCity = window.CityPresets.getDefault(); // { id, name, lat, lon, timeZone }
   let currentCoordinates = { lat: currentCity.lat, lng: currentCity.lon };
-  let userSettings = { name: DEFAULT_PROFILE_NAME, dob: '', tob: '12:00', rasi: '0', theme: 'auto' };
+  let userSettings = { name: DEFAULT_PROFILE_NAME, dob: '', tob: '12:00', rasi: '0', theme: 'light', templeLook: true }; // the temple look by default; dark and auto stay one tap away
   let selectedDate = new Date();
   let calendarViewDate = new Date();
   let todayPanchang = null;
@@ -214,7 +214,7 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     document.querySelectorAll('[data-theme-choice]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.themeChoice === choice)));
   }
   if (systemDark && systemDark.addEventListener) {
-    systemDark.addEventListener('change', () => { if ((userSettings.theme || 'auto') === 'auto') applyTheme('auto'); });
+    systemDark.addEventListener('change', () => { if ((userSettings.theme || 'light') === 'auto') applyTheme('auto'); });
   }
 
   // The profile name is free text the user can set via settings, so it can't
@@ -243,11 +243,17 @@ import { openPooja, halfVerses } from './ui/pooja.js';
       chrome.storage.local.get(['userSettings'], (result) => {
         if (result.userSettings) {
           userSettings = result.userSettings;
+          // v2 opens once in the temple look, whatever theme was saved before; any choice made after sticks.
+          if (!userSettings.templeLook) {
+            userSettings.theme = 'light';
+            userSettings.templeLook = true;
+            chrome.storage.local.set({ userSettings });
+          }
           renderProfileName();
           elSelectRasi.value = userSettings.rasi;
 
           // Apply theme
-          applyTheme(userSettings.theme || 'auto');
+          applyTheme(userSettings.theme || 'light');
 
           // Populate Settings form. The untouched default is a placeholder,
           // not real text, so the input stays blank and shows its

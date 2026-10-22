@@ -21,6 +21,7 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 - **Guided pooja** for any of the seven deities: 13 upacharas in order, each with its shloka, from lighting the lamp to the closing offering. Bell and conch buttons let you sound them yourself at any moment.
   - Sound is optional: a synthesised bell, plus a conch recording (CC BY 2.5) bundled with the extension.
   - It makes no network calls.
+- The temple look is the default theme, with the mockup's finish: a gold kolam pattern, marigold garlands down wide screens, a gold-lettered title, a glowing shrine behind the deity and a green festivals heading. Pages saved in dark or auto open once in the temple look; any theme chosen after that sticks.
 - "Right now" and "Coming up today" refresh every minute, and the page moves to the new day at the city's midnight.
 - Festival guides, first eight (#57): Ugadi, Sri Rama Navami, Vinayaka Chavithi, Dasara (Durgashtami to Vijayadashami), Sankranti (Bhogi, Sankranti, Kanuma), Maha Shivaratri and Varalakshmi Vratam join Deepavali. All are drafts: nothing shows in the app or on the website until a named person reviews a guide and signs it off. The extension bundles the files but shows no change until then.
 - Web app only: once a city is set, desktop and Android browsers that support it offer to install the panchangam as an app (shown once, never on first load). The extension is unchanged.

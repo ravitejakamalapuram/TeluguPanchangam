@@ -1497,13 +1497,11 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     const upcoming = isToday ? items.filter((it) => it.end > now) : items;
     const running = isToday ? upcoming.find((it) => it.type === 'inauspicious' && it.start <= now) : null;
 
-    if (!isToday) {
-      status.textContent = '';
-    } else if (running) {
-      status.textContent = window.I18N.teEn('ఇప్పుడు ' + running.label + ' — ' + formatTime(running.end) + ' వరకు', 'Now: ' + running.label + ' until ' + formatTime(running.end));
-    } else {
-      status.textContent = window.I18N.teEn('ప్రస్తుతం ఏ చెడు సమయమూ లేదు', 'No bad time right now');
-    }
+    const statusText = !isToday ? ''
+      : running ? window.I18N.teEn('ఇప్పుడు ' + running.label + ' — ' + formatTime(running.end) + ' వరకు', 'Now: ' + running.label + ' until ' + formatTime(running.end))
+      : window.I18N.teEn('ప్రస్తుతం ఏ చెడు సమయమూ లేదు', 'No bad time right now');
+    // An aria-live region: rewriting the same text every minute would be announced again.
+    if (status.textContent !== statusText) status.textContent = statusText;
     status.className = 'now-status ' + (running ? 'inauspicious' : 'auspicious');
 
     upcoming.slice(0, isToday ? 5 : upcoming.length).forEach((it) => {
@@ -1642,7 +1640,7 @@ import { openPooja, halfVerses } from './ui/pooja.js';
 
   // Once a minute: keep "right now" and "coming up" current, and roll over to the new day at the
   // city's midnight when the page is following today.
-  let followedDay = null;
+  let followedDay = isSameDay(selectedDate, cityToday()) ? cityToday() : null;
   setInterval(async () => {
     if (!activePanchang) return;
     const today = cityToday();

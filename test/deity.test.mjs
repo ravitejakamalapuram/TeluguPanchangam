@@ -34,6 +34,8 @@ test('deityFor picks the weekday in the asked language and wraps out-of-range da
   assert.equal(thu.weekdayName, 'గురువారం');
   assert.equal(deityFor(4, 'en').name, 'Sri Dattatreya');
   assert.equal(deityFor(7).id, 'surya');
+  assert.equal(deityFor(7).weekdayName, 'ఆదివారం');
+  assert.equal(deityFor(-1).weekday, 6);
   assert.equal(deityFor(-1).id, 'venkateswara');
   assert.equal(deityFor(1, 'xx').name, DEITIES[1].name.te, 'unknown language falls back to Telugu');
 });

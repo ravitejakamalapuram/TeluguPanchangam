@@ -110,11 +110,12 @@ export const WEEKDAY_NAMES = {
 
 // The weekday's deity in one language: plain strings ready for textContent.
 export function deityFor(weekday, lang = 'te') {
-  const d = DEITIES[((weekday % 7) + 7) % 7];
+  const day = ((weekday % 7) + 7) % 7;
+  const d = DEITIES[day];
   const l = lang === 'en' ? 'en' : 'te';
   return {
-    id: d.id, sticker: d.sticker, tint: d.tint, weekday,
-    weekdayName: WEEKDAY_NAMES[l][weekday],
+    id: d.id, sticker: d.sticker, tint: d.tint, weekday: day,
+    weekdayName: WEEKDAY_NAMES[l][day],
     name: d.name[l], blessing: d.blessing[l],
     mantras: d.mantras.map((m) => m[l]),
     dhyana: d.dhyana[l]

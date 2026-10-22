@@ -2083,3 +2083,27 @@ body::before { display: none; }
 .v2-row-more .share-icon:hover { background: rgba(255, 255, 255, 0.18); }
 .v2-row-more .btn.tiny-btn { align-self: flex-start; }
 .v2-row-more .gita-ref { margin-top: 0; }
+
+/* Deity card: a bigger frame and the dhyana shloka fill the card beside the timings */
+.deity-body { grid-template-columns: minmax(180px, 44%) minmax(0, 1fr); }
+.deity-dhyana { margin: 12px 0 0; padding: 8px 12px; border-left: 3px solid var(--gold); background: var(--panel-soft);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0; font-size: 1rem; line-height: 1.7; color: var(--text-primary); }
+.deity-mantras { margin: 12px 0 16px; }
+@media (max-width: 600px) { .deity-body { grid-template-columns: 120px minmax(0, 1fr); } .deity-dhyana { font-size: 0.875rem; } }
+/* One column split for both two-column rows, so card edges line up down the page. */
+.v2-row-main { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+/* Festivals and own events take the maroon card head too. */
+.v2-col > .panel { padding: 0 0 16px; display: flex; flex-direction: column; gap: 12px; }
+.v2-col > .panel > h3 {
+  margin: 0; min-height: 48px; padding: 4px 56px 4px 16px; display: flex; align-items: center;
+  background: linear-gradient(180deg, #8E2414, var(--maroon-deep)); border-bottom: 2px solid var(--gold);
+  font-family: var(--font-display); font-weight: 400; font-size: 1.25rem; line-height: 1.4; color: #FFF1D6;
+}
+.v2 .upcoming-card h3, .v2 .reminders-card h3 { color: #FFF1D6; padding-right: 56px; }
+.v2-col > .panel > :not(h3):not(.share-icon) { margin-inline: 16px; }
+.v2-col > .panel > .btn { align-self: flex-start; margin-top: 0; }
+.v2-col > .panel .share-icon { top: 6px; right: 8px; color: #FFF1D6; }
+.v2-col > .panel .share-icon:hover { background: rgba(255, 255, 255, 0.18); }
+.v2-col .upcoming-card > .btn + .btn { margin-top: -4px; }
+/* Layout rules above set display on some toggled elements; [hidden] must still win. */
+.v2 [hidden], .temple-nav [hidden] { display: none !important; }

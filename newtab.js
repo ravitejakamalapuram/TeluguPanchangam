@@ -654,6 +654,9 @@ import { openPooja } from './ui/pooja.js';
       ? window.I18N.teEn('ఈరోజు', 'Today')
       : selectedDate.toLocaleDateString(lang === 'en' ? 'en-US' : 'te-IN', { weekday: 'short', day: 'numeric', month: 'short' });
     document.getElementById('z-today').textContent = title;
+    // The timings card names the selected day when it is not today, and then lists the whole day.
+    document.getElementById('z-now').textContent = isToday ? window.I18N.teEn('నేటి ముహూర్తాలు', 'Timings today') : window.I18N.teEn(`ముహూర్తాలు · ${title}`, `Timings · ${title}`);
+    document.querySelector('#now .next-heading').textContent = isToday ? window.I18N.teEn('ఇక ముందు ఈరోజు', 'Coming up today') : window.I18N.teEn('ఆ రోజు సమయాలు', 'Through the day');
     const todayLabel = window.I18N.teEn('ఈ రోజు', 'Today');
     const todayDate = cityToday().toLocaleDateString(lang === 'en' ? 'en-US' : 'te-IN', { day: 'numeric', month: 'short' });
     document.querySelectorAll('.zone-today-btn').forEach((btn) => {
@@ -790,6 +793,7 @@ import { openPooja } from './ui/pooja.js';
     document.getElementById('deity-weekday').textContent = d.weekdayName;
     document.getElementById('deity-name').textContent = d.name;
     document.getElementById('deity-blessing').textContent = d.blessing;
+    document.getElementById('deity-dhyana').textContent = d.dhyana;
     document.getElementById('deity-mantras').replaceChildren(...d.mantras.map((m) => {
       const li = document.createElement('li'); li.textContent = m; return li;
     }));
@@ -1499,7 +1503,7 @@ import { openPooja } from './ui/pooja.js';
     }
     status.className = 'now-status ' + (running ? 'inauspicious' : 'auspicious');
 
-    upcoming.slice(0, 5).forEach((it) => {
+    upcoming.slice(0, isToday ? 5 : upcoming.length).forEach((it) => {
       const li = document.createElement('li');
       li.className = 'next-item ' + it.type;
       const name = document.createElement('span');

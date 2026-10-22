@@ -74,3 +74,7 @@ test('the release ships the v2 art, sound and fonts', () => {
   }
   assert.match(read('ui/pooja.js'), /new Audio\('audio\/conch\.ogg'\)/, 'the conch is the bundled file, not a network URL');
 });
+
+test('v2 layout rules never override the hidden attribute', () => {
+  assert.match(read('newtab.css'), /\.v2 \[hidden\], \.temple-nav \[hidden\] \{ display: none !important; \}/);
+});

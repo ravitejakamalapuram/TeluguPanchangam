@@ -16,11 +16,25 @@
     <button id="rating-dismiss" type="button" class="rating-dismiss" aria-label="Dismiss">&times;</button>
   </div>
 
-  <header class="topbar">
-    <div class="brand">
-      <svg class="brand-mark" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1.6 2.4 2.4 3.9 2.4 5.4A2.4 2.4 0 0 1 12 10.8a2.4 2.4 0 0 1-2.4-2.4C9.6 6.9 10.4 5.4 12 3z" fill="#E2B23A"></path><path d="M4 14h16c0 3.3-3.6 6-8 6s-8-2.7-8-6z" fill="#FBE4D8"></path></svg>
-      <span class="brand-name" data-i18n-te="పంచాంగం" data-i18n-en="Panchangam">పంచాంగం</span>
-      <span id="profile-name" class="visually-hidden">యజమాని</span>
+  <!-- v2 temple header: banner with the day's deity in the shrine doorway -->
+  <header id="temple" class="temple">
+    <div class="temple-niche"><img id="niche-deity" class="niche-deity" src="art/deities/dattatreya.webp" alt=""></div>
+    <div class="temple-title">
+      <h1 data-i18n-te="శ్రీ తెలుగు పంచాంగం" data-i18n-en="Telugu Panchangam">శ్రీ తెలుగు పంచాంగం</h1>
+      <p data-i18n-te="ధర్మం · సంస్కారం · సనాతన సంస్కృతి" data-i18n-en="Dharma · Samskara · Sanatana tradition">ధర్మం · సంస్కారం · సనాతన సంస్కృతి</p>
+    </div>
+    <span id="profile-name" class="visually-hidden">యజమాని</span>
+  </header>
+
+  <nav class="topbar temple-nav" aria-label="Sections">
+    <div class="nav-links">
+      <a href="#today" data-i18n-te="ఈరోజు" data-i18n-en="Today">ఈరోజు</a>
+      <a href="#now" data-i18n-te="ముహూర్తాలు" data-i18n-en="Timings">ముహూర్తాలు</a>
+      <a href="#month" data-i18n-te="క్యాలెండర్" data-i18n-en="Calendar">క్యాలెండర్</a>
+      <a href="#upcoming-card" data-i18n-te="పండుగలు" data-i18n-en="Festivals">పండుగలు</a>
+      <a href="#rasi" data-i18n-te="రాశి ఫలాలు" data-i18n-en="Rasi phalalu">రాశి ఫలాలు</a>
+      <a href="#week" data-i18n-te="వారం దేవతలు" data-i18n-en="Deities">వారం దేవతలు</a>
+      <a href="#more" data-i18n-te="సంకల్పం · గీత" data-i18n-en="Sankalpam · Gita">సంకల్పం · గీత</a>
     </div>
     <div class="topbar-controls">
       <span id="topbar-time" class="topbar-time" aria-hidden="true"></span>
@@ -35,11 +49,6 @@
       </div>
       <button id="btn-open-settings" type="button" class="icon-btn" aria-label="Settings" data-i18n-aria-te="సెట్టింగ్‌లు" data-i18n-aria-en="Settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
     </div>
-  </header>
-  <nav class="section-nav" aria-label="Sections">
-    <a href="#today" data-i18n-te="ఈరోజు" data-i18n-en="Today">ఈరోజు</a>
-    <a href="#month" data-i18n-te="నెల" data-i18n-en="Month">నెల</a>
-    <a href="#now" data-i18n-te="ఇప్పుడు" data-i18n-en="Now">ఇప్పుడు</a>
   </nav>
 
   <!-- Alert banners sit under the header, above the three zones -->
@@ -62,138 +71,111 @@
     </section>
   </div>
 
-  <!-- Three zones: Today, Month, Now; rasi phalalu below -->
-  <div class="dashboard">
-      <section id="today" class="zone zone-today" aria-labelledby="z-today">
-        <div class="zone-head">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"></path></svg>
-          <h2 id="z-today" class="zone-title" tabindex="-1">ఈరోజు</h2>
-          <button type="button" id="btn-zone-today" class="zone-today-btn" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"></path><path d="M4 9h10a6 6 0 0 1 0 12h-3"></path></svg><span class="today-label">ఈ రోజు</span></button>
-          <button type="button" class="share-icon" data-share="day" data-i18n-aria-te="ఈరోజు పంచాంగం పంచుకోండి" data-i18n-aria-en="Share today's panchangam" aria-label="ఈరోజు పంచాంగం పంచుకోండి"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"></path></svg></button>
+  <main class="v2">
+    <!-- Today: date, live clock, sun times and what is happening right now -->
+    <section id="today" class="zone zone-today v2-today" aria-labelledby="z-today">
+      <div class="today-strip">
+        <div class="strip-date">
+          <div class="strip-title">
+            <h2 id="z-today" class="zone-title" tabindex="-1">ఈరోజు</h2>
+            <button type="button" id="btn-zone-today" class="zone-today-btn" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"></path><path d="M4 9h10a6 6 0 0 1 0 12h-3"></path></svg><span class="today-label">ఈ రోజు</span></button>
+            <button type="button" class="share-icon" data-share="day" data-i18n-aria-te="ఈరోజు పంచాంగం పంచుకోండి" data-i18n-aria-en="Share today's panchangam" aria-label="ఈరోజు పంచాంగం పంచుకోండి"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"></path></svg></button>
+          </div>
+          <div id="date-gregorian" class="date-display" data-i18n="loadingText">లోడ్ అవుతోంది...</div>
+          <div id="date-sub" class="date-sub"></div>
         </div>
-        <div class="zone-body">
-          <div class="date-block">
-            <div id="date-gregorian" class="date-display" data-i18n="loadingText">లోడ్ అవుతోంది...</div>
-            <div id="date-sub" class="date-sub"></div>
+        <div class="strip-clock"><span id="clock" class="clock-display">--:--</span></div>
+        <div class="sun-times">
+          <span><span class="sun-glyph" aria-hidden="true">🌅</span><span data-i18n-te="సూర్యోదయం" data-i18n-en="Sunrise">సూర్యోదయం</span> <strong id="sunrise-time">--</strong></span>
+          <span><span class="sun-glyph" aria-hidden="true">🌇</span><span data-i18n-te="అస్తమయం" data-i18n-en="Sunset">అస్తమయం</span> <strong id="sunset-time">--</strong></span>
+        </div>
+        <p id="now-status" class="now-status" aria-live="polite"></p>
+      </div>
             <!-- Day-1 note after onboarding (ui/onboarding.js): answers Chrome's "Change back?" bubble -->
             <p id="day-one-note" class="day-one-note ext-only" hidden>
               <span data-i18n-te="ఈ కొత్త ట్యాబును ఉంచండి — రోజూ పంచాంగం ఇక్కడే" data-i18n-en="Keep this new tab to see today's panchangam">ఈ కొత్త ట్యాబును ఉంచండి — రోజూ పంచాంగం ఇక్కడే</span>
               <button id="day-one-dismiss" type="button" class="day-one-dismiss"><span aria-hidden="true">&times;</span><span class="visually-hidden" data-i18n-te="మూసివేయి" data-i18n-en="Dismiss">మూసివేయి</span></button>
             </p>
-          </div>
-
-          <section class="moon-card" aria-label="Moon">
-            <div class="moon-top">
-              <svg id="moon-svg" width="96" height="96" viewBox="0 0 120 120" role="img" aria-label="" class="moon-svg">
-                <circle cx="60" cy="60" r="56" fill="#E2C27A" opacity="0.10"></circle>
-                <circle cx="60" cy="60" r="50" fill="#3D3757"></circle>
-                <path id="moon-lit" d="M60 10 A50 50 0 0 1 60 110 A4 50 0 0 0 60 10 Z" fill="#F4E9C9"></path>
-                <circle cx="76" cy="46" r="6" fill="#E3D4AB" opacity="0.6"></circle>
-                <circle cx="72" cy="76" r="9" fill="#E3D4AB" opacity="0.6"></circle>
-                <circle cx="88" cy="64" r="4" fill="#E3D4AB" opacity="0.6"></circle>
-                <circle cx="60" cy="60" r="50" fill="none" stroke="#8F86B0" stroke-width="1.5"></circle>
-              </svg>
-              <div>
-                <div id="moon-title" class="moon-title"></div>
-                <div id="moon-sub" class="moon-sub"></div>
-                <div id="moon-next" class="moon-next"></div>
-              </div>
-            </div>
-            <div class="moon-bar-row">
-              <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" id="moon-cap-start"><circle cx="10" cy="10" r="8.5" fill="#3D3757" stroke="#8F86B0" stroke-width="1.5"></circle></svg>
-              <div class="moon-bar" aria-hidden="true"><div id="moon-bar-fill" class="moon-bar-fill"></div><div id="moon-bar-knob" class="moon-bar-knob"></div></div>
-              <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" id="moon-cap-end"><circle cx="10" cy="10" r="8.5" fill="#F4E9C9"></circle></svg>
-            </div>
-            <div class="moon-bar-labels"><span id="moon-label-start"></span><span id="moon-label-end"></span></div>
-          </section>
-
           <div id="festival-strip" class="festival-strip" hidden>
             <div class="festival-strip-label" data-i18n-te="నేడు పండుగ" data-i18n-en="Festival today">నేడు పండుగ</div>
             <div id="festival-strip-names" class="festival-strip-names"></div>
             <div id="festival-strip-note" class="festival-strip-note" hidden></div>
           </div>
-
-          <div class="today-rows">
-            <div class="today-row">
-              <div class="quad-title" data-i18n-bi="తిథి (Tithi)">తిథి (Tithi)</div>
-              <h3 id="panchang-tithi" class="quad-value">--</h3>
-              <p id="panchang-tithi-time" class="quad-details">--</p>
-            </div>
-            <div class="today-row">
-              <div class="quad-title" data-i18n-bi="నక్షత్రం (Nakshatram)">నక్షత్రం (Nakshatram)</div>
-              <h3 id="panchang-naks" class="quad-value">--</h3>
-              <p id="panchang-naks-time" class="quad-details">--</p>
-            </div>
+      <div class="angas">
+        <div class="anga anga-tithi">
+          <span class="anga-glyph" aria-hidden="true">☾</span>
+          <div class="anga-text">
+            <div class="quad-title" data-i18n-bi="తిథి (Tithi)">తిథి (Tithi)</div>
+            <h3 id="panchang-tithi" class="quad-value">--</h3>
+            <p id="panchang-tithi-time" class="quad-details">--</p>
           </div>
-
-          <details class="more-details">
-            <summary data-i18n-te="యోగం, కరణం, సూర్యచంద్రులు చూడండి" data-i18n-en="See yogam, karanam, Sun and Moon">యోగం, కరణం, సూర్యచంద్రులు చూడండి</summary>
-            <div class="more-grid">
-              <div class="today-row">
-                <div class="quad-title" data-i18n-bi="యోగం (Yogam)">యోగం (Yogam)</div>
-                <h3 id="panchang-yoga" class="quad-value">--</h3>
-                <p id="panchang-yoga-time" class="quad-details">--</p>
-              </div>
-              <div class="today-row">
-                <div class="quad-title" data-i18n-bi="కరణం (Karanam)">కరణం (Karanam)</div>
-                <h3 id="panchang-karana" class="quad-value">--</h3>
-                <p id="panchang-karana-time" class="quad-details">--</p>
-              </div>
-            </div>
-            <div class="signs-card">
-              <p><span class="quad-title" data-i18n-split-bi="చంద్రుడు (Moon):">చంద్రుడు:</span> <span id="panchang-moon">--</span></p>
-              <p><span class="quad-title" data-i18n-split-bi="సూర్యుడు (Sun):">సూర్యుడు:</span> <span id="panchang-sun">--</span></p>
-            </div>
-            <div class="sun-arc-container">
-              <span class="arc-label-left" data-i18n-bi="సూర్యోదయం (Sunrise)">సూర్యోదయం (Sunrise)</span>
-              <svg id="sun-path-svg" viewBox="0 0 200 80">
-                <path id="sun-path-line" d="M 10 70 A 90 90 0 0 1 190 70" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="4,4" />
-                <circle id="sun-path-marker" cx="10" cy="70" r="6" fill="#E2B23A" />
-              </svg>
-              <span class="arc-label-right" data-i18n-bi="సూర్యాస్తమయం (Sunset)">సూర్యాస్తమయం (Sunset)</span>
-            </div>
-            <p class="source-note" data-i18n="sourceNote">గణన: దృక్ పద్ధతి, లాహిరి అయనాంశ</p>
-          </details>
-
-          <div class="sun-times">
-            <span><span data-i18n-te="సూర్యోదయం" data-i18n-en="Sunrise">సూర్యోదయం</span> <strong id="sunrise-time">--</strong></span>
-            <span><span data-i18n-te="అస్తమయం" data-i18n-en="Sunset">అస్తమయం</span> <strong id="sunset-time">--</strong></span>
+        </div>
+        <div class="anga anga-naks">
+          <span class="anga-glyph" aria-hidden="true">✦</span>
+          <div class="anga-text">
+            <div class="quad-title" data-i18n-bi="నక్షత్రం (Nakshatram)">నక్షత్రం (Nakshatram)</div>
+            <h3 id="panchang-naks" class="quad-value">--</h3>
+            <p id="panchang-naks-time" class="quad-details">--</p>
           </div>
-
+        </div>
+        <div class="anga anga-yoga">
+          <span class="anga-glyph" aria-hidden="true">☀</span>
+          <div class="anga-text">
+            <div class="quad-title" data-i18n-bi="యోగం (Yogam)">యోగం (Yogam)</div>
+            <h3 id="panchang-yoga" class="quad-value">--</h3>
+            <p id="panchang-yoga-time" class="quad-details">--</p>
+          </div>
+        </div>
+        <div class="anga anga-karana">
+          <span class="anga-glyph" aria-hidden="true">◈</span>
+          <div class="anga-text">
+            <div class="quad-title" data-i18n-bi="కరణం (Karanam)">కరణం (Karanam)</div>
+            <h3 id="panchang-karana" class="quad-value">--</h3>
+            <p id="panchang-karana-time" class="quad-details">--</p>
+          </div>
+        </div>
+      </div>
+      <div class="signs-card">
+        <p><span class="quad-title" data-i18n-split-bi="చంద్రుడు (Moon):">చంద్రుడు:</span> <span id="panchang-moon">--</span></p>
+        <p><span class="quad-title" data-i18n-split-bi="సూర్యుడు (Sun):">సూర్యుడు:</span> <span id="panchang-sun">--</span></p>
+      </div>
           <section id="guide-card" class="guide-card panel" hidden aria-live="polite">
         <div id="guide-body" class="guide-body"></div>
       </section>
-          <section id="sankalpam" class="sankalpam-card panel">
-        <button type="button" class="share-icon" data-share="sankalpam" data-i18n-aria-te="సంకల్పం పంచుకోండి" data-i18n-aria-en="Share the sankalpam" aria-label="సంకల్పం పంచుకోండి"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"></path></svg></button>
-        <div class="sankalpam-scroll-decor">
-          <div class="decor-line"></div>
-          <h3 class="sankalpam-card-title" data-i18n-bi="దిన సంకల్ప పత్రం (Daily Vedic Sankalpam)">దిన సంకల్ప పత్రం (Daily Vedic Sankalpam)</h3>
-          <div class="decor-line"></div>
-        </div>
-        <div class="scroll-content">
-          <p id="sankalpam-txt" class="sankalpam-body-text" data-i18n="sankalpamLoading">సంకల్పం గణించబడుతోంది...</p>
-        </div>
-        <button id="copy-sankalpam-btn" class="btn tiny-btn" data-i18n-bi="సంకల్పమును నకలు చేయి (Copy Text)">సంకల్పమును నకలు చేయి (Copy Text)</button>
-      </section>
-          <section id="gita" class="gita-card panel" aria-labelledby="gita-card-title">
-        <button type="button" class="share-icon" data-share="gita" data-i18n-aria-te="గీతా శ్లోకం పంచుకోండి" data-i18n-aria-en="Share the Gita verse" aria-label="గీతా శ్లోకం పంచుకోండి"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"></path></svg></button>
-        <div class="sankalpam-scroll-decor">
-          <div class="decor-line"></div>
-          <h3 id="gita-card-title" class="sankalpam-card-title" data-i18n-bi="నేటి గీతా శ్లోకం (Gita Verse of the Day)">నేటి గీతా శ్లోకం (Gita Verse of the Day)</h3>
-          <div class="decor-line"></div>
-        </div>
-        <p id="gita-ref" class="gita-ref"></p>
-        <p id="gita-sanskrit" class="gita-sanskrit" lang="sa"></p>
-        <p id="gita-translit" class="gita-translit" lang="sa-Latn"></p>
-        <p id="gita-english" class="gita-english" lang="en"></p>
-      </section>
+    </section>
+
+    <div class="v2-row v2-row-main">
+      <!-- The day's deity (by weekday) with the guided pooja -->
+      <section id="deity" class="card card-deity" aria-labelledby="deity-heading">
+        <div class="v2-head"><span class="v2-head-icon" aria-hidden="true">ॐ</span><h2 id="deity-heading" class="v2-title" data-i18n-te="ఈరోజు ఆరాధ్య దైవం" data-i18n-en="Deity of the day">ఈరోజు ఆరాధ్య దైవం</h2><span class="v2-head-orn" aria-hidden="true"></span></div>
+        <div class="deity-body">
+          <div class="deity-frame"><img id="deity-art" class="deity-art" src="art/deities/dattatreya.webp" alt=""></div>
+          <div class="deity-info">
+            <p id="deity-weekday" class="deity-weekday"></p>
+            <h3 id="deity-name" class="deity-name"></h3>
+            <span id="deity-blessing" class="deity-blessing"></span>
+            <ul id="deity-mantras" class="deity-mantras"></ul>
+            <button type="button" id="btn-pooja" class="btn btn-pooja"><span class="pooja-diya" aria-hidden="true">🪔</span><span data-i18n-te="పూజ చేయండి" data-i18n-en="Do the pooja">పూజ చేయండి</span></button>
+          </div>
         </div>
       </section>
-      <section id="month" class="zone zone-month" aria-labelledby="z-month">
-        <div class="zone-head zone-head-split">
+
+      <!-- Timings: right now, what comes next, and the full day in a popup -->
+      <section id="now" class="zone zone-now card" aria-labelledby="z-now">
+        <div class="v2-head"><span class="v2-head-icon" aria-hidden="true">◷</span><h2 id="z-now" class="v2-title zone-title" data-i18n-te="నేటి ముహూర్తాలు" data-i18n-en="Timings today">నేటి ముహూర్తాలు</h2><span class="v2-head-orn" aria-hidden="true"></span></div>
+        <div class="timeline-card">
+          <h3 class="next-heading" data-i18n-te="ఇక ముందు ఈరోజు" data-i18n-en="Coming up today">ఇక ముందు ఈరోజు</h3>
+          <ul id="next-list" class="next-list"></ul>
+          <button id="btn-all-timings" type="button" class="btn tiny-btn" data-i18n-bi="అన్ని సమయాలు (All timings)">అన్ని సమయాలు (All timings)</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="v2-row v2-row-cal">
+      <section id="month" class="zone zone-month card" aria-labelledby="z-month">
+        <div class="v2-head v2-head-split">
           <div class="zone-head-title">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 10h18M8 3v4M16 3v4"></path></svg>
-            <h2 id="z-month" class="zone-title" tabindex="-1" data-i18n-te="నెల" data-i18n-en="Month">నెల</h2>
+            <h2 id="z-month" class="v2-title zone-title" tabindex="-1" data-i18n-te="క్యాలెండర్" data-i18n-en="Calendar">క్యాలెండర్</h2>
             <button type="button" id="btn-month-today" class="zone-today-btn month-today" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5"></path><path d="M4 9h10a6 6 0 0 1 0 12h-3"></path></svg><span class="today-label">ఈ రోజు</span></button>
           </div>
           <div class="calendar-nav-bar">
@@ -202,7 +184,6 @@
             <button id="btn-next-month" class="nav-arrow-btn" aria-label="Next Month">▶</button>
           </div>
         </div>
-        <div class="zone-body">
           <section class="calendar-card panel">
             <div class="calendar-grid-container">
           <div class="grid-weekday-header"><span data-i18n="weekdaySun">ఆది</span><span class="wd-times" aria-hidden="true"></span></div>
@@ -225,6 +206,9 @@
             <div id="icon-legend" class="calendar-legend icon-legend"></div>
             <button id="btn-print-month" type="button" class="btn tiny-btn calendar-print-btn" data-i18n-bi="నెల పంచాంగం ముద్రించు (Print Month)">నెల పంచాంగం ముద్రించు (Print Month)</button>
           </section>
+      </section>
+
+      <div class="v2-col">
           <section id="upcoming-card" class="upcoming-card panel">
         <button type="button" class="share-icon" data-share="festivals" data-i18n-aria-te="పర్వదినాలు పంచుకోండి" data-i18n-aria-en="Share the upcoming festivals" aria-label="పర్వదినాలు పంచుకోండి"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"></path></svg></button>
         <h3 data-i18n-bi="ఈ వారం పర్వదినాలు (Upcoming this week)">ఈ వారం పర్వదినాలు (Upcoming this week)</h3>
@@ -232,23 +216,6 @@
         <button id="btn-all-festivals" type="button" class="btn tiny-btn" data-i18n-bi="అన్నీ చూడండి (See all, 30 days)">అన్నీ చూడండి (See all, 30 days)</button>
         <button type="button" class="btn tiny-btn" data-export="festivals" data-i18n-bi="పండుగలను క్యాలెండర్ లో చేర్చండి (Add to calendar)">పండుగలను క్యాలెండర్ లో చేర్చండి (Add to calendar)</button>
       </section>
-        </div>
-      </section>
-      <section id="now" class="zone zone-now" aria-labelledby="z-now">
-        <div class="zone-head zone-head-split">
-          <div class="zone-head-title">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
-            <h2 id="z-now" class="zone-title" data-i18n-te="ఇప్పుడు" data-i18n-en="Now">ఇప్పుడు</h2>
-          </div>
-          <span id="clock" class="clock-display">00:00:00</span>
-        </div>
-        <div class="zone-body">
-          <section class="timeline-card panel">
-            <p id="now-status" class="now-status" aria-live="polite"></p>
-            <h3 class="next-heading" data-i18n-te="ఇక ముందు ఈరోజు" data-i18n-en="Coming up today">ఇక ముందు ఈరోజు</h3>
-            <ul id="next-list" class="next-list"></ul>
-            <button id="btn-all-timings" type="button" class="btn tiny-btn" data-i18n-bi="అన్ని సమయాలు (All timings)">అన్ని సమయాలు (All timings)</button>
-          </section>
           <section id="reminders" class="reminders-card panel">
         <h3 data-i18n="remindersTitle">నేటి శుభకార్యములు / ఈవెంట్లు</h3>
 
@@ -324,10 +291,9 @@
 
         <button type="button" class="btn tiny-btn" data-export="reminders" data-i18n-bi="మీ ఈవెంట్లను క్యాలెండర్ లో చేర్చండి (Add my events to calendar)">మీ ఈవెంట్లను క్యాలెండర్ లో చేర్చండి (Add my events to calendar)</button>
       </section>
-        </div>
-      </section>
-  </div>
-  <div class="rasi-wrap">
+      </div>
+    </div>
+
     <section id="rasi" class="zone zone-rasi" aria-labelledby="z-rasi">
       <div class="zone-head zone-head-split">
         <div class="zone-head-title">
@@ -375,13 +341,81 @@
         </div>
       </div>
     </section>
-  </div>
-  <nav class="tools-nav" aria-label="Tools">
-    <a href="#rasi" data-i18n-te="రాశి ఫలాలు" data-i18n-en="Rasi phalalu">రాశి ఫలాలు</a>
-    <a href="#sankalpam" data-i18n-te="సంకల్పం" data-i18n-en="Sankalpam">సంకల్పం</a>
-    <a href="#gita" data-i18n-te="గీతా శ్లోకం" data-i18n-en="Gita verse">గీతా శ్లోకం</a>
-    <a href="#reminders" data-i18n-te="ఈవెంట్లు" data-i18n-en="Events">ఈవెంట్లు</a>
-  </nav>
+
+    <!-- The seven weekday deities; each opens its pooja -->
+    <section id="week" class="card card-week" aria-labelledby="week-heading">
+      <div class="v2-head"><span class="v2-head-icon" aria-hidden="true">✺</span><h2 id="week-heading" class="v2-title" data-i18n-te="వారం వారీగా ఆరాధ్య దేవతలు" data-i18n-en="A deity for each day of the week">వారం వారీగా ఆరాధ్య దేవతలు</h2><span class="v2-head-orn" aria-hidden="true"></span></div>
+      <div id="week-row" class="week-row"></div>
+    </section>
+
+    <!-- More for the day: moon and sun, the sankalpam and the Gita verse -->
+    <div id="more" class="v2-row v2-row-more">
+      <section class="card card-sky" aria-labelledby="sky-heading">
+        <div class="v2-head"><span class="v2-head-icon" aria-hidden="true">☾</span><h2 id="sky-heading" class="v2-title" data-i18n-te="చంద్రుడు · సూర్యుడు" data-i18n-en="Moon and Sun">చంద్రుడు · సూర్యుడు</h2><span class="v2-head-orn" aria-hidden="true"></span></div>
+          <section class="moon-card" aria-label="Moon">
+            <div class="moon-top">
+              <svg id="moon-svg" width="96" height="96" viewBox="0 0 120 120" role="img" aria-label="" class="moon-svg">
+                <circle cx="60" cy="60" r="56" fill="#E2C27A" opacity="0.10"></circle>
+                <circle cx="60" cy="60" r="50" fill="#3D3757"></circle>
+                <path id="moon-lit" d="M60 10 A50 50 0 0 1 60 110 A4 50 0 0 0 60 10 Z" fill="#F4E9C9"></path>
+                <circle cx="76" cy="46" r="6" fill="#E3D4AB" opacity="0.6"></circle>
+                <circle cx="72" cy="76" r="9" fill="#E3D4AB" opacity="0.6"></circle>
+                <circle cx="88" cy="64" r="4" fill="#E3D4AB" opacity="0.6"></circle>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="#8F86B0" stroke-width="1.5"></circle>
+              </svg>
+              <div>
+                <div id="moon-title" class="moon-title"></div>
+                <div id="moon-sub" class="moon-sub"></div>
+                <div id="moon-next" class="moon-next"></div>
+              </div>
+            </div>
+            <div class="moon-bar-row">
+              <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" id="moon-cap-start"><circle cx="10" cy="10" r="8.5" fill="#3D3757" stroke="#8F86B0" stroke-width="1.5"></circle></svg>
+              <div class="moon-bar" aria-hidden="true"><div id="moon-bar-fill" class="moon-bar-fill"></div><div id="moon-bar-knob" class="moon-bar-knob"></div></div>
+              <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" id="moon-cap-end"><circle cx="10" cy="10" r="8.5" fill="#F4E9C9"></circle></svg>
+            </div>
+            <div class="moon-bar-labels"><span id="moon-label-start"></span><span id="moon-label-end"></span></div>
+          </section>
+            <div class="sun-arc-container">
+              <span class="arc-label-left" data-i18n-bi="సూర్యోదయం (Sunrise)">సూర్యోదయం (Sunrise)</span>
+              <svg id="sun-path-svg" viewBox="0 0 200 80">
+                <path id="sun-path-line" d="M 10 70 A 90 90 0 0 1 190 70" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="4,4" />
+                <circle id="sun-path-marker" cx="10" cy="70" r="6" fill="#E2B23A" />
+              </svg>
+              <span class="arc-label-right" data-i18n-bi="సూర్యాస్తమయం (Sunset)">సూర్యాస్తమయం (Sunset)</span>
+            </div>
+            <p class="source-note" data-i18n="sourceNote">గణన: దృక్ పద్ధతి, లాహిరి అయనాంశ</p>
+      </section>
+          <section id="sankalpam" class="sankalpam-card panel">
+        <button type="button" class="share-icon" data-share="sankalpam" data-i18n-aria-te="సంకల్పం పంచుకోండి" data-i18n-aria-en="Share the sankalpam" aria-label="సంకల్పం పంచుకోండి"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"></path></svg></button>
+        <div class="sankalpam-scroll-decor">
+          <div class="decor-line"></div>
+          <h3 class="sankalpam-card-title" data-i18n-bi="దిన సంకల్ప పత్రం (Daily Vedic Sankalpam)">దిన సంకల్ప పత్రం (Daily Vedic Sankalpam)</h3>
+          <div class="decor-line"></div>
+        </div>
+        <div class="scroll-content">
+          <p id="sankalpam-txt" class="sankalpam-body-text" data-i18n="sankalpamLoading">సంకల్పం గణించబడుతోంది...</p>
+        </div>
+        <button id="copy-sankalpam-btn" class="btn tiny-btn" data-i18n-bi="సంకల్పమును నకలు చేయి (Copy Text)">సంకల్పమును నకలు చేయి (Copy Text)</button>
+      </section>
+          <section id="gita" class="gita-card panel" aria-labelledby="gita-card-title">
+        <button type="button" class="share-icon" data-share="gita" data-i18n-aria-te="గీతా శ్లోకం పంచుకోండి" data-i18n-aria-en="Share the Gita verse" aria-label="గీతా శ్లోకం పంచుకోండి"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"></path></svg></button>
+        <div class="sankalpam-scroll-decor">
+          <div class="decor-line"></div>
+          <h3 id="gita-card-title" class="sankalpam-card-title" data-i18n-bi="నేటి గీతా శ్లోకం (Gita Verse of the Day)">నేటి గీతా శ్లోకం (Gita Verse of the Day)</h3>
+          <div class="decor-line"></div>
+        </div>
+        <p id="gita-ref" class="gita-ref"></p>
+        <p id="gita-sanskrit" class="gita-sanskrit" lang="sa"></p>
+        <p id="gita-translit" class="gita-translit" lang="sa-Latn"></p>
+        <p id="gita-english" class="gita-english" lang="en"></p>
+      </section>
+    </div>
+  </main>
+
+  <footer class="v2-foot">
+    <p data-i18n-te="శంఖ నాదం: David Bolton, Wikimedia Commons (CC BY 2.5) · దేవతా చిత్రాలు, ఆలయ చిత్రం: పంచాంగం కోసం రూపొందించినవి" data-i18n-en="Conch sound: David Bolton, Wikimedia Commons (CC BY 2.5) · Deity and temple art made for this panchangam">శంఖ నాదం: David Bolton, Wikimedia Commons (CC BY 2.5) · దేవతా చిత్రాలు, ఆలయ చిత్రం: పంచాంగం కోసం రూపొందించినవి</p>
+  </footer>
 
   <!-- Next 30 days of festivals and vratas (opened from the Month zone) -->
   <dialog id="festivals-dialog" class="timings-dialog" aria-labelledby="festivals-dialog-title">

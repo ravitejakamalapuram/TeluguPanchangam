@@ -301,28 +301,48 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+/* Vendored Ramabhadra (SIL Open Font License): the temple display face for the title and section heads. */
+@font-face {
+  font-family: 'Ramabhadra';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/ramabhadra-telugu.woff2) format('woff2');
+  unicode-range: U+0951-0952, U+0964-0965, U+0B83, U+0C00-0C7F, U+1CD5-1CD6, U+1CD8, U+1CDA, U+1CF2, U+200C-200D, U+25CC;
+}
+@font-face {
+  font-family: 'Ramabhadra';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/ramabhadra-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* 1. Global Reset & Typography System */
 :root {
   --font-family: 'Noto Sans Telugu', 'Outfit', sans-serif;
   --font-heading: 'Noto Serif Telugu', 'Noto Sans Telugu', serif;
+  --font-display: 'Ramabhadra', 'Noto Serif Telugu', serif;
+  --gold: #C8902E; --gold-hi: #F3D27A; --maroon: #7A1A10; --maroon-deep: #4E0F08;
 
   /* Deepam light theme (default): warm cream paper, near-black text. */
-  --page-bg: #F6EFE3;
-  --panel-bg: #FFFFFF;
-  --panel-border: #E4D6B0;
-  --panel-soft: #FFFBF1;
-  --text-primary: #2B2118;
-  --text-secondary: #5E4E40;
-  --accent-primary: #A63A12;
-  --accent-secondary: #E2B23A;
-  --accent-hover: #7E2B0D;
+  --page-bg: #FBF3E3;
+  --panel-bg: #FFFDF8;
+  --panel-border: #E9D3A6;
+  --panel-soft: #FFF8EA;
+  --text-primary: #2B1A10;
+  --text-secondary: #5E4636;
+  --accent-primary: #8B1E12;
+  --accent-secondary: #C8902E;
+  --accent-hover: #6A160C;
   --shadow: 0 1px 2px rgba(43, 33, 24, 0.08);
 
   /* Zone colours: Today saffron, Month turmeric, Now teal, rasi purple. */
-  --zone-today: #A63A12;  --zone-today-bg: #FFF6EE;
-  --zone-month: #7A5A12;  --zone-month-bg: #FFFBF1;
-  --zone-now: #1F5F6B;    --zone-now-bg: #F0F7F8;
-  --zone-rasi: #4B2E83;   --zone-rasi-bg: #F5F1FB;
+  --zone-today: #7A1A10;  --zone-today-bg: #FFF8EC;
+  --zone-month: #7A1A10;  --zone-month-bg: #FFFDF8;
+  --zone-now: #73520E;    --zone-now-bg: #FFF9EC;
+  --zone-rasi: #5B2453;   --zone-rasi-bg: #FFF7F4;
 
   --color-auspicious: #1E6B45;
   --color-inauspicious: #A3261B;
@@ -336,10 +356,10 @@
   /* Design system additions (see the Telugu Panchangam design system). */
   --on-accent: #FFFFFF;
   --control-border: #98856A;
-  --zone-today-ink: #A63A12;
-  --zone-month-ink: #7A5A12;
-  --zone-now-ink: #1F5F6B;
-  --zone-rasi-ink: #4B2E83;
+  --zone-today-ink: #7A1A10;
+  --zone-month-ink: #7A1A10;
+  --zone-now-ink: #73520E;
+  --zone-rasi-ink: #5B2453;
   --focus-ring: var(--zone-now-ink);
   --band-good-bg: #E3F1E8;  --band-good-bd: #A9D3BA;  --band-good-fg: #1E6B45;
   --band-mixed-bg: #F5ECD6; --band-mixed-bd: #D9C48E; --band-mixed-fg: #6B4E0E;
@@ -356,21 +376,21 @@
 
 [data-theme="dark"] {
   /* Deepam dark theme: warm charcoal, same zone hues lifted for contrast. */
-  --page-bg: #17120D;
-  --panel-bg: #231B14;
-  --panel-border: #4A3C2C;
-  --panel-soft: #1D1610;
-  --text-primary: #F3ECE1;
-  --text-secondary: #CDBFAE;
+  --page-bg: #170D08;
+  --panel-bg: #24150E;
+  --panel-border: #4D3322;
+  --panel-soft: #1E110B;
+  --text-primary: #F6EADB;
+  --text-secondary: #D2BFA8;
   --accent-primary: #F0A36E;
   --accent-secondary: #E2B23A;
   --accent-hover: #FFC9A0;
   --shadow: 0 1px 2px var(--tint);
 
-  --zone-today: #8F3210;  --zone-today-bg: #2A1A12;
-  --zone-month: #6B4F10;  --zone-month-bg: #241C0F;
-  --zone-now: #1F5F6B;    --zone-now-bg: #122226;
-  --zone-rasi: #5B3C9C;   --zone-rasi-bg: #1E1730;
+  --zone-today: #8A2414;  --zone-today-bg: #28150E;
+  --zone-month: #8A2414;  --zone-month-bg: #22130C;
+  --zone-now: #6B4F10;    --zone-now-bg: #241A0C;
+  --zone-rasi: #6E2C63;   --zone-rasi-bg: #24121F;
 
   --color-auspicious: #5FD08E;
   --color-inauspicious: #FF8A7A;
@@ -382,10 +402,10 @@
   --on-accent: #1B1208;
   --control-border: #7E6C58;
   --zone-today-ink: #F0A36E;
-  --zone-month-ink: #E2B23A;
-  --zone-now-ink: #7CC4D0;
+  --zone-month-ink: #F2C46B;
+  --zone-now-ink: #E8C36A;
   --focus-ring: var(--zone-now-ink); /* re-declared: a var() set on :root would keep the light value under body[data-theme] */
-  --zone-rasi-ink: #C9B3F2;
+  --zone-rasi-ink: #E7B3DA;
   --band-good-bg: #17301F;  --band-good-bd: #2F6B47;  --band-good-fg: #7FE0A6;
   --band-mixed-bg: #3A3014; --band-mixed-bd: #6E5A1F; --band-mixed-fg: #F3DFA0;
   --band-care-bg: #3B1A17;  --band-care-bd: #7A3029;  --band-care-fg: #FFA79A;
@@ -1724,4 +1744,306 @@ input[type="text"], input[type="date"], input[type="time"], .cyber-form-panel se
 @media (max-width: 600px) {
   .arc-end, .arc-now-label, .arc-end-time { font-size: 18px; }
   .arc-now { font-size: 32px; }
+}
+
+/* ==========================================================================
+   v2 Temple: banner with the day's deity, maroon nav, today strip, pastel
+   panchangam cards, deity and timings, calendar with festivals, rasi, the
+   week's deities and the pooja. Last in the file, so it wins on equal specificity.
+   Spacing steps 4/8/12/16/24/32; radii --radius-sm/md/lg; type from --fs-caption up.
+   ========================================================================== */
+body { padding: 0 0 32px; background:
+  radial-gradient(circle at 12px 12px, rgba(200, 144, 46, 0.10) 2px, transparent 2.5px) 0 0 / 24px 24px,
+  var(--page-bg); }
+body::before { display: none; }
+.v2, .temple, .temple-nav, .banner-stack, .v2-foot { width: min(1240px, 100% - 32px); margin-inline: auto; }
+.rating-banner { max-width: 1240px; }
+
+/* Banner: painted temple, the deity sits in the shrine doorway */
+.temple {
+  position: relative; aspect-ratio: 2.8; min-height: 200px; max-height: 440px;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg); overflow: hidden;
+  background: #6A2A0A url(art/banner.webp) 50% 47.5% / cover no-repeat;
+  box-shadow: 0 6px 18px rgba(78, 15, 8, 0.25);
+}
+.temple-niche {
+  position: absolute; left: 41.2%; top: 31.3%; width: 13.6%; height: 66.4%;
+  border-radius: 48% 48% 4px 4px / 30% 30% 4px 4px; overflow: hidden;
+  display: grid; place-items: end center;
+  background: radial-gradient(ellipse at 50% 40%, #FFE3A0 0%, #E89A3A 38%, #6B2A0C 80%);
+}
+.niche-deity { width: 92%; height: 96%; object-fit: contain; object-position: 50% 100%; filter: drop-shadow(0 4px 10px rgba(60, 10, 0, 0.55)); }
+.temple-title { position: absolute; right: 4%; top: 26%; text-align: center; color: #FFF4D6; max-width: 40%; }
+.temple-title h1 {
+  font-family: var(--font-display); font-weight: 400; margin: 0; line-height: 1.25;
+  font-size: clamp(1.5rem, 3.4vw, 3rem); color: #FFE9A8;
+  -webkit-text-stroke: 1px #6A160C; paint-order: stroke fill;
+  text-shadow: 0 2px 0 #6A160C, 0 4px 14px rgba(70, 10, 0, 0.6);
+}
+.temple-title p { margin: 4px 0 0; font-size: clamp(0.875rem, 1.4vw, 1.15rem); font-weight: 600; color: #FFF4D6; text-shadow: 0 1px 6px rgba(70, 10, 0, 0.8); }
+
+/* Nav: maroon bar with a gold rule, sticks to the top */
+.topbar.temple-nav {
+  position: sticky; top: 0; z-index: 20; max-width: none;
+  margin-top: -10px; padding: 6px 8px 6px 12px;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: nowrap; gap: 8px;
+  background: linear-gradient(180deg, #8E2414, var(--maroon-deep)); color: #FFF1D6;
+  border: 2px solid var(--gold); border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(78, 15, 8, 0.28);
+}
+.nav-links { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; min-width: 0; }
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-links a {
+  flex: none; color: #FFF1D6; text-decoration: none; font-weight: 600; font-size: 0.9375rem;
+  padding: 8px 12px; border-radius: var(--radius-sm); white-space: nowrap;
+}
+.nav-links a:hover { background: rgba(255, 255, 255, 0.12); }
+.nav-links a.is-active { background: linear-gradient(180deg, var(--gold-hi), var(--gold)); color: var(--maroon-deep); }
+.temple-nav .topbar-controls { flex: none; flex-wrap: nowrap; gap: 6px; }
+.temple-nav .topbar-time { display: none; }
+.temple-nav .pill-btn, .temple-nav .icon-btn, .temple-nav .seg {
+  background: rgba(255, 255, 255, 0.08); color: #FFF1D6; border-color: rgba(243, 210, 122, 0.55);
+}
+.temple-nav .pill-btn:hover, .temple-nav .icon-btn:hover { border-color: var(--gold-hi); background: rgba(255, 255, 255, 0.16); }
+.temple-nav .seg button { color: #FFF1D6; }
+.temple-nav .seg button[aria-pressed="true"] { background: var(--gold-hi); color: var(--maroon-deep); }
+.temple-nav :focus-visible { outline-color: var(--gold-hi); }
+
+.banner-stack { padding: 16px 0 0; max-width: none; }
+.v2 { display: flex; flex-direction: column; gap: 16px; padding-top: 16px; }
+/* The v2 page keeps source order at every width (the older phone rules reordered the three zones). */
+.v2 .zone { order: 0; }
+.v2 [id] { scroll-margin-top: 72px; }
+
+/* Shared card + section head (also restyles the rasi zone head) */
+.card, .v2 .zone {
+  background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: var(--radius-lg);
+  box-shadow: 0 2px 8px rgba(78, 15, 8, 0.08); overflow: hidden; display: flex; flex-direction: column;
+  min-width: 0; max-width: none; flex: initial;
+}
+.v2-head, .v2 .zone-head {
+  display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 6px 16px;
+  background: linear-gradient(180deg, #8E2414, var(--maroon-deep)); color: #FFF1D6;
+  border-bottom: 2px solid var(--gold);
+}
+.zone-now .v2-head { background: linear-gradient(180deg, #8C6414, #5E420A); }
+.v2-head-split { justify-content: space-between; flex-wrap: wrap; }
+.v2-head-icon { color: var(--gold-hi); font-size: 1.15rem; line-height: 1; }
+.v2-title, .v2 .zone-title { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 1.25rem; line-height: 1.4; color: #FFF1D6; }
+.v2-head-orn { margin-left: auto; width: 64px; height: 12px; flex: none; opacity: 0.8;
+  background: linear-gradient(var(--gold-hi), var(--gold-hi)) 0 50% / 100% 1px no-repeat,
+              radial-gradient(circle, var(--gold-hi) 0 3px, transparent 3.5px) 50% 50% / 12px 12px no-repeat; }
+.v2 .zone-body { padding: 16px; gap: 12px; }
+
+/* Today strip */
+.v2-today { border-color: var(--panel-border); }
+.today-strip {
+  display: grid; grid-template-columns: minmax(0, 1.6fr) auto auto minmax(0, 1.3fr); align-items: center; gap: 12px 24px;
+  padding: 12px 20px;
+}
+.strip-title { display: flex; align-items: center; gap: 8px; }
+.v2-today .zone-title { font-family: var(--font-heading); font-size: 0.9375rem; font-weight: 600; color: var(--accent-primary); }
+.v2-today .share-icon { color: var(--accent-primary); width: 36px; height: 36px; }
+.v2-today .zone-today-btn { background: var(--chip-fest-bg); color: var(--chip-fest-fg); }
+.v2-today .date-display { font-size: 1.5rem; line-height: 1.3; color: var(--text-primary); }
+.v2-today .date-sub { font-size: var(--fs-caption); }
+.strip-clock { padding: 0 20px; border-inline: 1px solid var(--panel-border); }
+.v2 .clock-display { font-family: 'Outfit', sans-serif; font-size: 2.25rem; font-weight: 600; color: var(--accent-primary); text-shadow: none; letter-spacing: 0; white-space: nowrap; }
+.v2-today .sun-times { flex-direction: column; flex-wrap: nowrap; align-items: flex-start; gap: 2px; font-size: var(--fs-caption); color: var(--text-secondary); }
+.sun-glyph { margin-right: 6px; }
+.v2-today .now-status { font-size: 1rem; padding: 10px 14px; border-radius: var(--radius-md); }
+.v2-today .now-status.auspicious { background: var(--band-good-bg); border: 1px solid var(--band-good-bd); }
+.v2-today .now-status.inauspicious { background: var(--band-care-bg); border: 1px solid var(--band-care-bd); }
+.v2-today .day-one-note, .v2-today .festival-strip, .v2-today .guide-card, .v2-today .signs-card { margin: 0 20px 12px; }
+.v2-today .festival-strip { border: 1px solid var(--accent-primary); }
+
+/* The four angas as pastel cards */
+.angas { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 0 20px 12px; }
+.anga {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--radius-md);
+  border: 1px solid var(--anga-bd); background: var(--anga-bg);
+}
+.anga-tithi  { --anga-bg: #FFF0EE; --anga-bd: #EBC3BC; --anga-ic: #9B2218; }
+.anga-naks   { --anga-bg: #EEF3FF; --anga-bd: #C4D1EF; --anga-ic: #2C4F9E; }
+.anga-yoga   { --anga-bg: #EFF8EC; --anga-bd: #C3DDBA; --anga-ic: #2E6B2A; }
+.anga-karana { --anga-bg: #F6F0FD; --anga-bd: #D7C7EE; --anga-ic: #5B3A99; }
+[data-theme="dark"] .anga { --anga-bg: var(--panel-soft); --anga-bd: var(--panel-border); --anga-ic: var(--accent-primary); }
+.anga-glyph { flex: none; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center;
+  font-size: 1.35rem; color: #FFFFFF; background: var(--anga-ic); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.18); }
+.anga-text { min-width: 0; }
+.anga .quad-value { font-size: 1.3rem; line-height: 1.35; }
+.anga .quad-details { font-size: var(--fs-caption); line-height: 1.45; }
+.v2-today .signs-card { border-radius: var(--radius-md); background: var(--panel-soft); border-color: var(--panel-border); }
+
+/* Rows */
+.v2-row { display: grid; gap: 16px; align-items: start; }
+.v2-row-main { grid-template-columns: minmax(0, 5fr) minmax(0, 4fr); align-items: stretch; }
+.v2-row-cal { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+.v2-row-more { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.v2-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.v2-col > .panel, .v2-row-more > .panel { border-radius: var(--radius-lg); }
+
+/* Deity card */
+.deity-body { display: grid; grid-template-columns: minmax(150px, 40%) minmax(0, 1fr); gap: 20px; padding: 16px; align-items: center; flex-grow: 1; }
+.deity-frame {
+  aspect-ratio: 4 / 5; border-radius: 48% 48% var(--radius-md) var(--radius-md) / 32% 32% var(--radius-md) var(--radius-md);
+  border: 4px solid var(--gold); box-shadow: 0 0 0 2px var(--gold-hi) inset, 0 6px 16px rgba(78, 15, 8, 0.25);
+  background: radial-gradient(ellipse at 50% 35%, #FFE7A8 0%, #F0B04C 45%, #8A3A12 100%);
+  display: grid; place-items: end center; overflow: hidden;
+}
+.deity-art { width: 94%; height: 96%; object-fit: contain; object-position: 50% 100%; }
+.deity-weekday { margin: 0; font-weight: 600; color: var(--accent-primary); font-size: var(--fs-caption); }
+.deity-name { margin: 2px 0 6px; font-family: var(--font-display); font-weight: 400; font-size: 1.6rem; line-height: 1.35; color: var(--maroon); }
+[data-theme="dark"] .deity-name { color: var(--gold-hi); }
+.deity-blessing { display: inline-block; padding: 2px 12px; border-radius: var(--radius-pill); background: var(--maroon); color: #FFF1D6; font-size: var(--fs-caption); font-weight: 600; }
+.deity-mantras { list-style: none; margin: 12px 0 16px; padding: 0; display: grid; gap: 4px; font-size: 1rem; font-weight: 500; }
+.deity-mantras li::before { content: '❀'; color: var(--gold); margin-right: 8px; }
+.btn.btn-pooja {
+  width: auto; display: inline-flex; align-items: center; gap: 10px; padding: 10px 20px 10px 10px; border-radius: var(--radius-pill);
+  background: linear-gradient(180deg, #9E2A16, var(--maroon-deep)); color: #FFF1D6; border: 2px solid var(--gold);
+  text-transform: none; letter-spacing: 0; font-size: 1rem; box-shadow: 0 4px 10px rgba(78, 15, 8, 0.3);
+}
+.btn.btn-pooja:hover { background: linear-gradient(180deg, #B33219, #5E140A); border-color: var(--gold-hi); }
+.pooja-diya { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: #FFF1D6; }
+
+/* Timings card */
+.zone-now .timeline-card { padding: 16px; gap: 10px; flex-grow: 1; }
+.zone-now .next-heading { font-size: var(--fs-caption); }
+.zone-now .next-item { background: var(--panel-soft); }
+
+/* Calendar card: keep the grid compact */
+.v2 .zone-month .calendar-card { border: 0; border-radius: 0; box-shadow: none; padding: 12px 16px 16px; }
+.v2 .calendar-day { min-height: 72px; padding: 6px; }
+.v2 .calendar-month-title { font-family: var(--font-display); font-weight: 400; font-size: 1.25rem; min-width: 0; }
+.v2 .nav-arrow-btn { width: 36px; height: 36px; }
+.v2 .upcoming-card h3, .v2 .reminders-card h3 { font-family: var(--font-display); font-weight: 400; font-size: 1.2rem; color: var(--accent-primary); }
+
+/* Rasi: grid beside the detail on wide screens */
+.v2 .zone-rasi .zone-body { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); align-items: start; }
+.v2 .zone-rasi .rasi-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.v2 .zone-rasi .rasi-foot { grid-column: 1 / -1; }
+.v2 .zone-rasi .share-icon, .v2 .zone-rasi .rasi-date { color: #FFF1D6; }
+
+/* The week's deities */
+.week-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 12px; padding: 16px; }
+.week-card {
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; padding: 10px 8px 12px;
+  border-radius: var(--radius-md); border: 1px solid var(--panel-border);
+  background: linear-gradient(180deg, var(--deity-tint, var(--panel-soft)), var(--panel-bg));
+}
+.week-card.is-today { border: 2px solid var(--gold); box-shadow: 0 0 0 3px rgba(200, 144, 46, 0.2); }
+.week-card h3 { margin: 0; font-family: var(--font-heading); font-size: var(--fs-caption); font-weight: 700; color: var(--accent-primary); }
+.week-card img { width: 100%; height: auto; aspect-ratio: 8 / 9; object-fit: contain; }
+.week-name { margin: 0; font-family: var(--font-heading); font-weight: 700; font-size: 0.9375rem; line-height: 1.35; color: var(--text-primary); }
+.week-mantra { margin: 0; font-size: var(--fs-caption); line-height: 1.4; color: var(--text-secondary); flex-grow: 1; }
+.week-pooja {
+  margin-top: 4px; padding: 4px 12px; border-radius: var(--radius-pill); cursor: pointer; font-weight: 600;
+  background: var(--panel-bg); color: var(--accent-primary); border: 1px solid var(--control-border);
+}
+.week-pooja::before { content: '▶ '; }
+.week-pooja:hover { border-color: var(--accent-primary); background: var(--chip-fest-bg); }
+[data-theme="dark"] .week-card { background: var(--panel-soft); }
+
+/* More for the day */
+.card-sky .moon-card { margin: 16px; }
+.card-sky .sun-arc-container, .card-sky .source-note { margin: 0 16px 12px; }
+.v2-row-more .sankalpam-card .scroll-content { max-height: 280px; overflow: auto; }
+
+.v2-foot { margin-top: 24px; text-align: center; font-size: var(--fs-caption); color: var(--text-secondary); }
+.v2-foot p { margin: 0; }
+
+/* Laptop and below */
+@media (max-width: 1100px) {
+  .today-strip { grid-template-columns: minmax(0, 1fr) auto auto; }
+  .today-strip .now-status { grid-column: 1 / -1; }
+  .angas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .v2-row-cal, .v2 .zone-rasi .zone-body { grid-template-columns: minmax(0, 1fr); }
+  .v2-row-more { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .week-row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 860px) {
+  .v2-row-main { grid-template-columns: minmax(0, 1fr); }
+  .temple-nav .nav-links { display: none; }
+  .temple-nav { justify-content: flex-end; }
+}
+@media (max-width: 600px) {
+  .temple { aspect-ratio: 1.5; border-radius: 0 0 var(--radius-md) var(--radius-md); }
+  .temple { background-position: 42% 50%; }
+  .temple-niche { left: 33%; width: 26%; top: 34%; height: 64%; }
+  .temple-title { right: 3%; top: 8%; max-width: 50%; }
+  .today-strip { grid-template-columns: minmax(0, 1fr) auto; padding: 12px 16px; gap: 8px 12px; }
+  .strip-clock { border: 0; padding: 0; }
+  .v2-today .sun-times { grid-column: 1 / -1; flex-direction: row; gap: 4px 16px; }
+  .angas { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 0 16px 12px; }
+  .anga { padding: 10px; }
+  .anga-glyph { display: none; }
+  .anga .quad-value { font-size: 1.1rem; }
+  .temple-nav .topbar-controls { flex: 1; min-width: 0; justify-content: flex-end; }
+  .temple-nav #btn-go-today { display: none; }
+  .temple-nav .city-chip { min-width: 0; max-width: 100%; overflow: hidden; }
+  .temple-nav #profile-location { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .v2-today .day-one-note, .v2-today .festival-strip, .v2-today .guide-card, .v2-today .signs-card { margin-inline: 16px; }
+  .deity-body { grid-template-columns: 120px minmax(0, 1fr); gap: 12px; }
+  .deity-name { font-size: 1.3rem; }
+  .v2-row-more { grid-template-columns: minmax(0, 1fr); }
+  .week-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .v2 .zone-rasi .rasi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .v2 .clock-display { font-size: 1.75rem; }
+}
+
+/* Pooja (ui/pooja.js) */
+.pooja { width: 100%; max-width: 100%; height: 100%; max-height: 100%; margin: 0; padding: 16px; border: 0;
+  background: radial-gradient(ellipse at center, #3A0E06, #0C0302); color: #FBE7C2; }
+.pooja[open] { display: grid; place-items: center; }
+.pooja::backdrop { background: #0C0302; }
+.pj-altar { display: grid; grid-template-columns: minmax(240px, 400px) minmax(240px, 380px); gap: 24px; align-items: center; }
+.pj-stage { position: relative; aspect-ratio: 3 / 4.1; }
+.pj-frame { position: absolute; inset: 0; overflow: hidden; border: 4px solid var(--gold);
+  border-radius: 48% 48% var(--radius-md) var(--radius-md) / 30% 30% var(--radius-md) var(--radius-md);
+  background: radial-gradient(ellipse at 50% 35%, #FFE7A8 0%, #F0B04C 45%, #6B2A0C 100%); display: grid; place-items: end center; }
+.pj-art { width: 92%; height: 94%; object-fit: contain; object-position: 50% 100%; transition: filter 1.6s; }
+.pj-stage.pj-dim .pj-art { filter: brightness(0.25) saturate(0.6); }
+.pj-art.pj-lit { filter: brightness(1.15) saturate(1.1); }
+.pj-sweep { position: absolute; inset: -20% -60%; transform: translateX(-100%); pointer-events: none; mix-blend-mode: screen;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 230, 160, 0.5) 50%, transparent 60%); }
+.pj-halo { position: absolute; left: 50%; top: 30%; width: 60%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; pointer-events: none;
+  mix-blend-mode: screen; opacity: 0.7; background: radial-gradient(circle, rgba(255, 236, 170, 0.5) 0 12%, rgba(255, 170, 60, 0.35) 40%, transparent 70%); }
+.pj-deco, .pj-fx { position: absolute; inset: -6% -10% -4%; width: 120%; height: 110%; pointer-events: none; }
+.pj-flame { transform-box: fill-box; transform-origin: 50% 100%; animation: pj-flicker 1.6s ease-in-out infinite; }
+.pj-flame.pj-b { animation-duration: 1.9s; animation-delay: -0.7s; }
+.pj-stage.pj-dim .pj-deco .pj-flame { transform: scale(0); animation: none; }
+.pj-bell { transform-box: fill-box; transform-origin: 50% 0; }
+.pj-garland { transform-box: view-box; transform-origin: 50% 0; animation: pj-sway 6s ease-in-out infinite; }
+.pj-naivedyam { opacity: 0; transition: opacity 0.9s; }
+.pj-naivedyam.on { opacity: 1; }
+.pj-aarti { position: absolute; left: 50%; top: 46%; width: 70px; height: 70px; margin: -35px 0 0 -35px; opacity: 0; pointer-events: none; z-index: 5; }
+.pj-aarti-glow { position: absolute; inset: -34px; border-radius: 50%; background: radial-gradient(circle, rgba(255, 190, 60, 0.75), transparent 65%); }
+.pj-weekday { margin: 0; font-family: var(--font-display); color: var(--gold-hi); font-size: 1.15rem; }
+.pj-name { margin: 0 0 12px; font-family: var(--font-display); font-weight: 400; font-size: 1.9rem; line-height: 1.3; color: #FFE9A8; }
+.pj-steps { list-style: none; padding: 0; margin: 0 0 12px; display: grid; gap: 2px; font-size: var(--fs-caption); counter-reset: pj; }
+.pj-steps li { counter-increment: pj; display: flex; gap: 8px; align-items: center; color: #BFA08A; }
+.pj-steps li::before { content: counter(pj); flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; border: 1px solid #6B4430; font-size: var(--fs-caption); }
+.pj-steps li.on { color: #FFE9A8; font-weight: 700; }
+.pj-steps li.on::before { background: var(--gold); color: #3A1A05; border-color: var(--gold); }
+.pj-steps li.done { color: #E2C7AE; }
+.pj-steps li.done::before { content: '✓'; background: rgba(255, 255, 255, 0.08); }
+.pj-shloka { min-height: 5.6em; padding: 12px 14px; font-size: 1.05rem; line-height: 1.75; color: #FFE08A;
+  border-left: 2px solid var(--gold); background: rgba(255, 215, 0, 0.05); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+.pj-shloka small { display: block; margin-top: 6px; color: #EBC39C; font-size: var(--fs-caption); }
+.pj-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.pooja .btn.pj-start { width: auto; text-transform: none; letter-spacing: 0; padding: 10px 20px; background: linear-gradient(180deg, #E8B04A, #B47A1E); color: #2A1205; border: 0; }
+.pj-ghost { padding: 8px 16px; border-radius: var(--radius-sm); background: transparent; color: #F3D7A8; border: 1px solid #8A6A50; cursor: pointer; }
+.pj-ghost:hover { border-color: var(--gold-hi); }
+.pooja :focus-visible { outline: 3px solid var(--gold-hi); outline-offset: 2px; }
+.pj-credit { margin: 12px 0 0; font-size: var(--fs-caption); color: #B8977F; }
+@keyframes pj-flicker { 0%, 100% { transform: scale(1, 1) skewX(0); } 25% { transform: scale(0.92, 1.08) skewX(-3deg); } 50% { transform: scale(1.05, 0.95) skewX(2deg); } 75% { transform: scale(0.96, 1.05) skewX(-1deg); } }
+@keyframes pj-sway { 50% { transform: rotate(0.8deg); } }
+@media (max-width: 760px) {
+  .pj-altar { grid-template-columns: minmax(0, 1fr); max-height: 100%; overflow: auto; gap: 12px; }
+  .pj-stage { width: min(260px, 70vw); margin: 0 auto; }
+  .pj-name { font-size: 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pj-flame, .pj-garland { animation: none; }
+  .pj-art { transition: none; }
 }

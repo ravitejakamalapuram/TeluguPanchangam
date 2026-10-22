@@ -49,8 +49,12 @@ targets:
       - ui/moon.js
       - ui/festival-icons.js
       - ui/timing-arc.js
+      - ui/deity.js
+      - ui/pooja.js
       - content/guides
       - lib/astronomy.js
       - lib/tz.js
       - icons
       - fonts
+      - art
+      - audio

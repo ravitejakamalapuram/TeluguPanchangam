@@ -1981,7 +1981,7 @@ body::before { display: none; }
 /* ---- Pooja (ui/pooja.js) ---- */
 .pooja { width: 100%; max-width: 100%; height: 100%; max-height: 100%; margin: 0; padding: 16px; border: 0;
   background: radial-gradient(ellipse at center, #3A0E06, #0C0302); color: #FBE7C2; }
-.pooja[open] { display: grid; place-items: center; }
+.pooja[open] { display: grid; place-items: start center; padding-top: max(16px, 7vh); }
 .pooja::backdrop { background: #0C0302; }
 .pj-altar { display: grid; grid-template-columns: minmax(240px, 400px) minmax(240px, 380px); gap: 24px; align-items: center; }
 .pj-stage { position: relative; aspect-ratio: 3 / 4.1; }
@@ -1995,6 +1995,7 @@ body::before { display: none; }
   background: linear-gradient(105deg, transparent 40%, rgba(255, 230, 160, 0.5) 50%, transparent 60%); }
 .pj-halo { position: absolute; left: 50%; top: 30%; width: 60%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; pointer-events: none;
   mix-blend-mode: screen; opacity: 0.7; background: radial-gradient(circle, rgba(255, 236, 170, 0.5) 0 12%, rgba(255, 170, 60, 0.35) 40%, transparent 70%); }
+.pj-deco { overflow: visible; }
 .pj-deco, .pj-fx { position: absolute; inset: -6% -10% -4%; width: 120%; height: 110%; pointer-events: none; }
 .pj-flame { transform-box: fill-box; transform-origin: 50% 100%; animation: pj-flicker 1.6s ease-in-out infinite; }
 .pj-flame.pj-b { animation-duration: 1.9s; animation-delay: -0.7s; }
@@ -2003,7 +2004,7 @@ body::before { display: none; }
 .pj-garland { transform-box: view-box; transform-origin: 50% 0; animation: pj-sway 6s ease-in-out infinite; }
 .pj-naivedyam { opacity: 0; transition: opacity 0.9s; }
 .pj-naivedyam.on { opacity: 1; }
-.pj-aarti { position: absolute; left: 50%; top: 46%; width: 70px; height: 70px; margin: -35px 0 0 -35px; opacity: 0; pointer-events: none; z-index: 5; }
+.pj-aarti { position: absolute; left: 50%; top: 46%; width: 92px; height: 92px; margin: -46px 0 0 -46px; opacity: 0; pointer-events: none; z-index: 5; }
 .pj-aarti-glow { position: absolute; inset: -34px; border-radius: 50%; background: radial-gradient(circle, rgba(255, 190, 60, 0.75), transparent 65%); }
 .pj-panel { min-width: 0; }
 .pj-weekday { margin: 0; font-family: var(--font-display); color: var(--gold-hi); font-size: 1.125rem; }
@@ -2015,12 +2016,12 @@ body::before { display: none; }
 .pj-steps li.on::before { background: var(--gold); color: #3A1A05; border-color: var(--gold); }
 .pj-steps li.done { color: #E2C7AE; }
 .pj-steps li.done::before { content: '✓'; background: rgba(255, 255, 255, 0.08); }
-.pj-shloka { min-height: 5.6em; padding: 12px 16px; font-size: 1rem; line-height: 1.75; color: #FFE08A;
+.pj-shloka { height: 9em; overflow-y: auto; padding: 12px 16px; font-size: 1rem; line-height: 1.75; color: #FFE08A;
   border-left: 2px solid var(--gold); background: rgba(255, 215, 0, 0.05); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
 .pj-shloka small { display: block; margin-top: 8px; color: #EBC39C; font-size: var(--fs-caption); }
 .pj-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-.pooja .btn.pj-start { width: auto; text-transform: none; letter-spacing: 0; padding: 12px 24px; background: linear-gradient(180deg, #E8B04A, #B47A1E); color: #2A1205; border: 0; }
-.pj-ghost { min-height: 44px; padding: 8px 16px; border-radius: var(--radius-sm); background: transparent; color: #F3D7A8; border: 1px solid #8A6A50; cursor: pointer; }
+.pooja .btn.pj-start { min-height: 44px; font-size: 1rem; width: auto; text-transform: none; letter-spacing: 0; padding: 12px 24px; background: linear-gradient(180deg, #E8B04A, #B47A1E); color: #2A1205; border: 0; }
+.pj-ghost { font-family: inherit; font-size: 1rem; font-weight: 600; min-height: 44px; padding: 8px 16px; border-radius: var(--radius-sm); background: transparent; color: #F3D7A8; border: 1px solid #8A6A50; cursor: pointer; }
 .pj-ghost:hover { border-color: var(--gold-hi); }
 .pooja :focus-visible { outline: 3px solid var(--gold-hi); outline-offset: 2px; }
 .pj-credit { margin: 12px 0 0; font-size: var(--fs-caption); color: #B8977F; }
@@ -2040,6 +2041,21 @@ body::before { display: none; }
 .settings-head h3, .settings-head .modal-title { font-family: var(--font-display); font-weight: 400; color: #FFF1D6; }
 
 .onboarding-title { color: var(--accent-primary); font-family: var(--font-display); font-weight: 400; }
+
+/* Ramabhadra's Latin is a plain sans; in English the display face falls back to the serif heading face. */
+html[lang="en"] { --font-display: 'Noto Serif Telugu', 'Noto Sans Telugu', serif; }
+.pooja[lang="en"] { --font-display: 'Noto Serif Telugu', 'Noto Sans Telugu', serif; }
+/* Shlokas keep their half-verse line break. */
+.pj-shloka, .deity-dhyana { white-space: pre-line; }
+/* Pooja stage: room for the lamps and bells that hang outside the frame; the deity sits inside it. */
+.pj-altar { column-gap: 64px; align-items: start; }
+.pj-panel { padding-top: 16px; }
+.pj-art { width: 84%; height: 90%; margin-bottom: 4%; }
+.pooja[lang="en"] .pj-name, html[lang="en"] .v2-title, html[lang="en"] .deity-name { font-weight: 600; }
+
+.pj-close { position: absolute; top: 16px; right: 16px; z-index: 6; width: 44px; height: 44px; display: grid; place-items: center; padding: 0;
+  border-radius: var(--radius-pill); border: 1px solid #8A6A50; background: rgba(255, 255, 255, 0.06); color: #FBE7C2; font-family: inherit; font-size: 1.5rem; line-height: 1; cursor: pointer; }
+.pj-close:hover { border-color: var(--gold-hi); background: rgba(255, 255, 255, 0.12); }
 
 /* ==== Width-specific rules: keep these last ==== */
 
@@ -2112,13 +2128,21 @@ body::before { display: none; }
   .pj-steps li { font-size: 0; gap: 0; }
   .pj-steps li::before { width: 20px; height: 20px; font-size: var(--fs-caption); }
   .pj-steps li.on { order: -1; flex-basis: 100%; justify-content: center; gap: 8px; font-size: 1rem; margin-bottom: 4px; }
-  .pj-shloka { min-height: 0; font-size: var(--fs-caption); }
+  .pj-shloka { height: auto; min-height: 0; font-size: var(--fs-caption); }
   .pj-row { justify-content: center; }
   .pj-credit { text-align: center; }
 }
-@media (max-width: 760px) and (min-width: 601px) {
-  .pj-altar { grid-template-columns: minmax(0, 1fr); max-height: 100%; overflow: auto; gap: 12px; }
-  .pj-stage { width: min(260px, 60vw); margin: 0 auto; }
+@media (max-width: 860px) and (min-width: 601px) {
+  .pj-altar { grid-template-columns: minmax(0, 1fr); width: 100%; max-height: 100%; overflow: auto; gap: 16px; justify-items: center; }
+  .pj-stage { width: min(260px, 40vw); margin: 32px auto 0; }
+  .pj-panel { width: 100%; max-width: 560px; }
+  .pj-weekday, .pj-name { text-align: center; }
+  .pj-steps { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+  .pj-steps li { font-size: 0; gap: 0; }
+  .pj-steps li::before { width: 24px; height: 24px; font-size: var(--fs-caption); }
+  .pj-steps li.on { order: -1; flex-basis: 100%; justify-content: center; gap: 8px; font-size: 1rem; margin-bottom: 4px; }
+  .pj-shloka { height: auto; min-height: 5em; }
+  .pj-row, .pj-credit { justify-content: center; text-align: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {

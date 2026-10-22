@@ -20,7 +20,7 @@ import { moonInfo, litPath } from './ui/moon.js';
 import { symbolForDay, iconElement, SYMBOLS } from './ui/festival-icons.js';
 import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guides.js';
 import { deityFor } from './ui/deity.js';
-import { openPooja } from './ui/pooja.js';
+import { openPooja, halfVerses } from './ui/pooja.js';
 
 (function () {
   'use strict';
@@ -793,7 +793,7 @@ import { openPooja } from './ui/pooja.js';
     document.getElementById('deity-weekday').textContent = d.weekdayName;
     document.getElementById('deity-name').textContent = d.name;
     document.getElementById('deity-blessing').textContent = d.blessing;
-    document.getElementById('deity-dhyana').textContent = d.dhyana;
+    document.getElementById('deity-dhyana').textContent = halfVerses(d.dhyana);
     document.getElementById('deity-mantras').replaceChildren(...d.mantras.map((m) => {
       const li = document.createElement('li'); li.textContent = m; return li;
     }));

@@ -10,19 +10,22 @@ const SVG_DECO = `<defs><linearGradient id="pj-gold" x1="0" y1="0" x2="1" y2="1"
 <g class="pj-bell"><line x1="356" y1="0" x2="356" y2="40" stroke="#c8902e" stroke-width="2"/><path d="M344 60Q344 40 356 40Q368 40 368 60Z" fill="url(#pj-gold)"/><circle cx="356" cy="62" r="3" fill="#8a5a16"/></g>
 <g transform="translate(30 430)"><circle r="24" cy="-24" fill="url(#pj-fl)" opacity=".4" class="pj-diya-glow"/><path d="M-24 0Q0 16 24 0Q12 -6 0 -6Q-12 -6 -24 0Z" fill="#b5651d"/><path class="pj-flame" d="M0 -6Q-7 -16 0 -32Q7 -16 0 -6Z" fill="url(#pj-fl)"/></g>
 <g transform="translate(370 430)"><circle r="24" cy="-24" fill="url(#pj-fl)" opacity=".4" class="pj-diya-glow"/><path d="M-24 0Q0 16 24 0Q12 -6 0 -6Q-12 -6 -24 0Z" fill="#b5651d"/><path class="pj-flame pj-b" d="M0 -6Q-7 -16 0 -32Q7 -16 0 -6Z" fill="url(#pj-fl)"/></g>
-<g class="pj-naivedyam"><path d="M140 436Q200 398 262 436Z" fill="#3f8f3a"/><ellipse cx="200" cy="420" rx="15" ry="12" fill="#7a4a22"/><path d="M168 428Q172 412 186 418" fill="none" stroke="#f2cc3a" stroke-width="6" stroke-linecap="round"/><g fill="#f4a51c"><circle cx="226" cy="424" r="5.5"/><circle cx="236" cy="426" r="5.5"/><circle cx="231" cy="417" r="5.5"/></g></g>`;
+<g class="pj-naivedyam" transform="translate(0 22)"><path d="M140 436Q200 398 262 436Z" fill="#3f8f3a"/><ellipse cx="200" cy="420" rx="15" ry="12" fill="#7a4a22"/><path d="M168 428Q172 412 186 418" fill="none" stroke="#f2cc3a" stroke-width="6" stroke-linecap="round"/><g fill="#f4a51c"><circle cx="226" cy="424" r="5.5"/><circle cx="236" cy="426" r="5.5"/><circle cx="231" cy="417" r="5.5"/></g></g>`;
 
 const SVG_AARTI = `<div class="pj-aarti-glow"></div><svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="44" rx="26" ry="8" fill="url(#pj-gold)"/><ellipse cx="32" cy="42" rx="22" ry="5" fill="#8a5a16"/><path class="pj-flame" d="M32 40Q24 28 32 10Q40 28 32 40Z" fill="url(#pj-fl)"/><path class="pj-flame pj-b" d="M20 41Q16 34 20 26Q24 34 20 41Z" fill="url(#pj-fl)"/><path class="pj-flame" d="M44 41Q40 34 44 26Q48 34 44 41Z" fill="url(#pj-fl)"/></svg>`;
 
 const UI = {
-  te: { start: 'పూజ ప్రారంభించండి', stop: 'ఆపు', again: 'మళ్ళీ పూజ చేయండి', soundOn: 'శబ్దం: ఆన్', soundOff: 'శబ్దం: ఆఫ్', close: 'మూసివేయి', title: 'పూజ', credit: 'శంఖ నాదం: David Bolton, Wikimedia Commons (CC BY 2.5)' },
-  en: { start: 'Begin the pooja', stop: 'Stop', again: 'Do the pooja again', soundOn: 'Sound: on', soundOff: 'Sound: off', close: 'Close', title: 'Pooja', credit: 'Conch: David Bolton, Wikimedia Commons (CC BY 2.5)' }
+  te: { start: 'పూజ ప్రారంభించండి', stop: 'ఆపు', again: 'మళ్ళీ పూజ చేయండి', done: 'పూజ సంపూర్ణం', blessing: 'సర్వే జనాః సుఖినో భవంతు ||', soundOn: 'శబ్దం: ఆన్', soundOff: 'శబ్దం: ఆఫ్', close: 'మూసివేయి', title: 'పూజ', credit: 'శంఖ నాదం: David Bolton, Wikimedia Commons (CC BY 2.5)' },
+  en: { start: 'Begin the pooja', stop: 'Stop', again: 'Do the pooja again', done: 'The pooja is complete', blessing: 'Sarve janāḥ sukhino bhavantu ||', soundOn: 'Sound: on', soundOff: 'Sound: off', close: 'Close', title: 'Pooja', credit: 'Conch: David Bolton, Wikimedia Commons (CC BY 2.5)' }
 };
 const PETAL = ['#ff9f1a', '#ffc21a', '#ff4f6d', '#ff7eb6', '#fff1c1'];
 // Each step's length in ms, in POOJA_STEPS order (the aarti runs to the end of its own animation).
 const STEP_MS = [5000, 6000, 7000, 7000, 5000, 7000, 5000, 4000, 5000, 0, 4500, 6500, 6500];
 
 let built = null;
+
+// One half-verse per line; the danda stays attached to the word before it.
+export const halfVerses = (text) => text.replace(' | ', '\u00a0|\n').replace(/ \|\|$/, '\u00a0||');
 
 function el(tag, cls, parent) {
   const n = document.createElement(tag);
@@ -78,7 +81,7 @@ function build() {
   btnStart.type = 'button';
   const btnSound = el('button', 'pj-ghost pj-sound', row);
   btnSound.type = 'button';
-  const btnClose = el('button', 'pj-ghost pj-close', row);
+  const btnClose = el('button', 'pj-close', dlg); // round × in the corner
   btnClose.type = 'button';
   const credit = el('p', 'pj-credit', panel);
   document.body.append(dlg);
@@ -105,7 +108,10 @@ function build() {
       const d = drops[i];
       d.vy += 0.12 * s; d.y += d.vy;
       if (d.y > d.end) { drops.splice(i, 1); continue; }
-      ctx.strokeStyle = `rgba(200,230,255,${d.a})`; ctx.lineWidth = 1.6 * s; ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x, d.y - d.vy * 1.6); ctx.stroke();
+      // A water drop: blue streak with a bright head, readable against the gold frame.
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = `rgba(70,140,220,${d.a})`; ctx.lineWidth = 3 * s; ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x, d.y - d.vy * 2.2); ctx.stroke();
+      ctx.fillStyle = `rgba(235,248,255,${d.a})`; ctx.beginPath(); ctx.arc(d.x, d.y, 1.8 * s, 0, 7); ctx.fill();
     }
     for (const f of offered) {
       const t = Math.min(1, (performance.now() - f.t0) / 900), u = 1 - t;
@@ -140,7 +146,7 @@ function build() {
     const s = devicePixelRatio, end = performance.now() + ms;
     (function go() {
       if (performance.now() > end || !state.running) return;
-      for (let i = 0; i < 3; i++) drops.push({ x: X(0.5 + (Math.random() - 0.5) * 0.3), y: Y(0.06), vy: 2 * s, end: Y(0.55 + Math.random() * 0.3), a: 0.35 + Math.random() * 0.4 });
+      for (let i = 0; i < 3; i++) drops.push({ x: X(0.5 + (Math.random() - 0.5) * 0.3), y: Y(0.12), vy: 2 * s, end: Y(0.55 + Math.random() * 0.3), a: 0.6 + Math.random() * 0.4 });
       setTimeout(go, 40);
     })();
   };
@@ -193,7 +199,7 @@ function build() {
   function aartiFrames() {
     const w = stage.clientWidth, h = stage.clientHeight, base = 0.46 * h, f = [];
     const circ = (cy, rx, ry, n, st) => { for (let i = 0; i < n * st; i++) { const a = Math.PI / 2 + i / st * Math.PI * 2; f.push({ transform: `translate(${Math.cos(a) * rx}px,${cy - base + Math.sin(a) * ry}px)`, opacity: 1 }); } };
-    circ(0.84 * h, 0.1 * w, 0.045 * h, 4, 18); circ(0.6 * h, 0.1 * w, 0.045 * h, 2, 18); circ(0.3 * h, 0.1 * w, 0.045 * h, 1, 18); circ(0.52 * h, 0.4 * w, 0.42 * h, 7, 26);
+    circ(0.84 * h, 0.16 * w, 0.05 * h, 4, 18); circ(0.6 * h, 0.16 * w, 0.05 * h, 2, 18); circ(0.3 * h, 0.22 * w, 0.08 * h, 1, 22); circ(0.52 * h, 0.4 * w, 0.42 * h, 7, 26);
     f[0].opacity = 0; f.push({ transform: f[f.length - 1].transform, opacity: 0 });
     return f;
   }
@@ -230,15 +236,17 @@ function build() {
 
   function showText(lines, note) {
     shloka.replaceChildren();
-    lines.forEach((line, i) => { if (i) shloka.append(document.createElement('br')); shloka.append(line); });
+    // A shloka shows one half-verse per line, breaking after its '|'.
+    lines.forEach((line, i) => { if (i) shloka.append(document.createElement('br')); shloka.append(halfVerses(line)); });
     if (note) { const s = el('small', '', shloka); s.textContent = note; }
   }
 
   function labels() {
     const t = UI[state.lang];
-    btnSound.textContent = `🔔 ${state.sound ? t.soundOn : t.soundOff}`;
+    btnSound.textContent = `🔔\u2002${state.sound ? t.soundOn : t.soundOff}`;
     btnSound.setAttribute('aria-pressed', String(state.sound));
-    btnClose.textContent = t.close;
+    btnClose.textContent = '×';
+    btnClose.setAttribute('aria-label', t.close);
     credit.textContent = t.credit;
     btnStart.textContent = state.running ? t.stop : t.start;
   }
@@ -279,7 +287,10 @@ function build() {
       items.forEach((li) => { li.className = 'done'; li.removeAttribute('aria-current'); });
       await wait(1500);
     } catch { return; }
+    // Finished: effects stop, every step stays ticked, and a closing blessing replaces the shloka.
     stopAll();
+    items.forEach((li) => { li.className = 'done'; });
+    showText([UI[state.lang].blessing], UI[state.lang].done);
     btnStart.textContent = UI[state.lang].again;
   }
 
@@ -296,6 +307,7 @@ function build() {
     wk.textContent = deity.weekdayName;
     title.textContent = deity.name;
     dlg.setAttribute('aria-label', `${UI[state.lang].title}: ${deity.name}`);
+    dlg.lang = state.lang;
     steps.replaceChildren(...POOJA_STEPS.map((s) => { const li = document.createElement('li'); li.textContent = s.name[state.lang]; return li; }));
     showText([deity.dhyana]);
     labels();

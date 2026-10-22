@@ -78,3 +78,8 @@ test('the release ships the v2 art, sound and fonts', () => {
 test('v2 layout rules never override the hidden attribute', () => {
   assert.match(read('newtab.css'), /\.v2 \[hidden\], \.temple-nav \[hidden\] \{ display: none !important; \}/);
 });
+
+test('a shloka shows one half-verse per line with its danda attached', async () => {
+  const { halfVerses } = await import('../ui/pooja.js'); // the DOM is touched only when the pooja opens
+  assert.equal(halfVerses('a b | c d ||'), 'a b |\nc d ||');
+});

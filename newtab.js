@@ -1367,7 +1367,8 @@ import { openPooja } from './ui/pooja.js';
       await window.Reminders.addReminder(reminderData);
       elRemTitle.value = '';
       elRemDesc.value = '';
-      
+      elReminderForm.closest('details')?.removeAttribute('open'); // show the list with the new event
+
       await renderRemindersList(activePanchang);
       renderMonthlyCalendar();
     });

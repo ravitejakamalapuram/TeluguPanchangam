@@ -18,7 +18,7 @@
 
   <!-- v2 temple header: banner with the day's deity in the shrine doorway -->
   <header id="temple" class="temple">
-    <div class="temple-niche"><img id="niche-deity" class="niche-deity" src="art/deities/dattatreya.webp" alt=""></div>
+    <div class="temple-art"><div class="temple-niche"><img id="niche-deity" class="niche-deity" src="art/deities/dattatreya.webp" alt=""></div></div>
     <div class="temple-title">
       <h1 data-i18n-te="శ్రీ తెలుగు పంచాంగం" data-i18n-en="Telugu Panchangam">శ్రీ తెలుగు పంచాంగం</h1>
       <p data-i18n-te="ధర్మం · సంస్కారం · సనాతన సంస్కృతి" data-i18n-en="Dharma · Samskara · Sanatana tradition">ధర్మం · సంస్కారం · సనాతన సంస్కృతి</p>
@@ -224,6 +224,8 @@
         </div>
 
         <!-- Add Custom Reminders Form -->
+        <details class="add-event">
+        <summary data-i18n-te="+ ఈవెంట్ జోడించండి" data-i18n-en="+ Add an event">+ ఈవెంట్ జోడించండి</summary>
         <form id="reminder-form" class="cyber-form-panel">
           <input type="text" id="rem-title" placeholder="ఈవెంట్ పేరు (Event Title)" data-i18n-placeholder-bi="ఈవెంట్ పేరు (Event Title)" required>
           <input type="text" id="rem-desc" placeholder="వివరణ (Description)" data-i18n-placeholder-bi="వివరణ (Description)">
@@ -288,6 +290,7 @@
 
           <button type="submit" class="btn" data-i18n-bi="ఈవెంట్‌ను జోడించు (Add Event)">ఈవెంట్‌ను జోడించు (Add Event)</button>
         </form>
+        </details>
 
         <button type="button" class="btn tiny-btn" data-export="reminders" data-i18n-bi="మీ ఈవెంట్లను క్యాలెండర్ లో చేర్చండి (Add my events to calendar)">మీ ఈవెంట్లను క్యాలెండర్ లో చేర్చండి (Add my events to calendar)</button>
       </section>

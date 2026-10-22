@@ -58,4 +58,4 @@ The new tab gets the temple look from the approved mockup, and every value on th
   - every button;
   - no console errors.
 - [x] `npm test` and the web build pass.
-- [ ] Draft PR with screenshots.
+- [x] Draft PR (#76).

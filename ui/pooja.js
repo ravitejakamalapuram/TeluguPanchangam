@@ -302,7 +302,8 @@ function build() {
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
     size();
     startFx();
-    btnStart.focus();
+    btnStart.focus({ preventScroll: true });
+    altar.scrollTop = 0;
   }
 
   return { open, dialog: dlg };

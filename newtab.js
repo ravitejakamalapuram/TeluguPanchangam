@@ -815,6 +815,9 @@ import { openPooja } from './ui/pooja.js';
       card.append(h, art, nm, mn, btn);
       return card;
     }));
+    // On phones the row scrolls sideways; start it at the selected day's card.
+    const current = row.querySelector('.is-today');
+    if (current && row.scrollWidth > row.clientWidth) row.scrollLeft += current.getBoundingClientRect().left - row.getBoundingClientRect().left - 12;
   }
 
   // The saved date/time of birth as an instant. Parsed as wall-clock time in the selected city
@@ -1654,13 +1657,24 @@ import { openPooja } from './ui/pooja.js';
     renderDayTimeline(activePanchang);
   }, 60000);
 
-  // The nav marks the section in view.
+  // The nav marks the section in view; near the top of the page that is always Today.
   const navLinks = [...document.querySelectorAll('.nav-links a')];
+  function markNav(hash) {
+    navLinks.forEach((a) => a.classList.toggle('is-active', a.hash === hash));
+    // On narrow screens the links scroll sideways; keep the active one in view.
+    const on = navLinks.find((a) => a.hash === hash);
+    const bar = on && on.parentElement;
+    if (bar && (on.offsetLeft < bar.scrollLeft || on.offsetLeft + on.offsetWidth > bar.scrollLeft + bar.clientWidth)) {
+      bar.scrollTo({ left: on.offsetLeft - 8, behavior: 'smooth' });
+    }
+  }
+  markNav('#today');
   if ('IntersectionObserver' in window) {
     const spy = new IntersectionObserver((entries) => entries.forEach((e) => {
-      if (e.isIntersecting) navLinks.forEach((a) => a.classList.toggle('is-active', a.hash === '#' + e.target.id));
+      if (e.isIntersecting && window.scrollY > 120) markNav('#' + e.target.id);
     }), { rootMargin: '-35% 0px -60% 0px' });
     navLinks.forEach((a) => { const t = document.querySelector(a.hash); if (t) spy.observe(t); });
+    window.addEventListener('scroll', () => { if (window.scrollY <= 120) markNav('#today'); }, { passive: true });
   }
 
   // Boot UI on Page Load

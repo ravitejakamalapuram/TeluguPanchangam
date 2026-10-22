@@ -2107,3 +2107,17 @@ body::before { display: none; }
 .v2-col .upcoming-card > .btn + .btn { margin-top: -4px; }
 /* Layout rules above set display on some toggled elements; [hidden] must still win. */
 .v2 [hidden], .temple-nav [hidden] { display: none !important; }
+/* Tablet: the week stays one row of seven and "more for the day" stays three across, down to 860px. */
+@media (max-width: 1100px) and (min-width: 861px) {
+  .week-row { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; padding: 12px; }
+  .v2-row-more { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 860px) and (min-width: 601px) { .v2-row-more { grid-template-columns: minmax(0, 1fr); } }
+.week-pooja { white-space: nowrap; font-size: var(--fs-caption); padding: 4px 12px; }
+@media (max-width: 1100px) and (min-width: 861px) { .week-pooja { padding: 4px 8px; } .week-pooja::before { content: none; } }
+.zone-now .next-item { min-width: 0; }
+.zone-now .next-mid { flex: 1 1 auto; min-width: 0; }
+.zone-now .next-name { overflow-wrap: anywhere; }
+.zone-now .next-time { white-space: normal; }
+.week-pooja { min-height: 40px; }
+@media (max-width: 600px) { .v2-head-orn { display: none; } }

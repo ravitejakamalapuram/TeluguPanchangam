@@ -638,10 +638,10 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     return new Date(p.year, p.month, p.day, 12, 0, 0);
   }
 
-  // Clock time, with "(+1)" when it falls after midnight of the selected day.
-  const formatTimeOnDay = (d) => formatTime(d) + (isSameDay(cityDateOf(d), selectedDate) ? '' : ' (+1)');
-  const formatWindow = (w) => `${formatTimeOnDay(w.start)} - ${formatTimeOnDay(w.end)}`;
-  const formatWindows = (list) => (list.length ? list.map(formatWindow).join(', ') : '—');
+  // Clock time, with "(+1)" when it falls after midnight of the given day (the selected day by default).
+  const formatTimeOnDay = (d, day = selectedDate) => formatTime(d) + (isSameDay(cityDateOf(d), day) ? '' : ' (+1)');
+  const formatWindow = (w, day) => `${formatTimeOnDay(w.start, day)} - ${formatTimeOnDay(w.end, day)}`;
+  const formatWindows = (list) => (list.length ? list.map((w) => formatWindow(w)).join(', ') : '—');
 
   // Sankalpam names the tithi/nakshatra current when it is recited: "now" for today, sunrise otherwise.
   function sankalpamFor(day) {
@@ -662,7 +662,6 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     document.getElementById('z-today').textContent = title;
     // The timings card names the selected day when it is not today, and then lists the whole day.
     document.getElementById('z-now').textContent = isToday ? window.I18N.teEn('నేటి ముహూర్తాలు', 'Timings today') : window.I18N.teEn(`ముహూర్తాలు · ${title}`, `Timings · ${title}`);
-    document.querySelector('#now .next-heading').textContent = isToday ? window.I18N.teEn('ఇక ముందు ఈరోజు', 'Coming up today') : window.I18N.teEn('ఆ రోజు సమయాలు', 'Through the day');
     const todayLabel = window.I18N.teEn('ఈ రోజు', 'Today');
     const todayDate = cityToday().toLocaleDateString(lang === 'en' ? 'en-US' : 'te-IN', { day: 'numeric', month: 'short' });
     document.querySelectorAll('.zone-today-btn').forEach((btn) => {
@@ -1471,13 +1470,13 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     }
   }
 
-  // "What comes next": today's windows still ahead (or running), soonest first.
-  // For another day it lists the whole day, since "now" has no meaning there.
+  // The whole day's good times and times to avoid, each in time order. For today the ones gone by
+  // are dimmed and the one running now is marked.
   function renderDayTimeline(panchang) {
-    const list = document.getElementById('next-list');
+    const goodList = document.getElementById('good-list');
+    const badList = document.getElementById('bad-list');
     const status = document.getElementById('now-status');
-    if (!list || !status) return;
-    list.replaceChildren();
+    if (!goodList || !badList || !status) return;
     // Between midnight and sunrise the panchang day still running is yesterday's.
     if (isSameDay(selectedDate, cityToday()) && new Date() < panchang.astronomy.sunrise) {
       const y = new Date(selectedDate); y.setDate(y.getDate() - 1);
@@ -1500,8 +1499,10 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     const now = new Date();
     // "Today" is the panchang day running now: sunrise to next sunrise, so after midnight it still counts.
     const isToday = now >= panchang.astronomy.sunrise && now < panchang.astronomy.nextSunrise;
-    const upcoming = isToday ? items.filter((it) => it.end > now) : items;
-    const running = isToday ? upcoming.find((it) => it.type === 'inauspicious' && it.start <= now) : null;
+    // Before sunrise the day shown is yesterday's, so "(+1)" counts from that day.
+    const shownDay = cityDateOf(panchang.astronomy.sunrise);
+    const isLive = (it) => isToday && it.start <= now && now < it.end;
+    const running = items.find((it) => it.type === 'inauspicious' && isLive(it));
 
     const statusText = !isToday ? ''
       : running ? window.I18N.teEn('ఇప్పుడు ' + running.label + ' — ' + formatTime(running.end) + ' వరకు', 'Now: ' + running.label + ' until ' + formatTime(running.end))
@@ -1510,31 +1511,25 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     if (status.textContent !== statusText) status.textContent = statusText;
     status.className = 'now-status ' + (running ? 'inauspicious' : 'auspicious');
 
-    upcoming.slice(0, isToday ? 5 : upcoming.length).forEach((it) => {
+    const row = (it) => {
       const li = document.createElement('li');
-      li.className = 'next-item ' + it.type;
+      if (isLive(it)) li.className = 'live';
+      else if (isToday && it.end <= now) li.className = 'past';
       const name = document.createElement('span');
-      name.className = 'next-name';
       name.textContent = it.label;
-      const time = document.createElement('span');
-      time.className = 'next-time';
-      time.textContent = formatWindow(it);
-      const chip = document.createElement('span');
-      chip.className = 'next-chip';
-      chip.textContent = it.type === 'auspicious' ? window.I18N.t('goodTime') : window.I18N.t('badTime');
-      const mid = document.createElement('span');
-      mid.className = 'next-mid';
-      mid.append(name, time);
-      if (isToday && it.start > now) {
-        const mins = Math.round((it.start - now) / 60000);
-        const left = document.createElement('span');
-        left.className = 'next-left';
-        left.textContent = window.I18N.t('inTime')(Math.floor(mins / 60), mins % 60);
-        mid.append(left);
+      if (isLive(it)) {
+        const badge = document.createElement('span');
+        badge.className = 'times-now';
+        badge.textContent = window.I18N.teEn('ఇప్పుడు', 'Now');
+        name.append(badge);
       }
-      li.append(mid, chip);
-      list.appendChild(li);
-    });
+      const time = document.createElement('b');
+      time.textContent = formatWindow(it, shownDay);
+      li.append(name, time);
+      return li;
+    };
+    goodList.replaceChildren(...items.filter((it) => it.type === 'auspicious').map(row));
+    badList.replaceChildren(...items.filter((it) => it.type === 'inauspicious').map(row));
   }
 
   // The popup's arc: the sun from sunrise to sunset by day, the moon from sunset to the next sunrise at night.

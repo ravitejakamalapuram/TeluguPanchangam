@@ -1522,24 +1522,6 @@ h1, h2, h3, .quad-value, .date-display { font-family: var(--font-heading); }
 .now-status:empty { display: none; }
 .now-status.auspicious { background: rgba(30, 107, 69, 0.12); color: var(--color-auspicious); }
 .now-status.inauspicious { background: rgba(163, 38, 27, 0.12); color: var(--color-inauspicious); }
-.next-heading { font-size: 1rem; color: var(--text-secondary); font-weight: 600; margin: 0; }
-.next-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; }
-.next-item {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 8px 12px; border-radius: var(--radius-md);
-  background: var(--panel-soft); border: 1px solid var(--panel-border); border-left-width: 5px;
-}
-.next-item.auspicious { border-left-color: var(--color-auspicious); }
-.next-item.inauspicious { border-left-color: var(--color-inauspicious); }
-.next-mid { display: flex; flex-direction: column; min-width: 0; }
-.next-name { font-weight: 600; }
-.next-item.auspicious .next-name { color: var(--color-auspicious); }
-.next-item.inauspicious .next-name { color: var(--color-inauspicious); }
-.next-time { font-family: 'Outfit', sans-serif; color: var(--text-secondary); font-size: 0.875rem; white-space: nowrap; }
-.next-left { font-size: 0.875rem; color: var(--text-secondary); }
-.next-chip { flex: none; font-size: 0.875rem; font-weight: 700; padding: 2px 12px; border-radius: var(--radius-pill); }
-.next-item.auspicious .next-chip { background: rgba(30, 107, 69, 0.14); color: var(--color-auspicious); }
-.next-item.inauspicious .next-chip { background: rgba(163, 38, 27, 0.14); color: var(--color-inauspicious); }
 .timeline-card #btn-all-timings { align-self: flex-start; }
 .reminders-card h3 { font-family: var(--font-heading); color: var(--zone-now-ink); }
 
@@ -1925,13 +1907,19 @@ body::after { right: 6px; }
 
 /* ---- Timings card ---- */
 .zone-now .timeline-card { padding: 16px; gap: 12px; flex-grow: 1; }
-.zone-now .next-heading { font-size: var(--fs-caption); }
-.zone-now .next-list { gap: 8px; }
-.zone-now .next-item { min-width: 0; padding: 8px 12px; align-items: center; background: var(--panel-soft); }
-.zone-now .next-mid { flex: 1 1 auto; min-width: 0; flex-direction: row; flex-wrap: wrap; align-items: baseline; column-gap: 12px; }
-.zone-now .next-name { flex-basis: 100%; overflow-wrap: anywhere; }
-.zone-now .next-time { white-space: normal; }
-.zone-now .next-left::before { content: '· '; }
+.zone-now .timeline-card { gap: 4px; }
+.times-head { display: flex; align-items: center; gap: 8px; margin: 8px 0 4px; font-size: var(--fs-caption); font-weight: 700; }
+.times-head:first-child { margin-top: 0; }
+.times-head::after { content: ""; flex: 1; height: 1px; background: currentColor; opacity: 0.25; }
+.times-head.good { color: var(--color-auspicious); }
+.times-head.bad { color: var(--color-inauspicious); }
+.times-list { list-style: none; margin: 0; padding: 0; }
+.times-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: baseline; padding: 6px 8px; border-radius: var(--radius-sm); }
+.times-list b { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.times-list li.past { opacity: 0.5; }
+.times-list li.live { background: rgba(217, 102, 26, 0.14); box-shadow: inset 3px 0 0 #D9661A; }
+.times-now { margin-left: 8px; padding: 1px 8px; border-radius: var(--radius-pill); background: #B4501A; color: #FFFFFF; font-size: var(--fs-caption); font-weight: 700; }
+.timeline-card #btn-all-timings { margin-top: 8px; }
 
 /* ---- Calendar, festivals, own events ---- */
 .v2 .zone-month .calendar-card { border: 0; border-radius: 0; box-shadow: none; padding: 12px 16px 16px; }

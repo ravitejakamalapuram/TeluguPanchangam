@@ -6,6 +6,22 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 
 ### Added
 
+- **v2 temple design:** the new tab now opens with a temple banner, and the day's deity sits in the shrine doorway. Below are:
+  - a maroon section bar;
+  - one strip with the date, a live clock, sunrise and sunset, and what is happening right now;
+  - the four angas (tithi, nakshatra, yoga, karana) as colour-coded cards.
+
+  The calendar sits beside the festivals and your own events, and rasi phalalu has the 12 rasis beside the reading. The Moon, the sankalpam and the Gita verse come last.
+
+  Every value still comes from the panchangam engine, and light, dark and auto themes all get the temple look.
+- **Deity of the day:**
+  - The deity follows the weekday, with a dhyana shloka and three nama mantras: Surya, Shiva, Hanuman, Ganesha, Dattatreya, Mahalakshmi and Venkateswara.
+  - A row shows all seven deities.
+  - In English, the mantras and shlokas are romanised.
+- **Guided pooja** for any of the seven deities: 13 upacharas in order, each with its shloka, from lighting the lamp to the closing offering. Bell and conch buttons let you sound them yourself at any moment.
+  - Sound is optional: a synthesised bell, plus a conch recording (CC BY 2.5) bundled with the extension.
+  - It makes no network calls.
+- "Right now" and "Coming up today" refresh every minute, and the page moves to the new day at the city's midnight.
 - Festival guides, first eight (#57): Ugadi, Sri Rama Navami, Vinayaka Chavithi, Dasara (Durgashtami to Vijayadashami), Sankranti (Bhogi, Sankranti, Kanuma), Maha Shivaratri and Varalakshmi Vratam join Deepavali. All are drafts: nothing shows in the app or on the website until a named person reviews a guide and signs it off. The extension bundles the files but shows no change until then.
 - Web app only: once a city is set, desktop and Android browsers that support it offer to install the panchangam as an app (shown once, never on first load). The extension is unchanged.
 - Web app only: links remember the viewed day, city and language (`?date=2026-10-20&city=hyderabad&lang=en`), and a shared card's link opens that same day. The extension is unchanged.
@@ -14,6 +30,7 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 
 ### Fixed
 
+- Between midnight and sunrise, "Right now" uses the panchang day still running (yesterday's) instead of showing nothing.
 - Share cards: the Rasi card is redesigned in the Deepam look (purple heading band, a coloured tile per rasi with stars and a band label, your own rasi marked) and the shared image now follows the app's language and light or dark look. The day card uses the same palette.
 - The location chip in the top bar no longer sits higher than its pin, and Latin text in pills and buttons is centred in Telugu fonts too.
 - Now timings no longer break "AM" onto its own line, and two-line buttons have room to breathe.

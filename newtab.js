@@ -19,6 +19,8 @@ import { initRatingPrompt } from './ui/rating.js';
 import { moonInfo, litPath } from './ui/moon.js';
 import { symbolForDay, iconElement, SYMBOLS } from './ui/festival-icons.js';
 import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guides.js';
+import { deityFor } from './ui/deity.js';
+import { openPooja, halfVerses } from './ui/pooja.js';
 
 (function () {
   'use strict';
@@ -228,8 +230,8 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
   function setupClock() {
     function updateClock() {
       const now = new Date();
-      elClock.textContent = now.toLocaleTimeString('en-US', { hour12: false, timeZone: currentCity.timeZone });
-      elTopbarTime.textContent = formatClock(now, currentCity.timeZone, window.I18N.getLang());
+      elClock.textContent = formatClock(now, currentCity.timeZone, window.I18N.getLang());
+      elTopbarTime.textContent = elClock.textContent;
     }
     updateClock();
     setInterval(updateClock, 1000);
@@ -652,6 +654,9 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       ? window.I18N.teEn('ఈరోజు', 'Today')
       : selectedDate.toLocaleDateString(lang === 'en' ? 'en-US' : 'te-IN', { weekday: 'short', day: 'numeric', month: 'short' });
     document.getElementById('z-today').textContent = title;
+    // The timings card names the selected day when it is not today, and then lists the whole day.
+    document.getElementById('z-now').textContent = isToday ? window.I18N.teEn('నేటి ముహూర్తాలు', 'Timings today') : window.I18N.teEn(`ముహూర్తాలు · ${title}`, `Timings · ${title}`);
+    document.querySelector('#now .next-heading').textContent = isToday ? window.I18N.teEn('ఇక ముందు ఈరోజు', 'Coming up today') : window.I18N.teEn('ఆ రోజు సమయాలు', 'Through the day');
     const todayLabel = window.I18N.teEn('ఈ రోజు', 'Today');
     const todayDate = cityToday().toLocaleDateString(lang === 'en' ? 'en-US' : 'te-IN', { day: 'numeric', month: 'short' });
     document.querySelectorAll('.zone-today-btn').forEach((btn) => {
@@ -767,12 +772,52 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     renderDayTimeline(activePanchang);
     renderUpcoming();
     await renderGuide(activePanchang);
+    renderDeity();
 
     // 9. Re-render monthly calendar grid
     renderMonthlyCalendar();
 
     // 10. Keep the shareable URL in step with the view (web only).
     syncUrlState();
+  }
+
+  // The weekday's deity follows the selected day: in the temple doorway, the deity card, and the
+  // highlighted card in the week row. Each week card opens that day's pooja.
+  function renderDeity() {
+    const lang = window.I18N.getLang();
+    const d = deityFor(selectedDate.getDay(), lang);
+    for (const img of [document.getElementById('niche-deity'), document.getElementById('deity-art')]) {
+      if (img.getAttribute('src') !== d.sticker) img.src = d.sticker;
+      img.alt = d.name;
+    }
+    document.getElementById('deity-weekday').textContent = d.weekdayName;
+    document.getElementById('deity-name').textContent = d.name;
+    document.getElementById('deity-blessing').textContent = d.blessing;
+    document.getElementById('deity-dhyana').textContent = halfVerses(d.dhyana);
+    document.getElementById('deity-mantras').replaceChildren(...d.mantras.map((m) => {
+      const li = document.createElement('li'); li.textContent = m; return li;
+    }));
+    const row = document.getElementById('week-row');
+    row.replaceChildren(...[0, 1, 2, 3, 4, 5, 6].map((wd) => {
+      const w = deityFor(wd, lang);
+      const card = document.createElement('article');
+      card.className = 'week-card' + (wd === d.weekday ? ' is-today' : '');
+      card.style.setProperty('--deity-tint', w.tint);
+      const h = document.createElement('h3'); h.textContent = w.weekdayName;
+      const art = document.createElement('img'); art.src = w.sticker; art.alt = ''; art.loading = 'lazy'; art.width = 160; art.height = 180;
+      const nm = document.createElement('p'); nm.className = 'week-name'; nm.textContent = w.name;
+      const mn = document.createElement('p'); mn.className = 'week-mantra'; mn.textContent = w.mantras[0];
+      const btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'week-pooja';
+      btn.textContent = window.I18N.teEn('పూజ చేయండి', 'Do the pooja');
+      btn.setAttribute('aria-label', window.I18N.teEn(`${w.name} పూజ చేయండి`, `Do the pooja for ${w.name}`));
+      btn.addEventListener('click', () => openPooja(w, lang));
+      card.append(h, art, nm, mn, btn);
+      return card;
+    }));
+    // On phones the row scrolls sideways; start it at the selected day's card.
+    const current = row.querySelector('.is-today');
+    if (current && row.scrollWidth > row.clientWidth) row.scrollLeft += current.getBoundingClientRect().left - row.getBoundingClientRect().left - 12;
   }
 
   // The saved date/time of birth as an instant. Parsed as wall-clock time in the selected city
@@ -1329,7 +1374,8 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
       await window.Reminders.addReminder(reminderData);
       elRemTitle.value = '';
       elRemDesc.value = '';
-      
+      elReminderForm.closest('details')?.removeAttribute('open'); // show the list with the new event
+
       await renderRemindersList(activePanchang);
       renderMonthlyCalendar();
     });
@@ -1426,6 +1472,11 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     const status = document.getElementById('now-status');
     if (!list || !status) return;
     list.replaceChildren();
+    // Between midnight and sunrise the panchang day still running is yesterday's.
+    if (isSameDay(selectedDate, cityToday()) && new Date() < panchang.astronomy.sunrise) {
+      const y = new Date(selectedDate); y.setDate(y.getDate() - 1);
+      panchang = dayFor(y);
+    }
 
     const tm = panchang.timings;
     const items = [];
@@ -1446,16 +1497,14 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
     const upcoming = isToday ? items.filter((it) => it.end > now) : items;
     const running = isToday ? upcoming.find((it) => it.type === 'inauspicious' && it.start <= now) : null;
 
-    if (!isToday) {
-      status.textContent = '';
-    } else if (running) {
-      status.textContent = window.I18N.teEn('ఇప్పుడు ' + running.label + ' — ' + formatTime(running.end) + ' వరకు', 'Now: ' + running.label + ' until ' + formatTime(running.end));
-    } else {
-      status.textContent = window.I18N.teEn('ప్రస్తుతం ఏ చెడు సమయమూ లేదు', 'No bad time right now');
-    }
+    const statusText = !isToday ? ''
+      : running ? window.I18N.teEn('ఇప్పుడు ' + running.label + ' — ' + formatTime(running.end) + ' వరకు', 'Now: ' + running.label + ' until ' + formatTime(running.end))
+      : window.I18N.teEn('ప్రస్తుతం ఏ చెడు సమయమూ లేదు', 'No bad time right now');
+    // An aria-live region: rewriting the same text every minute would be announced again.
+    if (status.textContent !== statusText) status.textContent = statusText;
     status.className = 'now-status ' + (running ? 'inauspicious' : 'auspicious');
 
-    upcoming.slice(0, 5).forEach((it) => {
+    upcoming.slice(0, isToday ? 5 : upcoming.length).forEach((it) => {
       const li = document.createElement('li');
       li.className = 'next-item ' + it.type;
       const name = document.createElement('span');
@@ -1586,6 +1635,45 @@ import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guide
   document.getElementById('btn-all-festivals').addEventListener('click', openAllFestivals);
   document.getElementById('btn-close-festivals').addEventListener('click', () => closeDialog(document.getElementById('festivals-dialog')));
   document.getElementById('festivals-dialog').addEventListener('click', (e) => { if (e.target.id === 'festivals-dialog') closeDialog(e.target); });
+
+  document.getElementById('btn-pooja').addEventListener('click', () => openPooja(deityFor(selectedDate.getDay(), window.I18N.getLang()), window.I18N.getLang()));
+
+  // Once a minute: keep "right now" and "coming up" current, and roll over to the new day at the
+  // city's midnight when the page is following today.
+  let followedDay = isSameDay(selectedDate, cityToday()) ? cityToday() : null;
+  setInterval(async () => {
+    if (!activePanchang) return;
+    const today = cityToday();
+    if (followedDay && isSameDay(selectedDate, followedDay) && !isSameDay(today, followedDay)) {
+      selectedDate = today;
+      calendarViewDate = new Date(today);
+      followedDay = today;
+      await refreshDashboard();
+      return;
+    }
+    followedDay = isSameDay(selectedDate, today) ? today : null;
+    renderDayTimeline(activePanchang);
+  }, 60000);
+
+  // The nav marks the section in view; near the top of the page that is always Today.
+  const navLinks = [...document.querySelectorAll('.nav-links a')];
+  function markNav(hash) {
+    navLinks.forEach((a) => a.classList.toggle('is-active', a.hash === hash));
+    // On narrow screens the links scroll sideways; keep the active one in view.
+    const on = navLinks.find((a) => a.hash === hash);
+    const bar = on && on.parentElement;
+    if (bar && (on.offsetLeft < bar.scrollLeft || on.offsetLeft + on.offsetWidth > bar.scrollLeft + bar.clientWidth)) {
+      bar.scrollTo({ left: on.offsetLeft - 8, behavior: 'smooth' });
+    }
+  }
+  markNav('#today');
+  if ('IntersectionObserver' in window) {
+    const spy = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (e.isIntersecting && window.scrollY > 120) markNav('#' + e.target.id);
+    }), { rootMargin: '-35% 0px -60% 0px' });
+    navLinks.forEach((a) => { const t = document.querySelector(a.hash); if (t) spy.observe(t); });
+    window.addEventListener('scroll', () => { if (window.scrollY <= 120) markNav('#today'); }, { passive: true });
+  }
 
   // Boot UI on Page Load
   if (document.readyState === 'loading') {

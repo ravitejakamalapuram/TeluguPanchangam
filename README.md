@@ -40,7 +40,7 @@ Both run the same Panchangam engine, so the numbers match.
 </p>
 <p align="center">
   <img src="chrome-store/assets/screenshots/04-rasi-phalalu.png" alt="Rasi Phalalu for all 12 rasis" width="420">
-  <img src="chrome-store/assets/screenshots/05-dark-mode-today.png" alt="Dark mode" width="420">
+  <img src="chrome-store/assets/screenshots/05-guided-pooja.png" alt="Guided pooja for the deity of the day" width="420">
 </p>
 
 ## Privacy

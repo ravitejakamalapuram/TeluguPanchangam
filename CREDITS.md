@@ -49,3 +49,13 @@ English text is shown instead — no verse text is ever sent to a remote transla
 
 See the docstring at the top of `scripts/build-verses.py` for how to download the inputs and regenerate
 `gita-verses.js`.
+
+# v2 temple design: art, sound and fonts
+
+| Asset | Source | Licence / status |
+| :--- | :--- | :--- |
+| `art/banner.webp` (temple banner) | Generated with AI image tools for this project | Owned by the project |
+| `art/deities/*.webp` (weekday deities) | Cut out from deity sprite sheets the project owner supplied (AI-generated) | Owned by the project |
+| `audio/conch.ogg` | David Bolton, [Conch_shell.ogg](https://commons.wikimedia.org/wiki/File:Conch_shell.ogg), Wikimedia Commons | CC BY 2.5 (credited in the pooja and the page footer) |
+| Bell, drone and water sounds in the pooja | Synthesised in the browser (Web Audio), `ui/pooja.js` | Project code |
+| `fonts/ramabhadra-*.woff2` | Ramabhadra by Silicon Andhra, via Google Fonts | SIL Open Font License (`fonts/OFL.txt`) |

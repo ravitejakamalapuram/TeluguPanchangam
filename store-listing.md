@@ -15,7 +15,7 @@ KEY FEATURES
 • Daily Rasi Phalalu (రాశి ఫలాలు): a daily reading for all 12 Rasis (Mesha to Meena).
 • Hindu Festivals & Vratams: Accurate dates and reminders for major festivals including Ugadi, Vinayaka Chavithi, Dasara, and Sankranti.
 • Vedic Sankalpam Generator: Automatic generation of customized daily pooja Sankalpam text (సంకల్పం) with correct Samvatsara, Ayana, Ritu, and Masa.
-• A calmer look: three zones for today, the month and right now, a Moon card with the phase and days to the next full or new moon, and a day, night or automatic theme chosen in a settings panel.
+• A temple look: the day's deity stands in the temple doorway with its dhyana shloka and mantras, and a guided pooja (13 upacharas in order, with an optional bell and conch) is there for each weekday's deity. A Moon card shows the phase, and you can pick a light, dark or automatic theme.
 • Private by design: the extension makes no network requests of its own — no tracking, no analytics. The only action that ever sends anything off your device is the optional "Use My Location" button, which hands the request to Chrome's own built-in geolocation service rather than to us.
 
 HOW TO USE

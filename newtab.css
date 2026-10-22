@@ -2057,6 +2057,9 @@ html[lang="en"] { --font-display: 'Noto Serif Telugu', 'Noto Sans Telugu', serif
   border-radius: var(--radius-pill); border: 1px solid #8A6A50; background: rgba(255, 255, 255, 0.06); color: #FBE7C2; font-family: inherit; font-size: 1.5rem; line-height: 1; cursor: pointer; }
 .pj-close:hover { border-color: var(--gold-hi); background: rgba(255, 255, 255, 0.12); }
 
+.pj-tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.pj-tools .pj-ghost { border-color: rgba(243, 210, 122, 0.55); }
+
 /* ==== Width-specific rules: keep these last ==== */
 
 /* Tablet and small laptop */
@@ -2129,7 +2132,7 @@ html[lang="en"] { --font-display: 'Noto Serif Telugu', 'Noto Sans Telugu', serif
   .pj-steps li::before { width: 20px; height: 20px; font-size: var(--fs-caption); }
   .pj-steps li.on { order: -1; flex-basis: 100%; justify-content: center; gap: 8px; font-size: 1rem; margin-bottom: 4px; }
   .pj-shloka { height: auto; min-height: 0; font-size: var(--fs-caption); }
-  .pj-row { justify-content: center; }
+  .pj-row, .pj-tools { justify-content: center; }
   .pj-credit { text-align: center; }
 }
 @media (max-width: 860px) and (min-width: 601px) {
@@ -2142,7 +2145,7 @@ html[lang="en"] { --font-display: 'Noto Serif Telugu', 'Noto Sans Telugu', serif
   .pj-steps li::before { width: 24px; height: 24px; font-size: var(--fs-caption); }
   .pj-steps li.on { order: -1; flex-basis: 100%; justify-content: center; gap: 8px; font-size: 1rem; margin-bottom: 4px; }
   .pj-shloka { height: auto; min-height: 5em; }
-  .pj-row, .pj-credit { justify-content: center; text-align: center; }
+  .pj-row, .pj-tools, .pj-credit { justify-content: center; text-align: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {

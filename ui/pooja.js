@@ -15,8 +15,8 @@ const SVG_DECO = `<defs><linearGradient id="pj-gold" x1="0" y1="0" x2="1" y2="1"
 const SVG_AARTI = `<div class="pj-aarti-glow"></div><svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="44" rx="26" ry="8" fill="url(#pj-gold)"/><ellipse cx="32" cy="42" rx="22" ry="5" fill="#8a5a16"/><path class="pj-flame" d="M32 40Q24 28 32 10Q40 28 32 40Z" fill="url(#pj-fl)"/><path class="pj-flame pj-b" d="M20 41Q16 34 20 26Q24 34 20 41Z" fill="url(#pj-fl)"/><path class="pj-flame" d="M44 41Q40 34 44 26Q48 34 44 41Z" fill="url(#pj-fl)"/></svg>`;
 
 const UI = {
-  te: { start: 'పూజ ప్రారంభించండి', stop: 'ఆపు', again: 'మళ్ళీ పూజ చేయండి', done: 'పూజ సంపూర్ణం', blessing: 'సర్వే జనాః సుఖినో భవంతు ||', soundOn: 'శబ్దం: ఆన్', soundOff: 'శబ్దం: ఆఫ్', close: 'మూసివేయి', title: 'పూజ', credit: 'శంఖ నాదం: David Bolton, Wikimedia Commons (CC BY 2.5)' },
-  en: { start: 'Begin the pooja', stop: 'Stop', again: 'Do the pooja again', done: 'The pooja is complete', blessing: 'Sarve janāḥ sukhino bhavantu ||', soundOn: 'Sound: on', soundOff: 'Sound: off', close: 'Close', title: 'Pooja', credit: 'Conch: David Bolton, Wikimedia Commons (CC BY 2.5)' }
+  te: { start: 'పూజ ప్రారంభించండి', stop: 'ఆపు', again: 'మళ్ళీ పూజ చేయండి', done: 'పూజ సంపూర్ణం', blessing: 'సర్వే జనాః సుఖినో భవంతు ||', soundOn: 'శబ్దం: ఆన్', soundOff: 'శబ్దం: ఆఫ్', close: 'మూసివేయి', bell: 'గంట మోగించండి', conch: 'శంఖం పూరించండి', title: 'పూజ', credit: 'శంఖ నాదం: David Bolton, Wikimedia Commons (CC BY 2.5)' },
+  en: { start: 'Begin the pooja', stop: 'Stop', again: 'Do the pooja again', done: 'The pooja is complete', blessing: 'Sarve janāḥ sukhino bhavantu ||', soundOn: 'Sound: on', soundOff: 'Sound: off', close: 'Close', bell: 'Ring the bell', conch: 'Blow the conch', title: 'Pooja', credit: 'Conch: David Bolton, Wikimedia Commons (CC BY 2.5)' }
 };
 const PETAL = ['#ff9f1a', '#ffc21a', '#ff4f6d', '#ff7eb6', '#fff1c1'];
 // Each step's length in ms, in POOJA_STEPS order (the aarti runs to the end of its own animation).
@@ -76,6 +76,12 @@ function build() {
   const steps = el('ol', 'pj-steps', panel);
   const shloka = el('div', 'pj-shloka', panel);
   shloka.setAttribute('aria-live', 'polite');
+  // Bell and conch the devotee can sound at any moment, during the pooja or not.
+  const tools = el('div', 'pj-tools', panel);
+  const btnBell = el('button', 'pj-ghost pj-bell-btn', tools);
+  btnBell.type = 'button';
+  const btnConch = el('button', 'pj-ghost pj-conch-btn', tools);
+  btnConch.type = 'button';
   const row = el('div', 'pj-row', panel);
   const btnStart = el('button', 'btn pj-start', row);
   btnStart.type = 'button';
@@ -158,8 +164,8 @@ function build() {
   conchAudio.preload = 'none';
   const audio = () => (ac ||= new (window.AudioContext || window.webkitAudioContext)());
   // A brass bell: inharmonic partials with fast attack and long, partial-dependent decay.
-  function bell(gain = 0.22, pitch = 1) {
-    if (!state.sound) return;
+  function bell(gain = 0.22, pitch = 1, force = false) {
+    if (!state.sound && !force) return;
     const c = audio(), t = c.currentTime;
     [[1, 1, 2.6], [2.0, 0.55, 2.2], [2.76, 0.4, 1.6], [5.4, 0.22, 0.9], [8.93, 0.12, 0.5]].forEach(([r, a, dur]) => {
       const o = c.createOscillator(), v = c.createGain();
@@ -169,7 +175,7 @@ function build() {
     });
   }
   function ring(on) { clearInterval(ringTimer); if (on) { let k = 0; ringTimer = setInterval(() => bell(0.09, k++ % 2 ? 1 : 1.015), 165); } }
-  function conch() { if (!state.sound) return; conchAudio.currentTime = 0; conchAudio.volume = 0.8; conchAudio.play().catch(() => {}); }
+  function conch(force = false) { if (!state.sound && !force) return; conchAudio.currentTime = 0; conchAudio.volume = 0.8; conchAudio.play().catch(() => {}); }
   function drone(on) {
     if (!on || !state.sound) {
       if (droneNodes) { const n = droneNodes; n.g.gain.setTargetAtTime(0, ac.currentTime, 0.8); setTimeout(() => n.o.forEach((o) => o.stop()), 3000); droneNodes = null; }
@@ -243,8 +249,10 @@ function build() {
 
   function labels() {
     const t = UI[state.lang];
-    btnSound.textContent = `🔔\u2002${state.sound ? t.soundOn : t.soundOff}`;
+    btnSound.textContent = `${state.sound ? '🔊' : '🔇'}\u2002${state.sound ? t.soundOn : t.soundOff}`;
     btnSound.setAttribute('aria-pressed', String(state.sound));
+    btnBell.textContent = `🔔\u2002${t.bell}`;
+    btnConch.textContent = `🐚\u2002${t.conch}`;
     btnClose.textContent = '×';
     btnClose.setAttribute('aria-label', t.close);
     credit.textContent = t.credit;
@@ -295,6 +303,16 @@ function build() {
   }
 
   btnStart.addEventListener('click', run);
+  // A tap is an explicit request, so these sound even when automatic sound is off.
+  btnBell.addEventListener('click', () => {
+    audio().resume();
+    for (let k = 0; k < 6; k++) setTimeout(() => bell(0.14, k % 2 ? 1 : 1.015, true), k * 170);
+    swingBells();
+  });
+  btnConch.addEventListener('click', () => {
+    conch(true);
+    halo.animate([{ scale: 1, opacity: 0.6 }, { scale: 1.4, opacity: 1 }, { scale: 1, opacity: 0.7 }], { duration: 2600 });
+  });
   btnSound.addEventListener('click', () => { state.sound = !state.sound; if (!state.sound) { drone(false); ring(false); } labels(); });
   btnClose.addEventListener('click', () => dlg.close());
   dlg.addEventListener('close', () => { stopAll(); stopFx(); });

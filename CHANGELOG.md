@@ -18,7 +18,7 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
   - The deity follows the weekday, with a dhyana shloka and three nama mantras: Surya, Shiva, Hanuman, Ganesha, Dattatreya, Mahalakshmi and Venkateswara.
   - A row shows all seven deities.
   - In English, the mantras and shlokas are romanised.
-- **Guided pooja** for any of the seven deities: 13 upacharas in order, each with its shloka, from lighting the lamp to the closing offering.
+- **Guided pooja** for any of the seven deities: 13 upacharas in order, each with its shloka, from lighting the lamp to the closing offering. Bell and conch buttons let you sound them yourself at any moment.
   - Sound is optional: a synthesised bell, plus a conch recording (CC BY 2.5) bundled with the extension.
   - It makes no network calls.
 - "Right now" and "Coming up today" refresh every minute, and the page moves to the new day at the city's midnight.

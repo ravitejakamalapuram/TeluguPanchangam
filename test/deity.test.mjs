@@ -83,3 +83,11 @@ test('a shloka shows one half-verse per line with its danda attached', async () 
   const { halfVerses } = await import('../ui/pooja.js'); // the DOM is touched only when the pooja opens
   assert.equal(halfVerses('a b | c d ||'), 'a b |\nc d ||');
 });
+
+test('the pooja has bell and conch buttons that sound even with automatic sound off', () => {
+  const src = read('ui/pooja.js');
+  assert.match(src, /bell: 'గంట మోగించండి'/);
+  assert.match(src, /conch: 'Blow the conch'/);
+  assert.match(src, /btnBell\.addEventListener\('click'[\s\S]*?bell\([^)]*, true\)/);
+  assert.match(src, /btnConch\.addEventListener\('click'[\s\S]*?conch\(true\)/);
+});

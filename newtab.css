@@ -1522,24 +1522,6 @@ h1, h2, h3, .quad-value, .date-display { font-family: var(--font-heading); }
 .now-status:empty { display: none; }
 .now-status.auspicious { background: rgba(30, 107, 69, 0.12); color: var(--color-auspicious); }
 .now-status.inauspicious { background: rgba(163, 38, 27, 0.12); color: var(--color-inauspicious); }
-.next-heading { font-size: 1rem; color: var(--text-secondary); font-weight: 600; margin: 0; }
-.next-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; }
-.next-item {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 8px 12px; border-radius: var(--radius-md);
-  background: var(--panel-soft); border: 1px solid var(--panel-border); border-left-width: 5px;
-}
-.next-item.auspicious { border-left-color: var(--color-auspicious); }
-.next-item.inauspicious { border-left-color: var(--color-inauspicious); }
-.next-mid { display: flex; flex-direction: column; min-width: 0; }
-.next-name { font-weight: 600; }
-.next-item.auspicious .next-name { color: var(--color-auspicious); }
-.next-item.inauspicious .next-name { color: var(--color-inauspicious); }
-.next-time { font-family: 'Outfit', sans-serif; color: var(--text-secondary); font-size: 0.875rem; white-space: nowrap; }
-.next-left { font-size: 0.875rem; color: var(--text-secondary); }
-.next-chip { flex: none; font-size: 0.875rem; font-weight: 700; padding: 2px 12px; border-radius: var(--radius-pill); }
-.next-item.auspicious .next-chip { background: rgba(30, 107, 69, 0.14); color: var(--color-auspicious); }
-.next-item.inauspicious .next-chip { background: rgba(163, 38, 27, 0.14); color: var(--color-inauspicious); }
 .timeline-card #btn-all-timings { align-self: flex-start; }
 .reminders-card h3 { font-family: var(--font-heading); color: var(--zone-now-ink); }
 
@@ -1754,10 +1736,16 @@ input[type="text"], input[type="date"], input[type="time"], .cyber-form-panel se
    block, so a later base rule can never undo a phone or tablet layout.
    Spacing 4/8/12/16/24; radii --radius-sm/md/lg; type 14/16/18/20/24/30/36px.
    ========================================================================== */
-body { padding: 0 0 32px; background:
-  radial-gradient(circle at 12px 12px, rgba(200, 144, 46, 0.10) 2px, transparent 2.5px) 0 0 / 24px 24px,
-  var(--page-bg); }
-body::before { display: none; }
+/* A faint gold kolam flower on the page, and marigold garlands hanging down both edges */
+body { padding: 0 0 32px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23C8962E' stroke-opacity='.12'%3E%3Cpath d='M40 8c8 10 8 22 0 32-8-10-8-22 0-32zM40 72c-8-10-8-22 0-32 8 10 8 22 0 32zM8 40c10-8 22-8 32 0-10 8-22 8-32 0zM72 40c-10 8-22 8-32 0 10-8 22-8 32 0z'/%3E%3Ccircle cx='40' cy='40' r='3'/%3E%3C/g%3E%3C/svg%3E"), var(--page-bg); }
+body::before, body::after {
+  content: ""; display: block; position: fixed; top: 0; bottom: 0; width: 18px; height: auto; z-index: 0; pointer-events: none;
+  background: radial-gradient(circle at 9px 9px, #F59E1B 0 6px, transparent 6.5px) 0 0 / 18px 16px,
+              radial-gradient(circle at 9px 9px, #FFC93C 0 6px, transparent 6.5px) 0 8px / 18px 16px;
+  -webkit-mask: linear-gradient(#000 60%, transparent); mask: linear-gradient(#000 60%, transparent);
+}
+body::before { left: 6px; }
+body::after { right: 6px; }
 .v2, .temple, .temple-nav, .banner-stack, .v2-foot { width: min(1240px, 100% - 32px); margin-inline: auto; }
 .rating-banner { max-width: 1240px; }
 .v2 [hidden], .temple-nav [hidden] { display: none !important; }
@@ -1776,14 +1764,15 @@ body::before { display: none; }
 .temple-niche {
   position: absolute; left: 34.5%; top: 36.8%; width: 13.6%; height: 46.9%;
   border-radius: 50% 50% 0 0 / 28% 28% 0 0; overflow: hidden; display: grid; place-items: end center;
-  background: radial-gradient(ellipse at 50% 60%, #FFE3A0 0%, #E89A3A 40%, #6B2A0C 85%);
+  background: radial-gradient(circle at 50% 34%, #FFF4C2 0 10%, #F6C35A 24%, #C9663A 42%, #7A2C5E 64%, #2E1030 92%);
+  box-shadow: 0 0 30px 6px rgba(255, 200, 90, 0.45);
 }
 .niche-deity { width: 100%; height: 98%; object-fit: contain; object-position: 50% 100%; filter: drop-shadow(0 4px 10px rgba(60, 10, 0, 0.55)); }
 .temple-title { position: absolute; right: 4%; top: 26%; max-width: 40%; text-align: center; color: #FFF4D6; }
 .temple-title h1 {
   margin: 0; font-family: var(--font-display); font-weight: 400; line-height: 1.25;
-  font-size: clamp(1.5rem, 3.4vw, 3rem); color: #FFE9A8;
-  -webkit-text-stroke: 1px #6A160C; paint-order: stroke fill; text-shadow: 0 2px 0 #6A160C, 0 4px 14px rgba(70, 10, 0, 0.6);
+  font-size: clamp(1.5rem, 3.4vw, 3rem); color: #FFD866;
+  -webkit-text-stroke: 1.5px #6A1010; paint-order: stroke fill; text-shadow: 0 2px 0 #6A160C, 0 4px 14px rgba(70, 10, 0, 0.6);
 }
 .temple-title p { margin: 4px 0 0; font-size: clamp(0.875rem, 1.4vw, 1.125rem); font-weight: 600; color: #FFF4D6; text-shadow: 0 1px 6px rgba(70, 10, 0, 0.8); }
 
@@ -1821,13 +1810,14 @@ body::before { display: none; }
 .card, .v2 .zone {
   display: flex; flex-direction: column; min-width: 0; max-width: none; flex: initial; overflow: hidden;
   background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: var(--radius-lg);
-  box-shadow: 0 2px 8px rgba(78, 15, 8, 0.08);
+  box-shadow: 0 6px 18px -10px rgba(120, 70, 10, 0.35), inset 0 0 0 3px var(--panel-bg), inset 0 0 0 4px rgba(227, 199, 138, 0.55);
 }
 .v2-head, .v2 .zone-head, .v2-col > .panel > h3, .v2-row-more .sankalpam-scroll-decor {
   display: flex; align-items: center; gap: 10px; min-height: 48px; margin: 0; padding: 4px 16px;
   background: linear-gradient(180deg, #8E2414, var(--maroon-deep)); color: #FFF1D6; border-bottom: 2px solid var(--gold);
 }
 .zone-now .v2-head { background: linear-gradient(180deg, #8C6414, #5E420A); }
+.v2-col > #upcoming-card > h3 { background: linear-gradient(180deg, #2E7D3A, #1A4F24); }
 .v2-head-split { justify-content: space-between; flex-wrap: wrap; }
 .v2-head-icon { color: var(--gold-hi); font-size: 1.125rem; line-height: 1; }
 .v2-title, .v2 .zone-title, .v2-col > .panel > h3, .v2-row-more .sankalpam-card-title {
@@ -1894,8 +1884,9 @@ body::before { display: none; }
 .deity-frame {
   aspect-ratio: 4 / 5; overflow: hidden; display: grid; place-items: end center;
   border-radius: 48% 48% var(--radius-md) var(--radius-md) / 32% 32% var(--radius-md) var(--radius-md);
-  border: 4px solid var(--gold); box-shadow: 0 0 0 2px var(--gold-hi) inset, 0 6px 16px rgba(78, 15, 8, 0.25);
-  background: radial-gradient(ellipse at 50% 35%, #FFE7A8 0%, #F0B04C 45%, #8A3A12 100%);
+  border: 8px solid transparent; box-shadow: 0 10px 24px -10px rgba(90, 40, 0, 0.7);
+  background: radial-gradient(circle at 50% 34%, #FFF4C2 0 10%, #F6C35A 24%, #C9663A 42%, #7A2C5E 64%, #2E1030 92%) padding-box,
+              linear-gradient(135deg, #FFF0B8, #D9A23B 30%, #8A5A16 55%, #F1D27A 75%, #B07A22) border-box;
 }
 .deity-art { width: 94%; height: 96%; object-fit: contain; object-position: 50% 100%; }
 .deity-info { min-width: 0; }
@@ -1916,13 +1907,30 @@ body::before { display: none; }
 
 /* ---- Timings card ---- */
 .zone-now .timeline-card { padding: 16px; gap: 12px; flex-grow: 1; }
-.zone-now .next-heading { font-size: var(--fs-caption); }
-.zone-now .next-list { gap: 8px; }
-.zone-now .next-item { min-width: 0; padding: 8px 12px; align-items: center; background: var(--panel-soft); }
-.zone-now .next-mid { flex: 1 1 auto; min-width: 0; flex-direction: row; flex-wrap: wrap; align-items: baseline; column-gap: 12px; }
-.zone-now .next-name { flex-basis: 100%; overflow-wrap: anywhere; }
-.zone-now .next-time { white-space: normal; }
-.zone-now .next-left::before { content: '· '; }
+.zone-now .timeline-card { gap: 4px; }
+.times-head { display: flex; align-items: center; gap: 8px; margin: 8px 0 4px; font-size: var(--fs-caption); font-weight: 700; }
+.times-head:first-child { margin-top: 0; }
+.times-head::after { content: ""; flex: 1; height: 1px; background: currentColor; opacity: 0.25; }
+.times-head.good { color: var(--color-auspicious); }
+.times-head.bad { color: var(--color-inauspicious); }
+.times-list { display: grid; gap: 4px; list-style: none; margin: 0; padding: 0; }
+.times-list li { position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 6px 8px 6px 22px; border-radius: var(--radius-sm); }
+.times-list li::before { content: ""; position: absolute; left: 9px; top: 50%; width: 7px; height: 7px; margin-top: -3.5px; border-radius: 50%; background: currentColor; }
+.times-list li.good::before { background: var(--color-auspicious); }
+.times-list li.bad::before { background: var(--color-inauspicious); }
+.times-when { display: grid; justify-items: end; }
+.times-list b { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.times-when small { font-size: var(--fs-caption); font-weight: 600; opacity: 0.8; }
+.times-list li.past { opacity: 0.5; }
+.times-list li.live { background: rgba(217, 102, 26, 0.14); box-shadow: inset 3px 0 0 #D9661A; }
+.times-list li.live.good { background: rgba(30, 107, 69, 0.12); box-shadow: inset 3px 0 0 var(--color-auspicious); }
+/* How much of the running window has gone, as a bar along the bottom of the row. */
+.times-list li.live::after { content: ""; position: absolute; left: 0; bottom: 0; width: var(--done, 0%); height: 3px; background: #D9661A; }
+.times-list li.live.good::after { background: var(--color-auspicious); }
+.times-list li.next { box-shadow: inset 0 0 0 1px rgba(201, 102, 58, 0.35); }
+.times-list li.good .times-now { background: var(--color-auspicious); }
+.times-now { margin-left: 8px; padding: 1px 8px; border-radius: var(--radius-pill); background: #B4501A; color: #FFFFFF; font-size: var(--fs-caption); font-weight: 700; }
+.timeline-card #btn-all-timings { margin-top: 8px; }
 
 /* ---- Calendar, festivals, own events ---- */
 .v2 .zone-month .calendar-card { border: 0; border-radius: 0; box-shadow: none; padding: 12px 16px 16px; }
@@ -2061,6 +2069,7 @@ html[lang="en"] { --font-display: 'Noto Serif Telugu', 'Noto Sans Telugu', serif
 .pj-tools .pj-ghost { border-color: rgba(243, 210, 122, 0.55); }
 
 /* ==== Width-specific rules: keep these last ==== */
+@media (max-width: 1319px) { body::before, body::after { display: none; } } /* only where the side margin has room */
 
 /* Tablet and small laptop */
 @media (max-width: 1100px) {

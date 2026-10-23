@@ -109,7 +109,7 @@ import { openPooja, halfVerses } from './ui/pooja.js';
   const DEFAULT_PROFILE_NAME = 'యజమాని'; // placeholder meaning "Owner" until the user sets a real name
   let currentCity = window.CityPresets.getDefault(); // { id, name, lat, lon, timeZone }
   let currentCoordinates = { lat: currentCity.lat, lng: currentCity.lon };
-  let userSettings = { name: DEFAULT_PROFILE_NAME, dob: '', tob: '12:00', rasi: '0', theme: 'auto' };
+  let userSettings = { name: DEFAULT_PROFILE_NAME, dob: '', tob: '12:00', rasi: '0', theme: 'light', templeLook: true }; // the temple look by default; dark and auto stay one tap away
   let selectedDate = new Date();
   let calendarViewDate = new Date();
   let todayPanchang = null;
@@ -214,7 +214,7 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     document.querySelectorAll('[data-theme-choice]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.themeChoice === choice)));
   }
   if (systemDark && systemDark.addEventListener) {
-    systemDark.addEventListener('change', () => { if ((userSettings.theme || 'auto') === 'auto') applyTheme('auto'); });
+    systemDark.addEventListener('change', () => { if ((userSettings.theme || 'light') === 'auto') applyTheme('auto'); });
   }
 
   // The profile name is free text the user can set via settings, so it can't
@@ -243,11 +243,17 @@ import { openPooja, halfVerses } from './ui/pooja.js';
       chrome.storage.local.get(['userSettings'], (result) => {
         if (result.userSettings) {
           userSettings = result.userSettings;
+          // v2 opens once in the temple look, whatever theme was saved before; any choice made after sticks.
+          if (!userSettings.templeLook) {
+            userSettings.theme = 'light';
+            userSettings.templeLook = true;
+            chrome.storage.local.set({ userSettings });
+          }
           renderProfileName();
           elSelectRasi.value = userSettings.rasi;
 
           // Apply theme
-          applyTheme(userSettings.theme || 'auto');
+          applyTheme(userSettings.theme || 'light');
 
           // Populate Settings form. The untouched default is a placeholder,
           // not real text, so the input stays blank and shows its
@@ -632,10 +638,12 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     return new Date(p.year, p.month, p.day, 12, 0, 0);
   }
 
-  // Clock time, with "(+1)" when it falls after midnight of the selected day.
-  const formatTimeOnDay = (d) => formatTime(d) + (isSameDay(cityDateOf(d), selectedDate) ? '' : ' (+1)');
-  const formatWindow = (w) => `${formatTimeOnDay(w.start)} - ${formatTimeOnDay(w.end)}`;
-  const formatWindows = (list) => (list.length ? list.map(formatWindow).join(', ') : '—');
+  // Clock time, with "(+1)" when it falls after midnight of the given day (the selected day by default).
+  const formatTimeOnDay = (d, day = selectedDate) => formatTime(d) + (isSameDay(cityDateOf(d), day) ? '' : ' (+1)');
+  const formatWindow = (w, day) => `${formatTimeOnDay(w.start, day)} - ${formatTimeOnDay(w.end, day)}`;
+  // A length of time in hours and minutes: "1 గం 5 ని" / "1 h 5 m", or just the minutes under an hour.
+  const spanText = (mins) => (mins >= 60 ? `${Math.floor(mins / 60)}${window.I18N.teEn(' గం ', ' h ')}` : '') + `${mins % 60}${window.I18N.teEn(' ని', ' m')}`;
+  const formatWindows = (list) => (list.length ? list.map((w) => formatWindow(w)).join(', ') : '—');
 
   // Sankalpam names the tithi/nakshatra current when it is recited: "now" for today, sunrise otherwise.
   function sankalpamFor(day) {
@@ -656,7 +664,6 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     document.getElementById('z-today').textContent = title;
     // The timings card names the selected day when it is not today, and then lists the whole day.
     document.getElementById('z-now').textContent = isToday ? window.I18N.teEn('నేటి ముహూర్తాలు', 'Timings today') : window.I18N.teEn(`ముహూర్తాలు · ${title}`, `Timings · ${title}`);
-    document.querySelector('#now .next-heading').textContent = isToday ? window.I18N.teEn('ఇక ముందు ఈరోజు', 'Coming up today') : window.I18N.teEn('ఆ రోజు సమయాలు', 'Through the day');
     const todayLabel = window.I18N.teEn('ఈ రోజు', 'Today');
     const todayDate = cityToday().toLocaleDateString(lang === 'en' ? 'en-US' : 'te-IN', { day: 'numeric', month: 'short' });
     document.querySelectorAll('.zone-today-btn').forEach((btn) => {
@@ -1465,13 +1472,13 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     }
   }
 
-  // "What comes next": today's windows still ahead (or running), soonest first.
-  // For another day it lists the whole day, since "now" has no meaning there.
+  // The whole day's good times and times to avoid, each in time order. For today the ones gone by
+  // are dimmed and the one running now is marked.
   function renderDayTimeline(panchang) {
-    const list = document.getElementById('next-list');
+    const goodList = document.getElementById('good-list');
+    const badList = document.getElementById('bad-list');
     const status = document.getElementById('now-status');
-    if (!list || !status) return;
-    list.replaceChildren();
+    if (!goodList || !badList || !status) return;
     // Between midnight and sunrise the panchang day still running is yesterday's.
     if (isSameDay(selectedDate, cityToday()) && new Date() < panchang.astronomy.sunrise) {
       const y = new Date(selectedDate); y.setDate(y.getDate() - 1);
@@ -1487,15 +1494,21 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     add('దుర్ముహూర్తం (Durmuhurtham)', tm.durmuhurtham, 'inauspicious');
     add('వర్జ్యం (Varjyam)', tm.varjyam, 'inauspicious');
     add('అమృత ఘడియలు (Amrita Kalam)', tm.amritaKalam, 'auspicious');
-    add('బ్రహ్మ ముహూర్తం (Brahma Muhurtham)', [tm.brahmaMuhurta], 'auspicious');
+    // The list runs sunrise to next sunrise, so Brahma Muhurtham is the one before the next sunrise
+    // (a day's own window falls before its sunrise, outside the list).
+    const morrow = new Date(cityDateOf(panchang.astronomy.sunrise));
+    morrow.setDate(morrow.getDate() + 1);
+    add('బ్రహ్మ ముహూర్తం (Brahma Muhurtham)', [dayFor(morrow).timings.brahmaMuhurta], 'auspicious');
     if (!tm.abhijit.avoided) add('అభిజిత్ ముహూర్తం (Abhijit)', [tm.abhijit], 'auspicious');
     items.sort((x, y) => x.start - y.start);
 
     const now = new Date();
     // "Today" is the panchang day running now: sunrise to next sunrise, so after midnight it still counts.
     const isToday = now >= panchang.astronomy.sunrise && now < panchang.astronomy.nextSunrise;
-    const upcoming = isToday ? items.filter((it) => it.end > now) : items;
-    const running = isToday ? upcoming.find((it) => it.type === 'inauspicious' && it.start <= now) : null;
+    // Before sunrise the day shown is yesterday's, so "(+1)" counts from that day.
+    const shownDay = cityDateOf(panchang.astronomy.sunrise);
+    const isLive = (it) => isToday && it.start <= now && now < it.end;
+    const running = items.find((it) => it.type === 'inauspicious' && isLive(it));
 
     const statusText = !isToday ? ''
       : running ? window.I18N.teEn('ఇప్పుడు ' + running.label + ' — ' + formatTime(running.end) + ' వరకు', 'Now: ' + running.label + ' until ' + formatTime(running.end))
@@ -1504,31 +1517,46 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     if (status.textContent !== statusText) status.textContent = statusText;
     status.className = 'now-status ' + (running ? 'inauspicious' : 'auspicious');
 
-    upcoming.slice(0, isToday ? 5 : upcoming.length).forEach((it) => {
+    const minsUntil = (d) => Math.max(1, Math.ceil((d - now) / 60000));
+    // Within each list, the first window still to come today gets a countdown.
+    const nextOf = (type) => (isToday ? items.find((it) => it.type === type && it.start > now) : null);
+    const upcoming = [nextOf('auspicious'), nextOf('inauspicious')];
+    const row = (it) => {
       const li = document.createElement('li');
-      li.className = 'next-item ' + it.type;
+      li.classList.add(it.type === 'auspicious' ? 'good' : 'bad');
       const name = document.createElement('span');
-      name.className = 'next-name';
       name.textContent = it.label;
       const time = document.createElement('span');
-      time.className = 'next-time';
-      time.textContent = formatWindow(it);
-      const chip = document.createElement('span');
-      chip.className = 'next-chip';
-      chip.textContent = it.type === 'auspicious' ? window.I18N.t('goodTime') : window.I18N.t('badTime');
-      const mid = document.createElement('span');
-      mid.className = 'next-mid';
-      mid.append(name, time);
-      if (isToday && it.start > now) {
-        const mins = Math.round((it.start - now) / 60000);
-        const left = document.createElement('span');
-        left.className = 'next-left';
-        left.textContent = window.I18N.t('inTime')(Math.floor(mins / 60), mins % 60);
-        mid.append(left);
+      time.className = 'times-when';
+      const clock = document.createElement('b');
+      clock.textContent = formatWindow(it, shownDay);
+      time.append(clock);
+      const sub = (text) => {
+        const small = document.createElement('small');
+        small.textContent = text;
+        time.append(small);
+      };
+      if (isLive(it)) {
+        li.classList.add('live');
+        li.style.setProperty('--done', `${Math.round(((now - it.start) / (it.end - it.start)) * 100)}%`);
+        const badge = document.createElement('span');
+        badge.className = 'times-now';
+        badge.textContent = window.I18N.teEn('ఇప్పుడు', 'Now');
+        name.append(badge);
+        const left = spanText(minsUntil(it.end));
+        sub(window.I18N.teEn(`ఇంకా ${left}`, `${left} left`));
+      } else if (isToday && it.end <= now) {
+        li.classList.add('past');
+      } else if (upcoming.includes(it)) {
+        li.classList.add('next');
+        const wait = spanText(minsUntil(it.start));
+        sub(window.I18N.teEn(`${wait} తర్వాత`, `in ${wait}`));
       }
-      li.append(mid, chip);
-      list.appendChild(li);
-    });
+      li.append(name, time);
+      return li;
+    };
+    goodList.replaceChildren(...items.filter((it) => it.type === 'auspicious').map(row));
+    badList.replaceChildren(...items.filter((it) => it.type === 'inauspicious').map(row));
   }
 
   // The popup's arc: the sun from sunrise to sunset by day, the moon from sunset to the next sunrise at night.
@@ -1562,13 +1590,15 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     el('path', { d: arcPath(0, 1), class: 'arc-track' + (night ? ' night' : '') });
 
     // Bad and good windows by day; Brahma Muhurtham is the one that can fall in the night span.
+    // Before sunrise the span starts at yesterday's sunset, so the night windows come from yesterday.
+    const nightTm = beforeSunrise ? dayFor(prevDay).timings : tm;
     const windows = [
       { type: 'bad', label: 'Rahu Kalam', start: tm.rahuKalam.start, end: tm.rahuKalam.end },
       { type: 'bad', label: 'Yamagandam', start: tm.yamagandam.start, end: tm.yamagandam.end },
       { type: 'bad', label: 'Gulika Kalam', start: tm.gulikaKalam.start, end: tm.gulikaKalam.end },
-      ...tm.durmuhurtham.map((w) => ({ type: 'bad', label: 'Durmuhurtham', start: w.start, end: w.end })),
-      ...tm.varjyam.map((w) => ({ type: 'bad', label: 'Varjyam', start: w.start, end: w.end })),
-      ...tm.amritaKalam.map((w) => ({ type: 'good', label: 'Amrita Kalam', start: w.start, end: w.end })),
+      ...nightTm.durmuhurtham.map((w) => ({ type: 'bad', label: 'Durmuhurtham', start: w.start, end: w.end })),
+      ...nightTm.varjyam.map((w) => ({ type: 'bad', label: 'Varjyam', start: w.start, end: w.end })),
+      ...nightTm.amritaKalam.map((w) => ({ type: 'good', label: 'Amrita Kalam', start: w.start, end: w.end })),
       { type: 'good', label: 'Brahma Muhurtham', start: tm.brahmaMuhurta.start, end: tm.brahmaMuhurta.end }
     ];
     if (!tm.abhijit.avoided) windows.push({ type: 'good', label: 'Abhijit', start: tm.abhijit.start, end: tm.abhijit.end });
@@ -1597,8 +1627,7 @@ import { openPooja, halfVerses } from './ui/pooja.js';
       const badNow = windows.some((w) => w.type === 'bad' && w.start <= now && now < w.end);
       text(badNow ? window.I18N.teEn('నివారించండి', 'Avoid now') : window.I18N.teEn('శుభ సమయం', 'Fine now'), ARC.cx, ARC.cy - 14, 'arc-now-label');
     } else {
-      const mins = Math.round((a.sunset - a.sunrise) / 60000);
-      text(`${Math.floor(mins / 60)}${window.I18N.teEn(' గం ', ' h ')}${mins % 60}${window.I18N.teEn(' ని', ' m')}`, ARC.cx, ARC.cy - 38, 'arc-now');
+      text(spanText(Math.round((a.sunset - a.sunrise) / 60000)), ARC.cx, ARC.cy - 38, 'arc-now');
       text(window.I18N.teEn('పగటి సమయం', 'Daylight'), ARC.cx, ARC.cy - 14, 'arc-now-label');
     }
     document.getElementById('timing-arc').replaceChildren(svg);

@@ -93,3 +93,9 @@ test('the pooja has bell and conch buttons that sound even with automatic sound 
   assert.match(src, /btnBell\.addEventListener\('click'[\s\S]*?bell\([^)]*, true\)/);
   assert.match(src, /btnConch\.addEventListener\('click'[\s\S]*?conch\(true\)/);
 });
+
+test('v2 opens in the temple look once, then keeps whatever theme the user picks', () => {
+  const js = read('newtab.js');
+  assert.match(js, /theme: 'light', templeLook: true \}/, 'new installs start in the temple look');
+  assert.match(js, /if \(!userSettings\.templeLook\) \{\s*userSettings\.theme = 'light';\s*userSettings\.templeLook = true;/, 'saved settings from before v2 switch once');
+});

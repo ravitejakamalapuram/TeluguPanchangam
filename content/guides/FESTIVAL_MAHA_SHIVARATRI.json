@@ -16,6 +16,20 @@
     "te": "శివరాత్రి నాడు ఉపవాసం, రాత్రి జాగరణ, శివలింగానికి అభిషేకం, బిల్వ పత్రాలతో పూజ: ఆంధ్ర, తెలంగాణ ఇళ్లలో సాధారణంగా చేసుకునే విధానం ఇది.",
     "en": "A fast on Shivaratri, a night-long vigil, abhishekam of the Shiva lingam and worship with bilva leaves: the way most Andhra and Telangana homes celebrate."
   },
+  "why": [
+    {
+      "te": "మాఘ బహుళ చతుర్దశి నాడు వచ్చే మహా శివరాత్రి శివునికి అత్యంత ప్రీతికరమైన రాత్రి.",
+      "en": "Maha Shivaratri, on Magha Bahula Chaturdashi, is the night most dear to Shiva."
+    },
+    {
+      "te": "ఈ రాత్రి శివుడు లింగ రూపంలో ఆవిర్భవించాడని నమ్మకం.",
+      "en": "It is believed to be the night Shiva appeared as the lingam."
+    },
+    {
+      "te": "ఉపవాసం, రాత్రంతా జాగరణ, \"ఓం నమః శివాయ\" జపంతో శివుని ఆరాధిస్తాం.",
+      "en": "We worship Shiva with a fast, a night-long vigil and the chant \"Om Namah Shivaya\"."
+    }
+  ],
   "variation": {
     "te": "ఇది సాధారణ విధానం మాత్రమే. కుటుంబ సంప్రదాయం, గురువుల సూచన, ప్రాంతాన్ని బట్టి విధానాలు మారుతాయి; మీ ఇంటి సంప్రదాయం ముందు. తిథి రెండు రోజులకు విస్తరించే సంవత్సరాలలో తేదీ సంప్రదాయాన్ని బట్టి మారవచ్చు; అలాంటి రోజుల్లో యాప్ ఆ విషయం తెలియజేస్తుంది.",
     "en": "This is the common way, not the only one. Practice differs by family tradition, by guru and by region, so follow your own family's custom first. When the tithi spans two days, the date can differ by tradition; the app shows a note on such days."
@@ -68,7 +82,7 @@
       ]
     }
   ],
-  "samagri": [
+  "checklist": [
     {
       "te": "శివలింగం లేదా శివుని చిత్రపటం",
       "en": "A Shiva lingam or a picture of Shiva"
@@ -122,7 +136,13 @@
       "en": "Tryambakam yajamahe sugandhim pushtivardhanam | Urvarukamiva bandhanan mrityor mukshiya mamritat"
     }
   ],
-  "videos": [],
+  "videos": [
+    {
+      "title": "మహా శివరాత్రి స్పెషల్: బ్రహ్మశ్రీ చాగంటి కోటేశ్వరరావు (Bhakthi TV)",
+      "url": "https://www.youtube.com/watch?v=Qhkx-6fSjdk",
+      "kind": "plain"
+    }
+  ],
   "shops": [],
   "sources": [
     {

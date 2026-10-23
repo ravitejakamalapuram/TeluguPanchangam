@@ -19,6 +19,12 @@ test('each share icon has a card builder and a drawing', () => {
   }
 });
 
+test('the festival guide card\'s share button has a card builder and a drawing too', () => {
+  assert.match(read('ui/guides.js'), /dataset\.share = 'guide'/);
+  assert.ok(/\n\s+guide: \(\) =>/.test(read('newtab.js')), 'newtab.js has no shareData.guide');
+  assert.ok(/\n  guide: \{ draw:/.test(read('ui/share-card.js')), 'share-card.js has no CARDS.guide');
+});
+
 test('every share icon is a labelled button', () => {
   for (const [, tag] of read('newtab.html').matchAll(/(<button[^>]*data-share="[^>]*>)/g)) {
     assert.match(tag, /aria-label="[^"]+"/);

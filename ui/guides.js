@@ -9,7 +9,11 @@ const LABELS = {
   te: {
     draft: 'ముసాయిదా: ఈ మార్గదర్శిని ఇంకా సమీక్షించబడలేదు.',
     reviewedBy: 'సమీక్షించినవారు',
-    samagri: 'కావలసిన సామగ్రి',
+    why: 'ఎందుకు జరుపుకుంటాం',
+    samagri: 'కావలసిన వస్తువులు',
+    video: 'వీడియో చూడండి',
+    share: 'పంచుకోండి',
+    more: 'పూర్తి పూజా విధానం',
     naivedyam: 'నైవేద్యం',
     verses: 'శ్లోకాలు, మంత్రాలు',
     videos: 'వీడియోలు',
@@ -23,7 +27,11 @@ const LABELS = {
   en: {
     draft: 'Draft: this guide has not been reviewed yet.',
     reviewedBy: 'Reviewed by',
-    samagri: 'What you need',
+    why: 'Why we celebrate',
+    samagri: 'Items needed',
+    video: 'Watch a video',
+    share: 'Share',
+    more: 'The full puja guide',
     naivedyam: 'Offerings (naivedyam)',
     verses: 'Verses and mantras',
     videos: 'Videos',
@@ -63,8 +71,9 @@ const linkItems = (links, t) => links.map((l) => ({
 }));
 
 /**
- * The guide as a flat list of typed blocks in one language. Both renderers (DOM for the app, HTML for the site)
- * consume the same blocks, so the two surfaces cannot drift.
+ * The guide as flat lists of typed blocks in one language. `head` names the guide, `card` is the short card for
+ * the day (why we celebrate, the items as a checklist, one video, share) and `body` is the full step-by-step guide.
+ * Both renderers (DOM for the app, HTML for the site) consume the same blocks, so the two surfaces cannot drift.
  */
 export function guideBlocks(guide, lang) {
   const l = lang === 'en' ? 'en' : 'te';
@@ -72,26 +81,61 @@ export function guideBlocks(guide, lang) {
   const head = [];
   const signedOff = isShippable(guide);
   if (!signedOff) head.push({ type: 'draft', text: t.draft });
-  head.push({ type: 'title', text: guide.title[l] }, { type: 'p', text: guide.summary[l] });
+  head.push({ type: 'title', text: guide.title[l] });
   if (signedOff) head.push({ type: 'reviewed', text: `${t.reviewedBy}: ${guide.review.reviewer} (${guide.review.date})` });
 
-  const body = [];
+  // Items are Telugu first in both languages; the English page adds the English name under it.
+  const [video, ...moreVideos] = guide.videos;
+  const card = [
+    { type: 'h', text: t.why }, { type: 'ul', items: guide.why.map((x) => x[l]) },
+    { type: 'h', text: t.samagri }, { type: 'checklist', items: guide.checklist.map((x) => ({ te: x.te, en: l === 'en' ? x.en : '' })) },
+  ];
+  if (video) card.push({ type: 'video', text: t.video, ...linkItems([video], t)[0] });
+  card.push({ type: 'share', text: t.share });
+
+  const body = [{ type: 'p', text: guide.summary[l] }];
   for (const s of guide.sections) {
     body.push({ type: 'h', text: s.title[l] }, { type: 'ol', items: s.steps.map((x) => x[l]) });
   }
-  body.push({ type: 'h', text: t.samagri }, { type: 'ul', items: guide.samagri.map((x) => x[l]) });
   body.push({ type: 'h', text: t.naivedyam }, { type: 'ul', items: guide.naivedyam.map((x) => x[l]) });
   if (guide.verses.length) body.push({ type: 'h', text: t.verses }, { type: 'ul', items: guide.verses.map((x) => x[l]) });
   body.push({ type: 'note', text: guide.variation[l] });
 
   const paid = [...guide.videos, ...guide.shops].some((x) => x.kind === 'affiliate' || x.kind === 'sponsored');
-  if (guide.videos.length) body.push({ type: 'links', title: t.videos, items: linkItems(guide.videos, t) });
+  if (moreVideos.length) body.push({ type: 'links', title: t.videos, items: linkItems(moreVideos, t) });
   if (guide.shops.length) body.push({ type: 'links', title: t.shops, items: linkItems(guide.shops, t) });
   if (paid) body.push({ type: 'note', text: t.disclosure });
 
   body.push({ type: 'sources', title: t.sources, items: guide.sources.map((s) => ({ title: s.title, url: s.url })) });
   body.push({ type: 'report', text: t.report, url: `${REPORT_URL}?title=${encodeURIComponent(`Guide correction: ${guide.title.en}`)}` });
-  return { head, body };
+  return { head, card, body, more: t.more };
+}
+
+/** What the share button sends: the title, the three "why" lines and the items, Telugu first. */
+export function guideShareData(guide, lang) {
+  const l = lang === 'en' ? 'en' : 'te';
+  return {
+    id: guide.id,
+    title: guide.title[l],
+    why: guide.why.map((x) => x[l]),
+    items: guide.checklist.map((x) => (l === 'en' ? `${x.te} (${x.en})` : x.te)),
+  };
+}
+
+// Ticked items live only in this browser (chrome.storage.local, PRIVACY.md), one entry per guide for the year
+// they were ticked in, so next year's festival starts with a clean list and the store never grows past one
+// entry per guide.
+export const CHECKLIST_KEY = 'guideChecklist';
+
+/** The ticked item indexes of `id` for `year`, from the stored map. */
+export function ticksFor(store, id, year) {
+  const e = store && store[id];
+  return e && e.year === year && Array.isArray(e.ticks) ? e.ticks.filter(Number.isInteger) : [];
+}
+
+/** A new stored map with `ticks` (item indexes) as the ticked items of `id` for `year`. */
+export function withTicks(store, id, year, ticks) {
+  return { ...(store || {}), [id]: { year, ticks: [...new Set(ticks)].filter(Number.isInteger).sort((a, b) => a - b) } };
 }
 
 const escHtml = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -113,6 +157,8 @@ export function blocksToHtml(blocks) {
       case 'note': return `<p class="guide-note"><em>${escHtml(b.text)}</em></p>`;
       case 'links': return `<h3>${escHtml(b.title)}</h3><ul>${b.items.map((i) => `<li>${anchor(i)}</li>`).join('')}</ul>`;
       case 'sources': return `<h3>${escHtml(b.title)}</h3><ul>${b.items.map((i) => `<li>${anchor(i)}</li>`).join('')}</ul>`;
+      case 'checklist': return `<ul class="guide-checklist">${b.items.map((i) => `<li>${escHtml(i.te)}${i.en ? ` (${escHtml(i.en)})` : ''}</li>`).join('')}</ul>`;
+      case 'video': return `<p class="guide-video">${escHtml(b.text)}: ${anchor(b)}</p>`;
       case 'report': return `<p class="guide-report"><a href="${escHtml(b.url)}" target="_blank" rel="noopener noreferrer">${escHtml(b.text)}</a></p>`;
       default: return '';
     }
@@ -162,6 +208,38 @@ export function blocksToDom(blocks, doc) {
       case 'note': out.push(el('p', b.text, 'guide-note')); break;
       case 'links':
       case 'sources': out.push(el('h4', b.title), linkList(b.items)); break;
+      case 'checklist': {
+        // Big tick boxes, one per item; the page restores and saves the ticks by the data-tick index.
+        const ul = el('ul', null, 'guide-checklist');
+        b.items.forEach((i, n) => {
+          const label = el('label');
+          const box = el('input');
+          box.type = 'checkbox';
+          box.dataset.tick = String(n);
+          const text = el('span', null, 'guide-item');
+          text.appendChild(el('span', i.te, 'guide-item-te'));
+          if (i.en) text.appendChild(el('span', i.en, 'guide-item-en'));
+          label.append(box, text);
+          const li = el('li');
+          li.appendChild(label);
+          ul.appendChild(li);
+        });
+        out.push(ul);
+        break;
+      }
+      case 'video': {
+        const p = el('p', null, 'guide-video');
+        p.append(el('span', `${b.text}: `), link(b));
+        out.push(p);
+        break;
+      }
+      case 'share': {
+        const btn = el('button', b.text, 'btn guide-share');
+        btn.type = 'button';
+        btn.dataset.share = 'guide';
+        out.push(btn);
+        break;
+      }
       case 'report': {
         const p = el('p', null, 'guide-report');
         const a = link({ title: b.text, url: b.url, kind: 'plain' });

@@ -18,6 +18,20 @@
     "te": "మూడు రోజుల పండుగ: భోగి నాడు భోగి మంటలు, సంక్రాంతి నాడు పొంగలి, కనుమ నాడు పశువుల పూజ: ఆంధ్ర, తెలంగాణ ఇళ్లలో సాధారణంగా చేసుకునే విధానం ఇది.",
     "en": "A three-day festival: bonfire on Bhogi, pongali on Sankranti and cattle worship on Kanuma: the way most Andhra and Telangana homes celebrate."
   },
+  "why": [
+    {
+      "te": "సూర్యుడు మకర రాశిలోకి ప్రవేశించే రోజు సంక్రాంతి; ఉత్తరాయణం మొదలవుతుంది.",
+      "en": "Sankranti is the day the Sun enters Makara rasi, and Uttarayana begins."
+    },
+    {
+      "te": "కొత్త పంట ఇంటికి వచ్చిన ఆనందంలో జరుపుకునే పంటల పండుగ.",
+      "en": "It is a harvest festival: we give thanks for the new crop brought home."
+    },
+    {
+      "te": "భోగి మంటతో పాతను వదిలేస్తాం; కనుమ నాడు పంటకు సాయపడే పశువులను పూజిస్తాం.",
+      "en": "The Bhogi fire lets go of the old, and on Kanuma we honour the cattle that help with the harvest."
+    }
+  ],
   "variation": {
     "te": "ఇది సాధారణ విధానం మాత్రమే. కుటుంబ సంప్రదాయం, గురువుల సూచన, ప్రాంతాన్ని బట్టి విధానాలు మారుతాయి; మీ ఇంటి సంప్రదాయం ముందు. తిథి రెండు రోజులకు విస్తరించే సంవత్సరాలలో తేదీ సంప్రదాయాన్ని బట్టి మారవచ్చు; అలాంటి రోజుల్లో యాప్ ఆ విషయం తెలియజేస్తుంది.",
     "en": "This is the common way, not the only one. Practice differs by family tradition, by guru and by region, so follow your own family's custom first. When the tithi spans two days, the date can differ by tradition; the app shows a note on such days."
@@ -91,7 +105,7 @@
       ]
     }
   ],
-  "samagri": [
+  "checklist": [
     {
       "te": "పసుపు, కుంకుమ, అక్షతలు",
       "en": "Turmeric, kumkum and akshata (rice)"
@@ -149,7 +163,13 @@
       "en": "Om Adityaya Namah"
     }
   ],
-  "videos": [],
+  "videos": [
+    {
+      "title": "శ్రీ గరికిపాటి నరసింహారావు గారి మాటల్లో సంక్రాంతి పండుగ విశిష్టత (Bhakthi TV)",
+      "url": "https://www.youtube.com/watch?v=lbAS6lkQs2E",
+      "kind": "plain"
+    }
+  ],
   "shops": [],
   "sources": [
     {

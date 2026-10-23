@@ -18,7 +18,7 @@ import { ARC, fraction, arcPoint, arcPath, bands } from './ui/timing-arc.js';
 import { initRatingPrompt } from './ui/rating.js';
 import { moonInfo, litPath } from './ui/moon.js';
 import { symbolForDay, iconElement, SYMBOLS } from './ui/festival-icons.js';
-import { loadGuides, guideForEvents, guideBlocks, blocksToDom } from './ui/guides.js';
+import { loadGuides, guideForEvents, guideBlocks, blocksToDom, guideShareData, CHECKLIST_KEY, ticksFor, withTicks } from './ui/guides.js';
 import { deityFor } from './ui/deity.js';
 import { openPooja, halfVerses } from './ui/pooja.js';
 
@@ -1073,20 +1073,48 @@ import { openPooja, halfVerses } from './ui/pooja.js';
   const traceReason = (ev) => (ev.trace.reason || '').replace(/\b[A-Z]+_[A-Z_]+\b/g, (id) => coreName(id, 'en'));
 
   // Festival guide for the selected day. Drafts stay hidden unless a reviewer opens the app with ?guides=draft.
+  // The card shows why we celebrate, the items as a checklist, one video and share; the full guide folds below it.
   let guidesLoaded = null;
+  let shownGuide = null; // { guide, year } on screen, for the share button and the ticks
   async function renderGuide(panchang) {
     guidesLoaded = guidesLoaded || loadGuides();
     const preview = new URLSearchParams(window.location.search).get('guides') === 'draft';
     const guide = guideForEvents(await guidesLoaded, panchang.events.map((e) => e.id), { preview });
     if (!guide) {
+      shownGuide = null;
       elGuideCard.hidden = true;
       elGuideBody.replaceChildren();
       return;
     }
-    const { head, body } = guideBlocks(guide, window.I18N.getLang());
-    elGuideBody.replaceChildren(...blocksToDom([...head, ...body], document));
+    const { head, card, body, more } = guideBlocks(guide, window.I18N.getLang());
+    const details = document.createElement('details');
+    details.className = 'guide-more';
+    const summary = document.createElement('summary');
+    summary.textContent = more;
+    details.append(summary, ...blocksToDom(body, document));
+    elGuideBody.replaceChildren(...blocksToDom([...head, ...card], document), details);
     elGuideCard.hidden = false;
+    const shown = { guide, year: Number(panchang.date.slice(0, 4)), touched: false };
+    shownGuide = shown;
+    chrome.storage.local.get([CHECKLIST_KEY], (r) => {
+      // Skip if the user has moved to another day, or already ticked a box here (the saved list is then older).
+      if (shownGuide !== shown || shown.touched) return;
+      const ticks = new Set(ticksFor(r[CHECKLIST_KEY], guide.id, shown.year));
+      elGuideBody.querySelectorAll('input[data-tick]').forEach((box) => { box.checked = ticks.has(Number(box.dataset.tick)); });
+    });
   }
+  // Ticks are saved only in this browser (PRIVACY.md).
+  elGuideBody.addEventListener('change', (e) => {
+    const box = e.target.closest('input[data-tick]');
+    if (!box || !shownGuide) return;
+    shownGuide.touched = true;
+    const { guide, year } = shownGuide;
+    // The whole list from the boxes on screen, so quick taps cannot overwrite each other.
+    const ticks = [...elGuideBody.querySelectorAll('input[data-tick]:checked')].map((b) => Number(b.dataset.tick));
+    chrome.storage.local.get([CHECKLIST_KEY], (r) => {
+      chrome.storage.local.set({ [CHECKLIST_KEY]: withTicks(r[CHECKLIST_KEY], guide.id, year, ticks) });
+    });
+  });
 
   // "Upcoming this week": festivals and vratas from today through the next six days in the selected city.
   // A generic tithi vrata (Ekadashi, Purnima, Amavasya) on the same tithi as a festival that day
@@ -1237,7 +1265,8 @@ import { openPooja, halfVerses } from './ui/pooja.js';
         const lang = window.I18N.getLang();
         return { kind: 'sankalpam', data: sankalpamFor(activePanchang), opts: { fileDate: activePanchang.date, tithiLine: `${tithiLabel(p.tithi.id, lang)} · ${nm(p.nakshatra.id)}` } };
       },
-      festivals: () => ({ kind: 'festivals', data: { items: collectUpcoming(7, 6) }, opts: { fileDate: activePanchang.date } })
+      festivals: () => ({ kind: 'festivals', data: { items: collectUpcoming(7, 6) }, opts: { fileDate: activePanchang.date } }),
+      guide: () => ({ kind: 'guide', data: shownGuide && guideShareData(shownGuide.guide, window.I18N.getLang()), opts: { fileDate: activePanchang.date } })
     };
     // "Add to calendar": the next 30 days of festivals, or the user's own reminders, as an .ics file.
     // Built on the device; nothing is sent anywhere (PRIVACY.md).

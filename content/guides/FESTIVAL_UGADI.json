@@ -16,6 +16,20 @@
     "te": "తెలుగు నూతన సంవత్సరం నాడు తలస్నానం, ఇంటికి తోరణాలు, షడ్రుచుల ఉగాది పచ్చడి, పంచాంగ శ్రవణం: ఆంధ్ర, తెలంగాణ ఇళ్లలో సాధారణంగా చేసుకునే విధానం ఇది.",
     "en": "A head bath, mango-leaf toranam, the six-taste Ugadi pachadi and listening to the year's panchangam on the Telugu new year: the way most Andhra and Telangana homes celebrate."
   },
+  "why": [
+    {
+      "te": "ఉగాది తెలుగు కొత్త సంవత్సరం మొదటి రోజు.",
+      "en": "Ugadi is the first day of the Telugu new year."
+    },
+    {
+      "te": "చైత్ర శుద్ధ పాడ్యమి నాడు బ్రహ్మదేవుడు సృష్టి మొదలుపెట్టాడని నమ్మకం.",
+      "en": "It falls on Chaitra Shuddha Padyami, the day Brahma is believed to have begun creation."
+    },
+    {
+      "te": "ఆరు రుచుల ఉగాది పచ్చడి: జీవితంలో తీపి, చేదు అన్నీ సమానంగా స్వీకరించమని చెబుతుంది.",
+      "en": "Ugadi pachadi has six tastes: it reminds us to accept the sweet and the bitter in life alike."
+    }
+  ],
   "variation": {
     "te": "ఇది సాధారణ విధానం మాత్రమే. కుటుంబ సంప్రదాయం, గురువుల సూచన, ప్రాంతాన్ని బట్టి విధానాలు మారుతాయి; మీ ఇంటి సంప్రదాయం ముందు. తిథి రెండు రోజులకు విస్తరించే సంవత్సరాలలో తేదీ సంప్రదాయాన్ని బట్టి మారవచ్చు; అలాంటి రోజుల్లో యాప్ ఆ విషయం తెలియజేస్తుంది.",
     "en": "This is the common way, not the only one. Practice differs by family tradition, by guru and by region, so follow your own family's custom first. When the tithi spans two days, the date can differ by tradition; the app shows a note on such days."
@@ -81,7 +95,7 @@
       ]
     }
   ],
-  "samagri": [
+  "checklist": [
     {
       "te": "పసుపు, కుంకుమ, అక్షతలు",
       "en": "Turmeric, kumkum and akshata (rice)"
@@ -143,7 +157,13 @@
       "en": "Shatayur vajradehaya sarvasampatkaraya cha | Sarvarishtavinashaya nimbakandalabhakshanam"
     }
   ],
-  "videos": [],
+  "videos": [
+    {
+      "title": "ఉగాది పండుగ విశిష్టత, పాటించాల్సిన నియమాలు (Bhakthi TV)",
+      "url": "https://www.youtube.com/watch?v=336nOSB4Okc",
+      "kind": "plain"
+    }
+  ],
   "shops": [],
   "sources": [
     {

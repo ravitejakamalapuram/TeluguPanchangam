@@ -1913,7 +1913,7 @@ body::after { right: 6px; }
 .times-head::after { content: ""; flex: 1; height: 1px; background: currentColor; opacity: 0.25; }
 .times-head.good { color: var(--color-auspicious); }
 .times-head.bad { color: var(--color-inauspicious); }
-.times-list { list-style: none; margin: 0; padding: 0; }
+.times-list { display: grid; gap: 4px; list-style: none; margin: 0; padding: 0; }
 .times-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: baseline; padding: 6px 8px; border-radius: var(--radius-sm); }
 .times-list b { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .times-list li.past { opacity: 0.5; }

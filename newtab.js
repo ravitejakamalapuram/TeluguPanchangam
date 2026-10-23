@@ -158,8 +158,9 @@ import { openPooja, halfVerses } from './ui/pooja.js';
   const yieldToMain = () => (window.scheduler && window.scheduler.yield)
     ? window.scheduler.yield()
     : new Promise((resolve) => { const ch = new MessageChannel(); ch.port1.onmessage = () => resolve(); ch.port2.postMessage(null); });
-  async function warmDays(dates) {
+  async function warmDays(dates, stillWanted = () => true) {
     for (const date of dates) {
+      if (!stillWanted()) return;
       if (dayCache.has(dayKey(date))) continue;
       await yieldToMain();
       dayFor(date);
@@ -503,7 +504,9 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     versesLoading = versesLoading || new Promise((resolve) => {
       const tag = document.createElement('script');
       tag.src = 'gita-verses.js';
-      tag.onload = tag.onerror = () => { versesReady = true; resolve(); };
+      // A failed load leaves the card hidden and sharing off (renderGitaVerse finds no verse).
+      tag.onload = () => { versesReady = true; resolve(); };
+      tag.onerror = () => resolve();
       document.head.append(tag);
     });
     return versesLoading;
@@ -960,7 +963,7 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     const run = ++monthRun;
     const lead = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth(), 1).getDay();
     const cells = Math.ceil((lead + new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth() + 1, 0).getDate()) / 7) * 7;
-    await warmDays(Array.from({ length: cells }, (_, i) => new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth(), 1 - lead + i, 12)));
+    await warmDays(Array.from({ length: cells }, (_, i) => new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth(), 1 - lead + i, 12)), () => run === monthRun);
     if (run !== monthRun) return;
 
     elCalendarDaysContainer.innerHTML = '';
@@ -1370,7 +1373,7 @@ import { openPooja, halfVerses } from './ui/pooja.js';
       if (!btn || !shareData[btn.dataset.share]) return;
       if (btn.dataset.share === 'gita' && !versesReady) {
         // The verses load after the first paint; share once they are in rather than silently doing nothing.
-        loadVerses().then(() => btn.click());
+        loadVerses().then(() => { if (versesReady) btn.click(); });
         return;
       }
       const { kind, data, opts } = shareData[btn.dataset.share]();

@@ -1494,7 +1494,11 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     add('దుర్ముహూర్తం (Durmuhurtham)', tm.durmuhurtham, 'inauspicious');
     add('వర్జ్యం (Varjyam)', tm.varjyam, 'inauspicious');
     add('అమృత ఘడియలు (Amrita Kalam)', tm.amritaKalam, 'auspicious');
-    add('బ్రహ్మ ముహూర్తం (Brahma Muhurtham)', [tm.brahmaMuhurta], 'auspicious');
+    // The list runs sunrise to next sunrise, so Brahma Muhurtham is the one before the next sunrise
+    // (a day's own window falls before its sunrise, outside the list).
+    const morrow = new Date(cityDateOf(panchang.astronomy.sunrise));
+    morrow.setDate(morrow.getDate() + 1);
+    add('బ్రహ్మ ముహూర్తం (Brahma Muhurtham)', [dayFor(morrow).timings.brahmaMuhurta], 'auspicious');
     if (!tm.abhijit.avoided) add('అభిజిత్ ముహూర్తం (Abhijit)', [tm.abhijit], 'auspicious');
     items.sort((x, y) => x.start - y.start);
 

@@ -1128,7 +1128,8 @@ import { openPooja, halfVerses } from './ui/pooja.js';
   const traceReason = (ev) => (ev.trace.reason || '').replace(/\b[A-Z]+_[A-Z_]+\b/g, (id) => coreName(id, 'en'));
 
   // Feature flags: hidden switches for testing, opened by tapping the footer version 7 times.
-  const flagsLoaded = new Promise((resolve) => chrome.storage.local.get(['featureFlags'], (r) => resolve((r && r.featureFlags) || {})));
+  const storageError = () => (chrome.runtime && chrome.runtime.lastError) || null;
+  const flagsLoaded = new Promise((resolve) => chrome.storage.local.get(['featureFlags'], (r) => resolve((!storageError() && r && r.featureFlags) || {})));
 
   // Festival guide for the selected day. Drafts stay hidden unless the festivalGuides flag is on or a reviewer
   // opens the app with ?guides=draft.
@@ -1776,9 +1777,14 @@ import { openPooja, halfVerses } from './ui/pooja.js';
   });
   elFlagsDialog.addEventListener('change', async (e) => {
     const flags = await flagsLoaded; // the same object, so later reads see the change
-    flags[e.target.dataset.flag] = e.target.checked;
-    chrome.storage.local.set({ featureFlags: flags });
-    if (activePanchang) renderGuide(activePanchang);
+    const box = e.target;
+    const was = Boolean(flags[box.dataset.flag]);
+    flags[box.dataset.flag] = box.checked;
+    // Show the change only once it is saved; if saving fails, put the box back.
+    chrome.storage.local.set({ featureFlags: flags }, () => {
+      if (storageError()) { flags[box.dataset.flag] = was; box.checked = was; return; }
+      if (activePanchang) renderGuide(activePanchang);
+    });
   });
   document.getElementById('btn-close-flags').addEventListener('click', () => closeDialog(elFlagsDialog));
   elFlagsDialog.addEventListener('click', (e) => { if (e.target === elFlagsDialog) closeDialog(elFlagsDialog); });

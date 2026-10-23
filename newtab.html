@@ -421,7 +421,18 @@
 
   <footer class="v2-foot">
     <p data-i18n-te="శంఖ నాదం: David Bolton, Wikimedia Commons (CC BY 2.5) · దేవతా చిత్రాలు, ఆలయ చిత్రం: పంచాంగం కోసం రూపొందించినవి" data-i18n-en="Conch sound: David Bolton, Wikimedia Commons (CC BY 2.5) · Deity and temple art made for this panchangam">శంఖ నాదం: David Bolton, Wikimedia Commons (CC BY 2.5) · దేవతా చిత్రాలు, ఆలయ చిత్రం: పంచాంగం కోసం రూపొందించినవి</p>
+    <!-- Tapping the version 7 times opens the feature flags: for testing only, nothing points users to it -->
+    <p><button type="button" id="app-version" class="foot-version"></button></p>
   </footer>
+
+  <dialog id="flags-dialog" class="timings-dialog" aria-labelledby="flags-dialog-title">
+    <div class="timings-dialog-head">
+      <h3 id="flags-dialog-title">Feature flags</h3>
+      <button id="btn-close-flags" type="button" class="modal-close-btn" aria-label="Close">&times;</button>
+    </div>
+    <p class="flags-note">For testing only. Saved on this device.</p>
+    <label class="flag-row"><input type="checkbox" data-flag="festivalGuides"> Festival guides (unreviewed drafts)</label>
+  </dialog>
 
   <!-- Next 30 days of festivals and vratas (opened from the Month zone) -->
   <dialog id="festivals-dialog" class="timings-dialog" aria-labelledby="festivals-dialog-title">

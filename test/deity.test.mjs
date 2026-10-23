@@ -99,3 +99,10 @@ test('v2 opens in the temple look once, then keeps whatever theme the user picks
   assert.match(js, /theme: 'light', templeLook: true \}/, 'new installs start in the temple look');
   assert.match(js, /if \(!userSettings\.templeLook\) \{\s*userSettings\.theme = 'light';\s*userSettings\.templeLook = true;/, 'saved settings from before v2 switch once');
 });
+
+test('draft festival guides show only behind the hidden festivalGuides flag', () => {
+  const js = read('newtab.js');
+  assert.match(js, /Boolean\(\(await flagsLoaded\)\.festivalGuides\)/, 'renderGuide previews drafts when the flag is on');
+  assert.match(js, /versionTaps\.length < 7/, 'the flags open after 7 taps on the version');
+  assert.match(read('newtab.html'), /data-flag="festivalGuides"/);
+});

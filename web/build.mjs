@@ -3,7 +3,7 @@
 //   node web/build.mjs [outDir]      SITE_URL overrides the public address (default: the GitHub Pages project URL)
 //   ANALYTICS_URL=<GoatCounter /count URL>  adds the cookieless page-view counter (web/analytics.js); unset = no network call
 //   PREVIEW_GUIDES=1                 also builds unreviewed guides, as noindex pages kept out of the sitemap (for the reviewer)
-//   MINIFY=1                         bundles and minifies the scripts and stylesheets (npm run build:web; needs `npm ci` for esbuild)
+//   node web/build.mjs dist --minify bundles and minifies the scripts and stylesheets (npm run build:web; needs `npm ci` for esbuild)
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -178,7 +178,7 @@ self.addEventListener('fetch', (event) => {
 `;
 }
 
-export async function buildWeb({ outDir = path.join(ROOT, 'dist'), siteUrl = process.env.SITE_URL || DEFAULT_SITE, extraFiles = {}, guidesDir = path.join(ROOT, 'content/guides'), previewGuides = process.env.PREVIEW_GUIDES === '1', analyticsUrl = process.env.ANALYTICS_URL, minified = process.env.MINIFY === '1' } = {}) {
+export async function buildWeb({ outDir = path.join(ROOT, 'dist'), siteUrl = process.env.SITE_URL || DEFAULT_SITE, extraFiles = {}, guidesDir = path.join(ROOT, 'content/guides'), previewGuides = process.env.PREVIEW_GUIDES === '1', analyticsUrl = process.env.ANALYTICS_URL, minified = false } = {}) {
   const site = siteUrl.endsWith('/') ? siteUrl : `${siteUrl}/`;
   fs.rmSync(outDir, { recursive: true, force: true });
   fs.mkdirSync(outDir, { recursive: true });
@@ -235,6 +235,7 @@ export async function buildWeb({ outDir = path.join(ROOT, 'dist'), siteUrl = pro
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const { outDir, files } = await buildWeb({ outDir: process.argv[2] ? path.resolve(process.argv[2]) : undefined });
+  const [dir] = process.argv.slice(2).filter((a) => a !== '--minify');
+  const { outDir, files } = await buildWeb({ outDir: dir ? path.resolve(dir) : undefined, minified: process.argv.includes('--minify') });
   console.log(`Built ${files} files into ${path.relative(process.cwd(), outDir) || '.'}`);
 }

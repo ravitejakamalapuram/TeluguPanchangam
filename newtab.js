@@ -498,11 +498,12 @@ import { openPooja, halfVerses } from './ui/pooja.js';
   // The 701 verses (about 360 KB) only feed this card far down the page, so they load once the day view is up
   // instead of holding up the first paint.
   let versesLoading = null;
+  let versesReady = false;
   function loadVerses() {
     versesLoading = versesLoading || new Promise((resolve) => {
       const tag = document.createElement('script');
       tag.src = 'gita-verses.js';
-      tag.onload = tag.onerror = () => resolve();
+      tag.onload = tag.onerror = () => { versesReady = true; resolve(); };
       document.head.append(tag);
     });
     return versesLoading;
@@ -815,7 +816,9 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     updateSunPathMarker(activePanchang);
     renderDayTimeline(activePanchang);
     renderDeity();
-    await renderGuide(activePanchang);
+    // The guide card sits inside the day view, so it is shown with it when it is ready in time; a slow network
+    // must not keep the whole view hidden, so after a short wait the view shows and the card follows.
+    await Promise.race([renderGuide(activePanchang), new Promise((resolve) => setTimeout(resolve, 800))]);
     elMain.classList.add('is-rendered'); // the day view is complete: show it (newtab.css)
 
     // Gita verse of the day: one verse per calendar day, offline, follows the selected date.
@@ -1365,6 +1368,11 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     document.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-share]');
       if (!btn || !shareData[btn.dataset.share]) return;
+      if (btn.dataset.share === 'gita' && !versesReady) {
+        // The verses load after the first paint; share once they are in rather than silently doing nothing.
+        loadVerses().then(() => btn.click());
+        return;
+      }
       const { kind, data, opts } = shareData[btn.dataset.share]();
       if (data) shareCard(kind, data, { ...shareOpts(), ...opts });
     });

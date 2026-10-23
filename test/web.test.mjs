@@ -16,7 +16,7 @@ const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 
 const { buildWeb, releaseIncludes } = await import(path.join(ROOT, 'web/build.mjs'));
 const out = fs.mkdtempSync(path.join(os.tmpdir(), 'tp-web-'));
-await buildWeb({ outDir: out, siteUrl: SITE });
+await buildWeb({ outDir: out, siteUrl: SITE, minified: false });
 const dist = (rel) => fs.readFileSync(path.join(out, rel), 'utf8');
 
 test('the site ships every file the extension UI loads, except the extension manifest and locales', () => {
@@ -156,7 +156,7 @@ test('the page-view counter is web-only, opt-in by build setting, and respects D
   assert.ok(!releaseIncludes().includes('web/analytics.js') && !read('manifest.json').includes('analytics'));
 });
 
-// The deployed build (MINIFY=1) needs esbuild from `npm ci`; the extension's own test gate runs with no install, so it skips there.
+// The deployed build (--minify) needs esbuild from `npm ci`; the extension's own test gate runs with no install, so it skips there.
 const hasEsbuild = await import('esbuild').then(() => true, () => false);
 test('the minified build bundles each page into one script and keeps every precached path', { skip: !hasEsbuild && 'esbuild is not installed' }, async () => {
   const min = fs.mkdtempSync(path.join(os.tmpdir(), 'tp-web-min-'));

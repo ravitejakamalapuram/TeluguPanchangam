@@ -14,7 +14,7 @@ npm test                                  # all unit tests + smoke test (node --
 node --test core/test/observances.test.js # one test file (any file in test/ or core/test/)
 npm run build:web                         # web build into dist/ (ANALYTICS_URL, SITE_URL, PREVIEW_GUIDES=1 are optional env)
 npm run validate:listing                  # Chrome Web Store listing check (also run in CI)
-npm run validate:privacy                  # PRIVACY.md vs. manifest/code drift check (ADR 0001)
+npm run validate:privacy                  # permissions (manifest + .appforge) vs. privacy docs and published policy; does not scan source (ADR 0001)
 ```
 
 Run the extension locally: `chrome://extensions` → Developer mode → Load unpacked → this folder.
@@ -31,4 +31,4 @@ Run the extension locally: `chrome://extensions` → Developer mode → Load unp
 
 - `docs/design/deepam/` holds the design source of truth (design C, calm month-centre); `docs/adr/` holds decisions; `test/VALIDATION.md` explains how results are checked against reference panchangams.
 - Telugu strings need a Telugu reader's review before release; timing "meaning" lines need a pandit/tradition check. Never show a pandit-confirmed badge without one.
-- Any change that adds network use or stored data must update `PRIVACY.md` (`validate:privacy` enforces part of this).
+- Any change that adds network use or stored data must update `PRIVACY.md` by hand; `validate:privacy` only checks declared permissions, not source code.

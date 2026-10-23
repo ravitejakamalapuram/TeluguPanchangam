@@ -641,6 +641,8 @@ import { openPooja, halfVerses } from './ui/pooja.js';
   // Clock time, with "(+1)" when it falls after midnight of the given day (the selected day by default).
   const formatTimeOnDay = (d, day = selectedDate) => formatTime(d) + (isSameDay(cityDateOf(d), day) ? '' : ' (+1)');
   const formatWindow = (w, day) => `${formatTimeOnDay(w.start, day)} - ${formatTimeOnDay(w.end, day)}`;
+  // A length of time in hours and minutes: "1 గం 5 ని" / "1 h 5 m", or just the minutes under an hour.
+  const spanText = (mins) => (mins >= 60 ? `${Math.floor(mins / 60)}${window.I18N.teEn(' గం ', ' h ')}` : '') + `${mins % 60}${window.I18N.teEn(' ని', ' m')}`;
   const formatWindows = (list) => (list.length ? list.map((w) => formatWindow(w)).join(', ') : '—');
 
   // Sankalpam names the tithi/nakshatra current when it is recited: "now" for today, sunrise otherwise.
@@ -1511,20 +1513,41 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     if (status.textContent !== statusText) status.textContent = statusText;
     status.className = 'now-status ' + (running ? 'inauspicious' : 'auspicious');
 
+    const minsUntil = (d) => Math.max(1, Math.ceil((d - now) / 60000));
+    // Within each list, the first window still to come today gets a countdown.
+    const nextOf = (type) => (isToday ? items.find((it) => it.type === type && it.start > now) : null);
+    const upcoming = [nextOf('auspicious'), nextOf('inauspicious')];
     const row = (it) => {
       const li = document.createElement('li');
-      if (isLive(it)) li.className = 'live';
-      else if (isToday && it.end <= now) li.className = 'past';
+      li.classList.add(it.type === 'auspicious' ? 'good' : 'bad');
       const name = document.createElement('span');
       name.textContent = it.label;
+      const time = document.createElement('span');
+      time.className = 'times-when';
+      const clock = document.createElement('b');
+      clock.textContent = formatWindow(it, shownDay);
+      time.append(clock);
+      const sub = (text) => {
+        const small = document.createElement('small');
+        small.textContent = text;
+        time.append(small);
+      };
       if (isLive(it)) {
+        li.classList.add('live');
+        li.style.setProperty('--done', `${Math.round(((now - it.start) / (it.end - it.start)) * 100)}%`);
         const badge = document.createElement('span');
         badge.className = 'times-now';
         badge.textContent = window.I18N.teEn('ఇప్పుడు', 'Now');
         name.append(badge);
+        const left = spanText(minsUntil(it.end));
+        sub(window.I18N.teEn(`ఇంకా ${left}`, `${left} left`));
+      } else if (isToday && it.end <= now) {
+        li.classList.add('past');
+      } else if (upcoming.includes(it)) {
+        li.classList.add('next');
+        const wait = spanText(minsUntil(it.start));
+        sub(window.I18N.teEn(`${wait} తర్వాత`, `in ${wait}`));
       }
-      const time = document.createElement('b');
-      time.textContent = formatWindow(it, shownDay);
       li.append(name, time);
       return li;
     };
@@ -1598,8 +1621,7 @@ import { openPooja, halfVerses } from './ui/pooja.js';
       const badNow = windows.some((w) => w.type === 'bad' && w.start <= now && now < w.end);
       text(badNow ? window.I18N.teEn('నివారించండి', 'Avoid now') : window.I18N.teEn('శుభ సమయం', 'Fine now'), ARC.cx, ARC.cy - 14, 'arc-now-label');
     } else {
-      const mins = Math.round((a.sunset - a.sunrise) / 60000);
-      text(`${Math.floor(mins / 60)}${window.I18N.teEn(' గం ', ' h ')}${mins % 60}${window.I18N.teEn(' ని', ' m')}`, ARC.cx, ARC.cy - 38, 'arc-now');
+      text(spanText(Math.round((a.sunset - a.sunrise) / 60000)), ARC.cx, ARC.cy - 38, 'arc-now');
       text(window.I18N.teEn('పగటి సమయం', 'Daylight'), ARC.cx, ARC.cy - 14, 'arc-now-label');
     }
     document.getElementById('timing-arc').replaceChildren(svg);

@@ -13,7 +13,7 @@ const THEMES = {
   light: {
     page: '#F6EFE3', panel: '#FFFFFF', border: '#E4D6B0', text: '#2B2118', muted: '#5E4E40', accent: '#A63A12',
     mine: '#4B2E83', festBg: '#FBE4D8', festFg: '#7E2B0D',
-    bands: { day: '#A63A12', rasi: '#4B2E83', gita: '#1E6B45', sankalpam: '#7A5200', festivals: '#1F5F6B' },
+    bands: { day: '#A63A12', rasi: '#4B2E83', gita: '#1E6B45', sankalpam: '#7A5200', festivals: '#1F5F6B', guide: '#A63A12' },
     band: {
       great: ['#E3F1E8', '#A9D3BA', '#1E6B45'], good: ['#E3F1E8', '#A9D3BA', '#1E6B45'],
       mixed: ['#F5ECD6', '#D9C48E', '#6B4E0E'], care: ['#FBE3E0', '#E7B3AB', '#A3261B']
@@ -22,7 +22,7 @@ const THEMES = {
   dark: {
     page: '#17120D', panel: '#231B14', border: '#4A3C2C', text: '#F3ECE1', muted: '#CDBFAE', accent: '#F0A36E',
     mine: '#C9B3F2', festBg: '#4A2214', festFg: '#FFD2BC',
-    bands: { day: '#9A3A16', rasi: '#5B3C9C', gita: '#2A7A52', sankalpam: '#8A6208', festivals: '#2A7482' },
+    bands: { day: '#9A3A16', rasi: '#5B3C9C', gita: '#2A7A52', sankalpam: '#8A6208', festivals: '#2A7482', guide: '#9A3A16' },
     band: {
       great: ['#17301F', '#2F6B47', '#7FE0A6'], good: ['#17301F', '#2F6B47', '#7FE0A6'],
       mixed: ['#3A3014', '#6E5A1F', '#F3DFA0'], care: ['#3B1A17', '#7A3029', '#FFA79A']
@@ -51,7 +51,7 @@ const LABELS = {
     rashiTitle: 'గోచార రాశి ఫలాలు', myRasi: 'మీ రాశి',
     bands: { 5: 'అత్యంత అనుకూలం', 4: 'అనుకూలం', 3: 'మిశ్రమం', 2: 'జాగ్రత్త', 1: 'జాగ్రత్త' },
     gitaTitle: 'నేటి గీతా శ్లోకం', sankalpamTitle: 'దిన సంకల్పం', meaning: 'భావం',
-    festTitle: 'రాబోయే పర్వదినాలు', festSub: 'రాబోయే 7 రోజులు', parana: 'పారణ',
+    festTitle: 'రాబోయే పర్వదినాలు', festSub: 'రాబోయే 7 రోజులు', parana: 'పారణ', guideSub: 'కావలసిన వస్తువులు',
     yoga: 'యోగం', karana: 'కరణం', good: 'శుభ సమయాలు', avoid: 'అశుభ సమయాలు', abhijit: 'అభిజిత్', amrita: 'అమృత కాలం', brahma: 'బ్రహ్మ ముహూర్తం', yama: 'యమగండం', gulika: 'గుళిక కాలం', varjyam: 'వర్జ్యం',
     moonKey: 'సంఖ్య = చంద్రుడు ఉన్న ఇల్లు · ! = శని జాగ్రత్త',
     footer: 'తెలుగు పంచాంగం · Chrome కొత్త ట్యాబ్ క్యాలెండర్'
@@ -63,7 +63,7 @@ const LABELS = {
     rashiTitle: 'Gochara Rasi Phalalu', myRasi: 'Your rasi',
     bands: { 5: 'Very favourable', 4: 'Favourable', 3: 'Mixed', 2: 'Be careful', 1: 'Be careful' },
     gitaTitle: 'Gita Verse of the Day', sankalpamTitle: 'Daily Sankalpam', meaning: 'Meaning',
-    festTitle: 'Upcoming festivals', festSub: 'Next 7 days', parana: 'Parana',
+    festTitle: 'Upcoming festivals', festSub: 'Next 7 days', parana: 'Parana', guideSub: 'Items needed',
     yoga: 'Yoga', karana: 'Karana', good: 'Good times', avoid: 'Times to avoid', abhijit: 'Abhijit', amrita: 'Amrita Kalam', brahma: 'Brahma Muhurtham', yama: 'Yama Gandam', gulika: 'Gulika Kalam', varjyam: 'Varjyam',
     moonKey: 'Number = Moon\'s house from the rasi · ! = Saturn caution',
     footer: 'Telugu Panchangam · New Tab Calendar for Chrome'
@@ -428,13 +428,48 @@ function drawFestivals(c, items, { lang, city, time }, L) {
   c.footer();
 }
 
+// A festival guide: the three "why" lines, then the items with an empty tick box each, at the largest size that fits.
+function drawGuide(c, g, { date }, L) {
+  const { ctx, text, T } = c;
+  c.header(g.title, date, L.guideSub);
+  const room = BODY_BOTTOM - BODY_TOP;
+  const left = 100;
+  const textX = left + 64;
+  let size = 40;
+  let why;
+  let items;
+  for (; size >= 22; size -= 2) {
+    ctx.font = font(400, Math.round(size * 0.8));
+    why = g.why.flatMap((l) => wrapLines(ctx, l, W - 2 * left));
+    ctx.font = font(600, size);
+    items = g.items.map((i) => wrapLines(ctx, i, W - textX - left));
+    const h = why.length * size * 1.2 + 36 + items.reduce((sum, lines) => sum + lines.length * size * 1.4 + 16, 0);
+    if (h <= room) break;
+  }
+  let y = BODY_TOP;
+  why.forEach((line) => text(line, left, y += size * 1.2, { size: Math.round(size * 0.8), color: T.muted, max: W - 2 * left }));
+  y += 36;
+  items.forEach((lines) => {
+    ctx.strokeStyle = T.accent;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(left, y + size * 0.5, size, size, 6);
+    ctx.stroke();
+    lines.forEach((line) => text(line, textX, y += size * 1.4, { size, weight: 600, max: W - textX - left }));
+    y += 16;
+  });
+  c.footer();
+}
+
 // What each kind of card needs from `data` and how it is named when downloaded.
 const CARDS = {
   day: { draw: (c, d, o, L) => drawDay(c, d, o, L), file: (d) => `panchangam-${d.date}`, title: (L) => L.title },
   rasi: { draw: (c, d, o, L) => drawRasi(c, d.day, { ...o, rows: d.rows }, L), file: (d) => `rashi-phalalu-${d.day.date}`, title: (L) => L.rashiTitle },
   gita: { draw: (c, d, o, L) => drawGita(c, d, o, L), file: (d) => `gita-${d.chapter}-${d.verse}`, title: (L) => L.gitaTitle },
   sankalpam: { draw: (c, d, o, L) => drawSankalpam(c, d, o, L), file: (d, o) => `sankalpam-${o.fileDate}`, title: (L) => L.sankalpamTitle },
-  festivals: { draw: (c, d, o, L) => drawFestivals(c, d, o, L), file: (d, o) => `festivals-${o.fileDate}`, title: (L) => L.festTitle }
+  festivals: { draw: (c, d, o, L) => drawFestivals(c, d, o, L), file: (d, o) => `festivals-${o.fileDate}`, title: (L) => L.festTitle },
+  // The guide also sends its checklist as text, so it can be read (and copied) in the chat without the image.
+  guide: { draw: (c, d, o, L) => drawGuide(c, d, o, L), file: (d, o) => `${d.id.replace(/^FESTIVAL_/, '').toLowerCase()}-${o.fileDate}`, title: (L) => L.guideSub, text: (d) => [d.title, ...d.items.map((i) => `☐ ${i}`)].join('\n') }
 };
 
 async function drawCard(kind, data, opts, L) {
@@ -493,13 +528,13 @@ function showToast(blob, copied, L, fileName, waText) {
 
 // Call from the click handler: the clipboard write starts in the same task, with the PNG as a pending promise.
 // kind: 'day' (data: the day), 'rasi' ({day, rows}), 'gita' (the verse), 'sankalpam' ({sanskrit, telugu}) or
-// 'festivals' ({items}); opts: lang, theme, city, date, time, timeWindow, mine, and for the last two fileDate and tithiLine.
+// 'festivals' ({items}) or 'guide' (guideShareData() of ui/guides.js); opts: lang, theme, city, date, time, timeWindow, mine, and for the last two fileDate and tithiLine.
 export function shareCard(kind, data, opts) {
   const L = LABELS[opts.lang] || LABELS.te;
   const card = CARDS[kind];
   const png = drawCard(kind, data, opts, L);
   const copied = (async () => navigator.clipboard.write([new ClipboardItem({ 'image/png': png })]))().then(() => true, () => false);
   return Promise.all([png, copied])
-    .then(([blob, ok]) => showToast(blob, ok, L, `${card.file(data, opts)}.png`, `${card.title(L)} ${opts.date}\n${shareLink(opts.linkParams)}`))
+    .then(([blob, ok]) => showToast(blob, ok, L, `${card.file(data, opts)}.png`, `${card.text ? card.text(data) : `${card.title(L)} ${opts.date}`}\n${shareLink(opts.linkParams)}`))
     .catch((err) => console.error('Share card failed:', err));
 }

@@ -7,6 +7,11 @@
     "te": "నరక చతుర్దశి నాడు తెల్లవారుజామున తైలాభ్యంగన స్నానం, దీపావళి అమావాస్య సాయంత్రం లక్ష్మీపూజ, ఇంటి ముందు దీపాలు: ఆంధ్ర, తెలంగాణ ఇళ్లలో సాధారణంగా చేసుకునే విధానం ఇది.",
     "en": "An oil bath before sunrise on Naraka Chaturdashi, Lakshmi puja on the evening of the Amavasya, and lamps at the door: the way most Andhra and Telangana homes celebrate."
   },
+  "why": [
+    { "te": "శ్రీకృష్ణుడు, సత్యభామ నరకాసురుని సంహరించిన విజయానికి గుర్తుగా నరక చతుర్దశి, దీపావళి జరుపుకుంటాం.", "en": "Naraka Chaturdashi and Deepavali mark the defeat of Narakasura by Sri Krishna and Satyabhama." },
+    { "te": "దీపాలు చీకటిపై వెలుగుకు, చెడుపై మంచి గెలుపుకు గుర్తు.", "en": "The lamps stand for light over darkness and good over evil." },
+    { "te": "అమావాస్య సాయంత్రం ఇంటికి సిరిసంపదలు రావాలని లక్ష్మీదేవిని పూజిస్తాం.", "en": "On the Amavasya evening we worship Lakshmi for prosperity in the home." }
+  ],
   "variation": {
     "te": "ఇది సాధారణ విధానం మాత్రమే. కుటుంబ సంప్రదాయం, గురువుల సూచన, ప్రాంతాన్ని బట్టి విధానాలు మారుతాయి; మీ ఇంటి సంప్రదాయం ముందు. కేదార గౌరీ వ్రతం కొన్ని కుటుంబాలలో మాత్రమే ఆచరిస్తారు.",
     "en": "This is the common way, not the only one. Practice differs by family tradition, by guru and by region, so follow your own family's custom first. The Kedara Gowri vratam is observed only in some families."
@@ -54,7 +59,7 @@
       ]
     }
   ],
-  "samagri": [
+  "checklist": [
     { "te": "పసుపు, కుంకుమ, అక్షతలు", "en": "Turmeric, kumkum and akshata (rice)" },
     { "te": "పూలు, మామిడాకులు", "en": "Flowers and mango leaves" },
     { "te": "తమలపాకులు, వక్కలు, పండ్లు, కొబ్బరికాయ", "en": "Betel leaves, areca nuts, fruits and a coconut" },
@@ -75,7 +80,9 @@
     { "te": "ఓం మహాలక్ష్మ్యై చ విద్మహే విష్ణుపత్న్యై చ ధీమహి | తన్నో లక్ష్మీః ప్రచోదయాత్", "en": "Om Mahalakshmyai cha vidmahe Vishnupatnyai cha dhimahi | Tanno Lakshmih prachodayat" },
     { "te": "శుభం కరోతి కల్యాణం ఆరోగ్యం ధనసంపదా | శత్రుబుద్ధివినాశాయ దీపజ్యోతిర్నమోఽస్తు తే", "en": "Shubham karoti kalyanam arogyam dhanasampada | Shatrubuddhivinashaya deepajyotirnamostu te" }
   ],
-  "videos": [],
+  "videos": [
+    { "title": "దీపావళి: లక్ష్మీదేవి పూజ విధానం (Bhakthi TV)", "url": "https://www.youtube.com/watch?v=HPH4WDbI14U", "kind": "plain" }
+  ],
   "shops": [],
   "sources": [
     { "title": "Telugu Deepavali traditions in Andhra and Telangana (HinduTone)", "url": "https://hindutone.com/festivals/telugu-deepavali-2026-traditions-andhra-telangana/" },

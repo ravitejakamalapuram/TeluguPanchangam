@@ -114,10 +114,10 @@ ${analyticsUrl ? `  <script src="${esc(site)}web/analytics.js" data-endpoint="${
     <h1><a href="${esc(site)}">శ్రీ తెలుగు పంచాంగం (Telugu Panchangam)</a></h1>
     <article>
       <section lang="te">
-${blocksToHtml([...te.head, ...te.body])}
+${blocksToHtml([...te.head, ...te.card, ...te.body])}
       </section>
       <section lang="en">
-${blocksToHtml([...en.head, ...en.body])}
+${blocksToHtml([...en.head, ...en.card, ...en.body])}
       </section>
     </article>
     <p><a href="${esc(site)}">&larr; ${esc('నేటి పంచాంగం / Today\'s panchangam')}</a></p>

@@ -16,6 +16,20 @@
     "te": "శ్రీరాముని జన్మదినం నాడు మధ్యాహ్నం సీతారాముల కల్యాణం, పానకం, వడపప్పు నివేదన: ఆంధ్ర, తెలంగాణ ఇళ్లలో, ఆలయాలలో సాధారణంగా చేసుకునే విధానం ఇది.",
     "en": "On Lord Rama's birthday, the Sita Rama wedding at midday with panakam and vadapappu as offerings: the way most Andhra and Telangana homes and temples celebrate."
   },
+  "why": [
+    {
+      "te": "చైత్ర శుద్ధ నవమి నాడు శ్రీరాముడు జన్మించాడు.",
+      "en": "Sri Rama was born on Chaitra Shuddha Navami."
+    },
+    {
+      "te": "ఇదే రోజు సీతారాముల కళ్యాణం జరుపుకుంటాం; భద్రాచలంలో కళ్యాణం ప్రసిద్ధి.",
+      "en": "The same day we celebrate Sita Rama Kalyanam, their wedding; the one at Bhadrachalam is famous."
+    },
+    {
+      "te": "ధర్మానికి, సత్యానికి, కుటుంబ బంధాలకు శ్రీరాముడు ఆదర్శం.",
+      "en": "Sri Rama is the ideal of dharma, truth and family bonds."
+    }
+  ],
   "variation": {
     "te": "ఇది సాధారణ విధానం మాత్రమే. కుటుంబ సంప్రదాయం, గురువుల సూచన, ప్రాంతాన్ని బట్టి విధానాలు మారుతాయి; మీ ఇంటి సంప్రదాయం ముందు. తిథి రెండు రోజులకు విస్తరించే సంవత్సరాలలో తేదీ సంప్రదాయాన్ని బట్టి మారవచ్చు; అలాంటి రోజుల్లో యాప్ ఆ విషయం తెలియజేస్తుంది.",
     "en": "This is the common way, not the only one. Practice differs by family tradition, by guru and by region, so follow your own family's custom first. When the tithi spans two days, the date can differ by tradition; the app shows a note on such days."
@@ -68,7 +82,7 @@
       ]
     }
   ],
-  "samagri": [
+  "checklist": [
     {
       "te": "పసుపు, కుంకుమ, అక్షతలు",
       "en": "Turmeric, kumkum and akshata (rice)"
@@ -130,7 +144,13 @@
       "en": "Om Sri Ramaya Namah"
     }
   ],
-  "videos": [],
+  "videos": [
+    {
+      "title": "శ్రీ రామ నవమి స్పెషల్: ధర్మ సందేహాలు, శ్రీ టి.కె.వి. రాఘవన్ (Bhakthi TV)",
+      "url": "https://www.youtube.com/watch?v=eq1Bk4nmIVg",
+      "kind": "plain"
+    }
+  ],
   "shops": [],
   "sources": [
     {

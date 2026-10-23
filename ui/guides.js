@@ -267,13 +267,7 @@ export async function loadGuides(fetchJson = defaultFetchJson) {
   } catch {
     return [];
   }
-  const out = [];
-  for (const id of Array.isArray(ids) ? ids : []) {
-    try {
-      out.push(await fetchJson(`content/guides/${id}.json`));
-    } catch {
-      /* skip a guide that cannot be read */
-    }
-  }
-  return out;
+  // Fetched side by side (the day view waits on them); a guide that cannot be read is skipped.
+  const guides = await Promise.all((Array.isArray(ids) ? ids : []).map((id) => fetchJson(`content/guides/${id}.json`).catch(() => null)));
+  return guides.filter(Boolean);
 }

@@ -604,21 +604,22 @@
     </div>
   </dialog>
 
+  <!-- Every script is deferred: they still run in this order, and before newtab.js, but the page paints its header
+       without waiting for them to download (the website on a slow phone). -->
   <!-- Mock Chrome Extension APIs if running in standard browser tab -->
   <!-- Opt-in error capture (release-platform/modules/report-problem): nothing is sent unless the user taps Report a problem -->
-  <script src="report-problem.js" data-repo="ravitejakamalapuram/TeluguPanchangam"></script>
-  <script src="storage-shim.js"></script>
+  <script defer src="report-problem.js" data-repo="ravitejakamalapuram/TeluguPanchangam"></script>
+  <script defer src="storage-shim.js"></script>
 
   <!-- Telugu/English UI language lookup (must load before newtab.js) -->
-  <script src="i18n.js"></script>
+  <script defer src="i18n.js"></script>
 
   <!-- Vendor & Core Scripts -->
-  <script src="lib/astronomy.js"></script>
-  <script src="lib/tz.js"></script>
-  <script src="cities.js"></script>
-  <script src="reminders.js"></script>
-  <script src="gita-verses.js"></script>
-  <script src="gita-verse.js"></script>
+  <script defer src="lib/astronomy.js"></script>
+  <script defer src="lib/tz.js"></script>
+  <script defer src="cities.js"></script>
+  <script defer src="reminders.js"></script>
+  <script defer src="gita-verse.js"></script>
   <script type="module" src="newtab.js"></script>
 </body>
 </html>

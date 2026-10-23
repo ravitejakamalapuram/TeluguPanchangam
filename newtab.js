@@ -29,6 +29,7 @@ import { openPooja, halfVerses } from './ui/pooja.js';
   const engine = createEngine({ Astronomy: window.Astronomy });
 
   // DOM Elements
+  const elMain = document.querySelector('main.v2');
   const elClock = document.getElementById('clock');
   const elTopbarTime = document.getElementById('topbar-time');
   const elDateGregorian = document.getElementById('date-gregorian');
@@ -135,8 +136,34 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
   }
 
+  // A day costs tens of milliseconds of astronomy, and one render asks for the same day several times (the
+  // calendar cell, its weekday label, "upcoming", the timeline), so each day is computed once per city.
+  // Results are read-only. The cache is dropped wholesale when it grows past a few years of browsing.
+  const dayCache = new Map();
+  function dayKey(date) {
+    const loc = cityLocation();
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}|${loc.latitude},${loc.longitude},${loc.timezone}`;
+  }
   function dayFor(date) {
-    return engine.day(localDateOf(date), cityLocation());
+    const key = dayKey(date);
+    if (!dayCache.has(key)) {
+      if (dayCache.size > 400) dayCache.clear();
+      dayCache.set(key, engine.day(localDateOf(date), cityLocation()));
+    }
+    return dayCache.get(key);
+  }
+
+  // Computes the given days ahead of a render, one per task, so the page stays responsive and paints
+  // the day view first instead of freezing while a whole month of panchangam is worked out.
+  const yieldToMain = () => (window.scheduler && window.scheduler.yield)
+    ? window.scheduler.yield()
+    : new Promise((resolve) => { const ch = new MessageChannel(); ch.port1.onmessage = () => resolve(); ch.port2.postMessage(null); });
+  async function warmDays(dates) {
+    for (const date of dates) {
+      if (dayCache.has(dayKey(date))) continue;
+      await yieldToMain();
+      dayFor(date);
+    }
   }
 
   const nm = (id) => coreName(id, window.I18N.getLang());
@@ -468,7 +495,20 @@ import { openPooja, halfVerses } from './ui/pooja.js';
   // Trigger Rasi horoscope details
   // Fills the Gita card. Sanskrit is shown as written; the English is Annie Besant's public-domain
   // translation (CREDITS.md). Text goes in via textContent, never innerHTML.
-  function renderGitaVerse(date) {
+  // The 701 verses (about 360 KB) only feed this card far down the page, so they load once the day view is up
+  // instead of holding up the first paint.
+  let versesLoading = null;
+  function loadVerses() {
+    versesLoading = versesLoading || new Promise((resolve) => {
+      const tag = document.createElement('script');
+      tag.src = 'gita-verses.js';
+      tag.onload = tag.onerror = () => resolve();
+      document.head.append(tag);
+    });
+    return versesLoading;
+  }
+  async function renderGitaVerse(date) {
+    await loadVerses();
     const verse = window.GitaVerse && window.GitaVerse.verseForDate(date);
     const card = document.querySelector('.gita-card');
     if (!card) return;
@@ -761,9 +801,6 @@ import { openPooja, halfVerses } from './ui/pooja.js';
       elSankalpamTxt.append(note);
     }
 
-    // 5b. Gita verse of the day: one verse per calendar day, offline, follows the selected date.
-    renderGitaVerse(selectedDate);
-
     // 6. Eclipses detection
     checkForEclipses(activePanchang);
 
@@ -777,12 +814,16 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     // Custom Professional Widgets
     updateSunPathMarker(activePanchang);
     renderDayTimeline(activePanchang);
-    renderUpcoming();
-    await renderGuide(activePanchang);
     renderDeity();
+    await renderGuide(activePanchang);
+    elMain.classList.add('is-rendered'); // the day view is complete: show it (newtab.css)
 
-    // 9. Re-render monthly calendar grid
-    renderMonthlyCalendar();
+    // Gita verse of the day: one verse per calendar day, offline, follows the selected date.
+    renderGitaVerse(selectedDate);
+
+    // 9. "Upcoming" and the month grid need a few dozen more days, worked out after the day view has painted.
+    await renderUpcoming();
+    await renderMonthlyCalendar();
 
     // 10. Keep the shareable URL in step with the view (web only).
     syncUrlState();
@@ -910,7 +951,15 @@ import { openPooja, halfVerses } from './ui/pooja.js';
 
   // Render 7-column Monthly Calendar Grid
   const monthIcons = new Set();
-  function renderMonthlyCalendar() {
+  let monthRun = 0;
+  async function renderMonthlyCalendar() {
+    // The grid is built in one go once its days are ready; a newer render (month change, new city) wins.
+    const run = ++monthRun;
+    const lead = new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth(), 1).getDay();
+    const cells = Math.ceil((lead + new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth() + 1, 0).getDate()) / 7) * 7;
+    await warmDays(Array.from({ length: cells }, (_, i) => new Date(calendarViewDate.getFullYear(), calendarViewDate.getMonth(), 1 - lead + i, 12)));
+    if (run !== monthRun) return;
+
     elCalendarDaysContainer.innerHTML = '';
     monthIcons.clear();
     
@@ -1123,9 +1172,8 @@ import { openPooja, halfVerses } from './ui/pooja.js';
   const GENERIC_VRATA = /^VRATA_(SHUKLA_|KRISHNA_)?(EKADASHI|PURNIMA|AMAVASYA)$/;
   function collectUpcoming(days, max) {
     const items = [];
-    const today = cityToday();
-    for (let i = 0; i < days && items.length < max; i++) {
-      const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i, 12);
+    for (const date of upcomingDates(days)) {
+      if (items.length >= max) break;
       const events = dayFor(date).events;
       const fests = events.filter((e) => e.id.startsWith('FESTIVAL_'));
       const vratas = events.filter((e) => e.id.startsWith('VRATA_'));
@@ -1156,14 +1204,21 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     return li;
   }
 
-  function renderUpcoming() {
+  function upcomingDates(days) {
+    const today = cityToday();
+    return Array.from({ length: days }, (_, i) => new Date(today.getFullYear(), today.getMonth(), today.getDate() + i, 12));
+  }
+
+  async function renderUpcoming() {
+    await warmDays(upcomingDates(7));
     const items = collectUpcoming(7, 6);
     elUpcomingList.replaceChildren(...items.map(upcomingItem));
     elUpcomingCard.style.display = items.length ? '' : 'none';
   }
 
   // "See all": the next 30 days in a popup, opened from the Month zone.
-  function openAllFestivals() {
+  async function openAllFestivals() {
+    await warmDays(upcomingDates(30));
     const dlg = document.getElementById('festivals-dialog');
     document.getElementById('festivals-dialog-list').replaceChildren(...collectUpcoming(30, 40).map(upcomingItem));
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
@@ -1315,15 +1370,15 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     });
 
     // Month navigation
-    elBtnPrevMonth.addEventListener('click', () => {
+    elBtnPrevMonth.addEventListener('click', async () => {
       calendarViewDate.setMonth(calendarViewDate.getMonth() - 1);
-      renderMonthlyCalendar();
+      await renderMonthlyCalendar();
       slideMonth(-1);
     });
 
-    elBtnNextMonth.addEventListener('click', () => {
+    elBtnNextMonth.addEventListener('click', async () => {
       calendarViewDate.setMonth(calendarViewDate.getMonth() + 1);
-      renderMonthlyCalendar();
+      await renderMonthlyCalendar();
       slideMonth(1);
     });
 

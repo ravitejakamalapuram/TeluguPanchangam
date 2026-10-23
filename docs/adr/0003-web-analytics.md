@@ -24,8 +24,10 @@ when `ANALYTICS_URL` is set; not in `release.yaml`, so never in the extension zi
 Return visits: a load by someone whose browser already holds a chosen city (`chrome_storage_selectedCity`, saved
 by the app when the city is picked) counts as `return-visit`. We read that setting but do not send it, and we write
 nothing new: a once-a-day date flag in `localStorage` would be more exact but adds storage whose only purpose is
-counting, which the policy says we do not do. GoatCounter's visitor count dedupes repeat loads, so returning
-visitors divided by all visitors gives the repeat rate the web-app plan's Android gate needs (over 20%).
+counting, which the policy says we do not do. GoatCounter's visitor count dedupes repeat loads, so `return-visit`
+visitors divided by the visitors of the app page path (`/TeluguPanchangam/`, page views only, not event paths)
+is a proxy for the repeat rate the web-app plan's Android gate needs (over 20%). Share events send `ns=1` so every
+click counts; read them as clicks, not visitors.
 
 Cloudflare Web Analytics was the plan's choice; it is free and cookieless too, but it has no custom events, so
 installs, shares and return visits could not be counted. Plausible is paid; Umami needs a host.

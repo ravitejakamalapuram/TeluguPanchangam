@@ -5,7 +5,8 @@
 (function () {
   function countUrl(endpoint, env, event) {
     if (!endpoint || env.dnt === '1' || env.dnt === 'yes' || env.gpc || /^(localhost|127\.|\[::1\])/.test(env.host)) return null;
-    if (event) return `${endpoint}?${new URLSearchParams({ p: event, e: 'true' })}`;
+    // Each share click counts (ns=1 skips GoatCounter's once-per-session-per-path rule); the other events count once.
+    if (event) return `${endpoint}?${new URLSearchParams({ p: event, e: 'true', ...(event.startsWith('share-') && { ns: '1' }) })}`;
     const q = new URLSearchParams({ p: env.path });
     let ref = '';
     try { ref = new URL(env.referrer).origin; } catch {}

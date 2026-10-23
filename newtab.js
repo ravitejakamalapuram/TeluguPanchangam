@@ -1590,13 +1590,15 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     el('path', { d: arcPath(0, 1), class: 'arc-track' + (night ? ' night' : '') });
 
     // Bad and good windows by day; Brahma Muhurtham is the one that can fall in the night span.
+    // Before sunrise the span starts at yesterday's sunset, so the night windows come from yesterday.
+    const nightTm = beforeSunrise ? dayFor(prevDay).timings : tm;
     const windows = [
       { type: 'bad', label: 'Rahu Kalam', start: tm.rahuKalam.start, end: tm.rahuKalam.end },
       { type: 'bad', label: 'Yamagandam', start: tm.yamagandam.start, end: tm.yamagandam.end },
       { type: 'bad', label: 'Gulika Kalam', start: tm.gulikaKalam.start, end: tm.gulikaKalam.end },
-      ...tm.durmuhurtham.map((w) => ({ type: 'bad', label: 'Durmuhurtham', start: w.start, end: w.end })),
-      ...tm.varjyam.map((w) => ({ type: 'bad', label: 'Varjyam', start: w.start, end: w.end })),
-      ...tm.amritaKalam.map((w) => ({ type: 'good', label: 'Amrita Kalam', start: w.start, end: w.end })),
+      ...nightTm.durmuhurtham.map((w) => ({ type: 'bad', label: 'Durmuhurtham', start: w.start, end: w.end })),
+      ...nightTm.varjyam.map((w) => ({ type: 'bad', label: 'Varjyam', start: w.start, end: w.end })),
+      ...nightTm.amritaKalam.map((w) => ({ type: 'good', label: 'Amrita Kalam', start: w.start, end: w.end })),
       { type: 'good', label: 'Brahma Muhurtham', start: tm.brahmaMuhurta.start, end: tm.brahmaMuhurta.end }
     ];
     if (!tm.abhijit.avoided) windows.push({ type: 'good', label: 'Abhijit', start: tm.abhijit.start, end: tm.abhijit.end });

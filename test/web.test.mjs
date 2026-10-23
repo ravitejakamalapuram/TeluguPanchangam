@@ -153,5 +153,13 @@ test('the page-view counter is web-only, opt-in by build setting, and respects D
   assert.equal(countUrl('https://x/count', { ...env, gpc: true }), null);
   assert.equal(countUrl('https://x/count', { ...env, host: 'localhost' }), null);
   assert.equal(countUrl('', env), null);
+  assert.equal(countUrl('https://x/count', env, 'share-day'), 'https://x/count?p=share-day&e=true', 'events carry only their name');
+  assert.equal(countUrl('https://x/count', { ...env, dnt: '1' }, 'install'), null);
+  const { loadEvents, shareEvent } = require(path.join(ROOT, 'web/analytics.js'));
+  assert.deepEqual(loadEvents({ standalone: false, returning: false }), []);
+  assert.deepEqual(loadEvents({ standalone: true, returning: true }), ['launch-standalone', 'return-visit']);
+  assert.equal(shareEvent('rasi'), 'share-rasi');
+  assert.equal(shareEvent('a b'), null);
+  assert.equal(shareEvent(undefined), null);
   assert.ok(!releaseIncludes().includes('web/analytics.js') && !read('manifest.json').includes('analytics'));
 });

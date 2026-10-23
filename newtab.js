@@ -1127,13 +1127,18 @@ import { openPooja, halfVerses } from './ui/pooja.js';
   // A rule trace's reason with canonical IDs (MASA_KARTHIKA, RASI_MAKARA) shown as English names.
   const traceReason = (ev) => (ev.trace.reason || '').replace(/\b[A-Z]+_[A-Z_]+\b/g, (id) => coreName(id, 'en'));
 
-  // Festival guide for the selected day. Drafts stay hidden unless a reviewer opens the app with ?guides=draft.
+  // Feature flags: hidden switches for testing, opened by tapping the footer version 7 times.
+  const storageError = () => (chrome.runtime && chrome.runtime.lastError) || null;
+  const flagsLoaded = new Promise((resolve) => chrome.storage.local.get(['featureFlags'], (r) => resolve((!storageError() && r && r.featureFlags) || {})));
+
+  // Festival guide for the selected day. Drafts stay hidden unless the festivalGuides flag is on or a reviewer
+  // opens the app with ?guides=draft.
   // The card shows why we celebrate, the items as a checklist, one video and share; the full guide folds below it.
   let guidesLoaded = null;
   let shownGuide = null; // { guide, year } on screen, for the share button and the ticks
   async function renderGuide(panchang) {
     guidesLoaded = guidesLoaded || loadGuides();
-    const preview = new URLSearchParams(window.location.search).get('guides') === 'draft';
+    const preview = new URLSearchParams(window.location.search).get('guides') === 'draft' || Boolean((await flagsLoaded).festivalGuides);
     const guide = guideForEvents(await guidesLoaded, panchang.events.map((e) => e.id), { preview });
     if (!guide) {
       shownGuide = null;
@@ -1757,6 +1762,32 @@ import { openPooja, halfVerses } from './ui/pooja.js';
   elTimingsDialog.addEventListener('click', (e) => { if (e.target === elTimingsDialog) closeDialog(elTimingsDialog); });
 
   document.getElementById('btn-all-festivals').addEventListener('click', openAllFestivals);
+  const elFlagsDialog = document.getElementById('flags-dialog');
+  const elVersion = document.getElementById('app-version');
+  try { elVersion.textContent = 'v' + chrome.runtime.getManifest().version; } catch (e) { elVersion.textContent = 'Web'; }
+  let versionTaps = [];
+  elVersion.addEventListener('click', async () => {
+    const now = Date.now();
+    versionTaps = [...versionTaps.filter((t) => now - t < 3000), now];
+    if (versionTaps.length < 7) return;
+    versionTaps = [];
+    const flags = await flagsLoaded;
+    elFlagsDialog.querySelectorAll('[data-flag]').forEach((box) => { box.checked = Boolean(flags[box.dataset.flag]); });
+    if (elFlagsDialog.showModal) elFlagsDialog.showModal(); else elFlagsDialog.setAttribute('open', '');
+  });
+  elFlagsDialog.addEventListener('change', async (e) => {
+    const flags = await flagsLoaded; // the same object, so later reads see the change
+    const box = e.target;
+    const was = Boolean(flags[box.dataset.flag]);
+    flags[box.dataset.flag] = box.checked;
+    // Show the change only once it is saved; if saving fails, put the box back.
+    chrome.storage.local.set({ featureFlags: flags }, () => {
+      if (storageError()) { flags[box.dataset.flag] = was; box.checked = was; return; }
+      if (activePanchang) renderGuide(activePanchang);
+    });
+  });
+  document.getElementById('btn-close-flags').addEventListener('click', () => closeDialog(elFlagsDialog));
+  elFlagsDialog.addEventListener('click', (e) => { if (e.target === elFlagsDialog) closeDialog(elFlagsDialog); });
   document.getElementById('btn-close-festivals').addEventListener('click', () => closeDialog(document.getElementById('festivals-dialog')));
   document.getElementById('festivals-dialog').addEventListener('click', (e) => { if (e.target.id === 'festivals-dialog') closeDialog(e.target); });
 

@@ -6,7 +6,7 @@ All notable changes to the Telugu New Tab Calendar extension will be documented 
 
 ### Added
 
-- **Festival guide card** for eight festivals (Ugadi, Sankranti, Sri Rama Navami, Varalakshmi Vratam, Vinayaka Chavithi, Dasara, Deepavali, Maha Shivaratri): why we celebrate in three lines, the items needed as a big tick list, one Telugu video that opens in a new tab, and a Share button that sends the checklist as an image and as text. The step-by-step guide folds under the card. Ticks are saved only in your browser and start fresh each year. The guides stay hidden until a Telugu reader has reviewed them.
+- **Festival guide card** for eight festivals (Ugadi, Sankranti, Sri Rama Navami, Varalakshmi Vratam, Vinayaka Chavithi, Dasara, Deepavali, Maha Shivaratri): why we celebrate in three lines, the items needed as a big tick list, one Telugu video that opens in a new tab, and a Share button that sends the checklist as an image and as text. The step-by-step guide folds under the card. Ticks are saved only in your browser and start fresh each year. The guides stay hidden until a Telugu reader has reviewed them; testers can turn them on from a hidden feature flags panel, opened by tapping the version at the bottom of the page 7 times.
 - **v2 temple design:** the new tab now opens with a temple banner, and the day's deity sits in the shrine doorway. Below are:
   - a maroon section bar;
   - one strip with the date, a live clock, sunrise and sunset, and what is happening right now;

@@ -1094,10 +1094,11 @@ import { openPooja, halfVerses } from './ui/pooja.js';
     details.append(summary, ...blocksToDom(body, document));
     elGuideBody.replaceChildren(...blocksToDom([...head, ...card], document), details);
     elGuideCard.hidden = false;
-    const shown = { guide, year: Number(panchang.date.slice(0, 4)) };
+    const shown = { guide, year: Number(panchang.date.slice(0, 4)), touched: false };
     shownGuide = shown;
     chrome.storage.local.get([CHECKLIST_KEY], (r) => {
-      if (shownGuide !== shown) return; // the user has moved to another day meanwhile
+      // Skip if the user has moved to another day, or already ticked a box here (the saved list is then older).
+      if (shownGuide !== shown || shown.touched) return;
       const ticks = new Set(ticksFor(r[CHECKLIST_KEY], guide.id, shown.year));
       elGuideBody.querySelectorAll('input[data-tick]').forEach((box) => { box.checked = ticks.has(Number(box.dataset.tick)); });
     });
@@ -1106,6 +1107,7 @@ import { openPooja, halfVerses } from './ui/pooja.js';
   elGuideBody.addEventListener('change', (e) => {
     const box = e.target.closest('input[data-tick]');
     if (!box || !shownGuide) return;
+    shownGuide.touched = true;
     const { guide, year } = shownGuide;
     // The whole list from the boxes on screen, so quick taps cannot overwrite each other.
     const ticks = [...elGuideBody.querySelectorAll('input[data-tick]:checked')].map((b) => Number(b.dataset.tick));

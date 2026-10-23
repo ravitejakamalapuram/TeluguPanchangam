@@ -1,7 +1,7 @@
 // Builds the website: the extension's own UI (the files release.yaml ships) plus a web shell, written to dist/.
 // One codebase serves both, so a fix lands in the extension and on the web together.
 //   node web/build.mjs [outDir]      SITE_URL overrides the public address (default: the GitHub Pages project URL)
-//   ANALYTICS_URL=<GoatCounter /count URL>  adds the cookieless page-view counter (web/analytics.js); unset = no network call
+//   ANALYTICS_URL=<GoatCounter /count URL>  adds the cookieless page-view and event counter (web/analytics.js); unset = no network call
 //   PREVIEW_GUIDES=1                 also builds unreviewed guides, as noindex pages kept out of the sitemap (for the reviewer)
 import fs from 'node:fs';
 import path from 'node:path';

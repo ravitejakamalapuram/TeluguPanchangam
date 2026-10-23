@@ -31,7 +31,7 @@
   };
   const send = (event) => { const url = countUrl(endpoint, env, event); if (url) new Image().src = url; };
   let returning = false;
-  try { returning = Boolean(localStorage.getItem('chrome_storage_selectedCity')); } catch {}
+  try { returning = Boolean(JSON.parse(localStorage.getItem('chrome_storage_selectedCity')).timeZone); } catch {} // same test as extras.js hasChosenCity
   send();
   loadEvents({ standalone: (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true, returning }).forEach(send);
   window.addEventListener('appinstalled', () => send('install'));

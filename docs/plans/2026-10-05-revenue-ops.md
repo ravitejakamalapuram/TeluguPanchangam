@@ -16,27 +16,28 @@ reminded at the right time.
 A reminder that gets no answer is raised again in the next Monday brief until it is done or
 dropped. Nothing is posted publicly in his name.
 
-## Priorities as of 16 Nov 2026
+## Priorities as of 23 Nov 2026
 
-Ranked by how directly each item leads to revenue or installs. Done since 19 Oct: launch-kit
-version fix (#63) and the priorities refresh (#62). The Atla Tadde, Deepavali and Karthika post-prep
-routines were delivered after their dates (10 Nov) and produced no drafts.
+Ranked by how directly each item leads to revenue or installs. Done since 16 Nov: priorities refresh
+(#86) and the Utthana Ekadashi draft. No post is due this week; the next one is Thu 17 Dec.
 
 ### Now (this week)
 
-1. **Confirm what was sent** (by Tue 17 Nov): the Deepavali association newsletter blurb (Template
-   3.1), the Deepavali dates post share, the Dasara week post and the Atla Tadde post. No answer
-   has come since 14 Oct, so all four count as unsent until Raviteja says otherwise.
-2. **Paste the cors-enabler listing** from its checklist issue into the Chrome Web Store
+1. **Confirm what was sent** (by Wed 25 Nov): the Deepavali association newsletter blurb
+   (Template 3.1), the Deepavali dates post share, the Dasara week post, the Atla Tadde post and the
+   Utthana Ekadashi post. No answer has come since 14 Oct, so all count as unsent until Raviteja says
+   otherwise.
+2. **Check Drik by Fri 11 Dec:** Sankranti 2027 (US 14 Jan, Hyderabad 15 Jan; overdue since
+   20 Nov) and Vaikunta Ekadashi in the Bay Area and Seattle (19 Dec date and parana window). The
+   17 Dec post depends on the second.
+3. **Paste the cors-enabler listing** from its checklist issue into the Chrome Web Store
    dashboard (overdue since 12 Oct).
-3. **Check Sankranti 2027 (US 14 Jan, Hyderabad 15 Jan) on Drik** by Fri 20 Nov and report back.
 4. **Record the weekly-users baseline** for TeluguPanchangam, session-transfer and cors-enabler
    from the Chrome Web Store dashboard (launch kit §6; overdue since 12 Oct).
-5. Optional: the Utthana Ekadashi post, Tue 17 Nov, 9:00 AM IST (Dallas 20 Nov, Hyderabad 21 Nov).
 
 ### Next (this month)
 
-6. **InvTrack:** merge InvTrack#1216 (monthly recap notification); the earlier trust-fix PRs (#832 to #879) are no longer open.
+6. **InvTrack:** merge InvTrack#1246 (crash-free users from Play); the earlier trust-fix PRs (#832 to #879) are no longer open.
 7. **Decide TeluguPanchangam#33 (WhatsApp rashi card):** approve or close. The
    session-transfer laptop-to-laptop plan (#29) is merged.
 8. **session-transfer QA launch:** run the Show HN, r/QualityAssurance and dev.to drafts in

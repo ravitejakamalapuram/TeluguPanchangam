@@ -28,8 +28,8 @@ Ranked by how directly each item leads to revenue or installs. Done since 16 Nov
    Utthana Ekadashi post. No answer has come since 14 Oct, so all count as unsent until Raviteja says
    otherwise.
 2. **Check Drik by Fri 11 Dec:** Sankranti 2027 (US 14 Jan, Hyderabad 15 Jan; overdue since
-   20 Nov) and Vaikunta Ekadashi in the Bay Area and Seattle (19 Dec). The 17 Dec post depends on
-   the second.
+   20 Nov) and Vaikunta Ekadashi in the Bay Area and Seattle (19 Dec date and parana window). The
+   17 Dec post depends on the second.
 3. **Paste the cors-enabler listing** from its checklist issue into the Chrome Web Store
    dashboard (overdue since 12 Oct).
 4. **Record the weekly-users baseline** for TeluguPanchangam, session-transfer and cors-enabler
